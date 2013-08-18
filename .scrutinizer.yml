@@ -1,0 +1,4 @@
+tools:
+    php_pdepend: true
+    external_code_coverage:
+        timeout: 600

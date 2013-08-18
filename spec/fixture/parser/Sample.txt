@@ -1,0 +1,93 @@
+#1     [  code   ] #1 > #1         |<?php
+#2     [ comment ] #2 > #4         |/**
+#3     [ comment ] #2 > #4         | * Some comments
+#4     [ comment ] #2 > #4         | */
+#5     [  code   ] #5 > #5         |
+#6     [namespace] #6 > #84        |namespace kahlan\spec\fixture\parser;
+#7     [  code   ] #7 > #12        |
+#8     [  code   ] #7 > #12        |use kahlan\A;
+#9     [  code   ] #7 > #12        |use kahlan\B, kahlan\C;
+#10    [  code   ] #7 > #12        |use kahlan\E as F;
+#11    [  code   ] #7 > #12        |use stdObj;
+#12    [  code   ] #7 > #12        |
+#13    [function ] #13 > #17       |function slice($data, $keys) {
+#14    [  code   ] #14 > #16       |	$removed = array_intersect_key($data, array_fill_keys((array) $keys, true));
+#15    [  code   ] #14 > #16       |	$data = array_diff_key($data, $removed);
+#16    [  code   ] #14 > #16       |	return array($data, $removed);
+#17    [function ] #13 > #17       |}
+#18    [  code   ] #18 > #18       |
+#19    [  class  ] #19 > #46       |class Sample extends \kahlan\fixture\Parent {
+#20    [  code   ] #20 > #20       |
+#21    [ comment ] #21 > #21       |	// Using a tab
+#22    [  code   ] #22 > #25       |	protected	$_public = true;
+#23    [  code   ] #22 > #25       |
+#24    [  code   ] #22 > #25       |	protected $_variable = true;
+#25    [  code   ] #22 > #25       |
+#26    [function ] #26 > #28       |	public function bracketInString() {
+#27    [  code   ] #27 > #27       |		"/^({$pattern})/";
+#28    [function ] #26 > #28       |	}
+#29    [  code   ] #29 > #29       |
+#30    [function ] #30 > #31       |	public function method1($a, $b = array(), $c = [], $d = 0, $f = 'hello') {
+#31    [function ] #30 > #31       |	}
+#32    [  code   ] #32 > #32       |
+#33    [function ] #33 > #41       |	public function method2(
+#34    [function ] #33 > #41       |		$a,
+#35    [function ] #33 > #41       |		$b = array(),
+#36    [function ] #33 > #41       |		$c = [],
+#37    [function ] #33 > #41       |		$d = 0,
+#38    [function ] #33 > #41       |		$f = 'hello')
+#39    [function ] #33 > #41       |	{
+#40    [  code   ] #40 > #40       |		return rand($a * ($d + 1));
+#41    [function ] #33 > #41       |	}
+#42    [  code   ] #42 > #42       |
+#43    [function ] #43 > #43       |	abstract public function abstractMethod();
+#44    [  code   ] #44 > #44       |
+#45    [function ] #45 > #45       |	final public function finalMethod() {}
+#46    [  class  ] #19 > #46       |}
+#47    [  code   ] #47 > #47       |
+#48    [  class  ] #48 > #51       |class
+#49    [  class  ] #48 > #51       |	Sample2
+#50    [  class  ] #48 > #51       |	extends Sample2 {
+#51    [  class  ] #48 > #51       |}
+#52    [  code   ] #52 > #52       |
+#53    [interface] #53 > #57       |interface Template1
+#54    [interface] #53 > #57       |{
+#55    [function ] #55 > #55       |    public function setVariable($name, $var);
+#56    [function ] #56 > #56       |    public function getHtml($template);
+#57    [interface] #53 > #57       |}
+#58    [  code   ] #58 > #58       |
+#59    [  trait  ] #59 > #66       |trait Template2 {
+#60    [function ] #60 > #62       |    public function setVariable($name, $var) {
+#61    [  code   ] #61 > #61       |
+#62    [function ] #60 > #62       |    }
+#63    [function ] #63 > #65       |    public function getHtml($template) {
+#64    [  code   ] #64 > #64       |
+#65    [function ] #63 > #65       |    }
+#66    [  trait  ] #59 > #66       |}
+#67    [  code   ] #67 > #67       |
+#68    [  class  ] #68 > #69       |class Dir extends \FilterIterator{
+#69    [  class  ] #68 > #69       |}
+#70    [  code   ] #70 > #70       |
+#71    [ comment ] #71 > #71       |//No scope
+#72    [  code   ] #72 > #75       |for($i = 0; $i <= 10; $i++) {
+#73    [  code   ] #72 > #75       |	$rand = rand();
+#74    [  code   ] #72 > #75       |}
+#75    [  code   ] #72 > #75       |
+#76    [  code   ] #76 > #76       |?>
+#77    [  plain  ] #77 > #79       |
+#78    [  plain  ] #77 > #79       |<i> Hello World </i>
+#79    [  plain  ] #77 > #79       |
+#80    [  code   ] #80 > #80       |<?php
+#81    [ comment ] #81 > #83       |/**
+#82    [ comment ] #81 > #83       | * Some comments2
+#83    [ comment ] #81 > #83       | */
+#84    [  code   ] #84 > #84       |
+#85    [namespace] #85 > #93       |namespace kahlan\spec\fixture\parser;
+#86    [  code   ] #86 > #86       |
+#87    [  class  ] #87 > #91       |class Sample3 extends Sample2 {
+#88    [function ] #88 > #90       |	public function myMethod() {
+#89    [  code   ] #89 > #89       |		return 'Hello World';
+#90    [function ] #88 > #90       |	}
+#91    [  class  ] #87 > #91       |}
+#92    [  code   ] #92 > #92       |
+#93    [  code   ] #93 > #93       |?>
