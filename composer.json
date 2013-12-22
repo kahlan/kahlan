@@ -20,5 +20,6 @@
         "psr-0": { "kahlan\\": "src/" },
         "files": ["src/kahlan/bootstrap.php"]
     },
+    "bin": ["bin/kahlan"],
     "minimum-stability": "dev"
 }
