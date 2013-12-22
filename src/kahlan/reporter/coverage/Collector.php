@@ -24,7 +24,7 @@ class Collector {
 
 	protected $_driver = null;
 
-	protected $_paths = null;
+	protected $_path = null;
 
 	protected $_whitelist = [];
 
@@ -45,19 +45,19 @@ class Collector {
 			'driver' => null,
 			'whilelist' => [],
 			'blacklist' => [],
-			'paths' => [],
+			'path' => [],
 			'prefix' => rtrim(Interceptor::instance()->cache(), DS)
 		];
 		$options += $defaults;
 
 		$this->_driver = $options['driver'];
-		$this->_paths = $options['paths'];
+		$this->_path = $options['path'];
 		$this->_whitelist = $options['whilelist'];
 		$this->_blacklist = $options['blacklist'];
 		$this->_prefix = $options['prefix'];
 
 		$files = Dir::scan([
-			'path' => $this->_paths,
+			'path' => $this->_path,
 			'include' => '*.php',
 			'type' => 'file'
 		]);
