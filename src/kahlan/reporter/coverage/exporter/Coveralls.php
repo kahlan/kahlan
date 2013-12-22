@@ -17,11 +17,11 @@ class Coveralls {
 		];
 		$options += $defaults;
 
-		if (!$options['file']) {
+		if (!$file = $options['file']) {
 			throw new RuntimeException("Missing file name");
 		}
-
-		return file_put_contents($options['file'], static::export($options));
+		unset($options['file']);
+		return file_put_contents($file, static::export($options));
 	}
 
 	public static function export($options) {

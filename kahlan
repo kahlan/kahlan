@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 $composer = include __DIR__ . '/vendor/autoload.php';
 
@@ -87,7 +87,6 @@ if ($enableCoverage) {
 		Coveralls::write([
 			'coverage' => $coverage,
 			'file' => $options['coverage-coveralls'],
-			'repo_token' => null,
 			'service_name' => 'travis-ci',
 			'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
 		]);
