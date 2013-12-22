@@ -33,10 +33,14 @@ use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Scrutinizer;
 
 // Manage options
-$options = getopt('', ['spec::', 'src::', 'coverage::', 'coverage-scrutinizer::']);
+$options = getopt('', [
+	'spec::', 'src::', 'include::', 'exclude::', 'coverage::', 'coverage-scrutinizer::'
+]);
 $options += [
 	'src' => 'src',
 	'spec' => 'spec',
+	'include' => [],
+	'exclude' => [],
 	'coverage-scrutinizer' => null
 ];
 
@@ -49,7 +53,9 @@ $patcher->add('monkey', new Monkey());
 // Patch the autoloader
 Interceptor::patch([
 	'loader' => [$composer, 'loadClass'],
-	'patcher' => $patcher
+	'patcher' => $patcher,
+	'include' => $options['include'],
+	'exclude' => $options['exclude']
 ]);
 
 // Load specs files

@@ -49,18 +49,18 @@ class Interceptor {
 	protected $_patcher = null;
 
 	/**
-	 * Allowed namespaces/classes for being patched. If non empty, the blacklist is ignored.
+	 * Allowed namespaces/classes for being patched (if empty, mean all is allowed).
 	 *
 	 * @var array
 	 */
-	protected $_whitelist = [];
+	protected $_include = [];
 
 	/**
 	 * Namespaces/classes which must not be patched.
 	 *
 	 * @var array
 	 */
-	protected $_blacklist = [];
+	protected $_exclude = [];
 
 	/**
 	 * Original loader reference.
@@ -84,8 +84,8 @@ class Interceptor {
 	public function __construct($options = []) {
 		$defaults = [
 			'patcher' => null,
-			'blacklist' => [],
-			'whitelist' => [],
+			'exclude' => [],
+			'include' => [],
 			'persistent' => false,
 			'findFile' => 'findFile',
 			'getClassMap' => 'getClassMap',
@@ -97,8 +97,8 @@ class Interceptor {
 		$this->_getClassMap = $options['getClassMap'];
 		$this->_cache = $options['cache'];
 		$this->_persistent = $options['persistent'];
-		$this->_blacklist = $options['blacklist'] ? $options['blacklist'] : ['kahlan\\'];
-		$this->_whitelist = $options['whitelist'];
+		$this->_exclude = $options['exclude'] ? (array) $options['exclude'] : ['kahlan\\'];
+		$this->_include = (array) $options['include'];
 	}
 
 	/**
@@ -246,21 +246,17 @@ class Interceptor {
 	 * @return boolean Returns `true` if the class can be patched, `false` otherwise.
 	 */
 	public function patchable($class) {
-		foreach ($this->_whitelist as $namespace) {
-			if (strpos($class, $namespace) === 0) {
-				return true;
-			}
-		}
-		if ($this->_whitelist) {
-			return false;
-		}
-
-		foreach ($this->_blacklist as $namespace) {
+		foreach ($this->_exclude as $namespace) {
 			if (strpos($class, $namespace) === 0) {
 				return false;
 			}
 		}
-		return true;
+		foreach ($this->_include as $namespace) {
+			if (strpos($class, $namespace) === 0) {
+				return true;
+			}
+		}
+		return !$this->_include;
 	}
 
 	/**

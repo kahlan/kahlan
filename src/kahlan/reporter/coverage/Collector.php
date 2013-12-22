@@ -26,10 +26,6 @@ class Collector {
 
 	protected $_path = null;
 
-	protected $_whitelist = [];
-
-	protected $_blacklist = [];
-
 	protected $_coverage = [];
 
 	protected $_files = [];
@@ -43,8 +39,6 @@ class Collector {
 	public function __construct($options = []) {
 		$defaults = [
 			'driver' => null,
-			'whilelist' => [],
-			'blacklist' => [],
 			'path' => [],
 			'prefix' => rtrim(Interceptor::instance()->cache(), DS)
 		];
@@ -52,8 +46,6 @@ class Collector {
 
 		$this->_driver = $options['driver'];
 		$this->_path = $options['path'];
-		$this->_whitelist = $options['whilelist'];
-		$this->_blacklist = $options['blacklist'];
 		$this->_prefix = $options['prefix'];
 
 		$files = Dir::scan([
