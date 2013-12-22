@@ -79,6 +79,13 @@ class Monkey {
 	protected $_uses = [];
 
 	/**
+	 * Variables for the parsed node.
+	 *
+	 * @var array
+	 */
+	protected $_variables = [];
+
+	/**
 	 * The JIT find file patcher.
 	 *
 	 * @param  object $loader The autloader instance.
@@ -107,41 +114,18 @@ class Monkey {
 	 * @param array $nodes A node array to patch.
 	 */
 	protected function _processTree($nodes) {
-		$this->_properties = [];
-		$variables = [];
-
-		$callback = function($matches) use (&$variables) {
-			$name = $matches[3];
-			if (isset($this->_blacklist[$name]) || (!$matches[1] && $matches[5] !== '(' && $matches[5] !== '::')) {
- 				return $matches[0];
-			}
-
-			$variable = '$__' . static::$prefix . '__' . $this->_counter++;
-			if ($name[0] === '\\') {
-				$name = substr($name, 1);
-				$args = "null , '{$name}'";
-			} elseif (isset($this->_uses[$name])) {
-				$args = "null, '" . $this->_uses[$name] . "'";
-			} else {
-				$isFunc = $matches[1] || $matches[5] === '::' ? 'false' : 'true';
-				$args = "__NAMESPACE__ , '{$name}', {$isFunc}";
-			}
-			$variables[] = $variable . " = \kahlan\plugin\Monkey::patched({$args});";
-			return $matches[1] . $matches[2] . $variable . $matches[4] . $matches[5];
-		};
-
 		$alpha = '[\\\a-zA-Z_\\x7f-\\xff]';
 		$alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
 		$regex = "/(new\s+)?(?<!\:|\\\$|\>|{$alphanum})(\s*)({$alpha}{$alphanum}+)(\s*)(\(|;|::)/m";
 
 		foreach ($nodes as $node) {
-			$variables = [];
+			$this->_variables = [];
 			$parent = $node->parent;
 			if ($node->processable && $node->type === 'code' && $parent->type !== 'namespace') {
 				$this->_uses = $node->namespace ? $node->namespace->uses : [];
-				$node->body = preg_replace_callback($regex, $callback, $node->body);
+				$node->body = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
 				$code = $this->_classes['node'];
-				$patch = new $code(join('', $variables), 'code');
+				$patch = new $code(join('', $this->_variables), 'code');
 				$patch->parent = $node->parent;
 				$patch->namespace = $node->namespace;
 				array_unshift($node->parent->tree, $patch);
@@ -150,6 +134,31 @@ class Monkey {
 				$this->_processTree($node->tree);
 			}
 		}
+	}
+
+	/**
+	 * Helper for `Monkey::_processTree()`.
+	 *
+	 * @param array $matches An array of calls to patch.
+	 */
+	protected function _patchNode($matches) {
+		$name = $matches[3];
+		if (isset($this->_blacklist[$name]) || (!$matches[1] && $matches[5] !== '(' && $matches[5] !== '::')) {
+				return $matches[0];
+		}
+
+		$variable = '$__' . static::$prefix . '__' . $this->_counter++;
+		if ($name[0] === '\\') {
+			$name = substr($name, 1);
+			$args = "null , '{$name}'";
+		} elseif (isset($this->_uses[$name])) {
+			$args = "null, '" . $this->_uses[$name] . "'";
+		} else {
+			$isFunc = $matches[1] || $matches[5] === '::' ? 'false' : 'true';
+			$args = "__NAMESPACE__ , '{$name}', {$isFunc}";
+		}
+		$this->_variables[] = $variable . " = \kahlan\plugin\Monkey::patched({$args});";
+		return $matches[1] . $matches[2] . $variable . $matches[4] . $matches[5];
 	}
 
 	/**
