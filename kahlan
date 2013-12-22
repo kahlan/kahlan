@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 $composer = include __DIR__ . '/vendor/autoload.php';
+chdir(__DIR__);
 
 use box\Box;
 use dir\Dir;
@@ -20,17 +21,21 @@ use kahlan\reporter\coverage\exporter\Scrutinizer;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
 // Manage options
-$options = getopt('', ['path::', 'coverage::', 'coverage-scrutinizer::', 'coverage-coveralls::']);
-
-$enableCoverage = (
-	isset($options['coverage']) ||
-	isset($options['coverage-scrutinizer']) ||
-	isset($options['coverage-coveralls'])
-);
+$options = getopt('', [
+	'spec::',
+	'src::',
+	'include::',
+	'exclude::',
+	'coverage::',
+	'coverage-scrutinizer::',
+	'coverage-coveralls::'
+]);
 
 $options += [
-	'path' => __DIR__ . '/spec',
-	'coverage' => 0,
+	'src' => 'src',
+	'spec' => 'spec',
+	'include' => [],
+	'exclude' => [],
 	'coverage-scrutinizer' => null,
 	'coverage-coveralls' => null
 ];
@@ -50,7 +55,7 @@ Interceptor::patch([
 
 // Load specs files
 $files = Dir::scan([
-	'path' => $options['path'],
+	'path' => $options['spec'],
 	'include' => '*Spec.php',
 	'type' => 'file'
 ]);
@@ -62,11 +67,9 @@ foreach($files as $file) {
 $reporter = new Reporter();
 $reporter->add('console', new Dot()); // Dot style report
 
-if ($enableCoverage) {
+if (isset($options['coverage'])) {
 	$coverage = new Coverage([
-		'verbosity' => $options['coverage'],
-		'driver' => new Xdebug(),
-		'paths' => ['src']
+		'verbosity' => $options['coverage'], 'driver' => new Xdebug(), 'path' => $options['src']
 	]);
 	$reporter->add('coverage', $coverage); // Coverage report
 }
@@ -79,7 +82,7 @@ $result = $suite->run([
 ]);
 
 // Export the coverage result
-if ($enableCoverage) {
+if (isset($options['coverage'])) {
 	if ($options['coverage-scrutinizer']) {
 		Scrutinizer::write(['coverage' => $coverage, 'file' => $options['coverage-scrutinizer']]);
 	}
