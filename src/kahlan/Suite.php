@@ -341,30 +341,26 @@ class Suite extends Scope {
 		$this->_reporter = $options['reporter'];
 		$this->_autoclear = $options['autoclear'];
 
-		$results = [
-			'pass' => [], 'fail' => [], 'exception' => [], 'skip' => [], 'incomplete' => []
-		];
 		$scope = !empty($this->_childs['exclusive']) ? 'exclusive' : 'normal';
 
 		$this->report('begin', ['total' => count($this->_childs[$scope])]);
 		foreach ($this->_childs[$scope] as $suite) {
 			$suite->process();
 			foreach ($suite->results() as $type => $result) {
-				$results[$type] = array_merge($results[$type], $result);
+				$this->_results[$type] = array_merge($this->_results[$type], $result);
 			}
 			$this->report('progress');
 		}
-		$this->report('end', $results);
-		return $results;
+		$this->report('end', $this->_results);
+		return $this->_results;
 	}
 
 	/**
 	 * Stop the script and return an exit status code according passed results.
-	 *
-	 * @see khakan\Suite::run()
-	 * @param array $results The test results returned by `khakan\Suite::run()`.
 	 */
-	public function stop($results = []) {
+	public function stop() {
+		$results = $this->_results;
+
 		if ($this->_exclusive) {
 			echo "Exclusive Mode Detected: exit(-1)\n";
 			exit(-1);
