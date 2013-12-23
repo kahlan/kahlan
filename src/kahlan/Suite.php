@@ -335,11 +335,11 @@ class Suite extends Scope {
 	 * @return array The result array.
 	 */
 	public function run($options = []) {
-		$defaults = ['reporter' => null, 'autoclear' => null];
+		$defaults = ['reporter' => null, 'autoclear' => []];
 		$options += $defaults;
 
 		$this->_reporter = $options['reporter'];
-		$this->_autoclear = $options['autoclear'];
+		$this->_autoclear = (array) $options['autoclear'];
 
 		$scope = !empty($this->_childs['exclusive']) ? 'exclusive' : 'normal';
 

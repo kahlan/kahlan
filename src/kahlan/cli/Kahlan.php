@@ -28,17 +28,17 @@ class Kahlan {
 
 	use Filtering;
 
-	protected function _initPatchers($options) {
+	public function initPatchers($options) {
 		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $options) {
 			$patcher = new Patcher();
-			$patcher->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
+			$patcher->add('substitute', new Substitute(['namespaces' => $options['substitute']]));
 			$patcher->add('watcher', new Watcher());
 			$patcher->add('monkey', new Monkey());
 			return $patcher;
 		});
 	}
 
-	protected function _patchAutoloader($autoloader, $patcher, $options) {
+	public function patchAutoloader($autoloader, $patcher, $options) {
 		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $autoloader, $patcher, $options) {
 			Interceptor::patch([
 				'loader' => [$autoloader, 'loadClass'],
@@ -49,7 +49,7 @@ class Kahlan {
 		});
 	}
 
-	protected function _loadSpecs($options) {
+	public function loadSpecs($options) {
 		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $options) {
 			return Dir::scan([
 				'path' => $options['spec'],
@@ -59,7 +59,7 @@ class Kahlan {
 		});
 	}
 
-	protected function _initReporters($options) {
+	public function initReporters($options) {
 		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $options) {
 			$reporter = new Reporter();
 			$reporter->add('console', new Dot());
@@ -75,20 +75,16 @@ class Kahlan {
 		});
 	}
 
-	protected function _runSpecs($suite, $reporter, $options) {
+	public function runSpecs($suite, $reporter, $options) {
 		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $suite, $reporter, $options) {
 			$suite->run([
 				'reporter' => $reporter,
-				'autoclear' => [
-					'kahlan\plugin\Monkey',
-					'kahlan\plugin\Call',
-					'kahlan\plugin\Stub'
-				]
+				'autoclear' => $options['autoclear']
 			]);
 		});
 	}
 
-	protected function _postProcess($suite, $reporter, $options) {
+	public function postProcess($suite, $reporter, $options) {
 		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $suite, $reporter, $options) {
 			$coverage = $reporter->get('coverage');
 			if ($coverage && $options['coverage-scrutinizer']) {
@@ -109,6 +105,12 @@ class Kahlan {
 			'interceptor-exclude' => [],
 			'coverage' => null,
 			'coverage-scrutinizer' => null,
+			'autoclear' => [
+				'kahlan\plugin\Monkey',
+				'kahlan\plugin\Call',
+				'kahlan\plugin\Stub'
+			],
+			'substitute' => ['spec\\']
 		];
 
 		if ($options['c']) {
@@ -117,23 +119,24 @@ class Kahlan {
 			require 'kahlan-config.php';
 		}
 
-		$patcher = $this->_initPatchers($options);
+		Box::share('kahlan.suite', function() { return new Suite(); });
+		$suite = Box::get('kahlan.suite');
 
-		$this->_patchAutoloader($autoloader, $patcher, $options);
+		$patcher = $this->initPatchers($options);
 
-		$files = $this->_loadSpecs($options);
+		$this->patchAutoloader($autoloader, $patcher, $options);
+
+		$files = $this->loadSpecs($options);
 
 		foreach($files as $file) {
 			require $file;
 		}
 
-		$reporter = $this->_initReporters($options);
+		$reporter = $this->initReporters($options);
 
-		$suite = Box::get('kahlan.suite');
+		$this->runSpecs($suite, $reporter, $options);
 
-		$this->_runSpecs($suite, $reporter, $options);
-
-		$this->_postProcess($suite, $reporter, $options);
+		$this->postProcess($suite, $reporter, $options);
 
 		$suite->stop();
 	}

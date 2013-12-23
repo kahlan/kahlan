@@ -1,7 +1,7 @@
 <?php
 use kahlan\reporter\coverage\exporter\Coveralls;
 
-$this->applyFilter('_postProcess', function($chain, $suite, $reporter, $options) {
+$this->applyFilter('postProcess', function($chain, $suite, $reporter, $options) {
 	$coverage = $reporter->get('coverage');
 
 	if (!$coverage || !isset($options['coverage-coveralls'])) {

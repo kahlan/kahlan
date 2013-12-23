@@ -20,7 +20,7 @@ class Substitute {
 	public function __construct($options = []) {
 		$defaults = ['namespaces' => []];
 		$options += $defaults;
-		$this->_namespaces = $options['namespaces'];
+		$this->_namespaces = (array) $options['namespaces'];
 	}
 
 	/**
