@@ -92,7 +92,7 @@ class Collector {
 	}
 
 	public function metrics() {
-		$this->_metrics = new Metric();
+		$this->_metrics = new Metrics();
 		foreach ($this->_coverage as $file => $data) {
 			$node = $this->_parse($file);
 			$this->_processTree($file, $node, $node->tree, $data);

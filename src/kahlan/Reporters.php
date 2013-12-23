@@ -11,7 +11,7 @@ namespace kahlan;
 /**
  * Reporter manager
  */
-class Reporter {
+class Reporters {
 
 	/**
 	 * The registered reporters

@@ -47,11 +47,11 @@ class Suite extends Scope {
 	protected $_exclusive = false;
 
 	/**
-	 * The reporter manager;
+	 * The reporters container.
 	 *
 	 * @var object
 	 */
-	protected $_reporter = null;
+	protected $_reporters = null;
 
 	/**
 	 * Array of fully-namespaced class name to clear on each `it()`.
@@ -335,10 +335,10 @@ class Suite extends Scope {
 	 * @return array The result array.
 	 */
 	public function run($options = []) {
-		$defaults = ['reporter' => null, 'autoclear' => []];
+		$defaults = ['reporters' => null, 'autoclear' => []];
 		$options += $defaults;
 
-		$this->_reporter = $options['reporter'];
+		$this->_reporters = $options['reporters'];
 		$this->_autoclear = (array) $options['autoclear'];
 
 		$scope = !empty($this->_childs['exclusive']) ? 'exclusive' : 'normal';
@@ -391,7 +391,7 @@ class Suite extends Scope {
 	public function reset() {
 		$this->_childs = ['normal' => []];
 		$this->_autoclear = [];
-		$this->_reporter = null;
+		$this->_reporters = null;
 	}
 }
 

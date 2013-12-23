@@ -2,7 +2,7 @@
 namespace spec;
 
 use kahlan\IncompleteException;
-use kahlan\jit\Patcher;
+use kahlan\jit\Patchers;
 use kahlan\jit\Interceptor;
 use kahlan\jit\patcher\Substitute;
 
@@ -15,9 +15,9 @@ describe("Substitute::create", function() {
 		$this->previous = Interceptor::loader();
 		Interceptor::unpatch();
 
-		$patcher = new Patcher();
-		$patcher->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
-		Interceptor::patch(compact('patcher'));
+		$patchers = new Patchers();
+		$patchers->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
+		Interceptor::patch(compact('patchers'));
 	});
 
 	/**

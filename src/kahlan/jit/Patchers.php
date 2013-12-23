@@ -13,7 +13,7 @@ use BadMethodCallException;
 /**
  * Patcher manager
  */
-class Patcher {
+class Patchers {
 
 	/**
 	 * Class dependencies.

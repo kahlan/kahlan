@@ -42,11 +42,11 @@ class Interceptor {
 	protected $_persistent = false;
 
 	/**
-	 * The patcher manager instance.
+	 * The patchers container.
 	 *
 	 * @var object
 	 */
-	protected $_patcher = null;
+	protected $_patchers = null;
 
 	/**
 	 * Allowed namespaces/classes for being patched (if empty, mean all is allowed).
@@ -83,7 +83,7 @@ class Interceptor {
 	 */
 	public function __construct($options = []) {
 		$defaults = [
-			'patcher' => null,
+			'patchers' => null,
 			'exclude' => [],
 			'include' => [],
 			'persistent' => false,
@@ -92,7 +92,7 @@ class Interceptor {
 			'cache' => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
 		];
 		$options += $defaults;
-		$this->_patcher = $options['patcher'];
+		$this->_patchers = $options['patchers'];
 		$this->_findFile = $options['findFile'];
 		$this->_getClassMap = $options['getClassMap'];
 		$this->_cache = $options['cache'];
@@ -111,7 +111,7 @@ class Interceptor {
 		if (static::$_loader) {
 			throw new RuntimeException("An interceptor is already attached.");
 		}
-		$defaults = ['loader' => null, 'patcher' => null];
+		$defaults = ['loader' => null, 'patchers' => null];
 		$options += $defaults;
 
 		$loader = $options['loader'] ?: static::composer();
@@ -214,12 +214,12 @@ class Interceptor {
 	}
 
 	/**
-	 * Return the patcher manager.
+	 * Return the patchers container.
 	 *
 	 * @return mixed
 	 */
-	public function patcher() {
-		return $this->_patcher;
+	public function patchers() {
+		return $this->_patchers;
 	}
 
 	/**
@@ -271,7 +271,7 @@ class Interceptor {
 			return true;
 		}
 		$code = file_get_contents($file);
-		$rewrite = $this->_patcher ? $this->_patcher->process($code) : $code;
+		$rewrite = $this->_patchers ? $this->_patchers->process($code) : $code;
 		if ($rewrite) {
 			if ($this->_cache) {
 				require $this->cache($file, $rewrite);
@@ -316,8 +316,8 @@ class Interceptor {
 	public function findFile($class) {
 		$findFile = $this->_findFile;
 		$file = static::originalInstance()->$findFile($class);
-		if ($this->_patcher) {
-			return $this->_patcher->findFile($this, $class, $file);
+		if ($this->_patchers) {
+			return $this->_patchers->findFile($this, $class, $file);
 		}
 		return $file;
 	}

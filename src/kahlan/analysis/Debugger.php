@@ -151,8 +151,8 @@ class Debugger {
 		}
 
 		$interceptor = static::$_classes['interceptor'];
-		if ($patcher = $interceptor::instance()->patcher()) {
-			$back = $patcher->processBacktrace($options, $back);
+		if ($patchers = $interceptor::instance()->patchers()) {
+			$back = $patchers->processBacktrace($options, $back);
 		}
 		$count = count($back);
 		return array_splice($back, $options['start'], $options['depth'] ?: $count);

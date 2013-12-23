@@ -164,8 +164,8 @@ class Stub {
 
 		if (!class_exists($options['class'], false)) {
 			$code = static::generate($options);
-			if ($patcher = $interceptor::instance()->patcher()) {
-				$code = $patcher->process($code);
+			if ($patchers = $interceptor::instance()->patchers()) {
+				$code = $patchers->process($code);
 			}
 			eval('?>' . $code);
 		}

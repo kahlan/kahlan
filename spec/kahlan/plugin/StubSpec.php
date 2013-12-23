@@ -5,7 +5,7 @@ use kahlan\Arg;
 use kahlan\plugin\Stub;
 use kahlan\jit\Interceptor;
 use kahlan\analysis\Parser;
-use kahlan\jit\Patcher;
+use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Watcher;
 use kahlan\spec\fixture\watcher\Foo;
 
@@ -164,9 +164,9 @@ describe("Stub::create", function() {
 		$this->previous = Interceptor::loader();
 		Interceptor::unpatch();
 
-		$patcher = new Patcher();
-		$patcher->add('watcher', new Watcher());
-		Interceptor::patch(compact('patcher'));
+		$patchers = new Patchers();
+		$patchers->add('watcher', new Watcher());
+		Interceptor::patch(compact('patchers'));
 	});
 
 	/**

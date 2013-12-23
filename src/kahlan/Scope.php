@@ -249,10 +249,10 @@ abstract class Scope {
 	 * @param array  $data The data to report.
 	 */
 	public function report($type, $data = null) {
-		if (!$this->_root->_reporter) {
+		if (!$this->_root->_reporters) {
 			return;
 		}
-		$this->_root->_reporter->process($type, $data);
+		$this->_root->_reporters->process($type, $data);
 	}
 }
 

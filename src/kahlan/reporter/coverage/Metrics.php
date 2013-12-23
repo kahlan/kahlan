@@ -8,7 +8,7 @@
 
 namespace kahlan\reporter\coverage;
 
-class Metric {
+class Metrics {
 
 	protected $_parent = null;
 
@@ -72,7 +72,7 @@ class Metric {
 
 		if (!isset($this->_childs[$name])) {
 			$parent = $this;
-			$this->_childs[$name] = new Metric(compact('name', 'type', 'parent'));
+			$this->_childs[$name] = new Metrics(compact('name', 'type', 'parent'));
 		}
 		$this->_merge($metrics);
 		$this->_childs[$name]->add($subname, $metrics);
