@@ -2,7 +2,7 @@
 /**
  * Kahlan: PHP Testing Framework
  *
- * @copyright     Copyright 2013, Union of RAD (http://union-of-rad.org), CrysaLEAD & Craftsmen
+ * @copyright     Copyright 2013, CrysaLEAD
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 
