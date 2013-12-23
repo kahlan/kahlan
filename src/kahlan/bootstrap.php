@@ -1,18 +1,8 @@
 <?php
 use box\Box;
-use dir\Dir;
 use kahlan\Suite;
 use kahlan\Spec;
 use kahlan\Matcher;
-use kahlan\jit\Interceptor;
-use kahlan\jit\Patcher;
-use kahlan\jit\patcher\Substitute;
-use kahlan\jit\patcher\Watcher;
-use kahlan\jit\patcher\Monkey;
-use kahlan\Reporter;
-use kahlan\reporter\Dot;
-use kahlan\reporter\Coverage;
-use kahlan\reporter\coverage\driver\Xdebug;
 
 define('DS', DIRECTORY_SEPARATOR);
 error_reporting(E_ALL);
