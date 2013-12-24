@@ -1,25 +1,25 @@
 #!/usr/bin/env php
 <?php
 
-if (file_exists($file = __DIR__ . '/../vendor/autoload.php')) {
-	$composer = include $file;
-	chdir(__DIR__ . '/..');
-} elseif (file_exists($file = __DIR__ . '/../../../autoload.php')) {
-	$composer = include $file;
+if (file_exists($file = __DIR__ . '/../../../autoload.php')) {
+	$autoloader = include $file;
 	chdir(__DIR__ . '/../../../..');
+} elseif (file_exists($file = __DIR__ . '/../vendor/autoload.php')) {
+	$autoloader = include $file;
+	chdir(__DIR__ . '/..');
 }
 
-if (!isset($composer)) {
+if (!isset($autoloader)) {
 	echo "\033[1;31mYou need to set up the project dependencies using the following commands: \033[0m" . PHP_EOL;
 	echo 'curl -s http://getcomposer.org/installer | php' . PHP_EOL;
 	echo 'php composer.phar install' . PHP_EOL;
 	exit(1);
 }
 
-
 use kahlan\cli\Kahlan;
 
-$kahlan = new Kahlan($composer, $argv);
+$kahlan = new Kahlan(compact('autoloader'));
+$kahlan->loadConfig($argv);
 $kahlan->run();
 
 ?>

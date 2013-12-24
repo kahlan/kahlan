@@ -29,150 +29,188 @@ class Kahlan {
 
 	use Filtering;
 
+	protected $_suite = null;
+
 	protected $_autoloader = null;
 
-	public function initPatchers($options) {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $options) {
-			$patchers = new Patchers();
-			$patchers->add('substitute', new Substitute(['namespaces' => $options['substitute']]));
+	protected $_patchers = null;
+
+	protected $_reporters = null;
+
+	protected $_specNamespaces = [];
+
+	protected $_args = [
+		'config' => null,
+		'src' => 'src',
+		'spec' => 'spec',
+		'interceptor-include' => [],
+		'interceptor-exclude' => [],
+		'coverage' => null,
+		'coverage-scrutinizer' => null,
+		'autoclear' => [
+			'kahlan\plugin\Monkey',
+			'kahlan\plugin\Call',
+			'kahlan\plugin\Stub'
+		]
+	];
+
+	public function __construct($options = []) {
+		$defaults = ['autoloader' => null];
+		$options += $defaults;
+
+		$this->_suite = $suite = new Suite();
+		$this->_patchers = new Patchers();
+		$this->_reporters = new Reporters();
+		$this->_autoloader = $options['autoloader'];
+		Box::share('kahlan.suite', function() use ($suite) { return $suite; });
+	}
+
+	public function loadConfig($argv = []) {
+		$args = GetOpt::parse($argv);
+		if (!empty($args['config'])) {
+			require $args['config'];
+		} elseif (file_exists('kahlan-config.php')) {
+			require 'kahlan-config.php';
+		}
+		$this->_args = $args + $this->_args;
+	}
+
+	public function autoloaderAdd($paths) {
+		if (!$this->_autoloader || !method_exists($this->_autoloader, 'add')) {
+			return;
+		}
+		$paths = (array) $paths;
+		foreach ($paths as $path) {
+			$path = realpath($path);
+			$this->_specNamespaces[] = $namespace = basename($path) . '\\';
+			$this->_autoloader->add($namespace, dirname($path));
+		}
+	}
+
+	public function initPatchers() {
+		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+			$patchers = $this->patchers();
+			if ($this->_specNamespaces) {
+				$patchers->add('substitute', new Substitute([
+					'namespaces' => $this->_specNamespaces
+				]));
+			}
 			$patchers->add('watcher', new Watcher());
 			$patchers->add('monkey', new Monkey());
 			return $patchers;
 		});
 	}
 
-	public function patchAutoloader($autoloader, $patchers, $options) {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $autoloader, $patchers, $options) {
+	public function patchAutoloader() {
+		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
 			Interceptor::patch([
-				'loader' => [$autoloader, 'loadClass'],
-				'patchers' => $patchers,
-				'include' => $options['interceptor-include'],
-				'exclude' => $options['interceptor-exclude']
+				'loader' => [$this->_autoloader, 'loadClass'],
+				'patchers' => $this->patchers(),
+				'include' => $this->args('interceptor-include'),
+				'exclude' => $this->args('interceptor-exclude')
 			]);
 		});
 	}
 
-	public function loadSpecs($options) {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $options) {
-			return Dir::scan([
-				'path' => $options['spec'],
+	public function loadSpecs() {
+		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+			$files = Dir::scan([
+				'path' => $this->args('spec'),
 				'include' => '*Spec.php',
 				'type' => 'file'
 			]);
+			foreach($files as $file) {
+				require $file;
+			}
 		});
 	}
 
-	public function initReporters($options) {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $options) {
-			$reporters = new Reporters();
+	public function initReporters() {
+		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+			$reporters = $this->reporters();
 			$reporters->add('console', new Dot());
 
-			if(!isset($options['coverage'])) {
+			if ($this->args('coverage') === null) {
 				return $reporters;
 			}
 			$coverage = new Coverage([
-				'verbosity' => $options['coverage'], 'driver' => new Xdebug(), 'path' => $options['src']
+				'verbosity' => $this->args('coverage'),
+				'driver' => new Xdebug(),
+				'path' => $this->args('src')
 			]);
 			$reporters->add('coverage', $coverage);
 			return $reporters;
 		});
 	}
 
-	public function runSpecs($suite, $reporters, $options) {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $suite, $reporters, $options) {
-			$suite->run([
-				'reporters' => $reporters,
-				'autoclear' => $options['autoclear']
+	public function runSpecs() {
+		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+			$this->suite()->run([
+				'reporters' => $this->reporters(),
+				'autoclear' => $this->args('autoclear')
 			]);
 		});
 	}
 
-	public function postProcess($suite, $reporters, $options) {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $suite, $reporters, $options) {
-			$coverage = $reporters->get('coverage');
-			if ($coverage && $options['coverage-scrutinizer']) {
+	public function postProcess() {
+		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+			$coverage = $this->reporters()->get('coverage');
+			if ($coverage && $this->args('coverage-scrutinizer')) {
 				Scrutinizer::write([
-					'coverage' => $coverage, 'file' => $options['coverage-scrutinizer']
+					'coverage' => $coverage,
+					'file' => $this->args('coverage-scrutinizer')
 				]);
 			}
 		});
 	}
 
-	public function __construct($autoloader, $argv = []) {
-		$this->_autoloader = $autoloader;
-		$this->_options = GetOpt::parse($argv);
-		$this->_options += [
-			'c' => null,
-			'src' => 'src',
-			'spec' => 'spec',
-			'interceptor-include' => [],
-			'interceptor-exclude' => [],
-			'coverage' => null,
-			'coverage-scrutinizer' => null,
-			'autoclear' => [
-				'kahlan\plugin\Monkey',
-				'kahlan\plugin\Call',
-				'kahlan\plugin\Stub'
-			],
-			'substitute' => ['spec\\']
-		];
+	public function stop() {
+		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+			$this->suite()->stop();
+		});
 	}
 
-	public function options($key = null, $value = null) {
+	public function args($key = null, $value = null) {
 		if ($key === null) {
-			return $this->_options;
+			return $this->_args;
 		}
 		if ($value === null) {
-			return isset($this->_options[$key]) ? $this->_options[$key] : null;
+			return isset($this->_args[$key]) ? $this->_args[$key] : null;
 		}
-		$this->_options[$key] = $value;
+		$this->_args[$key] = $value;
+	}
+
+	public function suite() {
+		return $this->_suite;
+	}
+
+	public function patchers() {
+		return $this->_patchers;
+	}
+
+	public function reporters() {
+		return $this->_reporters;
 	}
 
 	public function run() {
-		$options = &$this->_options;
+		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
 
-		if ($options['c']) {
-			require $options['c'];
-		} elseif (file_exists('kahlan-config.php')) {
-			require 'kahlan-config.php';
-		}
+			$this->autoloaderAdd($this->args('spec'));
 
-		if (is_array($options['spec'])) {
-			throw new Exception("The spec directory must be unique");
-		}
+			$this->initPatchers();
 
-		$this->autoloadSpec();
+			$this->patchAutoloader();
 
-		Box::share('kahlan.suite', function() { return new Suite(); });
+			$this->loadSpecs();
 
-		$suite = Box::get('kahlan.suite');
+			$this->initReporters();
 
-		$patchers = $this->initPatchers($options);
+			$this->runSpecs();
 
-		$this->patchAutoloader($this->_autoloader, $patchers, $options);
+			$this->postProcess();
 
-		$files = $this->loadSpecs($options);
-
-		foreach($files as $file) {
-			require $file;
-		}
-
-		$reporters = $this->initReporters($options);
-
-		$this->runSpecs($suite, $reporters, $options);
-
-		$this->postProcess($suite, $reporters, $options);
-
-		$suite->stop();
-	}
-
-	public function autoloadSpec() {
-		if (!method_exists($this->_autoloader, 'add')) {
-			return;
-		}
-		$path = realpath($this->_options['spec']);
-		$namespace = basename($path) . '\\';
-		$this->_autoloader->add($namespace, dirname($path));
+			$this->stop();
+		});
 	}
 }
 ?>
