@@ -1,5 +1,5 @@
 <?php
-namespace spec;
+namespace spec\matcher;
 
 describe("toBeTruthy::match", function() {
 

@@ -19,8 +19,7 @@ if (!isset($composer)) {
 
 use kahlan\cli\Kahlan;
 
-$kahlan = new Kahlan();
-
-$kahlan->run($composer, $argv);
+$kahlan = new Kahlan($composer, $argv);
+$kahlan->run();
 
 ?>

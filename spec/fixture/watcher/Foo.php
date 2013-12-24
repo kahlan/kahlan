@@ -1,16 +1,10 @@
 <?php
-namespace kahlan\spec\fixture\watcher;
-
-class Bar {
-	public function send() {
-		return 'success';
-	}
-}
+namespace spec\fixture\watcher;
 
 class Foo {
 
 	protected $_classes = [
-		'bar' => 'kahlan\spec\fixture\watcher\Bar'
+		'bar' => 'spec\fixture\watcher\Bar'
 	];
 
 	protected $_inited = false;

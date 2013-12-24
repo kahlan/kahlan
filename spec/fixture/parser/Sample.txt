@@ -3,7 +3,7 @@
 #3     [ comment ] #2 > #4         | * Some comments
 #4     [ comment ] #2 > #4         | */
 #5     [  code   ] #5 > #5         |
-#6     [namespace] #6 > #84        |namespace kahlan\spec\fixture\parser;
+#6     [namespace] #6 > #84        |namespace spec\fixture\parser;
 #7     [  code   ] #7 > #12        |
 #8     [  code   ] #7 > #12        |use kahlan\A;
 #9     [  code   ] #7 > #12        |use kahlan\B, kahlan\C;

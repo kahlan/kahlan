@@ -1,22 +1,34 @@
 <?php
-namespace spec;
+namespace spec\plugin;
 
 use kahlan\Arg;
-use kahlan\plugin\Stub;
 use kahlan\jit\Interceptor;
-use kahlan\analysis\Parser;
 use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Watcher;
-use kahlan\spec\fixture\watcher\Foo;
+use kahlan\analysis\Parser;
+use kahlan\plugin\Stub;
+
+use spec\fixture\watcher\Foo;
 
 describe("Stub::on", function() {
 
+	/**
+	 * Save current & reinitialize the Interceptor class.
+	 */
 	before(function() {
-		if (!class_exists('kahlan\spec\fixture\watcher\Foo', false)) {
-			$patcher = new Watcher();
-			$file = file_get_contents('spec/fixture/watcher/Foo.php');
-			eval('?>' . Parser::unparse($patcher->process(Parser::parse($file))));
-		}
+		$this->previous = Interceptor::loader();
+		Interceptor::unpatch();
+
+		$patchers = new Patchers();
+		$patchers->add('watcher', new Watcher());
+		Interceptor::patch(compact('patchers'));
+	});
+
+	/**
+	 * Restore Interceptor class.
+	 */
+	after(function() {
+		Interceptor::loader($this->previous);
 	});
 
 	context("with an instance", function() {
@@ -110,7 +122,7 @@ describe("Stub::on", function() {
 	context("with an class", function() {
 
 		it("stubs a method", function() {
-			Stub::on('kahlan\spec\fixture\watcher\Foo')
+			Stub::on('spec\fixture\watcher\Foo')
 				->method('message')
 				->andReturn('Good Bye!');
 
@@ -123,7 +135,7 @@ describe("Stub::on", function() {
 		context("with multiple return values", function(){
 
 			it("stubs a method", function() {
-				Stub::on('kahlan\spec\fixture\watcher\Foo')
+				Stub::on('spec\fixture\watcher\Foo')
 					->method('message')
 					->andReturn('Good Evening World!', 'Good Bye World!');
 
@@ -135,7 +147,7 @@ describe("Stub::on", function() {
 			});
 
 			it("stubs methods with an array", function() {
-				Stub::on('kahlan\spec\fixture\watcher\Foo')->method([
+				Stub::on('spec\fixture\watcher\Foo')->method([
 					'message' => ['Good Evening World!', 'Good Bye World!'],
 					'bar' => ['Hello Bar!']
 				]);
@@ -176,25 +188,25 @@ describe("Stub::create", function() {
 		Interceptor::loader($this->previous);
 	});
 
-	it("generates a stub instance", function() {
+	it("stubs an instance", function() {
 		$stub = Stub::create();
 		expect(is_object($stub))->toBe(true);
-		expect(get_class($stub))->toMatch("/^kahlan\\\plugin\\\stub\\\Stub\d+$/");
+		expect(get_class($stub))->toMatch("/^spec\\\plugin\\\stub\\\Stub\d+$/");
 	});
 
-	it("generates a named stub instance", function() {
+	it("names a stub instance", function() {
 		$stub = Stub::create(['class' => 'spec\stub\MyStub']);
 		expect(is_object($stub))->toBe(true);
 		expect(get_class($stub))->toBe('spec\stub\MyStub');
 	});
 
-	it("generates a child stub instance", function() {
+	it("stubs an instance extending a parent class", function() {
 		$stub = Stub::create(['extends' => 'kahlan\util\String']);
 		expect(is_object($stub))->toBe(true);
 		expect(get_parent_class($stub))->toBe('kahlan\util\String');
 	});
 
-	it("stubs a stub instance", function() {
+	it("stubs a stub instance with multiple methods", function() {
 		$stub = Stub::create();
 		Stub::on($stub)->method([
 			'message' => ['Good Evening World!', 'Good Bye World!'],
@@ -223,18 +235,18 @@ describe("Stub::create", function() {
 		expect(get_class($stub))->not->toBe(get_class($stub2));
 	});
 
-	it("generates a stub class", function() {
+	it("stubs class", function() {
 		$stub = Stub::classname();
-		expect($stub)->toMatch("/^kahlan\\\plugin\\\stub\\\Stub\d+$/");
+		expect($stub)->toMatch("/^spec\\\plugin\\\stub\\\Stub\d+$/");
 	});
 
-	it("generates a named stub class", function() {
+	it("names a stub class", function() {
 		$stub = Stub::classname(['class' => 'spec\stub\MyStaticStub']);
 		expect(is_string($stub))->toBe(true);
 		expect($stub)->toBe('spec\stub\MyStaticStub');
 	});
 
-	it("stubs a stub class", function() {
+	it("stubs a stub class with multiple methods", function() {
 		$classname = Stub::classname();
 		Stub::on($classname)->method([
 			'message' => ['Good Evening World!', 'Good Bye World!'],

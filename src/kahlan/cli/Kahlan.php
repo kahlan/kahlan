@@ -8,6 +8,7 @@
 
 namespace kahlan\cli;
 
+use Exception;
 use box\Box;
 use dir\Dir;
 use kahlan\Suite;
@@ -27,6 +28,8 @@ use kahlan\filter\Filtering;
 class Kahlan {
 
 	use Filtering;
+
+	protected $_autoloader = null;
 
 	public function initPatchers($options) {
 		return $this->_filter(__FUNCTION__, func_get_args(), function($chain, $options) {
@@ -95,9 +98,10 @@ class Kahlan {
 		});
 	}
 
-	public function run($autoloader, $argv = []) {
-		$options = GetOpt::parse($argv);
-		$options += [
+	public function __construct($autoloader, $argv = []) {
+		$this->_autoloader = $autoloader;
+		$this->_options = GetOpt::parse($argv);
+		$this->_options += [
 			'c' => null,
 			'src' => 'src',
 			'spec' => 'spec',
@@ -112,6 +116,20 @@ class Kahlan {
 			],
 			'substitute' => ['spec\\']
 		];
+	}
+
+	public function options($key = null, $value = null) {
+		if ($key === null) {
+			return $this->_options;
+		}
+		if ($value === null) {
+			return isset($this->_options[$key]) ? $this->_options[$key] : null;
+		}
+		$this->_options[$key] = $value;
+	}
+
+	public function run() {
+		$options = &$this->_options;
 
 		if ($options['c']) {
 			require $options['c'];
@@ -119,12 +137,19 @@ class Kahlan {
 			require 'kahlan-config.php';
 		}
 
+		if (is_array($options['spec'])) {
+			throw new Exception("The spec directory must be unique");
+		}
+
+		$this->autoloadSpec();
+
 		Box::share('kahlan.suite', function() { return new Suite(); });
+
 		$suite = Box::get('kahlan.suite');
 
 		$patchers = $this->initPatchers($options);
 
-		$this->patchAutoloader($autoloader, $patchers, $options);
+		$this->patchAutoloader($this->_autoloader, $patchers, $options);
 
 		$files = $this->loadSpecs($options);
 
@@ -139,6 +164,15 @@ class Kahlan {
 		$this->postProcess($suite, $reporters, $options);
 
 		$suite->stop();
+	}
+
+	public function autoloadSpec() {
+		if (!method_exists($this->_autoloader, 'add')) {
+			return;
+		}
+		$path = realpath($this->_options['spec']);
+		$namespace = basename($path) . '\\';
+		$this->_autoloader->add($namespace, dirname($path));
 	}
 }
 ?>

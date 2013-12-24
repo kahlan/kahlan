@@ -1,5 +1,5 @@
 <?php
-namespace spec;
+namespace spec\analysis;
 
 use kahlan\analysis\Parser;
 

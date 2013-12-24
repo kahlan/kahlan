@@ -156,7 +156,7 @@ class Stub {
 	 */
 	public static function classname($options = []) {
 		$defaults = [
-			'class' => 'kahlan\plugin\stub\Stub' . static::$_index++,
+			'class' => 'spec\plugin\stub\Stub' . static::$_index++,
 			'extends' => ''
 		];
 		$options += $defaults;

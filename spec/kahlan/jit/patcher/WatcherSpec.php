@@ -1,5 +1,5 @@
 <?php
-namespace spec;
+namespace spec\jit\patcher;
 
 use kahlan\analysis\Parser;
 use kahlan\jit\patcher\Watcher;

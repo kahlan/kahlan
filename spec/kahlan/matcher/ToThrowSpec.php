@@ -1,5 +1,5 @@
 <?php
-namespace spec;
+namespace spec\matcher;
 
 use Exception;
 use RuntimeException;

@@ -1,5 +1,5 @@
 <?php
-namespace kahlan\spec\fixture\monkey;
+namespace spec\fixture\monkey;
 
 use kahlan\MongoId;
 use kahlan\util\String;

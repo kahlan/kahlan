@@ -1,6 +1,5 @@
 <?php
-
-namespace spec;
+namespace spec\util;
 
 use kahlan\util\String;
 

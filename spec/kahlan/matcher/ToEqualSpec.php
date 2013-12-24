@@ -1,5 +1,5 @@
 <?php
-namespace spec;
+namespace spec\matcher;
 
 describe("toEqual::match", function() {
 

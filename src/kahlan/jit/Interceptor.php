@@ -194,8 +194,14 @@ class Interceptor {
 		if ($loader === null) {
 			return static::$_loader;
 		}
+		$current = static::$_loader;
 		static::$_loader = $loader;
-		return spl_autoload_register(static::$_loader);
+
+		$success = spl_autoload_register(static::$_loader);
+		if ($current) {
+			spl_autoload_unregister($current);
+		}
+		return $success;
 	}
 
 	/**

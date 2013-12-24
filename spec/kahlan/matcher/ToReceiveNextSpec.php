@@ -1,18 +1,32 @@
 <?php
-namespace spec;
+namespace spec\matcher;
 
-use kahlan\analysis\Parser;
+use kahlan\jit\Interceptor;
+use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Watcher;
-use kahlan\spec\fixture\watcher\Foo;
+use kahlan\analysis\Parser;
+
+use spec\fixture\watcher\Foo;
 
 describe("toReceiveNext::match", function() {
 
+	/**
+	 * Save current & reinitialize the Interceptor class.
+	 */
 	before(function() {
-		if (!class_exists('kahlan\spec\fixture\watcher\Foo', false)) {
-			$patcher = new Watcher();
-			$file = file_get_contents('spec/fixture/watcher/Foo.php');
-			eval('?>' . Parser::unparse($patcher->process(Parser::parse($file))));
-		}
+		$this->previous = Interceptor::loader();
+		Interceptor::unpatch();
+
+		$patchers = new Patchers();
+		$patchers->add('watcher', new Watcher());
+		Interceptor::patch(compact('patchers'));
+	});
+
+	/**
+	 * Restore Interceptor class.
+	 */
+	after(function() {
+		Interceptor::loader($this->previous);
 	});
 
 	it("expects called methods to be called in a defined order", function() {

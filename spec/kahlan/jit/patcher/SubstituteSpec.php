@@ -1,5 +1,5 @@
 <?php
-namespace spec;
+namespace spec\jit\patcher;
 
 use kahlan\IncompleteException;
 use kahlan\jit\Patchers;

@@ -3,7 +3,6 @@ use kahlan\reporter\coverage\exporter\Coveralls;
 
 $this->applyFilter('postProcess', function($chain, $suite, $reporter, $options) {
 	$coverage = $reporter->get('coverage');
-
 	if (!$coverage || !isset($options['coverage-coveralls'])) {
 		return $chain->next();
 	}
