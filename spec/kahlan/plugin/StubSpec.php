@@ -206,6 +206,20 @@ describe("Stub::create", function() {
 		expect(get_parent_class($stub))->toBe('kahlan\util\String');
 	});
 
+	it("stubs an instance using a trait", function() {
+		$stub = Stub::create(['uses' => 'spec\mock\plugin\stub\HelloTrait']);
+		expect($stub->hello())->toBe('Hello World From Trait!');
+	});
+
+	it("stubs an instance implementing some interface", function() {
+		$stub = Stub::create(['implements' => ['ArrayAccess', 'Iterator']]);
+		$interfaces = class_implements($stub);
+		expect($interfaces)->toHaveLength(3);
+		expect(isset($interfaces['ArrayAccess']))->toBe(true);
+		expect(isset($interfaces['Iterator']))->toBe(true);
+		expect(isset($interfaces['Traversable']))->toBe(true);
+	});
+
 	it("stubs a stub instance with multiple methods", function() {
 		$stub = Stub::create();
 		Stub::on($stub)->method([

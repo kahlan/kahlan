@@ -8,7 +8,11 @@
 
 namespace kahlan\plugin;
 
+use Reflection;
+use ReflectionClass;
+use ReflectionMethod;
 use InvalidArgumentException;
+use kahlan\IncompleteException;
 use kahlan\util\String;
 use kahlan\plugin\stub\Method;
 
@@ -173,7 +177,7 @@ class Stub {
 	}
 
 	/**
-	 * Create a Object.
+	 * Create a class definition.
 	 *
 	 * @param  array  $options Array of options. Options are:
 	 *                - `'class'` : the fully-namespaced class name.
@@ -181,62 +185,213 @@ class Stub {
 	 * @return string The generated class string content.
 	 */
 	public static function generate($options = []) {
-		extract($options);
+		$defaults = [
+			'class' => 'spec\plugin\stub\Stub' . static::$_index++,
+			'extends' => '',
+			'implements' => [],
+			'uses' => []
+		];
+		$options += $defaults;
 
+		$class = $options['class'];
+		$namespace = '';
 		if (($pos = strrpos($class, '\\')) !== false) {
 			$namespace = substr($class, 0, $pos);
 			$class = substr($class, $pos + 1);
-		} else {
-			$namespace = '';
-		}
-
-		if ($extends) {
-			$extends = ' extends \\' . ltrim($extends, '\\');
 		}
 
 		if ($namespace) {
-			$namespace = "<?php\n\nnamespace {$namespace};\n";
+			$namespace = "namespace {$namespace};\n";
 		}
 
-return $namespace . <<<EOT
+		$uses = static::_generateUses($options['uses']);
+		$extends = static::_generateExtends($options['extends']);
+		$implements = static::_generateImplements($options['implements']);
 
-class {$class}{$extends} implements \ArrayAccess, \Iterator {
+		$methods = static::_generateClassMethods($options['extends']);
+		$methods .= static::_generateInterfaceMethods($options['implements']);
+
+return "<?php\n\n" . $namespace . <<<EOT
+
+class {$class}{$extends}{$implements} {
+
+	{$uses}
+{$methods}
 
 	public function __get(\$key){
 		return new static();
 	}
-
-	public function __set(\$key, \$value) {}
 
 	public function __call(\$name, \$params) {
 		return new static();
 	}
 
 	public static function __callStatic(\$name, \$params) {}
-
-	public function offsetExists(\$offset) {}
-
-	public function offsetGet(\$offset) {}
-
-	public function offsetSet(\$offset, \$value) {}
-
-	public function offsetUnset(\$offset) {}
-
-	public function key() {}
-
-	public function current() {}
-
-	public function next() {}
-
-	public function rewind() {}
-
-	public function valid() {
-		return false;
-	}
 }
 ?>
 EOT;
 
+	}
+
+	/**
+	 * Create a `use` definition.
+	 *
+	 * @param  array  $uses An array of traits.
+	 * @return string The generated `use` definition.
+	 */
+	protected static function _generateUses($uses) {
+		if (!$uses) {
+			return '';
+		}
+		$traits = [];
+		foreach ((array) $uses as $use) {
+			if (!trait_exists($use)) {
+				throw new IncompleteException("Unexisting trait `{$use}`");
+			}
+			$traits[] = '\\' . ltrim($use, '\\');
+		}
+		return 'use ' . join(', ', $traits) . ';';
+	}
+
+	/**
+	 * Create an `extends` definition.
+	 *
+	 * @param  string $extends The parent class name.
+	 * @return string The generated `extends` definition.
+	 */
+	protected static function _generateExtends($extends) {
+		if (!$extends) {
+			return '';
+		}
+		return ' extends \\' . ltrim($extends, '\\');
+	}
+
+	/**
+	 * Create an `implements` definition.
+	 *
+	 * @param  array  $uses An array of interfaces.
+	 * @return string The generated `implements` definition.
+	 */
+	protected static function _generateImplements($implements) {
+		if (!$implements) {
+			return '';
+		}
+		$classes = [];
+		foreach ((array) $implements as $implement) {
+			$classes[] = '\\' . ltrim($implement, '\\');
+		}
+		return ' implements ' . join(', ', $classes);
+	}
+
+	/**
+	 * Create methods definition from a class name.
+	 *
+	 * @param  string $class A class name.
+	 * @param  int    $mask  The method mask to filter.
+	 * @return string The generated methods.
+	 */
+	protected static function _generateClassMethods($class, $mask = ReflectionMethod::IS_ABSTRACT) {
+		if (!$class) {
+			return '';
+		}
+		$result = '';
+		if (!class_exists($class)) {
+			throw new IncompleteException("Unexisting interface `{$class}`");
+		}
+		$reflection = new ReflectionClass($class);
+		$methods = $reflection->getMethods($mask);
+		foreach ($methods as $method) {
+			$result .= static::_generateMethod($method);
+		}
+		return $result;
+	}
+
+	/**
+	 * Create methods definition from an interface array.
+	 *
+	 * @param  array  $interfaces A array on interfaces.
+	 * @param  int    $mask  The method mask to filter.
+	 * @return string The generated methods.
+	 */
+	protected static function _generateInterfaceMethods($interfaces, $mask = 255) {
+		if (!$interfaces) {
+			return '';
+		}
+		$result = '';
+		foreach ($interfaces as $interface) {
+			if (!interface_exists($interface)) {
+				throw new IncompleteException("Unexisting interface `{$interface}`");
+			}
+			$reflection = new ReflectionClass($interface);
+			$methods = $reflection->getMethods($mask);
+			foreach ($methods as $method) {
+				$result .= static::_generateMethod($method);
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Create a method definition from a `ReflectionMethod` instance.
+	 *
+	 * @param  ReflectionMethod  $method A instance of `ReflectionMethod`.
+	 * @return string            The generated method.
+	 */
+	protected static function _generateMethod($method) {
+		$result = join(' ', Reflection::getModifierNames($method->getModifiers()));
+		$result = preg_replace('/^abstract /', '', $result);
+		$name = $method->getName();
+		$body = '';
+		if ($name === '__get' || $name === '__call' || $name === '__callStatic') {
+			return '';
+		}
+		$parameters = static::_generateParameters($method);
+		return "\tfunction {$name}({$parameters}) { {$body} }\n\n";
+	}
+
+	/**
+	 * Create a parameters definition list from a `ReflectionMethod` instance.
+	 *
+	 * @param  ReflectionMethod  $method A instance of `ReflectionMethod`.
+	 * @return string            The parameters definition list.
+	 */
+	protected static function _generateParameters($method){
+		$params = [];
+		foreach ($method->getParameters() as $num => $parameter) {
+			$typehint = static::_generateTypehint($parameter);
+			$name = $parameter->getName();
+			$name = ($name && $name !== '...') ? $name : 'param' . $num;
+			$reference = $parameter->isPassedByReference() ? '&' : '';
+			$default = '';
+			if ($parameter->isOptional()) {
+				if ($parameter->isDefaultValueAvailable()) {
+					$default = var_export($parameter->getDefaultValue(), true);
+				} else {
+					$default = 'null';
+				}
+			}
+
+			$params[] = "{$typehint}{$reference}\${$name}{$default}";
+		}
+		return join(', ', $params);
+	}
+
+	/**
+	 * Return the type hint of a `ReflectionParameter` instance.
+	 *
+	 * @param  ReflectionMethod  $method A instance of `ReflectionParameter`.
+	 * @return string            The parameter type hint.
+	 */
+	protected static function _generateTypehint($parameter) {
+		$typehint = '';
+		if ($parameter->isArray()) {
+			$typehint = 'array ';
+		} elseif ($parameter->getClass()) {
+			$typehint = $parameter->getClass()->getName() . ' ';
+		} elseif (preg_match('/.*?\[ \<[^\>]+\> (\S+ )(.*?)\$/', (string) $parameter, $match)) {
+			$typehint = $match[1];
+		}
+		return $typehint;
 	}
 
 	/**
