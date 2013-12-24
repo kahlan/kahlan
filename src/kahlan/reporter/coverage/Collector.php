@@ -22,20 +22,64 @@ class Collector {
 		'parser' => 'kahlan\analysis\Parser',
 	];
 
+	/**
+	 * The driver instance which will log the coverage data.
+	 *
+	 * @var object
+	 */
 	protected $_driver = null;
 
-	protected $_path = null;
+	/**
+	 * The path(s) which contain the code source files.
+	 *
+	 * @var array
+	 */
+	protected $_paths = [];
 
-	protected $_coverage = [];
-
-	protected $_files = [];
-
-	protected $_tree = [];
-
-	protected $_metrics = [];
-
+	/**
+	 * Some prefix to remove to get the real file path.
+	 *
+	 * @var string
+	 */
 	protected $_prefix = '';
 
+	/**
+	 * The files presents in `Collector::_paths`.
+	 *
+	 * @var array
+	 */
+	protected $_files = [];
+
+	/**
+	 * The coverage data.
+	 *
+	 * @var array
+	 */
+	protected $_coverage = [];
+
+	/**
+	 * The metrics.
+	 *
+	 * @var array
+	 */
+	protected $_metrics = [];
+
+	/**
+	 * Cache all parsed files
+	 *
+	 * @see kahlan\reporter\coverage\Collector::_parse()
+	 * @var array
+	 */
+	protected $_tree = [];
+
+	/**
+	 * Constructor.
+	 *
+	 * @param array $options Possible options values are:
+	 *                       - `'driver'`: the driver instance which will log the coverage data.
+	 *                       - `'path'`  : the path(s) which contain the code source files.
+	 *                       - `'prefix'`: some prefix to remove to get the real file path.
+	 */
 	public function __construct($options = []) {
 		$defaults = [
 			'driver' => null,
@@ -45,11 +89,11 @@ class Collector {
 		$options += $defaults;
 
 		$this->_driver = $options['driver'];
-		$this->_path = $options['path'];
+		$this->_paths = (array) $options['path'];
 		$this->_prefix = $options['prefix'];
 
 		$files = Dir::scan([
-			'path' => $this->_path,
+			'path' => $this->_paths,
 			'include' => '*.php',
 			'type' => 'file'
 		]);
@@ -58,79 +102,127 @@ class Collector {
 		}
 	}
 
+	/**
+	 * Start collecting coverage data.
+	 */
 	public function start() {
 		$this->_driver->start();
 	}
 
+	/**
+	 * Stop collecting coverage data.
+	 */
 	public function stop() {
 		$this->add($this->_driver->stop());
 	}
 
+	/**
+	 * Add some coverage data to the collector.
+	 *
+	 * @param  array $coverage Some coverage data.
+	 * @return array The current coverage data.
+	 */
 	public function add($coverage) {
 		if (!$coverage) {
 			return;
 		}
-		$prefix = $this->_prefix;
 		foreach ($coverage as $file => $data) {
-			$file = preg_replace("~^{$prefix}~", '', $file);
-			if (preg_match("/eval\(\)'d code$/", $file) || !isset($this->_coverage[$file])) {
-				continue;
-			}
-			foreach ($data as $line => $value) {
-				if (!isset($this->_coverage[$file][$line])) {
-					$this->_coverage[$file][$line] = $value;
-				} else {
-					$this->_coverage[$file][$line] += $value;
-				}
-			}
+			$this->addFile($file, $data);
 		}
 		return $this->_coverage;
 	}
 
+	/**
+	 * Add some coverage data to the collector.
+	 *
+	 * @param  string $file     A file path.
+	 * @param  array  $coverage Some coverage related to the file path.
+	 */
+	public function addFile($file, $coverage) {
+		$prefix = $this->_prefix;
+		$file = preg_replace("~^{$prefix}~", '', $file);
+		if (preg_match("/eval\(\)'d code$/", $file) || !isset($this->_coverage[$file])) {
+			return;
+		}
+		foreach ($coverage as $line => $value) {
+			if (!isset($this->_coverage[$file][$line])) {
+				$this->_coverage[$file][$line] = $value;
+			} else {
+				$this->_coverage[$file][$line] += $value;
+			}
+		}
+	}
+
+	/**
+	 * Return coverage data.
+	 *
+	 * @return array The coverage data.
+	 */
 	public function export() {
 		return $this->_coverage;
 	}
 
+	/**
+	 * Return the collected metrics from coverage data.
+	 *
+	 * @return Metrics The collected metrics.
+	 */
 	public function metrics() {
 		$this->_metrics = new Metrics();
-		foreach ($this->_coverage as $file => $data) {
+		foreach ($this->_coverage as $file => $coverage) {
 			$node = $this->_parse($file);
-			$this->_processTree($file, $node, $node->tree, $data);
+			$this->_processTree($file, $node, $node->tree, $coverage);
 		}
 		return $this->_metrics;
 	}
 
 	/**
-	 * Helper for `Collector::export()`.
+	 * Helper for `Collector::metrics()`.
 	 *
-	 * @param array $nodes A node array to patch.
+	 * @param  string  $file     The processed file.
+	 * @param  NodeDef $root     The root node of the processed file.
+	 * @param  NodeDef $nodes    The nodes to collect metrics on.
+	 * @param  array   $coverage The coverage data.
+	 * @param  string  $path     The naming of the processed node.
 	 */
-	protected function _processTree($file, $root, $nodes, $data, $path = '') {
+	protected function _processTree($file, $root, $nodes, $coverage, $path = '') {
 		foreach ($nodes as $node) {
-			if ($node->type === 'class' || $node->type === 'namespace') {
-				$path = "{$path}\\" . $node->name;
-				$this->_processTree($file, $root, $node->tree, $data, $path);
-				continue;
-			}
-			if ($node->type === 'function' && !$node->isClosure) {
-				$metrics = $this->_processMethod($file, $root, $node, $data);
-				$prefix = $node->isMethod ? "{$path}::" : "{$path}\\";
-				$this->_metrics->add(ltrim($prefix . $node->name . '()', '\\'), $metrics);
-				continue;
-			}
-			if (!count($node->tree)) {
-				continue;
-			}
-			$this->_processTree($file, $root, $node->tree, $data, $path);
+			$this->_processNode($file, $root, $node, $coverage, $path);
 		}
 	}
 
 	/**
-	 * Helper for `Collector::export()`.
+	 * Helper for `Collector::metrics()`.
 	 *
-	 * @param NodeDef The node to patch.
+	 * @param  string  $file     The processed file.
+	 * @param  NodeDef $root     The root node of the processed file.
+	 * @param  NodeDef $node     The node to collect metrics on.
+	 * @param  array   $coverage The coverage data.
+	 * @param  string  $path     The naming of the processed node.
 	 */
-	protected function _processMethod($file, $root, $node, $data) {
+	protected function _processNode($file, $root, $node, $coverage, $path) {
+		if ($node->type === 'class' || $node->type === 'namespace') {
+			$path = "{$path}\\" . $node->name;
+			$this->_processTree($file, $root, $node->tree, $coverage, $path);
+		} elseif ($node->type === 'function' && !$node->isClosure) {
+			$metrics = $this->_processMethod($file, $root, $node, $coverage);
+			$prefix = $node->isMethod ? "{$path}::" : "{$path}\\";
+			$this->_metrics->add(ltrim($prefix . $node->name . '()', '\\'), $metrics);
+		} elseif (count($node->tree)) {
+			$this->_processTree($file, $root, $node->tree, $coverage, $path);
+		}
+	}
+
+	/**
+	 * Helper for `Collector::metrics()`.
+	 *
+	 * @param  string  $file     The processed file.
+	 * @param  NodeDef $root     The root node of the processed file.
+	 * @param  NodeDef $node     The node to collect metrics on.
+	 * @param  array   $coverage The coverage data.
+	 * @return array   The collected metrics.
+	 */
+	protected function _processMethod($file, $root, $node, $coverage) {
 		$metrics = [
 			'loc' => 0,
 			'ncloc' => 0,
@@ -144,14 +236,7 @@ class Collector {
 			continue;
 		}
 		for ($line = $node->lines['start']; $line <= $node->lines['stop']; $line++) {
-			if ($node->lines['start'] === null) {
-				continue;
-			}
-			if (!isset($data[$line])) {
-				$metrics['ncloc']++;
-			} elseif ($data[$line]) {
-				$metrics['covered']++;
-			}
+			$this->_processLine($line, $coverage, $metrics);
 		}
 		$metrics['file'] = $file;
 		$metrics['line'] = $node->lines['start'];
@@ -161,6 +246,24 @@ class Collector {
 			$metrics['coveredMethods'] = 1;
 		}
 		return $metrics;
+	}
+
+	/**
+	 * Helper for `Collector::metrics()`.
+	 *
+	 * @param int   $line     The line number to collect.
+	 * @param array $coverage The coverage data.
+	 * @param array $metrics  The output metrics array.
+	 */
+	protected function _processLine($line, $coverage, &$metrics) {
+		if ($line === null) {
+			continue;
+		}
+		if (!isset($coverage[$line])) {
+			$metrics['ncloc']++;
+		} elseif ($coverage[$line]) {
+			$metrics['covered']++;
+		}
 	}
 
 	protected function _parse($file) {
