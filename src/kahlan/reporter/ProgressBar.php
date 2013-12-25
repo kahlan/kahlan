@@ -51,7 +51,7 @@ class ProgressBar extends Terminal {
 	/**
 	 * Constructor
 	 *
-	 * @param array $options Options array
+	 * @param array $options The options array.
 	 */
 	public function __construct($options = []) {
 		parent::__construct($options);
@@ -77,29 +77,44 @@ class ProgressBar extends Terminal {
 		$this->_color = $this->_colors['success'];
 	}
 
+	/**
+	 * Callback called when a new spec file is processed.
+	 */
 	public function progress() {
 		parent::progress();
 		$this->_progressBar();
 	}
 
+	/**
+	 * Callback called on failure.
+	 */
 	public function fail($report) {
 		$this->_color = $this->_colors['failure'];
 		$this->console("\n");
 		$this->_report($report);
 	}
 
-	public function incomplete($report) {
-		$this->_color = $this->_colors['incomplete'];
-		$this->console("\n");
-		$this->_report($report);
-	}
-
+	/**
+	 * Callback called when an exception occur.
+	 */
 	public function exception($report) {
 		$this->_color = $this->_colors['failure'];
 		$this->console("\n");
 		$this->_report($report);
 	}
 
+	/**
+	 * Callback called when a `kahlan\IncompleteException` occur.
+	 */
+	public function incomplete($report) {
+		$this->_color = $this->_colors['incomplete'];
+		$this->console("\n");
+		$this->_report($report);
+	}
+
+	/**
+	 * Ouput the progress bar to STDOUT.
+	 */
 	protected function _progressBar() {
 		if ($this->_current > $this->_total) {
 			return;
@@ -123,6 +138,9 @@ class ProgressBar extends Terminal {
 		$this->console("\r" . $string, 'n;' . $this->_color);
 	}
 
+	/**
+	 * Callback called at the end of specs processing.
+	 */
 	public function end($results) {
 		$this->console("\n");
 		$this->_summary($results);

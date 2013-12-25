@@ -10,9 +10,17 @@ namespace kahlan\reporter\coverage\exporter;
 
 class Coveralls {
 
+	/**
+	 * Write a coverage to an ouput file.
+	 *
+	 * @param  array   $options The option where the possible values are:
+	 *                 -`'coverage'` The coverage instance.
+	 *                 -`'file'` The output file name.
+	 * @return boolean
+	 */
 	public static function write($options) {
 		$defaults = [
-			'coverage' => ['files' => []],
+			'coverage' => null,
 			'file' => null
 		];
 		$options += $defaults;
@@ -24,6 +32,17 @@ class Coveralls {
 		return file_put_contents($file, static::export($options));
 	}
 
+	/**
+	 * Export a coverage to a string.
+	 *
+	 * @param  array   $options The option array where the possible values are:
+	 *                 -`'coverage'` The coverage instance.
+	 *                 -`'service_name'` The name of the service.
+	 *                 -`'service_job_id'` The job id of the service.
+	 *                 -`'repo_token'` The Coveralls repo token
+	 *                 -`'run_at'` The date of a timestamp.
+	 * @return boolean
+	 */
 	public static function export($options) {
 		$defaults = [
 			'coverage' => null,

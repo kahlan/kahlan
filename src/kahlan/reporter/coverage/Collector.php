@@ -266,6 +266,11 @@ class Collector {
 		}
 	}
 
+	/**
+	 * Retruns & cache the tree structure of a file.
+	 *
+	 * @param string $file the file path to use for building the tree structure.
+	 */
 	protected function _parse($file) {
 		if (isset($this->_tree[$file])) {
 			return $this->_tree[$file];

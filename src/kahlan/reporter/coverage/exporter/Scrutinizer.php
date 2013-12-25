@@ -13,8 +13,19 @@ use RuntimeException;
 
 class Scrutinizer {
 
+	/**
+	 * Write a coverage to an ouput file.
+	 *
+	 * @param  array   $options The option where the possible values are:
+	 *                 -`'coverage'` The coverage instance.
+	 *                 -`'file'` The output file name.
+	 * @return boolean
+	 */
 	public static function write($options) {
-		$defaults = ['file' => null];
+		$defaults = [
+			'coverage' => null,
+			'file' => null
+		];
 		$options += $defaults;
 
 		if (!$options['file']) {
@@ -24,6 +35,13 @@ class Scrutinizer {
 		return file_put_contents($options['file'], static::export($options));
 	}
 
+	/**
+	 * Export a coverage to a string.
+	 *
+	 * @param  array   $options The option array where the possible values are:
+	 *                 -`'coverage'` The coverage instance.
+	 * @return boolean
+	 */
 	public static function export($options) {
 		$defaults = ['coverage' => null];
 		$options += $defaults;
@@ -47,6 +65,19 @@ class Scrutinizer {
 		return $xmlDocument->saveXML();
 	}
 
+/**
+	 * Export the coverage of a metrics.
+	 *
+	 * @param  DOMDocument $xmlDocument The XML root node.
+	 * @return object      the XML file node.
+	 */
+	/**
+	 * Export the coverage of a file.
+	 *
+	 * @param  array   $options The option array where the possible values are:
+	 *                 -`'coverage'` The coverage instance.
+	 * @return object  the XML file node.
+	 */
 	protected static function _exportFile($xmlDocument, $file, $data) {
 		$xmlFile = $xmlDocument->createElement('file');
 		$xmlFile->setAttribute('name', $file);
@@ -60,6 +91,12 @@ class Scrutinizer {
 		return $xmlFile;
 	}
 
+	/**
+	 * Export the coverage of a metrics.
+	 *
+	 * @param  DOMDocument $xmlDocument The XML root node.
+	 * @return object      the XML file node.
+	 */
 	protected static function _exportMetrics($xmlDocument, $metrics) {
 		$data = $metrics->get();
 		$xmlMetrics = $xmlDocument->createElement('metrics');
