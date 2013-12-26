@@ -8,7 +8,7 @@ use kahlan\plugin\Monkey;
 use kahlan\analysis\Parser;
 use kahlan\jit\patcher\Monkey as MonkeyPatcher;
 
-use spec\fixture\monkey\Foo;
+use spec\fixture\plugin\monkey\Foo;
 
 function mytime() {
 	return 245026800;
@@ -81,7 +81,7 @@ describe("Monkey::patch", function() {
 
 	it("patches a function", function() {
 		$foo = new Foo();
-		Monkey::patch('spec\fixture\monkey\rand', 'spec\plugin\myrand');
+		Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\plugin\myrand');
 		expect($foo->rand(0, 100))->toBe(101);
 	});
 
@@ -93,10 +93,10 @@ describe("Monkey::patch", function() {
 
 	it("can unpatch a monkey patch", function() {
 		$foo = new Foo();
-		Monkey::patch('spec\fixture\monkey\rand', 'spec\plugin\myrand');
+		Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\plugin\myrand');
 		expect($foo->rand(0, 100))->toBe(101);
 
-		Monkey::clear('spec\fixture\monkey\rand');
+		Monkey::clear('spec\fixture\plugin\monkey\rand');
 		expect($foo->rand(0, 100))->toBe(50);
 	});
 });

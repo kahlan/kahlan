@@ -6,10 +6,10 @@ use kahlan\analysis\Parser;
 describe("Parser", function() {
 
 	beforeEach(function() {
-		$this->sample = file_get_contents('spec/fixture/parser/Sample.php');
-		$this->sampleTxt = file_get_contents('spec/fixture/parser/Sample.txt');
-		$this->noNamespace = file_get_contents('spec/fixture/parser/NoNamespace.php');
-		$this->noNamespaceTxt = file_get_contents('spec/fixture/parser/NoNamespace.txt');
+		$this->sample = file_get_contents('spec/fixture/analysis/Sample.php');
+		$this->sampleTxt = file_get_contents('spec/fixture/analysis/Sample.txt');
+		$this->noNamespace = file_get_contents('spec/fixture/analysis/NoNamespace.php');
+		$this->noNamespaceTxt = file_get_contents('spec/fixture/analysis/NoNamespace.txt');
 	});
 
 	describe("parse", function() {

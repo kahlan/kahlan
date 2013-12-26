@@ -8,7 +8,7 @@ use kahlan\jit\patcher\Pointcut;
 use kahlan\analysis\Parser;
 use kahlan\plugin\Stub;
 
-use spec\fixture\pointcut\Foo;
+use spec\fixture\plugin\pointcut\Foo;
 
 describe("Stub::on", function() {
 
@@ -122,7 +122,7 @@ describe("Stub::on", function() {
 	context("with an class", function() {
 
 		it("stubs a method", function() {
-			Stub::on('spec\fixture\pointcut\Foo')
+			Stub::on('spec\fixture\plugin\pointcut\Foo')
 				->method('message')
 				->andReturn('Good Bye!');
 
@@ -135,7 +135,7 @@ describe("Stub::on", function() {
 		context("with multiple return values", function(){
 
 			it("stubs a method", function() {
-				Stub::on('spec\fixture\pointcut\Foo')
+				Stub::on('spec\fixture\plugin\pointcut\Foo')
 					->method('message')
 					->andReturn('Good Evening World!', 'Good Bye World!');
 
@@ -147,7 +147,7 @@ describe("Stub::on", function() {
 			});
 
 			it("stubs methods with an array", function() {
-				Stub::on('spec\fixture\pointcut\Foo')->method([
+				Stub::on('spec\fixture\plugin\pointcut\Foo')->method([
 					'message' => ['Good Evening World!', 'Good Bye World!'],
 					'bar' => ['Hello Bar!']
 				]);

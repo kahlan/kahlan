@@ -1,10 +1,10 @@
 <?php
-namespace spec\fixture\pointcut;
+namespace spec\fixture\plugin\pointcut;
 
 class Foo {
 
 	protected $_classes = [
-		'bar' => 'spec\fixture\pointcut\Bar'
+		'bar' => 'spec\fixture\plugin\pointcut\Bar'
 	];
 
 	protected $_inited = false;

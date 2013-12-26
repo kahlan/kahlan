@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\pointcut;
+namespace spec\fixture\plugin\pointcut;
 
 class Bar {
 	public function send() {

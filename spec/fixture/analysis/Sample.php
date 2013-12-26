@@ -3,7 +3,7 @@
  * Some comments
  */
 
-namespace spec\fixture\parser;
+namespace spec\fixture\analysis;
 
 use kahlan\A;
 use kahlan\B, kahlan\C;

@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\monkey;
+namespace spec\fixture\plugin\monkey;
 
 use kahlan\util\String;
 

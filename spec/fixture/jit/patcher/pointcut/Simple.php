@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\pointcut;
+namespace spec\fixture\jit\patcher\pointcut;
 
 use kahlan\MongoId;
 

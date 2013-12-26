@@ -7,7 +7,7 @@ use kahlan\jit\patcher\Monkey;
 describe("Monkey::process", function() {
 
 	beforeEach(function() {
-		$this->path = 'spec/fixture/monkey';
+		$this->path = 'spec/fixture/jit/patcher/monkey';
 		$this->patcher = new Monkey();
 	});
 

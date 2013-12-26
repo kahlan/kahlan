@@ -6,7 +6,7 @@ use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\analysis\Parser;
 
-use spec\fixture\pointcut\Foo;
+use spec\fixture\plugin\pointcut\Foo;
 
 describe("toReceiveNext::match", function() {
 

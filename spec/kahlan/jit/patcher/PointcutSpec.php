@@ -7,7 +7,7 @@ use kahlan\jit\patcher\Pointcut;
 describe("Pointcut::process", function() {
 
 	beforeEach(function() {
-		$this->path = 'spec/fixture/pointcut';
+		$this->path = 'spec/fixture/jit/patcher/pointcut';
 		$this->patcher = new Pointcut();
 	});
 
