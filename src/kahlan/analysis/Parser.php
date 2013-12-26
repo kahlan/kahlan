@@ -146,6 +146,7 @@ class Parser {
 			static::$_stream->next();
 		}
 		static::_codeNode();
+		static::_flushUses();
 		$root->lines['start'] = 0;
 		$root->lines['stop'] = static::$_states['num'] - 1;
 		static::$_stream->rewind();
@@ -165,10 +166,6 @@ class Parser {
 		array_pop(static::$_states['nodes']);
 
 		$current = static::$_states['current'];
-		if ($current->type === 'class') {
-			$current->uses = static::$_states['uses'];
-			static::$_states['uses'] = [];
-		}
 		if ($current->type === 'class') {
 			static::$_states['class'] = false;
 		}
@@ -223,16 +220,27 @@ class Parser {
 	 */
 	protected static function _namespaceNode() {
 		static::_codeNode();
+		static::_flushUses();
 		$body = static::$_stream->current();
 		$name = static::$_stream->next([';', '{']);
 		static::$_states['body'] .= $body;
-		$node = new NamespaceDef($body . $name);
+		static::$_states['namespace'] = $node = new NamespaceDef($body . $name);
 		$node->name = trim(substr($name, 0, -1));
 		static::$_states['nodes'] = [static::$_states['bracket']];
 		static::$_states['bracket'] = 1;
 		static::$_states['current'] = static::$_states['root'];
 		static::$_states['current'] = static::_contextualize($node);
 		$node->namespace = $node;
+	}
+
+	/**
+	 * Attache the founded uses to the current namespace.
+	 */
+	protected static function _flushUses() {
+		if ($namespace = static::$_states['namespace']) {
+			$namespace->uses = static::$_states['uses'];
+			static::$_states['uses'] = [];
+		}
 	}
 
 	/**
@@ -267,13 +275,6 @@ class Parser {
 	protected static function _classNode() {
 		static::_codeNode();
 		$node = new ClassDef();
-
-		$current = static::$_states['current'];
-		if ($current->type === 'namespace') {
-			$current->uses = static::$_states['uses'];
-			static::$_states['uses'] = [];
-		}
-
 		$token = static::$_stream->current(true);
 		$body = $token[1];
 		$body .= static::$_stream->skipWhitespaces();
@@ -510,6 +511,7 @@ class Parser {
 		static::$_states = [
 			'php'        => false,
 			'open'       => false,
+			'namespace'  => null,
 			'class'      => false,
 			'lines'      => $lines,
 			'num'        => 0,
