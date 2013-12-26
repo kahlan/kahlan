@@ -166,9 +166,6 @@ class Parser {
 		array_pop(static::$_states['nodes']);
 
 		$current = static::$_states['current'];
-		if ($current->type === 'class') {
-			static::$_states['class'] = false;
-		}
 		static::_codeNode();
 		$current->close = '}';
 		if ($current->type === 'function' && $current->isClosure) {
@@ -291,7 +288,6 @@ class Parser {
 		}
 		$node->body = $body;
 		static::$_states['body'] .= $body;
-		static::$_states['class'] = true;
 		static::$_states['nodes'][] = static::$_states['bracket'];
 		static::$_states['current'] = static::_contextualize($node);
 	}
@@ -512,7 +508,6 @@ class Parser {
 			'php'        => false,
 			'open'       => false,
 			'namespace'  => null,
-			'class'      => false,
 			'lines'      => $lines,
 			'num'        => 0,
 			'root'       => $root,
