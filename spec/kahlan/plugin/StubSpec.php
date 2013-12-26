@@ -54,16 +54,28 @@ describe("Stub::on", function() {
 			expect($foo->message('Good Bye!'))->toBe('Good Bye!');
 		});
 
-		it("stubs magic method", function() {
+		it("stubs a magic method", function() {
 			$foo = new Foo();
 			Stub::on($foo)->method('magicCall')->andReturn('Magic Call!');
 			expect($foo->magicCall())->toBe('Magic Call!');
 		});
 
-		it("stubs static magic method", function() {
+		it("stubs a magic method using a closure", function() {
+			$foo = new Foo();
+			Stub::on($foo)->method('magicHello', function($message) { return $message; });
+			expect($foo->magicHello('Hello World!'))->toBe('Hello World!');
+		});
+
+		it("stubs a static magic method", function() {
 			$foo = new Foo();
 			Stub::on($foo)->method('::magicCallStatic')->andReturn('Magic Call Static!');
 			expect($foo::magicCallStatic())->toBe('Magic Call Static!');
+		});
+
+		it("stubs a static magic method using a closure", function() {
+			$foo = new Foo();
+			Stub::on($foo)->method('::magicHello', function($message) { return $message; });
+			expect($foo::magicHello('Hello World!'))->toBe('Hello World!');
 		});
 
 		context("using the with() parameter", function() {

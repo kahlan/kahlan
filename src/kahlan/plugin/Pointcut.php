@@ -16,11 +16,11 @@ class Pointcut {
 	];
 
 	/**
-	 * Point cut called before all method call.
+	 * Point cut called before method execution.
 	 *
 	 * @return boolean If `true` is returned, the normal execution of the method is aborted.
 	 */
-	public static function before($name, $self, $params) {
+	public static function before($name, $self, &$params) {
 		list($class, $name) = explode('::', $name);
 
 		$call = static::$_classes['call'];

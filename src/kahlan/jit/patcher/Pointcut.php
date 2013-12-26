@@ -100,7 +100,7 @@ class Pointcut {
 	 */
 	protected function _before() {
 		$prefix = static::$prefix;
-		return "if (\$__{$prefix}__ = \kahlan\plugin\Pointcut::before(__METHOD__,\$self = isset(\$this) ? \$this : get_called_class(), \$args = func_get_args())) { return \$__{$prefix}__(\$self, \$args); }";
+		return "\$__{$prefix}_ARGS__ = func_get_args(); \$__{$prefix}_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__{$prefix}__ = \kahlan\plugin\Pointcut::before(__METHOD__, \$__{$prefix}_SELF__, \$__{$prefix}_ARGS__)) { return \$__{$prefix}__(\$__{$prefix}_SELF__, \$__{$prefix}_ARGS__); }";
 	}
 
 	/**
