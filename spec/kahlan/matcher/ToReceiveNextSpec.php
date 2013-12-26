@@ -3,10 +3,10 @@ namespace spec\matcher;
 
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
-use kahlan\jit\patcher\Watcher;
+use kahlan\jit\patcher\Pointcut;
 use kahlan\analysis\Parser;
 
-use spec\fixture\watcher\Foo;
+use spec\fixture\pointcut\Foo;
 
 describe("toReceiveNext::match", function() {
 
@@ -18,7 +18,7 @@ describe("toReceiveNext::match", function() {
 		Interceptor::unpatch();
 
 		$patchers = new Patchers();
-		$patchers->add('watcher', new Watcher());
+		$patchers->add('pointcut', new Pointcut());
 		Interceptor::patch(compact('patchers'));
 	});
 

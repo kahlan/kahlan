@@ -2,13 +2,13 @@
 namespace spec\jit\patcher;
 
 use kahlan\analysis\Parser;
-use kahlan\jit\patcher\Watcher;
+use kahlan\jit\patcher\Pointcut;
 
-describe("Watcher::process", function() {
+describe("Pointcut::process", function() {
 
 	beforeEach(function() {
-		$this->path = 'spec/fixture/watcher';
-		$this->patcher = new Watcher();
+		$this->path = 'spec/fixture/pointcut';
+		$this->patcher = new Pointcut();
 	});
 
 	it("adds an entry point to methods and wrap function call", function() {

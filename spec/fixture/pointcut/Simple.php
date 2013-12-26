@@ -1,5 +1,5 @@
 <?php
-namespace kahlan\spec\fixture\guard;
+namespace spec\fixture\pointcut;
 
 use kahlan\MongoId;
 

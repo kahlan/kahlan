@@ -8,7 +8,7 @@
 
 namespace kahlan\plugin;
 
-class Watcher {
+class Pointcut {
 
 	protected static $_classes = [
 		'call' => 'kahlan\plugin\Call',

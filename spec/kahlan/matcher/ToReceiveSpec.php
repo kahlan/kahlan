@@ -4,10 +4,10 @@ namespace spec\matcher;
 use kahlan\Arg;
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
-use kahlan\jit\patcher\Watcher;
+use kahlan\jit\patcher\Pointcut;
 use kahlan\analysis\Parser;
 
-use spec\fixture\watcher\Foo;
+use spec\fixture\pointcut\Foo;
 
 describe("toReceive::match", function() {
 
@@ -19,7 +19,7 @@ describe("toReceive::match", function() {
 		Interceptor::unpatch();
 
 		$patchers = new Patchers();
-		$patchers->add('watcher', new Watcher());
+		$patchers->add('pointcut', new Pointcut());
 		Interceptor::patch(compact('patchers'));
 	});
 
@@ -105,18 +105,18 @@ describe("toReceive::match", function() {
 
 			it("expects called method to be called", function() {
 				$foo = new Foo();
-				expect('spec\fixture\watcher\Foo')->toReceive('message');
+				expect('spec\fixture\pointcut\Foo')->toReceive('message');
 				$foo->message();
 			});
 
 			it("expects uncalled method to be uncalled", function() {
 				$foo = new Foo();
-				expect('spec\fixture\watcher\Foo')->not->toReceive('message');
+				expect('spec\fixture\pointcut\Foo')->not->toReceive('message');
 			});
 
 			it("expects called method to be uncalled using a wrong classname", function() {
 				$foo = new Foo();
-				expect('spec\fixture\watcher\FooFoo')->not->toReceive('message');
+				expect('spec\fixture\pointcut\FooFoo')->not->toReceive('message');
 				$foo->message();
 			});
 
@@ -126,24 +126,24 @@ describe("toReceive::match", function() {
 	context("with static call", function() {
 
 		it("expects called method to be called", function() {
-			expect('spec\fixture\watcher\Foo')->toReceive('::version');
+			expect('spec\fixture\pointcut\Foo')->toReceive('::version');
 			Foo::version();
 		});
 
 		it("expects called method to not be dynamically called", function() {
-			expect('spec\fixture\watcher\Foo')->not->toReceive('version');
+			expect('spec\fixture\pointcut\Foo')->not->toReceive('version');
 			Foo::version();
 		});
 
 		it("expects called method on instance to be called on classname", function() {
 			$foo = new Foo();
-			expect('spec\fixture\watcher\Foo')->toReceive('::version');
+			expect('spec\fixture\pointcut\Foo')->toReceive('::version');
 			$foo::version();
 		});
 
 		it("expects called method on instance to not be dynamically called", function() {
 			$foo = new Foo();
-			expect('spec\fixture\watcher\Foo')->not->toReceive('version');
+			expect('spec\fixture\pointcut\Foo')->not->toReceive('version');
 			$foo::version();
 		});
 

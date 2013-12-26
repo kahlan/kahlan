@@ -16,7 +16,7 @@ use kahlan\cli\GetOpt;
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Substitute;
-use kahlan\jit\patcher\Watcher;
+use kahlan\jit\patcher\Pointcut;
 use kahlan\jit\patcher\Monkey;
 use kahlan\Reporters;
 use kahlan\reporter\Dot;
@@ -97,7 +97,7 @@ class Kahlan {
 					'namespaces' => $this->_specNamespaces
 				]));
 			}
-			$patchers->add('watcher', new Watcher());
+			$patchers->add('pointcut', new Pointcut());
 			$patchers->add('monkey', new Monkey());
 			return $patchers;
 		});

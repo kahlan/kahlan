@@ -4,11 +4,11 @@ namespace spec\plugin;
 use kahlan\Arg;
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
-use kahlan\jit\patcher\Watcher;
+use kahlan\jit\patcher\Pointcut;
 use kahlan\analysis\Parser;
 use kahlan\plugin\Stub;
 
-use spec\fixture\watcher\Foo;
+use spec\fixture\pointcut\Foo;
 
 describe("Stub::on", function() {
 
@@ -20,7 +20,7 @@ describe("Stub::on", function() {
 		Interceptor::unpatch();
 
 		$patchers = new Patchers();
-		$patchers->add('watcher', new Watcher());
+		$patchers->add('pointcut', new Pointcut());
 		Interceptor::patch(compact('patchers'));
 	});
 
@@ -122,7 +122,7 @@ describe("Stub::on", function() {
 	context("with an class", function() {
 
 		it("stubs a method", function() {
-			Stub::on('spec\fixture\watcher\Foo')
+			Stub::on('spec\fixture\pointcut\Foo')
 				->method('message')
 				->andReturn('Good Bye!');
 
@@ -135,7 +135,7 @@ describe("Stub::on", function() {
 		context("with multiple return values", function(){
 
 			it("stubs a method", function() {
-				Stub::on('spec\fixture\watcher\Foo')
+				Stub::on('spec\fixture\pointcut\Foo')
 					->method('message')
 					->andReturn('Good Evening World!', 'Good Bye World!');
 
@@ -147,7 +147,7 @@ describe("Stub::on", function() {
 			});
 
 			it("stubs methods with an array", function() {
-				Stub::on('spec\fixture\watcher\Foo')->method([
+				Stub::on('spec\fixture\pointcut\Foo')->method([
 					'message' => ['Good Evening World!', 'Good Bye World!'],
 					'bar' => ['Hello Bar!']
 				]);
@@ -177,7 +177,7 @@ describe("Stub::create", function() {
 		Interceptor::unpatch();
 
 		$patchers = new Patchers();
-		$patchers->add('watcher', new Watcher());
+		$patchers->add('pointcut', new Pointcut());
 		Interceptor::patch(compact('patchers'));
 	});
 

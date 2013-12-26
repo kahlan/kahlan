@@ -8,7 +8,7 @@
 
 namespace kahlan\jit\patcher;
 
-class Watcher {
+class Pointcut {
 
 	/**
 	 * Class dependencies.
@@ -24,7 +24,7 @@ class Watcher {
 	 *
 	 * @var string
 	 */
-	public static $prefix = 'KWATCHER';
+	public static $prefix = 'KPOINTCUT';
 
 	/**
 	 * The JIT find file patcher.
@@ -50,7 +50,7 @@ class Watcher {
 	}
 
 	/**
-	 * Helper for `Watcher::process()`.
+	 * Helper for `Pointcut::process()`.
 	 *
 	 * @param array $nodes A node array to patch.
 	 */
@@ -66,7 +66,7 @@ class Watcher {
 	}
 
 	/**
-	 * Helper for `Watcher::process()`.
+	 * Helper for `Pointcut::process()`.
 	 *
 	 * @param NodeDef The node to patch.
 	 */
@@ -100,7 +100,7 @@ class Watcher {
 	 */
 	protected function _before() {
 		$prefix = static::$prefix;
-		return "if (\$__{$prefix}__ = \kahlan\plugin\Watcher::before(__METHOD__, isset(\$this) ? \$this : get_called_class(), \$args = func_get_args())) { return \$__{$prefix}__(\$args); }";
+		return "if (\$__{$prefix}__ = \kahlan\plugin\Pointcut::before(__METHOD__, isset(\$this) ? \$this : get_called_class(), \$args = func_get_args())) { return \$__{$prefix}__(\$args); }";
 	}
 
 	/**
