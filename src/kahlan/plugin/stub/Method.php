@@ -11,26 +11,36 @@ namespace kahlan\plugin\stub;
 class Method extends \kahlan\plugin\call\Message {
 
 	/**
-	 * Current `Method::$_returns` index value to use.
+	 * Index value in the `Method::$_returns` array.
 	 *
 	 * @var array
 	 */
 	protected $_index = 0;
 
 	/**
-	 * Implementation
+	 * Implementation of the stub
 	 *
-	 * @var mixed
+	 * @var Closure
 	 */
 	protected $_closure = null;
 
 	/**
 	 * Return values
 	 *
-	 * @var mixed
+	 * @var array
 	 */
 	protected $_returns = [];
 
+	/**
+	 * The constructor
+	 *
+	 * @param array $options The options array, possible options are:
+	 *                       - `'closure'`: the closure to execute for this stub.
+	 *                       - `'params'`: the params required for exectuting this stub.
+	 *                       - `'static'`: the type of call required for exectuting this stub.
+	 *                       - `'returns'`: the returns values for this stub (used only if
+	 *                         the `'closure'` option is missing).
+	 */
 	public function __construct($options = []) {
 		$defaults = ['closure' => null, 'params' => [], 'returns' => [], 'static' => false];
 		$options += $defaults;
@@ -40,9 +50,11 @@ class Method extends \kahlan\plugin\call\Message {
 	}
 
 	/**
-	 * Stub class method.
+	 * Run the stub.
 	 *
-	 * @param string $name method name.
+	 * @param  string $self   The context form which the stub need to be executed.
+	 * @param  array  $params The call parameters array.
+	 * @return mixed  The returned stub result.
 	 */
 	public function __invoke($self, $params) {
 		if ($this->_closure) {
