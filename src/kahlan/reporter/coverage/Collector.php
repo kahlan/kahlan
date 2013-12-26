@@ -76,9 +76,9 @@ class Collector {
 	 * Constructor.
 	 *
 	 * @param array $options Possible options values are:
-	 *                       - `'driver'`: the driver instance which will log the coverage data.
-	 *                       - `'path'`  : the path(s) which contain the code source files.
-	 *                       - `'prefix'`: some prefix to remove to get the real file path.
+	 *              - `'driver'`: the driver instance which will log the coverage data.
+	 *              - `'path'`  : the path(s) which contain the code source files.
+	 *              - `'prefix'`: some prefix to remove to get the real file path.
 	 */
 	public function __construct($options = []) {
 		$defaults = [
