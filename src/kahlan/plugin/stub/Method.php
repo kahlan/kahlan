@@ -44,10 +44,14 @@ class Method extends \kahlan\plugin\call\Message {
 	 *
 	 * @param string $name method name.
 	 */
-	public function __invoke($params) {
+	public function __invoke($self, $params) {
 		if ($this->_closure) {
-			$closure = $this->_closure;
-			return $closure($params);
+			if (is_string($self)) {
+				$closure = $this->_closure->bindTo(null, $self);
+			} else {
+				$closure = $this->_closure->bindTo($self, get_class($self));
+			}
+			return call_user_func_array($closure, $params);
 		}
 		if (isset($this->_returns[$this->_index])) {
 			return $this->_returns[$this->_index++];

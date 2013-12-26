@@ -13,6 +13,8 @@ class Foo {
 
 	protected $_message = 'Hello World!';
 
+	protected static $_messageStatic = 'Hello Static World!';
+
 	public function __construct() {
 		$this->_inited = true;
 	}
@@ -26,6 +28,13 @@ class Foo {
 			return $this->_message;
 		}
 		$this->_message = $message;
+	}
+
+	public static function messageStatic($message = null) {
+		if ($message === null) {
+			return static::$_messageStatic;
+		}
+		static::$_messageStatic = $message;
 	}
 
 	public function bar() {

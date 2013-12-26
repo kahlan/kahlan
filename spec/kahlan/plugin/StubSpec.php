@@ -48,6 +48,12 @@ describe("Stub::on", function() {
 			expect($foo2->message())->toBe('Hello World!');
 		});
 
+		it("stubs a method using a closure", function() {
+			$foo = new Foo();
+			Stub::on($foo)->method('message', function($param) { return $param; });
+			expect($foo->message('Good Bye!'))->toBe('Good Bye!');
+		});
+
 		it("stubs magic method", function() {
 			$foo = new Foo();
 			Stub::on($foo)->method('magicCall')->andReturn('Magic Call!');
@@ -130,6 +136,22 @@ describe("Stub::on", function() {
 			expect($foo->message())->toBe('Good Bye!');
 			$foo2 = new Foo();
 			expect($foo2->message())->toBe('Good Bye!');
+		});
+
+		it("stubs a static method", function() {
+			Stub::on('spec\fixture\plugin\pointcut\Foo')->method('::messageStatic')->andReturn('Good Bye!');
+			expect(Foo::messageStatic())->toBe('Good Bye!');
+		});
+
+		it("stubs a method using a closure", function() {
+			Stub::on('spec\fixture\plugin\pointcut\Foo')->method('message', function($param) { return $param; });
+			$foo = new Foo();
+			expect($foo->message('Good Bye!'))->toBe('Good Bye!');
+		});
+
+		it("stubs a static method using a closure", function() {
+			Stub::on('spec\fixture\plugin\pointcut\Foo')->method('::messageStatic', function($param) { return $param; });
+			expect(Foo::messageStatic('Good Bye!'))->toBe('Good Bye!');
 		});
 
 		context("with multiple return values", function(){

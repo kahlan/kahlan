@@ -73,7 +73,7 @@ class Stub {
 	 * @param mixed $name Method name or array of stubs where key are method names and
 	 *              values the stubs.
 	 */
-	public function method($name) {
+	public function method($name, $closure = null) {
 		if (is_array($name)) {
 			foreach ($name as $method => $returns) {
 				$stub = $this->method($method);
@@ -92,7 +92,7 @@ class Stub {
 		if (!isset(static::$_registered[String::hash($reference)])) {
 			static::$_registered[String::hash($reference)] = $this;
 		}
-		return $this->_stubs[$name] = new Method(compact('name', 'static'));
+		return $this->_stubs[$name] = new Method(compact('name', 'static', 'closure'));
 	}
 
 	/**
