@@ -9,11 +9,11 @@
 namespace kahlan\plugin;
 
 use Reflection;
-use ReflectionClass;
 use ReflectionMethod;
 use InvalidArgumentException;
 use kahlan\IncompleteException;
 use kahlan\util\String;
+use kahlan\analysis\Inspector;
 use kahlan\plugin\stub\Method;
 
 class Stub {
@@ -298,7 +298,7 @@ EOT;
 		if (!class_exists($class)) {
 			throw new IncompleteException("Unexisting interface `{$class}`");
 		}
-		$reflection = new ReflectionClass($class);
+		$reflection = Inspector::inspect($class);
 		$methods = $reflection->getMethods($mask);
 		foreach ($methods as $method) {
 			$result .= static::_generateMethod($method);
@@ -322,7 +322,7 @@ EOT;
 			if (!interface_exists($interface)) {
 				throw new IncompleteException("Unexisting interface `{$interface}`");
 			}
-			$reflection = new ReflectionClass($interface);
+			$reflection = Inspector::inspect($interface);
 			$methods = $reflection->getMethods($mask);
 			foreach ($methods as $method) {
 				$result .= static::_generateMethod($method);
@@ -358,7 +358,7 @@ EOT;
 	protected static function _generateParameters($method){
 		$params = [];
 		foreach ($method->getParameters() as $num => $parameter) {
-			$typehint = static::_generateTypehint($parameter);
+			$typehint = Inspector::typehint($parameter);
 			$name = $parameter->getName();
 			$name = ($name && $name !== '...') ? $name : 'param' . $num;
 			$reference = $parameter->isPassedByReference() ? '&' : '';
@@ -374,24 +374,6 @@ EOT;
 			$params[] = "{$typehint}{$reference}\${$name}{$default}";
 		}
 		return join(', ', $params);
-	}
-
-	/**
-	 * Return the type hint of a `ReflectionParameter` instance.
-	 *
-	 * @param  ReflectionMethod  $method A instance of `ReflectionParameter`.
-	 * @return string            The parameter type hint.
-	 */
-	protected static function _generateTypehint($parameter) {
-		$typehint = '';
-		if ($parameter->isArray()) {
-			$typehint = 'array ';
-		} elseif ($parameter->getClass()) {
-			$typehint = $parameter->getClass()->getName() . ' ';
-		} elseif (preg_match('/.*?\[ \<[^\>]+\> (\S+ )(.*?)\$/', (string) $parameter, $match)) {
-			$typehint = $match[1];
-		}
-		return $typehint;
 	}
 
 	/**
