@@ -11,7 +11,7 @@ namespace kahlan\reporter;
 use kahlan\util\Set;
 use kahlan\util\String;
 
-class ProgressBar extends Terminal {
+class Bar extends Terminal {
 
 	/**
 	 * Colors preference.

@@ -20,6 +20,7 @@ use kahlan\jit\patcher\Watcher;
 use kahlan\jit\patcher\Monkey;
 use kahlan\Reporters;
 use kahlan\reporter\Dot;
+use kahlan\reporter\Bar;
 use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Scrutinizer;
@@ -51,7 +52,8 @@ class Kahlan {
 			'kahlan\plugin\Monkey',
 			'kahlan\plugin\Call',
 			'kahlan\plugin\Stub'
-		]
+		],
+		'reporter' => 'dot'
 	];
 
 	public function __construct($options = []) {
@@ -88,7 +90,7 @@ class Kahlan {
 	}
 
 	public function initPatchers() {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
 			$patchers = $this->patchers();
 			if ($this->_specNamespaces) {
 				$patchers->add('substitute', new Substitute([
@@ -102,7 +104,7 @@ class Kahlan {
 	}
 
 	public function patchAutoloader() {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
 			Interceptor::patch([
 				'loader' => [$this->_autoloader, 'loadClass'],
 				'patchers' => $this->patchers(),
@@ -113,7 +115,7 @@ class Kahlan {
 	}
 
 	public function loadSpecs() {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
 			$files = Dir::scan([
 				'path' => $this->args('spec'),
 				'include' => '*Spec.php',
@@ -126,10 +128,12 @@ class Kahlan {
 	}
 
 	public function initReporters() {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
 			$reporters = $this->reporters();
-			$reporters->add('console', new Dot());
-
+			$reporter = $this->getConsoleReporter();
+			if ($reporter) {
+				$reporters->add('console', $reporter);
+			}
 			if ($this->args('coverage') === null) {
 				return $reporters;
 			}
@@ -143,8 +147,19 @@ class Kahlan {
 		});
 	}
 
+	public function getConsoleReporter() {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
+			if ($this->args('reporter') === 'dot') {
+				return new Dot();
+			}
+			if ($this->args('reporter') === 'bar') {
+				return new Bar();
+			}
+		});
+	}
+
 	public function runSpecs() {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
 			$this->suite()->run([
 				'reporters' => $this->reporters(),
 				'autoclear' => $this->args('autoclear')
@@ -153,7 +168,7 @@ class Kahlan {
 	}
 
 	public function postProcess() {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
 			$coverage = $this->reporters()->get('coverage');
 			if ($coverage && $this->args('coverage-scrutinizer')) {
 				Scrutinizer::write([
@@ -165,7 +180,7 @@ class Kahlan {
 	}
 
 	public function stop() {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
 			$this->suite()->stop();
 		});
 	}
@@ -193,7 +208,7 @@ class Kahlan {
 	}
 
 	public function run() {
-		return $this->_filter(__FUNCTION__, func_get_args(), function($chain) {
+		return $this->_filter(__FUNCTION__, [], function($chain) {
 
 			$this->autoloaderAdd($this->args('spec'));
 
