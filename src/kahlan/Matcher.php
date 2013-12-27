@@ -129,7 +129,8 @@ class Matcher {
 				if (method_exists($class, 'parse')) {
 					$params += ['parsed actual' => $class::parse($this->_actual)];
 				}
-				return $this->_result($result, compact('class', 'matcher', 'params'));
+				$this->_result($result, compact('class', 'matcher', 'params'));
+				return $this;
 			}
 		}
 		throw new Exception("Error Undefined Matcher `{$matcher}`");
