@@ -65,6 +65,7 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
 
 Matcher::register('toBe', 'kahlan\matcher\ToBe');
 Matcher::register('toBeA', 'kahlan\matcher\ToBeA');
+Matcher::register('toBeAn', 'kahlan\matcher\ToBeA');
 Matcher::register('toBeAnInstanceOf', 'kahlan\matcher\ToBeAnInstanceOf');
 Matcher::register('toBeCloseTo', 'kahlan\matcher\ToBeCloseTo');
 Matcher::register('toBeEmpty', 'kahlan\matcher\ToBeFalsy');
