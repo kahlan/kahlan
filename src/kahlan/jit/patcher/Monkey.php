@@ -144,7 +144,7 @@ class Monkey {
 	protected function _patchNode($matches) {
 		$name = $matches[3];
 		if (isset($this->_blacklist[$name]) || (!$matches[1] && $matches[5] !== '(' && $matches[5] !== '::')) {
-				return $matches[0];
+			return $matches[0];
 		}
 
 		$variable = '$__' . static::$prefix . '__' . $this->_counter++;
