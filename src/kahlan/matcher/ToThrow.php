@@ -28,21 +28,33 @@ class ToThrow {
 			$exception = new Exception($expected);
 		}
 
+		if (!$e = static::parse($actual)) {
+			return false;
+		}
+		if (is_string($expected)) {
+			return $e->getMessage() === $expected;
+		}
+		$class = get_class($exception);
+		if ($e instanceof $class) {
+			$sameCode = $e->getCode() === $exception->getCode();
+			$sameMessage = $e->getMessage() === $exception->getMessage();
+			$sameMessage = $sameMessage || !$exception->getMessage();
+			return $sameCode && $sameMessage;
+		}
+	}
+
+	/**
+	 * Parse the actual value in the expected format.
+	 *
+	 * @param  mixed $actual The actual value to be parsed.
+	 * @return mixed The parsed value.
+	 */
+	public static function parse($actual) {
 		try {
 			$actual();
 		} catch (Exception $e) {
-			if (is_string($expected)) {
-				return $e->getMessage() === $expected;
-			}
-			$class = get_class($exception);
-			if ($e instanceof $class) {
-				$sameCode = $e->getCode() === $exception->getCode();
-				$sameMessage = $e->getMessage() === $exception->getMessage();
-				$sameMessage = $sameMessage || !$exception->getMessage();
-				return $sameCode && $sameMessage;
-			}
+			return $e;
 		}
-		return false;
 	}
 
 	public static function description() {
