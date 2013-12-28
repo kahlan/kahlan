@@ -265,10 +265,12 @@ class Suite extends Scope {
 	 * @param object A child spec.
 	 */
 	protected function _process($child) {
+		$this->report('before');
 		$this->_callbacks('beforeEach');
 		$child->process();
 		$this->_autoclear();
 		$this->_callbacks('afterEach');
+		$this->report('after');
 	}
 
 	/**
