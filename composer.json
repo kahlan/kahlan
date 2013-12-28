@@ -11,7 +11,8 @@
     "require": {
         "php": ">=5.4",
         "crysalead/box": "dev-master",
-        "crysalead/dir": "dev-master"
+        "crysalead/dir": "dev-master",
+        "crysalead/filter": "dev-master"
     },
     "autoload": {
         "psr-0": { "kahlan\\": "src/" },

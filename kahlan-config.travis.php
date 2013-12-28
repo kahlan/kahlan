@@ -1,11 +1,12 @@
 <?php
+use filter\Filter;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
 $this->args('coverage', 1);
 $this->args('coverage-scrutinizer', 'scrutinizer.xml');
 $this->args('coverage-coveralls', 'coveralls.json');
 
-$this->applyFilter('postProcess', function($chain) {
+Filter::register('kahlan.coveralls_reporting', function($chain) {
 	$coverage = $this->reporters()->get('coverage');
 	if (!$coverage || !$this->args('coverage-coveralls')) {
 		return $chain->next();
@@ -18,5 +19,7 @@ $this->applyFilter('postProcess', function($chain) {
 	]);
 	return $chain->next();
 });
+
+Filter::apply($this, 'postProcess', 'kahlan.coveralls_reporting');
 
 ?>
