@@ -58,8 +58,7 @@ class Pointcut {
 		foreach ($nodes as $node) {
 			if ($node->type === 'class') {
 				$this->_processMethods($node->tree);
-			}
-			if (count($node->tree)) {
+			} elseif (count($node->tree)) {
 				$this->_processTree($node->tree);
 			}
 		}
