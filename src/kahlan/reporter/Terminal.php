@@ -233,7 +233,7 @@ class Terminal extends Reporter {
 		$this->console("[Incomplete test] ", "n;yellow");
 		$this->_messages($report['messages']);
 		$this->console("Description:", "n;magenta");
-		$this->console(" Performing tests on a mock file\n");
+		$this->console(" You are using an unexisting class.\n");
 		$this->console("Trace: ", "n;yellow");
 		$this->console(Debugger::trace([
 			'trace' => $report['exception'], 'start' => 1, 'depth' => 1
