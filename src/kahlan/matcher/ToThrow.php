@@ -23,12 +23,9 @@ class ToThrow {
 	 * @return boolean
 	 */
 	public static function match($actual, $expected = null) {
-		$exception = $expected;
-		if ($expected === null || is_string($expected)) {
-			$exception = new Exception($expected);
-		}
+		$exception = static::expected($expected);
 
-		if (!$e = static::parse($actual)) {
+		if (!$e = static::actual($actual)) {
 			return false;
 		}
 		if (is_string($expected)) {
@@ -44,12 +41,12 @@ class ToThrow {
 	}
 
 	/**
-	 * Parse the actual value in the expected format.
+	 * Normalize the actual value as an Exception.
 	 *
-	 * @param  mixed $actual The actual value to be parsed.
-	 * @return mixed The parsed value.
+	 * @param  mixed $actual The actual value to be normalized.
+	 * @return mixed The normalized value.
 	 */
-	public static function parse($actual) {
+	public static function actual($actual) {
 		try {
 			$actual();
 		} catch (Exception $e) {
@@ -57,8 +54,24 @@ class ToThrow {
 		}
 	}
 
-	public static function description() {
-		return "throw a compatible exception.";
+	/**
+	 * Normalize the expected value as an Exception.
+	 *
+	 * @param  mixed $expected The expected value to be normalized.
+	 * @return mixed The normalized value.
+	 */
+	public static function expected($expected) {
+		if ($expected === null || is_string($expected)) {
+			return new AnyException($expected);
+		}
+		return $expected;
+	}
+
+	public static function description($report) {
+		$description = "throw a compatible exception.";
+		$params['actual'] = static::actual($report['params']['actual']);
+		$params['expected'] = static::expected($report['params']['expected']);
+		return compact('description', 'params');
 	}
 }
 

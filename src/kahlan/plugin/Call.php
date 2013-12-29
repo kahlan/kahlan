@@ -116,33 +116,56 @@ class Call {
 	/**
 	 * Find a logged call.
 	 *
-	 * @param  mixed       $reference An instance or a fully namespaced class name.
-	 * @param  string      $method    The method name.
-	 * @param  array       $with      The required arguments.
-	 * @return object|null Return the subbed method or `null` if not founded.
+	 * @param  mixed      $reference An instance or a fully namespaced class name.
+	 * @param  string     $method    The method name.
+	 * @param  boolean    $reset     If `true` start finding from the start of the logs.
+	 * @return array|null Return founded log call.
 	 */
-	public static function find($reference, $call, $reset = true) {
+	public static function find($reference, $call = null, $reset = true) {
 		if ($reset) {
 			static::$_index = 0;
+		}
+		if ($call === null) {
+			return static::_findAll($reference);
 		}
 		$index = static::$_index;
 		$count = count(static::$_logs);
 		for ($i = $index; $i < $count; $i++) {
 			$log = static::$_logs[$i];
-			if (is_object($reference)) {
-				if($reference !== $log['instance']) {
-					continue;
-				}
-			} elseif ($reference !== $log['class']) {
+			if (!static::_matchReference($reference, $log)) {
 				continue;
 			}
 
 			if ($call->match($log)) {
 				static::$_index = $i + 1;
-				return true;
+				return $log;
 			}
 		}
 		return false;
+	}
+
+	protected static function _findAll($reference) {
+		$result = [];
+		$index = static::$_index;
+		$count = count(static::$_logs);
+		for ($i = $index; $i < $count; $i++) {
+			$log = static::$_logs[$i];
+			if (static::_matchReference($reference, $log)) {
+				$result[] = $log;
+			}
+		}
+		return $result;
+	}
+
+	protected static function _matchReference($reference, $log) {
+		if (is_object($reference)) {
+			if ($reference !== $log['instance']) {
+				return false;
+			}
+		} elseif ($reference !== $log['class']) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

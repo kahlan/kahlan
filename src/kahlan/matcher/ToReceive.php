@@ -27,6 +27,12 @@ class ToReceive {
 
 	protected $_backtrace = null;
 
+	protected $_call = null;
+
+	protected $_message = null;
+
+	protected $_report = null;
+
 	public function __construct($actual, $expected) {
 		$static = false;
 		if (preg_match('/^::.*/', $expected)) {
@@ -46,9 +52,17 @@ class ToReceive {
 		return call_user_func_array([$this->_message, $method], $params);
 	}
 
-	public function resolve() {
+	public function resolve($report) {
 		$call = $this->_classes['call'];
-		return $call::find($this->_actual, $this->_message);
+		$success = !!$call::find($this->_actual, $this->_message);
+		if (!$success) {
+			$this->report($report);
+		}
+		return $success;
+	}
+
+	public function message() {
+		return $this->_message;
 	}
 
 	public function backtrace() {
@@ -67,8 +81,31 @@ class ToReceive {
 		return new static($actual, $expected);
 	}
 
-	public static function description() {
-		return "receive a message.";
+	public static function description($report) {
+		return $report['instance']->report();
+	}
+
+	public function report($report = null) {
+		if ($report === null) {
+			return $this->_report;
+		}
+		$call = $this->_classes['call'];
+
+		$with = $this->_message->getWith();
+		$this->_message->with();
+		if ($log = $call::find($this->_actual, $this->_message)) {
+			$this->_report['description'] = 'receive correct parameters.';
+			$this->_report['params']['actual with'] = $with;
+			$this->_report['params']['expected with'] = $log['params'];
+			return;
+		}
+
+		$this->_report['description'] = 'receive the correct message.';
+		$this->_report['params']['actual received'] = [];
+		foreach($call::find($this->_actual) as $log) {
+			$this->_report['params']['actual received'][] = $log['name'];
+		}
+		$this->_report['params']['expected'] = $report['params']['expected'];
 	}
 }
 

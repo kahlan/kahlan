@@ -55,9 +55,7 @@ class Message {
 	 * @param mixed <0,n> Parameter(s).
 	 */
 	public function with() {
-		if (func_num_args()) {
-			$this->_params = func_get_args();
-		}
+		$this->_params = func_get_args();
 		return $this;
 	}
 
@@ -104,6 +102,18 @@ class Message {
 			}
 		}
 		return true;
+	}
+
+	public function getName() {
+		return $this->_name;
+	}
+
+	public function getWith() {
+		return $this->_params;
+	}
+
+	public function getStatic() {
+		return $this->_static;
 	}
 }
 

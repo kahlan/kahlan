@@ -13,12 +13,12 @@ use Countable;
 class ToHaveLength {
 
 	/**
-	 * Parse the actual value in the expected format.
+	 * Normalize the actual value in the expected format.
 	 *
-	 * @param  mixed $actual The actual value to be parsed.
-	 * @return mixed The parsed value.
+	 * @param  mixed $actual The actual value to be normalized.
+	 * @return mixed The normalized value.
 	 */
-	public static function parse($actual) {
+	public static function actual($actual) {
 		if (is_string($actual)) {
 			return strlen($actual);
 		} elseif (is_array($actual) || $actual instanceof Countable) {
@@ -34,12 +34,17 @@ class ToHaveLength {
 	 * @return boolean
 	 */
 	public static function match($actual, $expected) {
-		return static::parse($actual) === $expected;
+		return static::actual($actual) === $expected;
 	}
 
-	public static function description() {
-		return "have the expected length.";
+	public static function description($report) {
+		$description = "have the expected length.";
+		$params['actual'] = $report['params']['actual'];
+		$params['actual length'] = static::actual($report['params']['actual']);
+		$params['expected length'] = $report['params']['expected'];
+		return compact('description', 'params');
 	}
+
 }
 
 ?>

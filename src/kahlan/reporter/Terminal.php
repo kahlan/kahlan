@@ -200,13 +200,31 @@ class Terminal extends Reporter {
 	 * @param array $report A report array.
 	 */
 	protected function _reportFailure($report) {
-		$matcher = $report['class'];
-		$not = $report['not'];
-		$params = $report['params'];
-		$description = $matcher::description();
-
 		$this->console("[Failure] ", "n;red");
 		$this->_messages($report['messages']);
+		$this->_reportDescription($report);
+		$this->console("Trace: ", "n;yellow");
+		$this->console(Debugger::trace([
+			'trace' => $report['exception'], 'depth' => 1
+		]));
+		$this->console("\n\n");
+	}
+
+	/**
+	 * Report a description of a spec
+	 *
+	 * @param array $report A report array.
+	 */
+	protected function _reportDescription($report) {
+		$matcher = $report['class'];
+		$not = $report['not'];
+		$description = $matcher::description($report);
+		if (is_array($description)) {
+			$params = $description['params'];
+			$description = $description['description'];
+		} else {
+			$params = $report['params'];
+		}
 		foreach ($params as $key => $value) {
 			$this->console("{$key}: ", 'n;yellow');
 			$this->console(String::dump($value) . "\n");
@@ -217,11 +235,6 @@ class Terminal extends Reporter {
 			$this->console("NOT ", 'n;magenta');
 		}
 		$this->console("{$description}\n");
-		$this->console("Trace: ", "n;yellow");
-		$this->console(Debugger::trace([
-			'trace' => $report['exception'], 'depth' => 1
-		]));
-		$this->console("\n\n");
 	}
 
 	/**

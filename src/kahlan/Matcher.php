@@ -119,19 +119,15 @@ class Matcher {
 			$class = static::$_matchers[$matcher];
 			array_unshift($params, $this->_actual);
 			$result = call_user_func_array($class . '::match', $params);
-			if (is_object($result)) {
-				$this->_defered[] = compact('class', 'matcher', 'params') + [
-					'instance' => $result, 'not' => $this->_not
-				];
-				return $result;
-			} else {
-				$params = Inspector::parameters($class, 'match', $params);
-				if (method_exists($class, 'parse')) {
-					$params += ['parsed actual' => $class::parse($this->_actual)];
-				}
+			$params = Inspector::parameters($class, 'match', $params);
+			if (!is_object($result)) {
 				$this->_result($result, compact('class', 'matcher', 'params'));
 				return $this;
 			}
+			$this->_defered[] = compact('class', 'matcher', 'params') + [
+				'instance' => $result, 'not' => $this->_not
+			];
+			return $result;
 		}
 		throw new Exception("Error Undefined Matcher `{$matcher}`");
 	}
@@ -143,9 +139,8 @@ class Matcher {
 		foreach($this->_defered as $defered) {
 			extract($defered);
 			$this->_not = $not;
-			$boolean = $instance->resolve();
-			$params = Inspector::parameters($class, 'match', $params);
-			$data = compact('class', 'matcher', 'params');
+			$data = compact('class', 'matcher', 'params', 'instance');
+			$boolean = $instance->resolve($data);
 			if ($not ? $boolean : !$boolean) {
 				$data['exception'] = $instance->backtrace();
 			}

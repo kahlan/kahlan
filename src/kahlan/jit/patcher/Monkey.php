@@ -144,6 +144,7 @@ class Monkey {
 	protected function _patchNode($matches) {
 		$name = $matches[3];
 
+		// TODO: Move this in a dedicated plugin.
 		if ($name === 'exit' || $name === 'die') {
 			return $matches[1] . $matches[2] . 'new \kahlan\ExitException(';
 		}

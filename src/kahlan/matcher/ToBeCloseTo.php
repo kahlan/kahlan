@@ -25,8 +25,13 @@ class ToBeCloseTo {
 		return abs($expected - $actual) < (pow(10, -$precision) / 2);
 	}
 
-	public static function description() {
-		return "be close to expected relying to the precision.";
+	public static function description($report) {
+		$precision = $report['params']['precision'];
+		$description = "be close to expected relying to a precision of {$precision}.";
+		$params['actual'] = $report['params']['actual'];
+		$params['expected'] = $report['params']['expected'];
+		$params['gap is >='] = pow(10, -$precision) / 2;
+		return compact('description', 'params');
 	}
 }
 

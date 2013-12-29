@@ -17,10 +17,7 @@ class ToMatch extends ToEqual {
 	 * @param  mixed   $expected The expected pattern.
 	 * @return boolean
 	 */
-	public static function match(
-		$actual,
-		$expected)
-	{
+	public static function match($actual, $expected) {
 		$actual = static::_nl($actual);
 		return !!preg_match($expected, $actual);
 	}
