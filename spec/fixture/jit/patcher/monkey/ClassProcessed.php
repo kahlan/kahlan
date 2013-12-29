@@ -84,11 +84,11 @@ $__KMONKEY__13();
 		try{} catch (\Exception $e) {};
 		compact();
 		declare(ticks=1);
-		die();
+		new \kahlan\ExitException();
 		echo('');
 		empty($a);
-		eval();
-		exit(-1);
+		eval('');
+		new \kahlan\ExitException(-1);
 		extract();
 		for($i=0;$i<1;$i++) {};
 		foreach($array as $key=>$value) {}

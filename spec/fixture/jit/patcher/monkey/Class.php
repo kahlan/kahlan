@@ -87,7 +87,7 @@ rand();
 		die();
 		echo('');
 		empty($a);
-		eval();
+		eval('');
 		exit(-1);
 		extract();
 		for($i=0;$i<1;$i++) {};

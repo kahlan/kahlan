@@ -18,7 +18,7 @@ describe("Monkey::process", function() {
 		expect($actual)->toBe($expected);
 	});
 
-	xit("patches trait's methods", function() {
+	it("patches trait's methods", function() {
 		$nodes = Parser::parse(file_get_contents($this->path . '/Trait.php'));
 		$expected = file_get_contents($this->path . '/TraitProcessed.php');
 		$actual = Parser::unparse($this->patcher->process($nodes));

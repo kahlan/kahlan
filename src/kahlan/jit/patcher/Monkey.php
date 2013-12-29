@@ -143,6 +143,10 @@ class Monkey {
 	 */
 	protected function _patchNode($matches) {
 		$name = $matches[3];
+
+		if ($name === 'exit' || $name === 'die') {
+			return $matches[1] . $matches[2] . 'new \kahlan\ExitException(';
+		}
 		if (isset($this->_blacklist[$name]) || (!$matches[1] && $matches[5] !== '(' && $matches[5] !== '::')) {
 			return $matches[0];
 		}
