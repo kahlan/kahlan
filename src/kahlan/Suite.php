@@ -92,7 +92,7 @@ class Suite extends Scope {
 		$this->_message = $message;
 		$this->_closure = $closure;
 		$this->_parent = $parent;
-		$this->_root->_exclusive = $scope === 'exclusive';
+		$this->_root->_exclusive |= $scope === 'exclusive';
 	}
 
 	/**
@@ -141,7 +141,7 @@ class Suite extends Scope {
 		$root = $this->_root;
 		$spec = new Spec(compact('message', 'closure', 'parent', 'root'));
 		$this->_childs[$scope][] = $spec;
-		$this->_root->_exclusive = $scope === 'exclusive';
+		$this->_root->_exclusive |= $scope === 'exclusive';
 		return $this;
 	}
 
