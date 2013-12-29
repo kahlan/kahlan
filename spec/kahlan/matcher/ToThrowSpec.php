@@ -44,6 +44,11 @@ describe("toThrow::match", function() {
 			throw new Exception('exception message');
 		};
 		expect($closure)->not->toThrow(new RuntimeException('exception message'));
+
+		$closure = function() {
+			throw new RuntimeException('exception message');
+		};
+		expect($closure)->not->toThrow(new Exception('exception message'));
 	});
 
 });

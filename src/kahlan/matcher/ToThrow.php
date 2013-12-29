@@ -32,7 +32,7 @@ class ToThrow {
 			return $e->getMessage() === $expected;
 		}
 		$class = get_class($exception);
-		if ($e instanceof $class) {
+		if ($class === 'kahlan\matcher\AnyException' || get_class($e) === $class) {
 			$sameCode = $e->getCode() === $exception->getCode();
 			$sameMessage = $e->getMessage() === $exception->getMessage();
 			$sameMessage = $sameMessage || !$exception->getMessage();
