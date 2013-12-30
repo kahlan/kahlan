@@ -65,7 +65,7 @@ class Kahlan {
 		$this->_patchers = new Patchers();
 		$this->_reporters = new Reporters();
 		$this->_autoloader = $options['autoloader'];
-		Box::share('kahlan.suite', function() use ($suite) { return $suite; });
+		Box::service('kahlan.suite', function() use ($suite) { return $suite; });
 	}
 
 	public function loadConfig($argv = []) {

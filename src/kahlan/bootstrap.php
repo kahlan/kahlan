@@ -83,6 +83,6 @@ Matcher::register('toReceive', 'kahlan\matcher\ToReceive');
 Matcher::register('toReceiveNext', 'kahlan\matcher\ToReceiveNext');
 Matcher::register('toThrow', 'kahlan\matcher\ToThrow');
 
-Box::share('kahlan.matcher', function() { return new Matcher(); });
+Box::service('kahlan.matcher', function() { return new Matcher(); });
 
 ?>
