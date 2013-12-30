@@ -78,16 +78,18 @@ class Kahlan {
 		$this->_args = $args + $this->_args;
 	}
 
-	public function autoloaderAdd($paths) {
-		if (!$this->_autoloader || !method_exists($this->_autoloader, 'add')) {
-			return;
-		}
-		$paths = (array) $paths;
-		foreach ($paths as $path) {
-			$path = realpath($path);
-			$this->_specNamespaces[] = $namespace = basename($path) . '\\';
-			$this->_autoloader->add($namespace, dirname($path));
-		}
+	public function customNamespaces() {
+		return Filter::on($this, __FUNCTION__, [], function($chain) {
+			if (!$this->_autoloader || !method_exists($this->_autoloader, 'add')) {
+				return;
+			}
+			$paths = (array) $this->args('spec');
+			foreach ($paths as $path) {
+				$path = realpath($path);
+				$this->_specNamespaces[] = $namespace = basename($path) . '\\';
+				$this->_autoloader->add($namespace, dirname($path));
+			}
+		});
 	}
 
 	public function initPatchers() {
@@ -211,7 +213,7 @@ class Kahlan {
 	public function run() {
 		return Filter::on($this, __FUNCTION__, [], function($chain) {
 
-			$this->autoloaderAdd($this->args('spec'));
+			$this->customNamespaces();
 
 			$this->initPatchers();
 
