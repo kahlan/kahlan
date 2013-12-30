@@ -15,6 +15,13 @@ use kahlan\analysis\Debugger;
 class Terminal extends Reporter {
 
 	/**
+	 * Starting time
+	 *
+	 * @var float
+	 */
+	protected $_start = 0;
+
+	/**
 	 * Print a string to STDOUT.
 	 *
 	 * @param mixed        $string  The string to print.
@@ -39,7 +46,10 @@ class Terminal extends Reporter {
 	 */
 	public function begin($params) {
 		parent::begin($params);
-		$this->console("Kahlan : PHP Testing Framework\n\n");
+		$this->console("\nKahlan - PHP Testing Framework\n" , 'green');
+		$this->console("\nWorking Directory: ", 'blue');
+		$this->console(getcwd() . "\n\n");
+		$this->_start = microtime(true);
 	}
 
 	/**
@@ -158,6 +168,7 @@ class Terminal extends Reporter {
 	 * @param array $results The results array of the execution.
 	 */
 	public function _summary($results) {
+
 		$passed = count($results['pass']) + count($results['skip']);
 		$failed = 0;
 		foreach (['exception', 'incomplete', 'fail'] as $value) {
@@ -191,9 +202,10 @@ class Terminal extends Reporter {
 			}
 			$this->console(")");
 		} else {
-			$this->console("PASS\n", "green");
+			$this->console("PASS", "green");
 		}
-		$this->console("\n");
+		$time = number_format(microtime(true) - $this->_start, 3);
+		$this->console(" in {$time} seconds\n\n\n");
 	}
 }
 

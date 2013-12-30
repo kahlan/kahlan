@@ -68,7 +68,6 @@ class Dot extends Terminal {
 			}
 		}
 
-		$this->console("\n");
 		$this->_summary($results);
 	}
 
