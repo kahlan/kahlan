@@ -14,6 +14,7 @@ use dir\Dir;
 use filter\Filter;
 use filter\behavior\Filterable;
 use kahlan\Suite;
+use kahlan\cli\Cli;
 use kahlan\cli\GetOpt;
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
@@ -81,6 +82,7 @@ class Kahlan {
 	public function customNamespaces() {
 		return Filter::on($this, __FUNCTION__, [], function($chain) {
 			if (!$this->_autoloader || !method_exists($this->_autoloader, 'add')) {
+				echo Cli::color("The defined autoloader doesn't support `add()` calls\n", 'yellow');
 				return;
 			}
 			$paths = (array) $this->args('spec');
