@@ -6,7 +6,7 @@ Kahlan is a BDD Framework for PHP 5.4+, a la RSpec/JSpec using a Jasmine style n
 
 # Features
 
- * Stubing __real classes__
+ * Stubbing __real classes__
  * Monkey Patch __core classes and functions__
  * Inspect called methods __on real flow__
  * Code Coverage metrics
@@ -20,11 +20,11 @@ Kahlan is a BDD Framework for PHP 5.4+, a la RSpec/JSpec using a Jasmine style n
  * Using an autoloader in your project (Composer for example)
  * Xdebug to perform code coverage analysis.
 
-# How it works ?
+# How does it work?
 
-Kahlan asts like a wrapper. It intercepts classes during the autoloading step and rewrite the source code on the fly to make it easily testable with PHP. That's why Monkey Patching or redefining a class's method can be done inside the testing environment without any PECL extensions like runkit, aop, etc.
+Kahlan acts like a wrapper. It intercepts classes during the autoloading step and rewrites the source code on the fly to make it easily testable with PHP. That's why Monkey Patching or redefining a class's method can be done inside the testing environment without any PECL extensions like runkit, aop, etc.
 
-Notice that all this processing produce some code which will be up to 3x slower than the orginal code. So it's strongly recommended to limit the use of such "rewriting" for testing and development environments where the execution time is not the priority.
+Notice that all this processing produces some code which will be up to 3x slower than the orginal code. So it's strongly recommended to limit the use of such "rewriting" for testing and development environments where the execution time is not the priority.
 
 # Installation
 
