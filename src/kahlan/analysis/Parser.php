@@ -474,7 +474,7 @@ class Parser {
 			}
 		}
 		if ($current->parent) {
-			$current->parent->lines['stop'] = $current->lines['stop'];
+			$current->parent->lines['stop'] = $num;
 		}
 	}
 

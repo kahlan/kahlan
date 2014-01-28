@@ -43,6 +43,9 @@ class Sample extends \kahlan\fixture\Parent {
 	abstract public function abstractMethod();
 
 	final public function finalMethod() {}
+
+	public function inlineComment() {
+	} // end function
 }
 
 class
