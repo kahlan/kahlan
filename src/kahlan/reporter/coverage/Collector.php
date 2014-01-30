@@ -256,8 +256,8 @@ class Collector {
 	 * @param array $metrics  The output metrics array.
 	 */
 	protected function _processLine($line, $coverage, &$metrics) {
-		if ($line === null) {
-			continue;
+		if (!$coverage) {
+			return;
 		}
 		if (!isset($coverage[$line])) {
 			$metrics['ncloc']++;
