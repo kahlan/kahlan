@@ -77,6 +77,9 @@ class Kahlan {
 			require 'kahlan-config.php';
 		}
 		$this->_args = $args + $this->_args;
+		if ($this->_args['coverage'] === false) {
+			$this->_args['coverage'] = 1;
+		}
 	}
 
 	public function customNamespaces() {
@@ -139,7 +142,7 @@ class Kahlan {
 			if ($reporter) {
 				$reporters->add('console', $reporter);
 			}
-			if ($this->args('coverage') === null) {
+			if (!$this->args('coverage')) {
 				return $reporters;
 			}
 			$coverage = new Coverage([

@@ -31,15 +31,15 @@ class Coverage extends Terminal {
 	 *
 	 * @param array $options The options for the reporter, the options are:
 	 *              - `'verbosity`' : The verbosity level:
-	 *                  - 0 : overall coverage value for the whole code.
-	 *                  - 1 : coverage for namespaces.
-	 *                  - 2 : coverage for namespaces and classes.
-	 *                  - 3 : coverage for namespaces, classes, methods and functions.
+	 *                  - 1 : overall coverage value for the whole code.
+	 *                  - 2 : coverage for namespaces.
+	 *                  - 3 : coverage for namespaces and classes.
+	 *                  - 4 : coverage for namespaces, classes, methods and functions.
 	 */
 
 	public function __construct($options = []) {
 		parent::__construct($options);
-		$defaults = ['verbosity' => 0];
+		$defaults = ['verbosity' => 1];
 		$options += $defaults;
 		$this->_verbosity = (int) $options['verbosity'];
 		$this->_collector = new Collector($options);
@@ -87,17 +87,17 @@ class Coverage extends Terminal {
 	 * @param Metrics $metrics A metrics instance.
 	 * @param array   $options The options for the reporter, the options are:
 	 *                - `'verbosity`' : The verbosity level:
-	 *                  - 0 : overall coverage value for the whole code.
-	 *                  - 1 : coverage for namespaces.
-	 *                  - 2 : coverage for namespaces and classes.
-	 *                  - 3 : coverage for namespaces, classes, methods and functions.
+	 *                  - 1 : overall coverage value for the whole code.
+	 *                  - 2 : coverage for namespaces.
+	 *                  - 3 : coverage for namespaces and classes.
+	 *                  - 4 : coverage for namespaces, classes, methods and functions.
 	 */
-	protected function _renderMetrics($metrics, $verbosity = 0) {
+	protected function _renderMetrics($metrics, $verbosity = 1) {
 		$type = $metrics->type();
-		if ($verbosity === 1 && ($type === 'class' || $type === 'function')) {
+		if ((int) $verbosity === 2 && ($type === 'class' || $type === 'function')) {
 			return;
 		}
-		if ($verbosity === 2 && ($type === 'function' || $type === 'method')) {
+		if ((int) $verbosity === 3 && ($type === 'function' || $type === 'method')) {
 			return;
 		}
 		$name = $metrics->name();
@@ -107,7 +107,7 @@ class Coverage extends Terminal {
 		$this->console(str_pad("Lines: {$percent}%", 15), $style);
 		$this->console(str_pad("({$stats['covered']}/{$stats['eloc']})", 20));
 		$this->console("{$name}\n");
-		if (!$verbosity) {
+		if ((int) $verbosity === 1) {
 			return;
 		}
 		foreach ($metrics->childs() as $child) {
