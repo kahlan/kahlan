@@ -42,6 +42,7 @@ class Monkey {
 		'__halt_compiler' => true,
 		'array' => true,
 		'catch' => true,
+		'case' => true,
 		'compact' => true,
 		'declare' => true,
 		'die' => true,

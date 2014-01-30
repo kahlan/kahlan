@@ -106,7 +106,11 @@ $__KMONKEY__13();
 		require('filename');
 		require_once('filename');
 		return($a);
-		switch($case){}
+		switch($case){
+			case (true && true):
+				break;
+			default:
+		}
 		unset($a);
 		while(false){}
 	}
