@@ -95,7 +95,7 @@ class Interceptor {
 		$this->_patchers = $options['patchers'];
 		$this->_findFile = $options['findFile'];
 		$this->_getClassMap = $options['getClassMap'];
-		$this->_cache = $options['cache'];
+		$this->_cache = rtrim($options['cache'], DS);
 		$this->_persistent = $options['persistent'];
 		$this->_exclude = $options['exclude'] ? (array) $options['exclude'] : ['kahlan\\'];
 		$this->_include = (array) $options['include'];
@@ -299,7 +299,7 @@ class Interceptor {
 		if ($file === null && $content === null) {
 			return $this->_cache;
 		}
-		$path = $this->_cache . $file;
+		$path = $this->_cache . DS . ltrim($file, DS);
 		if ($content === null) {
 			if ($this->_cache && file_exists($path) && (filemtime($path) > filemtime($file))) {
 				return $path;
