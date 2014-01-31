@@ -86,7 +86,7 @@ class Interceptor {
 			'patchers' => null,
 			'exclude' => [],
 			'include' => [],
-			'persistent' => false,
+			'persistent' => true,
 			'findFile' => 'findFile',
 			'getClassMap' => 'getClassMap',
 			'cache' => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'

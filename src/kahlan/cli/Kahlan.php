@@ -48,6 +48,7 @@ class Kahlan {
 		'spec' => 'spec',
 		'interceptor-include' => [],
 		'interceptor-exclude' => [],
+		'interceptor-persistent' => true,
 		'coverage' => null,
 		'coverage-scrutinizer' => null,
 		'autoclear' => [
@@ -117,7 +118,8 @@ class Kahlan {
 				'loader' => [$this->_autoloader, 'loadClass'],
 				'patchers' => $this->patchers(),
 				'include' => $this->args('interceptor-include'),
-				'exclude' => $this->args('interceptor-exclude')
+				'exclude' => $this->args('interceptor-exclude'),
+				'persistent' => $this->args('interceptor-persistent')
 			]);
 		});
 	}
