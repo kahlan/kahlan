@@ -79,9 +79,8 @@ class String {
 			$comma = true;
 			$string .= $tab . $key . ' => ';
 			if (is_array($value)) {
-				$string .= static::_arrayToString($value, compact('char', 'multiplier') + [
-					'indent' => $indent + 1
-				]);
+				$options['array']['indent'] = $indent + 1;
+				$string .= static::_arrayToString($value, $options);
 			} else {
 				$string .= static::toString($value, $options);
 			}
