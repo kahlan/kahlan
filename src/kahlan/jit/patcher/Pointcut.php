@@ -77,9 +77,7 @@ class Pointcut {
 			$process = (
 				$child->type === 'function' &&
 				$child->isMethod &&
-				!isset($child->visibility['abstract']) && (
-					isset($child->visibility['public']) || empty($child->visibility)
-				)
+				!isset($child->visibility['abstract'])
 			);
 			if ($process) {
 				$code = $this->_classes['node'];

@@ -277,6 +277,7 @@ class Parser {
 		$body .= static::$_stream->skipWhitespaces();
 		$body .= $node->name = static::$_stream->current();
 		$body .= static::$_stream->next(['{', T_EXTENDS]);
+		$token = static::$_stream->current(true);
 		if ($token[0] === T_EXTENDS) {
 			$body .= static::$_stream->skipWhitespaces();
 			$body .= $node->extends = static::$_stream->skipWhile([T_STRING, T_NS_SEPARATOR]);
