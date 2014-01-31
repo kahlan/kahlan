@@ -100,6 +100,9 @@ class String {
 		$unescaped = '';
 		$chars = str_split($string);
 		foreach ($chars as $char) {
+			if (!$char) {
+				continue;
+			}
 			$value = ord($char);
 			if ($value >= 7 && $value <= 13) {
 				$value -= 6;
