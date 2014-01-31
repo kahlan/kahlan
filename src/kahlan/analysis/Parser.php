@@ -169,7 +169,7 @@ class Parser {
 		static::_codeNode();
 		$current->close = '}';
 		if ($current->type === 'function' && $current->isClosure) {
-			$current->close .= static::$_stream->next([')',';']);
+			$current->close .= static::$_stream->next([')', ';', ',']);
 		}
 
 		static::$_states['current'] = $current->parent;

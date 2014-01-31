@@ -85,6 +85,22 @@ rand();
 		$type = User::TYPE;
 	}
 
+	public function lambda() {
+		$initializers = [
+			'name' => function($self) {
+				return basename(str_replace('\\', '/', $self));
+			},
+			'source' => function($self) {
+				return Inflector::tableize($self::meta('name'));
+			},
+			'title' => function($self) {
+				$titleKeys = array('title', 'name');
+				$titleKeys = array_merge($titleKeys, (array) $self::meta('key'));
+				return $self::hasField($titleKeys);
+			}
+		];
+	}
+
 	public function ignoreControlStructure() {
 		array();
 		try{} catch (\Exception $e) {};

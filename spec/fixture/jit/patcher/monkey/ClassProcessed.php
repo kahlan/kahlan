@@ -85,6 +85,22 @@ $__KMONKEY__13();
 		$type = User::TYPE;
 	}
 
+	public function lambda() {
+		$initializers = [
+			'name' => function($self) {$__KMONKEY__15 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'basename', true);$__KMONKEY__16 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'str_replace', true);
+				return $__KMONKEY__15($__KMONKEY__16('\\', '/', $self));
+			},
+			'source' => function($self) {$__KMONKEY__17 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'Inflector', false);
+				return $__KMONKEY__17::tableize($self::meta('name'));
+			},
+			'title' => function($self) {$__KMONKEY__18 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'array_merge', true);
+				$titleKeys = array('title', 'name');
+				$titleKeys = $__KMONKEY__18($titleKeys, (array) $self::meta('key'));
+				return $self::hasField($titleKeys);
+			}
+		];
+	}
+
 	public function ignoreControlStructure() {
 		array();
 		try{} catch (\Exception $e) {};
