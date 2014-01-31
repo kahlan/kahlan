@@ -15,6 +15,8 @@ class Example extends \kahlan\fixture\Parent {
 		A::bigTalk insteadof B;
 	}
 
+	public $type = User::TYPE;
+
 	public function classic() {
 		rand(2, 5);
 	}
@@ -77,6 +79,10 @@ rand();
 			rand(2.5);
 		};
 		$func();
+	}
+
+	public function staticAttribute() {
+		$type = User::TYPE;
 	}
 
 	public function ignoreControlStructure() {

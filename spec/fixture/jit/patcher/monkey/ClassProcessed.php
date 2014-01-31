@@ -15,6 +15,8 @@ class Example extends \kahlan\fixture\Parent {
 		A::bigTalk insteadof B;
 	}
 
+	public $type = User::TYPE;
+
 	public function classic() {$__KMONKEY__0 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
 		$__KMONKEY__0(2, 5);
 	}
@@ -77,6 +79,10 @@ $__KMONKEY__13();
 			$__KMONKEY__14(2.5);
 		};
 		$func();
+	}
+
+	public function staticAttribute() {
+		$type = User::TYPE;
 	}
 
 	public function ignoreControlStructure() {

@@ -117,12 +117,12 @@ class Monkey {
 	protected function _processTree($nodes) {
 		$alpha = '[\\\a-zA-Z_\\x7f-\\xff]';
 		$alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
-		$regex = "/(new\s+)?(?<!\:|\\\$|\>|{$alphanum})(\s*)({$alpha}{$alphanum}+)(\s*)(\(|;|::)/m";
+		$regex = "/(new\s+)?(?<!\:|\\\$|\>|{$alphanum})(\s*)({$alpha}{$alphanum}*)(\s*)(\(|;|::{$alpha}{$alphanum}*\s*\()/m";
 
 		foreach ($nodes as $node) {
 			$this->_variables = [];
 			$parent = $node->parent;
-			if ($node->processable && $node->type === 'code' && $parent->type !== 'namespace') {
+			if ($node->processable && $node->type === 'code') {
 				$this->_uses = $node->namespace ? $node->namespace->uses : [];
 				$node->body = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
 				$code = $this->_classes['node'];
@@ -145,11 +145,13 @@ class Monkey {
 	protected function _patchNode($matches) {
 		$name = $matches[3];
 
+		$static = preg_match('/^::/', $matches[5]);
+
 		// TODO: Move this in a dedicated plugin.
 		if ($name === 'exit' || $name === 'die') {
 			return $matches[1] . $matches[2] . 'new \kahlan\ExitException(';
 		}
-		if (isset($this->_blacklist[$name]) || (!$matches[1] && $matches[5] !== '(' && $matches[5] !== '::')) {
+		if (isset($this->_blacklist[$name]) || (!$matches[1] && $matches[5] !== '(' && !$static)) {
 			return $matches[0];
 		}
 
@@ -160,7 +162,7 @@ class Monkey {
 		} elseif (isset($this->_uses[$name])) {
 			$args = "null, '" . $this->_uses[$name] . "'";
 		} else {
-			$isFunc = $matches[1] || $matches[5] === '::' ? 'false' : 'true';
+			$isFunc = $matches[1] || $static ? 'false' : 'true';
 			$args = "__NAMESPACE__ , '{$name}', {$isFunc}";
 		}
 		$this->_variables[] = $variable . " = \kahlan\plugin\Monkey::patched({$args});";
