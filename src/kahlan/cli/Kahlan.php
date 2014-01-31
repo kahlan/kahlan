@@ -70,16 +70,16 @@ class Kahlan {
 	}
 
 	public function loadConfig($argv = []) {
-		$args = GetOpt::parse($argv);
+		$args = GetOpt::parse($argv, [
+			'coverage' => 'numeric'
+		]);
 		if (!empty($args['config'])) {
 			require $args['config'];
 		} elseif (file_exists('kahlan-config.php')) {
 			require 'kahlan-config.php';
 		}
 		$this->_args = $args + $this->_args;
-		if ($this->_args['coverage'] === false) {
-			$this->_args['coverage'] = 1;
-		}
+		$this->_args['coverage'] = $this->_args['coverage'];
 	}
 
 	public function customNamespaces() {

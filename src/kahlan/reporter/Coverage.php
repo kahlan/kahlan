@@ -41,7 +41,7 @@ class Coverage extends Terminal {
 		parent::__construct($options);
 		$defaults = ['verbosity' => 1];
 		$options += $defaults;
-		$this->_verbosity = (int) $options['verbosity'];
+		$this->_verbosity = $options['verbosity'];
 		$this->_collector = new Collector($options);
 	}
 
@@ -94,10 +94,10 @@ class Coverage extends Terminal {
 	 */
 	protected function _renderMetrics($metrics, $verbosity = 1) {
 		$type = $metrics->type();
-		if ((int) $verbosity === 2 && ($type === 'class' || $type === 'function')) {
+		if ($verbosity === 2 && ($type === 'class' || $type === 'function')) {
 			return;
 		}
-		if ((int) $verbosity === 3 && ($type === 'function' || $type === 'method')) {
+		if ($verbosity === 3 && ($type === 'function' || $type === 'method')) {
 			return;
 		}
 		$name = $metrics->name();
@@ -107,7 +107,7 @@ class Coverage extends Terminal {
 		$this->console(str_pad("Lines: {$percent}%", 15), $style);
 		$this->console(str_pad("({$stats['covered']}/{$stats['eloc']})", 20));
 		$this->console("{$name}\n");
-		if ((int) $verbosity === 1) {
+		if ($verbosity === 1) {
 			return;
 		}
 		foreach ($metrics->childs() as $child) {
