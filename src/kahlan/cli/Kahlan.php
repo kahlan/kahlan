@@ -32,6 +32,13 @@ class Kahlan {
 
 	use Filterable;
 
+	/**
+	 * Starting time
+	 *
+	 * @var float
+	 */
+	protected $_start = 0;
+
 	protected $_suite = null;
 
 	protected $_autoloader = null;
@@ -61,6 +68,7 @@ class Kahlan {
 		$defaults = ['autoloader' => null];
 		$options += $defaults;
 
+		$this->_start = microtime(true);
 		$this->_suite = $suite = new Suite();
 		$this->_patchers = new Patchers();
 		$this->_reporters = new Reporters();
@@ -133,32 +141,43 @@ class Kahlan {
 
 	public function initReporters() {
 		return Filter::on($this, __FUNCTION__, [], function($chain) {
+			$this->consoleReporter();
+			if ($this->args('coverage')) {
+				$this->coverageReporter();
+			}
+		});
+	}
+
+	public function consoleReporter() {
+		return Filter::on($this, __FUNCTION__, [], function($chain) {
 			$reporters = $this->reporters();
-			$reporter = $this->getConsoleReporter();
+			$start = $this->_start;
+			if ($this->args('reporter') === 'dot') {
+				$reporter = new Dot(compact('start'));
+			}
+			if ($this->args('reporter') === 'bar') {
+				$reporter = new Bar(compact('start'));
+			}
 			if ($reporter) {
 				$reporters->add('console', $reporter);
 			}
-			if (!$this->args('coverage')) {
-				return $reporters;
-			}
+		});
+	}
+
+	public function coverageReporter() {
+		return Filter::on($this, __FUNCTION__, [], function($chain) {
+			$reporters = $this->reporters();
 			$coverage = new Coverage([
 				'verbosity' => $this->args('coverage'),
 				'driver' => new Xdebug(),
 				'path' => $this->args('src')
 			]);
 			$reporters->add('coverage', $coverage);
-			return $reporters;
 		});
 	}
 
-	public function getConsoleReporter() {
+	public function preProcess() {
 		return Filter::on($this, __FUNCTION__, [], function($chain) {
-			if ($this->args('reporter') === 'dot') {
-				return new Dot();
-			}
-			if ($this->args('reporter') === 'bar') {
-				return new Bar();
-			}
 		});
 	}
 
@@ -223,6 +242,8 @@ class Kahlan {
 			$this->loadSpecs();
 
 			$this->initReporters();
+
+			$this->preProcess();
 
 			$this->runSpecs();
 

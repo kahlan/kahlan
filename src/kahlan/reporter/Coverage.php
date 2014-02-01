@@ -13,6 +13,13 @@ use kahlan\reporter\coverage\Collector;
 class Coverage extends Terminal {
 
 	/**
+	 * Collect time
+	 *
+	 * @var float
+	 */
+	protected $_time = 0;
+
+	/**
 	 * The coverage verbosity
 	 *
 	 * @param integer
@@ -78,7 +85,10 @@ class Coverage extends Terminal {
 	 * Returns the metrics about the coverage result.
 	 */
 	public function metrics() {
-		return $this->_collector->metrics();
+		$this->_start = microtime(true);
+		$result = $this->_collector->metrics();
+		$this->_time = microtime(true) - $this->_start;
+		return $result;
 	}
 
 	/**
@@ -141,6 +151,8 @@ class Coverage extends Terminal {
 	public function end($results) {
 		$this->console("\nCoverage Summary\n----------------\n\n");
 		$this->_renderMetrics($this->metrics(), $this->_verbosity);
+		$time = number_format($this->_time, 3);
+		$this->console("\nCollected in {$time} seconds\n\n\n");
 	}
 
 }

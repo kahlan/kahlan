@@ -11,6 +11,13 @@ namespace kahlan\reporter;
 class Reporter {
 
 	/**
+	 * Starting time
+	 *
+	 * @var float
+	 */
+	protected $_start = 0;
+
+	/**
 	 * Total of items to reach
 	 *
 	 * @var integer
@@ -30,6 +37,9 @@ class Reporter {
 	 * @param array $options (Unused).
 	 */
 	public function __construct($options = []) {
+		$defaults = ['start' => microtime(true)];
+		$options += $defaults;
+		$this->_start = $options['start'];
 	}
 
 	/**
@@ -38,6 +48,7 @@ class Reporter {
 	 * @param array $params The suite params array.
 	 */
 	public function begin($params) {
+		$this->_start = $this->_start ?: microtime(true);
 		$this->_total = max(1, $params['total']);
 	}
 

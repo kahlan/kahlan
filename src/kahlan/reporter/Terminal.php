@@ -15,13 +15,6 @@ use kahlan\analysis\Debugger;
 class Terminal extends Reporter {
 
 	/**
-	 * Starting time
-	 *
-	 * @var float
-	 */
-	protected $_start = 0;
-
-	/**
 	 * Print a string to STDOUT.
 	 *
 	 * @param mixed        $string  The string to print.
@@ -49,7 +42,6 @@ class Terminal extends Reporter {
 		$this->console("\nKahlan - PHP Testing Framework\n" , 'green');
 		$this->console("\nWorking Directory: ", 'blue');
 		$this->console(getcwd() . "\n\n");
-		$this->_start = microtime(true);
 	}
 
 	/**
