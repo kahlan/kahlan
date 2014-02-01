@@ -40,8 +40,6 @@ class Kahlan {
 
 	protected $_reporters = null;
 
-	protected $_specNamespaces = [];
-
 	protected $_args = [
 		'config' => null,
 		'src' => 'src',
@@ -92,7 +90,7 @@ class Kahlan {
 			$paths = (array) $this->args('spec');
 			foreach ($paths as $path) {
 				$path = realpath($path);
-				$this->_specNamespaces[] = $namespace = basename($path) . '\\';
+				$namespace = basename($path) . '\\';
 				$this->_autoloader->add($namespace, dirname($path));
 			}
 		});
@@ -101,11 +99,7 @@ class Kahlan {
 	public function initPatchers() {
 		return Filter::on($this, __FUNCTION__, [], function($chain) {
 			$patchers = $this->patchers();
-			if ($this->_specNamespaces) {
-				$patchers->add('substitute', new Substitute([
-					'namespaces' => $this->_specNamespaces
-				]));
-			}
+			$patchers->add('substitute', new Substitute());
 			$patchers->add('pointcut', new Pointcut());
 			$patchers->add('monkey', new Monkey());
 			return $patchers;
