@@ -211,6 +211,10 @@ class Stub {
 		$methods = static::_generateClassMethods($options['extends']);
 		$methods .= static::_generateInterfaceMethods($options['implements']);
 
+		if (!$options['extends']) {
+			$methods .= static::_defaultMethods();
+		}
+
 return "<?php\n\n" . $namespace . <<<EOT
 
 class {$class}{$extends}{$implements} {
@@ -218,15 +222,6 @@ class {$class}{$extends}{$implements} {
 	{$uses}
 {$methods}
 
-	public function __get(\$key){
-		return new static();
-	}
-
-	public function __call(\$name, \$params) {
-		return new static();
-	}
-
-	public static function __callStatic(\$name, \$params) {}
 }
 ?>
 EOT;
@@ -347,6 +342,43 @@ EOT;
 		}
 		$parameters = static::_generateParameters($method);
 		return "\tfunction {$name}({$parameters}) { {$body} }\n\n";
+	}
+
+	protected static function _defaultMethods() {
+
+	return <<<EOT
+	public function __construct() {}
+
+	public function __destruct() {}
+
+	public function __call(\$name, \$params) {
+		return new static();
+	}
+
+	public static function __callStatic(\$name, \$params) {}
+
+	public function __get(\$key){
+		return new static();
+	}
+
+	public function __set(\$name, \$value) {}
+
+	public function __isset(\$name) {}
+
+	public function __unset(\$name) {}
+
+	public function __sleep() { return []; }
+
+	public function __wakeup() {}
+
+	public function __toString() { return get_class(); }
+
+	public function __invoke() {}
+
+	public function __set_sate(\$properties) {}
+
+	public function __clone() {}
+EOT;
 	}
 
 	/**
