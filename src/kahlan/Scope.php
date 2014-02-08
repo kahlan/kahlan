@@ -92,6 +92,28 @@ abstract class Scope {
 	}
 
 	/**
+	 * Allow closures assigned to the scope property to be inkovable.
+	 *
+	 * @param  string $name   Name of the method being called.
+	 * @param  array  $params Enumerated array containing the passed parameters.
+	 * @return mixed
+	 * @throws Throw an Exception if the property doesn't exists / is not callable.
+	 */
+	public function __call($name, $params) {
+		$property = null;
+		try {
+			$property = $this->__get($name);
+		} catch (Exception $e) {
+			throw new Exception("Undefined callable variable `{$name}`");
+		}
+
+		if (is_callable($property)) {
+			return call_user_func_array($property, $params);
+		}
+		throw new Exception("Uncallable variable `{$name}`");
+	}
+
+	/**
 	 * Return the spec's message.
 	 *
 	 * @return array

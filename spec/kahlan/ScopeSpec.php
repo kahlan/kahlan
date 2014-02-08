@@ -71,5 +71,20 @@ describe("Scope", function() {
 
 	});
 
+	describe("__call", function() {
+
+		$this->customMethod = function($self) {
+			$self->called = true;
+			return 'called';
+		};
+
+		it("calls closure assigned to scope property to be inkovable", function() {
+			$actual = $this->customMethod($this);
+			expect($actual)->toBe('called');
+			expect($this->called)->toBe(true);
+		});
+
+	});
+
 });
 ?>
