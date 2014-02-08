@@ -117,8 +117,8 @@ abstract class Scope {
 	/**
 	 * Skip test(s) if the condition is `true`.
 	 *
-	 * @throws SkipException
 	 * @param boolean $condition
+	 * @throws SkipException
 	 */
 	public function skipIf($condition) {
 		if ($condition) {
