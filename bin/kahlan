@@ -1,12 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-if (file_exists($file = __DIR__ . '/../../../autoload.php')) {
-	$autoloader = include $file;
-	chdir(__DIR__ . '/../../../..');
-} elseif (file_exists($file = __DIR__ . '/../vendor/autoload.php')) {
+if (file_exists($file = __DIR__ . '/../vendor/autoload.php')) {
 	$autoloader = include $file;
 	chdir(__DIR__ . '/..');
+} elseif (file_exists($file = __DIR__ . '/../../../autoload.php')) {
+	$autoloader = include $file;
+	chdir(__DIR__ . '/../../../..');
 }
 
 if (!isset($autoloader)) {
