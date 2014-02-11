@@ -15,6 +15,25 @@ use kahlan\analysis\Debugger;
 class Terminal extends Reporter {
 
 	/**
+	 * Output stream, STDOUT
+	 *
+	 * @var stream
+	 */
+	protected $_output = null;
+
+	/**
+	 * Reporter constructor
+	 *
+	 * @param array $options.
+	 */
+	public function __construct($options = []) {
+		parent::__construct($options);
+		$defaults = ['output' => fopen('php://stdout', 'r')];
+		$options += $defaults;
+		$this->_output = $options['output'];
+	}
+
+	/**
 	 * Print a string to STDOUT.
 	 *
 	 * @param mixed        $string  The string to print.
@@ -29,7 +48,7 @@ class Terminal extends Reporter {
 	 *
 	 */
 	public function console($string, $options = null) {
-		echo Cli::color($string, $options);
+		fwrite($this->_output, Cli::color($string, $options));
 	}
 
 	/**
@@ -198,6 +217,15 @@ class Terminal extends Reporter {
 		}
 		$time = number_format(microtime(true) - $this->_start, 3);
 		$this->console(" in {$time} seconds\n\n\n");
+	}
+
+	/**
+	 * Destructor
+	 */
+	public function __destruct() {
+		if ($this->_output) {
+			fclose($this->_output);
+		}
 	}
 }
 
