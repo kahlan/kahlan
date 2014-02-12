@@ -70,7 +70,7 @@ abstract class Scope {
 	 * @param  string $key The name of the variable.
 	 * @return mixed  The value of the variable.
 	 */
-	public function __get($key) {
+	public function &__get($key) {
 		if (array_key_exists($key, $this->_data)) {
 			return $this->_data[$key];
 		}
