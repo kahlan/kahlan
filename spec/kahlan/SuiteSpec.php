@@ -37,6 +37,18 @@ describe("Suite", function() {
 			expect($nb)->toBe(2);
 		});
 
+		context("with sub scope", function() use (&$nb) {
+
+			it("passes if `beforeEach` has been executed once more", function() use (&$nb) {
+				expect($nb)->toBe(3);
+			});
+
+		});
+
+		it("passes if `beforeEach` has been executed once more", function() use (&$nb) {
+			expect($nb)->toBe(4);
+		});
+
 	});
 
 	describe("after", function() {
@@ -67,6 +79,18 @@ describe("Suite", function() {
 
 		it("passes if `afterEach` has been executed", function() use (&$nb) {
 			expect($nb)->toBe(1);
+		});
+
+		context("with sub scope", function() use (&$nb) {
+
+			it("passes if `afterEach` has been executed once more", function() use (&$nb) {
+				expect($nb)->toBe(2);
+			});
+
+		});
+
+		it("passes if `afterEach` has been executed once more", function() use (&$nb) {
+			expect($nb)->toBe(3);
 		});
 
 	});

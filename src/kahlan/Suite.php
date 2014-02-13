@@ -265,6 +265,10 @@ class Suite extends Scope {
 	 * @param object A child spec.
 	 */
 	protected function _process($child) {
+		if ($child instanceof Suite) {
+			$child->process();
+			return;
+		}
 		$this->_callbacks('beforeEach');
 		$child->process();
 		$this->_autoclear();
