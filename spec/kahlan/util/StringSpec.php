@@ -16,6 +16,11 @@ describe("String::expands", function() {
 		$this->expect($dump)->toBe('');
 	});
 
+	it("expands an zero string as 0", function() {
+		$dump = String::expands('2014');
+		$this->expect($dump)->toBe('2014');
+	});
+
 });
 
 describe("String::toString", function() {

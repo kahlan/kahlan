@@ -100,7 +100,7 @@ class String {
 		$unescaped = '';
 		$chars = str_split($string);
 		foreach ($chars as $char) {
-			if (!$char) {
+			if ($char === '') {
 				continue;
 			}
 			$value = ord($char);
