@@ -251,6 +251,9 @@ class Suite extends Scope {
 			$this->_callbacks('after', false);
 		} catch (Exception $exception) {
 			$this->_exception($exception);
+			try {
+				$this->_callbacks('after', false);
+			} catch (Exception $exception) {}
 		}
 
 		$this->_errorHandler(false);
@@ -269,10 +272,18 @@ class Suite extends Scope {
 			$child->process();
 			return;
 		}
-		$this->_callbacks('beforeEach');
-		$child->process();
-		$this->_autoclear();
-		$this->_callbacks('afterEach');
+		try {
+			$this->_callbacks('beforeEach');
+			$child->process();
+			$this->_autoclear();
+			$this->_callbacks('afterEach');
+		} catch (Exception $exception) {
+			$this->_exception($exception);
+			try {
+				$this->_autoclear();
+				$this->_callbacks('afterEach');
+			} catch (Exception $exception) {}
+		}
 	}
 
 	/**
