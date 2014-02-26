@@ -8,6 +8,7 @@ use kahlan\jit\patcher\Pointcut;
 use kahlan\analysis\Parser;
 
 use spec\fixture\plugin\pointcut\Foo;
+use spec\fixture\plugin\pointcut\SubBar;
 
 describe("toReceive::match", function() {
 
@@ -118,6 +119,20 @@ describe("toReceive::match", function() {
 				$foo = new Foo();
 				expect('spec\fixture\plugin\pointcut\FooFoo')->not->toReceive('message');
 				$foo->message();
+			});
+
+			it("expects not overrided method to also be called on method's __CLASS__", function() {
+				$bar = new SubBar();
+				expect('spec\fixture\plugin\pointcut\Bar')->toReceive('send');
+				expect('spec\fixture\plugin\pointcut\SubBar')->toReceive('send');
+				$bar->send();
+			});
+
+			it("expects overrided method to not be called on method's __CLASS__", function() {
+				$bar = new SubBar();
+				expect('spec\fixture\plugin\pointcut\Bar')->not->toReceive('overrided');
+				expect('spec\fixture\plugin\pointcut\SubBar')->toReceive('overrided');
+				$bar->overrided();
 			});
 
 		});

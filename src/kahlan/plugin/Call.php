@@ -95,9 +95,9 @@ class Call {
 			$call['static'] = true;
 		}
 		if (is_object($reference)) {
-			$call += ['instance' => $reference, 'class' => get_class($reference), 'static' => false];
+			$call += ['instance' => $reference, 'class' => get_class($reference), 'static' => $static];
 		} else {
-			$call += ['instance' => null, 'class' => $reference, 'static' => true];
+			$call += ['instance' => null, 'class' => $reference, 'static' => $static];
 		}
 		static::$_logs[] = $call;
 	}
