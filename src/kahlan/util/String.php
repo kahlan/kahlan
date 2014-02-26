@@ -8,6 +8,7 @@
 
 namespace kahlan\util;
 
+use Closure;
 use Exception;
 use InvalidArgumentException;
 use kahlan\util\Set;
@@ -32,7 +33,7 @@ class String {
 
 		$options = Set::merge($defaults, $options);
 
-		if (is_callable($value)) {
+		if ($value instanceof Closure) {
 			return '`Closure`';
 		}
 		if (is_array($value)) {

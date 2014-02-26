@@ -35,7 +35,7 @@ class Substitute {
 		if ($file) {
 			return $file;
 		}
-		$allowed = false;
+		$allowed = empty($this->_namespaces);
 		foreach ($this->_namespaces as $ns) {
 			if (strpos($class, $ns) === 0) {
 				$allowed = true;
@@ -76,9 +76,9 @@ class Substitute {
 		}
 
 		if ($namespace) {
-			$namespace = "<?php\n\nnamespace {$namespace};\n";
+			$namespace = "namespace {$namespace};\n";
 		}
-return $namespace . <<<EOT
+return "<?php\n\n" . $namespace . <<<EOT
 
 use kahlan\IncompleteException;
 

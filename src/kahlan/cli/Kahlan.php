@@ -107,7 +107,7 @@ class Kahlan {
 	public function initPatchers() {
 		return Filter::on($this, __FUNCTION__, [], function($chain) {
 			$patchers = $this->patchers();
-			$patchers->add('substitute', new Substitute());
+			$patchers->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
 			$patchers->add('pointcut', new Pointcut());
 			$patchers->add('monkey', new Monkey());
 			return $patchers;
