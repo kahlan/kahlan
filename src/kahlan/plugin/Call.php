@@ -15,11 +15,12 @@ use kahlan\plugin\call\Message;
 class Call {
 
 	/**
-	 * Registered instance/class to log
+	 * [Optimisation Concern] Cache all watched class
 	 *
 	 * @var array
+	 * @see kahlan\plugin\Call::watched()
 	 */
-	protected static $_registered = [];
+	protected static $_watched = [];
 
 	/**
 	 * Logged calls
@@ -50,24 +51,16 @@ class Call {
 	protected $_reference = null;
 
 	/**
-	 * Static call
-	 *
-	 * @var boolean
-	 */
-	protected $_static = false;
-
-	/**
 	 * Constructor
 	 *
 	 * @param mixed $reference An instance or a fully namespaced class name.
 	 */
 	public function __construct($reference, $static = false) {
 		$this->_reference = $reference;
-		$this->_static = $static;
 		if (is_object($reference)) {
-			static::$_registered[get_class($reference)] = $this;
+			static::$_watched[get_class($reference)] = $this;
 		}
-		static::$_registered[String::hash($reference)] = $this;
+		static::$_watched[String::hash($reference)] = $this;
 	}
 
 	/**
@@ -76,9 +69,14 @@ class Call {
 	 * @param string $name method name.
 	 */
 	public function method($name) {
+		$static = false;
+		if (preg_match('/^::.*/', $name)) {
+			$static = true;
+			$name = substr($name, 2);
+		}
 		return $this->_message = new Message([
 			'reference' => $this->_reference,
-			'static' => $this->_static,
+			'static' => $static,
 			'name' => $name
 		]);
 	}
@@ -91,16 +89,14 @@ class Call {
 	 */
 	public static function log($reference, $call) {
 		$hash = String::hash($reference);
+		$static = false;
+		if (preg_match('/^::.*/', $call['name'])) {
+			$call['name'] = substr($call['name'], 2);
+			$call['static'] = true;
+		}
 		if (is_object($reference)) {
-			$class = get_class($reference);
-			if (!isset(static::$_registered[$hash]) && !isset(static::$_registered[$class])) {
-				return;
-			}
-			$call += ['instance' => $reference, 'class' => $class, 'static' => false];
+			$call += ['instance' => $reference, 'class' => get_class($reference), 'static' => false];
 		} else {
-			if (!isset(static::$_registered[$hash])) {
-				return;
-			}
 			$call += ['instance' => null, 'class' => $reference, 'static' => true];
 		}
 		static::$_logs[] = $call;
@@ -169,10 +165,23 @@ class Call {
 	}
 
 	/**
+	 * [Optimisation Concern] Check if a specific class is watched
+	 *
+	 * @param  string         $class A fully namespaced class name.
+	 * @return boolean|array
+	 */
+	public static function watched($class = null) {
+		if ($class === null) {
+			return array_keys(static::$_watched);
+		}
+		return isset(static::$_watched[$class]);
+	}
+
+	/**
 	 * Clear the registered references & logs.
 	 */
 	public static function clear() {
-		static::$_registered = [];
+		static::$_watched = [];
 		static::$_logs = [];
 		static::$_index = [];
 	}

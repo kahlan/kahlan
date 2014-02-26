@@ -9,6 +9,7 @@
 namespace kahlan\util;
 
 use Exception;
+use InvalidArgumentException;
 use kahlan\util\Set;
 
 class String {

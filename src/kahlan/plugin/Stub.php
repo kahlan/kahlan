@@ -24,7 +24,8 @@ class Stub {
 	 * @var array
 	 */
 	protected static $_classes = [
-		'interceptor' => 'kahlan\jit\Interceptor'
+		'interceptor' => 'kahlan\jit\Interceptor',
+		'call' => 'kahlan\plugin\Call'
 	];
 
 	/**
@@ -33,6 +34,14 @@ class Stub {
 	 * @var array
 	 */
 	protected static $_registered = [];
+
+	/**
+	 * [Optimisation Concern] Cache all stubbed class
+	 *
+	 * @var array
+	 * @see kahlan\plugin\Call::stubbed()
+	 */
+	protected static $_stubbed = [];
 
 	/**
 	 * Stubbed methods
@@ -89,8 +98,14 @@ class Stub {
 			$reference = is_object($reference) ? get_class($reference) : $reference;
 			$name = substr($name, 2);
 		}
-		if (!isset(static::$_registered[String::hash($reference)])) {
-			static::$_registered[String::hash($reference)] = $this;
+		$hash = String::hash($reference);
+		if (!isset(static::$_registered[$hash])) {
+			static::$_registered[$hash] = $this;
+		}
+		if (is_object($reference)) {
+			static::$_stubbed[get_class($reference)] = true;
+		} else {
+			static::$_stubbed[$reference] = true;
 		}
 		return $this->_stubs[$name] = new Method(compact('name', 'static', 'closure'));
 	}
@@ -111,24 +126,29 @@ class Stub {
 	/**
 	 * Find a stub.
 	 *
-	 * @param  mixed       $reference An instance or a fully namespaced class name.
-	 * @param  string      $method    The method name.
-	 * @param  array       $params    The required arguments.
+	 * @param  mixed       $references An instance or a fully namespaced class name.
+	 *                                 or an array of that.
+	 * @param  string      $method     The method name.
+	 * @param  array       $params     The required arguments.
 	 * @return object|null Return the subbed method or `null` if not founded.
 	 */
-	public static function find($reference, $method = null, $params = []) {
+	public static function find($references, $method = null, $params = []) {
+		$references = (array) $references;
 		$stub = null;
-		$refs = [String::hash($reference)];
-		if (is_object($reference)) {
-			$refs[] = get_class($reference);
-		}
-		foreach ($refs as $ref) {
-			if (isset(static::$_registered[$ref])) {
-				$stubs = static::$_registered[$ref]->methods();
+		$refs = [];
+		foreach ($references as $reference) {
+			$hash = String::hash($reference);
+			if (isset(static::$_registered[$hash])) {
+				$stubs = static::$_registered[$hash]->methods();
+				$static = false;
+				if (preg_match('/^::.*/', $method)) {
+					$static = true;
+					$method = substr($method, 2);
+				}
 				if (isset($stubs[$method])) {
 					$stub = $stubs[$method];
 					$call['name'] = $method;
-					$call['static'] = !is_object($reference);
+					$call['static'] = $static;
 					$call['params'] = $params;
 					return $stub->match($call) ? $stub : false;
 				}
@@ -147,7 +167,10 @@ class Stub {
 	 */
 	public static function create($options = []) {
 		$class = static::classname($options);
-		return new $class();
+		$instance = new $class();
+		$call = static::$_classes['call'];
+		new $call($instance);
+		return $instance;
 	}
 
 	/**
@@ -173,6 +196,8 @@ class Stub {
 			}
 			eval('?>' . $code);
 		}
+		$call = static::$_classes['call'];
+		new $call($options['class']);
 		return $options['class'];
 	}
 
@@ -409,6 +434,32 @@ EOT;
 	}
 
 	/**
+	 * Check if a stub has been registered for a hash
+	 *
+	 * @param  mixed         $hash An instance hash or a fully namespaced class name.
+	 * @return boolean|array
+	 */
+	public static function registered($hash = null) {
+		if ($hash === null) {
+			return array_keys(static::$_registered);
+		}
+		return isset(static::$_registered[$hash]);
+	}
+
+	/**
+	 * [Optimisation Concern] Check if a specific class has been stubbed
+	 *
+	 * @param  string         $class A fully namespaced class name.
+	 * @return boolean|array
+	 */
+	public static function stubbed($class = null) {
+		if ($class === null) {
+			return array_keys(static::$_stubbed);
+		}
+		return isset(static::$_stubbed[$class]);
+	}
+
+	/**
 	 * Clear the registered references.
 	 *
 	 * @param string $reference An instance or a fully namespaced class name or `null` to clear all.
@@ -416,9 +467,16 @@ EOT;
 	public static function clear($reference = null) {
 		if ($reference === null) {
 			static::$_registered = [];
+			static::$_stubbed = [];
 			return;
 		}
-		unset(static::$_registered[String::hash($reference)]);
+		$hash = String::hash($reference);
+		unset(static::$_registered[$hash]);
+		if (is_object($reference)) {
+			unset(static::$_stubbed[get_class($reference)]);
+		} else {
+			unset(static::$_stubbed[$reference]);
+		}
 	}
 }
 

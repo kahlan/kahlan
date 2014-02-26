@@ -34,16 +34,13 @@ class ToReceive {
 	protected $_report = null;
 
 	public function __construct($actual, $expected) {
-		$static = false;
 		if (preg_match('/^::.*/', $expected)) {
-			$static = true;
 			$actual = is_object($actual) ? get_class($actual) : $actual;
-			$expected = substr($expected, 2);
 		}
 		$this->_actual = $actual;
 		$this->_expected = $expected;
 		$call = $this->_classes['call'];
-		$this->_call = new $call($actual, $static);
+		$this->_call = new $call($actual);
 		$this->_message = $this->_call->method($expected);
 		$this->_backtrace = Debugger::backtrace(['start' => 4]);
 	}
