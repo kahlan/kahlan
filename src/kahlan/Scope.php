@@ -65,6 +65,13 @@ abstract class Scope {
 	];
 
 	/**
+	 * Exclusive scope detected.
+	 *
+	 * @var array
+	 */
+	protected $_exclusive = false;
+
+	/**
 	 * Getter.
 	 *
 	 * @param  string $key The name of the variable.
@@ -253,6 +260,33 @@ abstract class Scope {
 			throw new Exception("Error invalid closure.");
 		}
 		return $closure->bindTo($this);
+	}
+
+	/**
+	 * Return the exclusive mode.
+	 *
+	 * @return boolean
+	 */
+	public function exclusive($mode = null) {
+		if ($mode === null) {
+			return $this->_exclusive;
+		}
+		return $this->_exclusive = $mode;
+	}
+
+	/**
+	 * Apply exclusivity up to the root.
+	 *
+	 * @param string The scope value
+	 */
+	protected function _emitExclusive($scope) {
+		if ($scope !== 'exclusive') {
+			return;
+		}
+		$instances = $this->_parents(true);
+		foreach ($instances as $instance) {
+			$instance->_exclusive = true;
+		}
 	}
 
 	/**

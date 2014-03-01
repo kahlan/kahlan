@@ -18,7 +18,7 @@ class Suite extends Scope {
 	 *
 	 * @var array
 	 */
-	protected $_childs = ['normal' => []];
+	protected $_childs = [];
 
 	/**
 	 * The each callbacks.
@@ -38,13 +38,6 @@ class Suite extends Scope {
 	 * @see khakan\Suite::process()
 	 */
 	protected $_locked = false;
-
-	/**
-	 * Exclusive scope detected.
-	 *
-	 * @var array
-	 */
-	protected $_exclusive = false;
 
 	/**
 	 * The reporters container.
@@ -81,18 +74,16 @@ class Suite extends Scope {
 		$options += $defaults;
 		extract($options);
 
-		if ($parent) {
-			$this->_root = $parent->_root;
-		} else {
+		if (!$parent) {
 			$this->_root = $this;
 			return;
 		}
-
+		$this->_root = $parent->_root;
 		$closure = $this->_bind($closure, $name);
 		$this->_message = $message;
 		$this->_closure = $closure;
 		$this->_parent = $parent;
-		$this->_root->_exclusive |= $scope === 'exclusive';
+		$this->_emitExclusive($scope);
 	}
 
 	/**
@@ -106,7 +97,7 @@ class Suite extends Scope {
 		$parent = $this;
 		$name = 'describe';
 		$suite = new Suite(compact('message', 'closure', 'parent', 'name', 'scope'));
-		return $this->_childs[$scope][] = $suite;
+		return $this->_childs[] = $suite;
 	}
 
 	/**
@@ -120,7 +111,7 @@ class Suite extends Scope {
 		$parent = $this;
 		$name = 'context';
 		$suite = new Suite(compact('message', 'closure', 'parent', 'name', 'scope'));
-		return $this->_childs[$scope][] = $suite;
+		return $this->_childs[] = $suite;
 	}
 
 	/**
@@ -139,9 +130,8 @@ class Suite extends Scope {
 		}
 		$parent = $this;
 		$root = $this->_root;
-		$spec = new Spec(compact('message', 'closure', 'parent', 'root'));
-		$this->_childs[$scope][] = $spec;
-		$this->_root->_exclusive |= $scope === 'exclusive';
+		$spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope'));
+		$this->_childs[] = $spec;
 		return $this;
 	}
 
@@ -229,7 +219,7 @@ class Suite extends Scope {
 	 *
 	 * @return array Process options.
 	 */
-	public function process($options = []) {
+	protected function _run($options = []) {
 		if ($this->_locked) {
 			throw new Exception('Method not allowed in this context.');
 		}
@@ -239,12 +229,9 @@ class Suite extends Scope {
 		$this->_errorHandler(true, $options);
 
 		try {
-			$closure = $this->_closure;
-			$closure($this);
 			$this->_callbacks('before', false);
-			$scope = !empty($this->_childs['exclusive']) ? 'exclusive' : 'normal';
 
-			foreach($this->_childs[$scope] as $child) {
+			foreach($this->_childs as $child) {
 				$this->_process($child);
 			}
 
@@ -268,8 +255,11 @@ class Suite extends Scope {
 	 * @param object A child spec.
 	 */
 	protected function _process($child) {
+		if ($this->_root->exclusive() && !$child->exclusive()) {
+			return;
+		}
 		if ($child instanceof Suite) {
-			$child->process();
+			$child->_run();
 			return;
 		}
 		try {
@@ -284,6 +274,7 @@ class Suite extends Scope {
 				$this->_callbacks('afterEach');
 			} catch (Exception $exception) {}
 		}
+		$this->report('progress');
 	}
 
 	/**
@@ -307,9 +298,7 @@ class Suite extends Scope {
 	 */
 	public function results() {
 		$results = $this->_results;
-
-		$scope = !empty($this->_childs['exclusive']) ? 'exclusive' : 'normal';
-		foreach ($this->_childs[$scope] as $child) {
+		foreach ($this->_childs as $child) {
 			foreach ($child->results() as $type => $result) {
 				$results[$type] = array_merge($results[$type], $result);
 			}
@@ -353,21 +342,52 @@ class Suite extends Scope {
 		$defaults = ['reporters' => null, 'autoclear' => []];
 		$options += $defaults;
 
+		$build = $this->_build();
+
 		$this->_reporters = $options['reporters'];
 		$this->_autoclear = (array) $options['autoclear'];
 
-		$scope = !empty($this->_childs['exclusive']) ? 'exclusive' : 'normal';
+		$total = $this->exclusive() ? $build['exclusive'] : $build['specs'];
+		$this->report('begin', ['total' => $total]);
 
-		$this->report('begin', ['total' => count($this->_childs[$scope])]);
-		foreach ($this->_childs[$scope] as $suite) {
-			$suite->process();
-			foreach ($suite->results() as $type => $result) {
-				$this->_results[$type] = array_merge($this->_results[$type], $result);
-			}
-			$this->report('progress');
+		$this->_run();
+		foreach ($this->results() as $type => $result) {
+			$this->_results[$type] = array_merge($this->_results[$type], $result);
 		}
 		$this->report('end', $this->_results);
 		return $this->_results;
+	}
+
+	/**
+	 * Build the suite.
+	 *
+	 * @return array Process options.
+	 */
+	protected function _build() {
+		static::$_instances[] = $this;
+		$closure = $this->_closure;
+		if (is_callable($closure)) {
+			$closure($this);
+		}
+		$specs = 0;
+		$exclusive = 0;
+		foreach($this->_childs as $child) {
+			if ($child instanceof Suite) {
+				$result = $child->_build();
+				if ($result['exclusive']) {
+					$exclusive += $result['exclusive'];
+				} elseif ($child->exclusive()) {
+					$exclusive += $result['specs'];
+					$child->_broadcastExclusive('exclusive');
+				} else {
+					$specs += $result['specs'];
+				}
+			} else {
+				$child->exclusive() ? $exclusive++ : $specs++;
+			}
+		}
+		array_pop(static::$_instances);
+		return compact('specs', 'exclusive');
 	}
 
 	/**
@@ -401,10 +421,28 @@ class Suite extends Scope {
 	}
 
 	/**
+	 * Apply exclusivity downward to the lead.
+	 *
+	 * @param string The scope value
+	 */
+	protected function _broadcastExclusive($scope) {
+		if ($scope !== 'exclusive') {
+			return;
+		}
+		$instances = $this->_parents(true);
+		foreach ($this->_childs as $child) {
+			$child->exclusive(true);
+			if ($child instanceof Suite) {
+				$child->_broadcastExclusive($scope);
+			}
+		}
+	}
+
+	/**
 	 * Reset the class
 	 */
 	public function reset() {
-		$this->_childs = ['normal' => []];
+		$this->_childs = [];
 		$this->_autoclear = [];
 		$this->_reporters = null;
 	}

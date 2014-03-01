@@ -36,7 +36,13 @@ class Spec extends Scope {
 	 *              -`'parent'` : the parent suite instance.
 	 */
 	public function __construct($options = []) {
-		$defaults = ['message' => '', 'closure' => null, 'parent' => null, 'root' => null];
+		$defaults = [
+			'message' => '',
+			'closure' => null,
+			'parent' => null,
+			'root' => null,
+			'scope' => 'normal'
+		];
 		$options += $defaults;
 		extract($options);
 
@@ -45,6 +51,7 @@ class Spec extends Scope {
 		$this->_closure = $closure;
 		$this->_parent = $parent;
 		$this->_root = $root;
+		$this->_emitExclusive($scope);
 		$this->_matcher = Box::get('kahlan.matcher');
 	}
 
