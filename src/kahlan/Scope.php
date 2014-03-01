@@ -151,6 +151,11 @@ abstract class Scope {
 	 */
 	public function skipIf($condition) {
 		if ($condition) {
+			if ($this instanceof Suite) {
+				foreach ($this->_childs as $child) {
+					$this->report('progress');
+				}
+			}
 			throw new SkipException();
 		}
 	}
