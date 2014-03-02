@@ -14,6 +14,13 @@ use kahlan\util\Set;
 class Suite extends Scope {
 
 	/**
+	 * DI container
+	 *
+	 * @var array
+	 */
+	protected $_box = null;
+
+	/**
 	 * The childs array.
 	 *
 	 * @var array
@@ -69,12 +76,14 @@ class Suite extends Scope {
 			'closure' => null,
 			'parent' => null,
 			'name' => 'describe',
-			'scope' => 'normal'
+			'scope' => 'normal',
+			'box' => null
 		];
 		$options += $defaults;
 		extract($options);
 
 		if (!$parent) {
+			$this->_box = $box;
 			$this->_root = $this;
 			return;
 		}
@@ -130,8 +139,10 @@ class Suite extends Scope {
 		}
 		$parent = $this;
 		$root = $this->_root;
-		$spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope'));
+		$box = $this->_root->_box;
+		$spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'box'));
 		$this->_childs[] = $spec;
+		$this->_root->_exclusive |= $scope === 'exclusive';
 		return $this;
 	}
 

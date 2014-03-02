@@ -17,10 +17,27 @@ if (!$autoloader) {
 	exit(1);
 }
 
+use box\Box;
 use kahlan\cli\Kahlan;
+use kahlan\Suite;
+use kahlan\Matcher;
 
-$kahlan = new Kahlan(compact('autoloader'));
-$kahlan->loadConfig($argv);
-$kahlan->run();
+global $kahlan;
+
+$kahlan = new Box();
+
+$kahlan->service('suite', function() {
+	return new Suite(['box' => $this]);
+});
+$kahlan->service('matcher', function() {
+	return new Matcher();
+});
+
+$specs = new Kahlan([
+	'autoloader' => $autoloader,
+	'box' => $kahlan
+]);
+$specs->loadConfig($argv);
+$specs->run();
 
 ?>

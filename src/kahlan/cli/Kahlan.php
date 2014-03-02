@@ -65,15 +65,13 @@ class Kahlan {
 	];
 
 	public function __construct($options = []) {
-		$defaults = ['autoloader' => null];
+		$defaults = ['autoloader' => null, 'box' => null];
 		$options += $defaults;
-
 		$this->_start = microtime(true);
-		$this->_suite = $suite = new Suite();
+		$this->_suite = $options['box']->get('suite');
 		$this->_patchers = new Patchers();
 		$this->_reporters = new Reporters();
 		$this->_autoloader = $options['autoloader'];
-		Box::service('kahlan.suite', function() use ($suite) { return $suite; });
 	}
 
 	public function loadConfig($argv = []) {

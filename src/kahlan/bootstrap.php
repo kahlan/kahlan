@@ -1,5 +1,4 @@
 <?php
-use box\Box;
 use kahlan\Suite;
 use kahlan\Spec;
 use kahlan\Matcher;
@@ -27,7 +26,8 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
 
 	function describe($message, $closure, $scope = 'normal') {
 		if (!Suite::current()) {
-			$suite = Box::get('kahlan.suite');
+			global $kahlan;
+			$suite = $kahlan->get('suite');
 			return $suite->describe($message, $closure, $scope);
 		}
 		return Suite::current()->describe($message, $closure, $scope);
@@ -82,7 +82,5 @@ Matcher::register('toMatch', 'kahlan\matcher\ToMatch');
 Matcher::register('toReceive', 'kahlan\matcher\ToReceive');
 Matcher::register('toReceiveNext', 'kahlan\matcher\ToReceiveNext');
 Matcher::register('toThrow', 'kahlan\matcher\ToThrow');
-
-Box::service('kahlan.matcher', function() { return new Matcher(); });
 
 ?>

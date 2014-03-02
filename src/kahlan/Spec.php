@@ -41,7 +41,8 @@ class Spec extends Scope {
 			'closure' => null,
 			'parent' => null,
 			'root' => null,
-			'scope' => 'normal'
+			'scope' => 'normal',
+			'box' => null
 		];
 		$options += $defaults;
 		extract($options);
@@ -52,7 +53,7 @@ class Spec extends Scope {
 		$this->_parent = $parent;
 		$this->_root = $root;
 		$this->_emitExclusive($scope);
-		$this->_matcher = Box::get('kahlan.matcher');
+		$this->_matcher = $box->get('matcher');
 	}
 
 	/**
