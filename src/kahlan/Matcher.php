@@ -121,7 +121,8 @@ class Matcher {
 			$result = call_user_func_array($class . '::match', $params);
 			$params = Inspector::parameters($class, 'match', $params);
 			if (!is_object($result)) {
-				$this->_result($result, compact('class', 'matcher', 'params'));
+				$description = !$result ? $class::description(compact('class', 'matcher', 'params')) : '';
+				$this->_result($result, compact('class', 'matcher', 'params', 'description'));
 				return $this;
 			}
 			$this->_defered[] = compact('class', 'matcher', 'params') + [
@@ -142,6 +143,7 @@ class Matcher {
 			$data = compact('class', 'matcher', 'params', 'instance');
 			$boolean = $instance->resolve($data);
 			if ($not ? $boolean : !$boolean) {
+				$data['description'] = $class::description($data);
 				$data['exception'] = $instance->backtrace();
 			}
 			$this->_result($boolean, $data);

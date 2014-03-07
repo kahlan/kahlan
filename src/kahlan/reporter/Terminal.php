@@ -105,9 +105,8 @@ class Terminal extends Reporter {
 	 * @param array $report A report array.
 	 */
 	protected function _reportDescription($report) {
-		$matcher = $report['class'];
 		$not = $report['not'];
-		$description = $matcher::description($report);
+		$description = $report['description'];
 		if (is_array($description)) {
 			$params = $description['params'];
 			$description = $description['description'];
