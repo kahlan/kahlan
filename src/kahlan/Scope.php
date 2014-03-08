@@ -10,6 +10,7 @@ namespace kahlan;
 
 use Exception;
 use kahlan\SkipException;
+use kahlan\analysis\Debugger;
 
 abstract class Scope {
 
@@ -268,15 +269,16 @@ abstract class Scope {
 	}
 
 	/**
-	 * Return the exclusive mode.
+	 * Gets/Sets exclusive mode.
 	 *
+	 * @param  boolean|null For the setter behavior.
 	 * @return boolean
 	 */
-	public function exclusive($mode = null) {
-		if ($mode === null) {
+	public function exclusive($value = null) {
+		if ($value === null) {
 			return $this->_exclusive;
 		}
-		return $this->_exclusive = $mode;
+		return $this->_exclusive = $value;
 	}
 
 	/**
@@ -284,13 +286,14 @@ abstract class Scope {
 	 *
 	 * @param string The scope value
 	 */
-	protected function _emitExclusive($scope) {
+	protected function _emitExclusive($scope = 'exclusive') {
 		if ($scope !== 'exclusive') {
 			return;
 		}
+		$this->_root->_exclusives[] = Debugger::backtrace(['start' => 4]);
 		$instances = $this->_parents(true);
 		foreach ($instances as $instance) {
-			$instance->_exclusive = true;
+			$instance->exclusive(true);
 		}
 	}
 

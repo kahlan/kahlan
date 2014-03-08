@@ -62,12 +62,11 @@ class Debugger {
 	 * @return string The Backtrace formatted according to `'format'` option.
 	 */
 	public static function trace($options = []) {
-		$defaults = ['message' => null, 'trace' => []];
+		$defaults = ['message' => null, 'trace' => [], 'start' => 0, 'depth' => 0];
 		$options += $defaults;
-		$backtrace = static::backtrace($options);
 		$back = [];
-		$trace = static::normalize($options['trace'] ?: debug_backtrace());
-		$error = reset($trace);
+		$backtrace = static::normalize($options['trace'] ?: static::backtrace(debug_backtrace()));
+		$error = reset($backtrace);
 
 		$message = '';
 		if ($options['message'] === null && isset($error['code'])) {
@@ -78,11 +77,10 @@ class Debugger {
 
 		foreach ($backtrace as $trace) {
 			$string = $trace['function'];
-			if ($trace['definition'] !== '?') {
-				$string .= '@'. $trace['definition'];
-			}
 			$back[] = $string .' - ' . $trace['file'] . ', line ' . $trace['line'];
 		}
+		$count = count($back);
+		$back = array_splice($back, $options['start'], $options['depth'] ?: $count);
 		return $message . join("\n", $back);
 	}
 
@@ -100,8 +98,7 @@ class Debugger {
 		$defaults = [
 			'trace' => [],
 			'start' => 0,
-			'depth' => 0,
-			'definition' => true
+			'depth' => 0
 		];
 		$options += $defaults;
 
@@ -112,8 +109,7 @@ class Debugger {
 			'line' => '?',
 			'file' => '[internal]',
 			'class' => null,
-			'function' => '[main]',
-			'definition' => '?'
+			'function' => '[main]'
 		];
 
 		$loader = static::loader();
@@ -122,17 +118,15 @@ class Debugger {
 		foreach($backtrace as $i => $trace) {
 			$trace += $traceDefault;
 
-			if ($options['definition']) {
-				$trace['definition'] = static::_closureDef($trace);
+			if (strpos($trace['function'], '{closure}') !== false) {
+				continue;
 			}
 
-			if (isset($backtrace[$i + 1])) {
-				$next = $backtrace[$i + 1] + $traceDefault;
-				$trace['function'] = $next['function'];
-
-				if (!empty($next['class'])) {
-					$trace['function'] = $next['class'] . '::' . $trace['function'] . '()';
-				}
+			if (!empty($trace['class'])) {
+				$trace['function'] = $trace['class'] . '::' . $trace['function'] . '()';
+			} else {
+				$line = static::_line($trace);
+				$trace['line'] = $line !== $trace['line'] ? $line . ' to ' . $trace['line'] : $trace['line'];
 			}
 
 			if (preg_match("/eval\(\)'d code/", $trace['file']) && $trace['class'] && $loader) {
@@ -176,45 +170,59 @@ class Debugger {
 	}
 
 	/**
-	 * Locates original location of closures.
+	 * Locates original location of call from a trace.
 	 *
-	 * @param mixed $path File path to inspect.
-	 * @param integer $callLine Line number of class reference.
-	 * @return mixed Returns the line number where the method called is defined.
+	 * @param  array $trace A backtrace array.
+	 * @return mixed        Returns the line number where the method called is defined.
 	 */
-	protected static function _definition($path, $callLine) {
+	protected static function _line($trace) {
+		$path = $trace['file'];
+		$callLine = $trace['line'];
 		if (!file_exists($path)) {
 			return;
 		}
-		foreach (array_reverse(token_get_all(file_get_contents($path))) as $token) {
-			if (!is_array($token) || $token[2] > $callLine) {
-				continue;
+		$file = file_get_contents($path);
+		if (($i = static::_findPos($file, $callLine)) === null) {
+			return;
+		}
+		$line = $callLine;
+
+		$brackets = 0;
+		while ($i >= 0) {
+			if ($file[$i] === ')') {
+				$brackets--;
+			} elseif ($file[$i] === '(') {
+				$brackets++;
+			} elseif ($file[$i] === "\n") {
+				$line--;
 			}
-			if ($token[0] === T_FUNCTION) {
-				return $token[2];
+			if ($brackets > 0) {
+				return $line;
 			}
+			$i--;
 		}
 	}
 
 	/**
-	 * Helper method for caching closure function references to help the process of building the
-	 * stack trace.
-	 * @param  array $frame Backtrace information.
-	 * @return string Returns either the cached or the fetched closure function reference while
-	 *                writing its reference to the cache array `$_closureCache`.
+	 * Return the first character position of a specific line in a file.
+	 *
+	 * @param  string  $file     A file content.
+	 * @param  integer $callLine The number of line to find.
+	 * @return mixed             Returns the character position or null if not found.
 	 */
-	protected static function _closureDef($frame) {
-		$reference = '::';
-		$frame += ['file' => '??', 'line' => '??'];
-		$cacheKey = "{$frame['file']}@{$frame['line']}";
-
-		if (isset(static::$_closureCache[$cacheKey])) {
-			return static::$_closureCache[$cacheKey];
+	protected static function _findPos($file, $callLine) {
+		$len = strlen($file);
+		$line = 1;
+		$i = 0;
+		while ($i < $len) {
+			if ($file[$i] === "\n") {
+				$line++;
+			}
+			if ($line === $callLine) {
+				return $i;
+			}
+			$i++;
 		}
-
-		$reference = $frame['file'];
-		$line = static::_definition($reference, $frame['line']) ?: '?';
-		return static::$_closureCache[$cacheKey] = $line;
 	}
 
 	/**

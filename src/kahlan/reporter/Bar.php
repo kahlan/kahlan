@@ -144,6 +144,7 @@ class Bar extends Terminal {
 	public function end($results) {
 		$this->console("\n");
 		$this->_summary($results);
+		$this->_exclusive($results);
 	}
 }
 

@@ -10,6 +10,7 @@ namespace kahlan;
 
 use Exception;
 use kahlan\util\Set;
+use kahlan\analysis\Debugger;
 
 class Suite extends Scope {
 
@@ -59,6 +60,14 @@ class Suite extends Scope {
 	 * @var array
 	 */
 	protected $_autoclear = [];
+
+	/**
+	 * Saved backtrace for the exclusive mode.
+	 *
+	 * @see kahlan\Scope::_emitExclusive()
+	 * @var array
+	 */
+	protected $_exclusives = [];
 
 	/**
 	 * Constructor.
@@ -142,7 +151,6 @@ class Suite extends Scope {
 		$box = $this->_root->_box;
 		$spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'box'));
 		$this->_childs[] = $spec;
-		$this->_root->_exclusive |= $scope === 'exclusive';
 		return $this;
 	}
 
@@ -365,7 +373,10 @@ class Suite extends Scope {
 		foreach ($this->results() as $type => $result) {
 			$this->_results[$type] = array_merge($this->_results[$type], $result);
 		}
-		$this->report('end', $this->_results);
+		$report['specs'] = $this->_results;
+		$report['exclusive'] = $this->_exclusives;
+
+		$this->report('end', $report);
 		return $this->_results;
 	}
 
@@ -389,7 +400,7 @@ class Suite extends Scope {
 					$exclusive += $result['exclusive'];
 				} elseif ($child->exclusive()) {
 					$exclusive += $result['specs'];
-					$child->_broadcastExclusive('exclusive');
+					$child->_broadcastExclusive();
 				} else {
 					$specs += $result['specs'];
 				}
@@ -407,8 +418,7 @@ class Suite extends Scope {
 	public function stop() {
 		$results = $this->_results;
 
-		if ($this->_exclusive) {
-			echo "Exclusive Mode Detected: exit(-1)\n";
+		if ($this->exclusive()) {
 			exit(-1);
 		}
 		if (!isset($results['fail']) || !isset($results['exception']) || !isset($results['incomplete'])) {
@@ -436,7 +446,7 @@ class Suite extends Scope {
 	 *
 	 * @param string The scope value
 	 */
-	protected function _broadcastExclusive($scope) {
+	protected function _broadcastExclusive($scope = 'exclusive') {
 		if ($scope !== 'exclusive') {
 			return;
 		}
@@ -456,6 +466,7 @@ class Suite extends Scope {
 		$this->_childs = [];
 		$this->_autoclear = [];
 		$this->_reporters = null;
+		$this->_exclusives = [];
 	}
 }
 

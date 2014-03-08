@@ -80,6 +80,9 @@ class Terminal extends Reporter {
 			case 'exception':
 				$this->_reportException($report);
 			break;
+			case 'exclusive':
+				$this->_reportExclusive($report);
+			break;
 		}
 	}
 
@@ -178,7 +181,9 @@ class Terminal extends Reporter {
 	 *
 	 * @param array $results The results array of the execution.
 	 */
-	public function _summary($results) {
+	public function _summary($report) {
+
+		$results = $report['specs'];
 
 		$passed = count($results['pass']) + count($results['skip']);
 		$failed = 0;
@@ -217,6 +222,23 @@ class Terminal extends Reporter {
 		}
 		$time = number_format(microtime(true) - $this->_start, 3);
 		$this->console(" in {$time} seconds\n\n\n");
+	}
+
+	/**
+	 * Print exclusive report to STDOUT
+	 *
+	 * @param array $report A report array.
+	 */
+	protected function _exclusive($report) {
+		if (!$backtrace = $report['exclusive']) {
+			return;
+		}
+		$this->console("Exclusive Mode Detected in the following files:\n", "yellow");
+		foreach ($backtrace as $trace) {
+
+			$this->console(Debugger::trace(['trace' => $trace, 'start' => 1, 'depth' => 1]) . "\n");
+		}
+		$this->console("exit(-1)\n", "red");
 	}
 
 	/**

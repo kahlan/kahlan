@@ -62,13 +62,14 @@ class Dot extends Terminal {
 
 		$this->console("\n\n");
 
-		foreach ($results as $type => $reports) {
+		foreach ($results['specs'] as $type => $reports) {
 			foreach ($reports as $report) {
 				$this->_report($report);
 			}
 		}
 
 		$this->_summary($results);
+		$this->_exclusive($results);
 	}
 
 	protected function _console($string, $options = null) {
