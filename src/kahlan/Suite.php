@@ -340,7 +340,7 @@ class Suite extends Scope {
 			return restore_error_handler();
 		}
 		$handler = function($code, $message, $file, $line = 0, $args = []) {
-			$trace = debug_backtrace(false);
+			$trace = debug_backtrace();
 			$trace = array_slice($trace, 1, count($trace));
 			$instance = Spec::current() ?: static::current();
 			$messages = $instance->messages();

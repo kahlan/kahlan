@@ -76,6 +76,9 @@ class Debugger {
 		}
 
 		foreach ($backtrace as $trace) {
+			if (!isset($trace['file'])) {
+				continue;
+			}
 			$string = $trace['function'];
 			$back[] = $string .' - ' . $trace['file'] . ', line ' . $trace['line'];
 		}
@@ -157,6 +160,7 @@ class Debugger {
 			return array_merge([[
 				'code' => $backtrace->getCode(),
 				'message' => $backtrace->getMessage(),
+				'function' => '',
 				'file' => $backtrace->getFile(),
 				'line' => $backtrace->getLine(),
 				'args' => []
