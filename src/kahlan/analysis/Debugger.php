@@ -54,18 +54,18 @@ class Debugger {
 	/**
 	 * Get a backtrace string based on the supplied options.
 	 *
-	 * @param array $options Format for outputting stack trace. Available options are:
- 	 *        - `'start'`: The depth to start with.
-	 *        - `'depth'`: The maximum depth of the trace.
-	 *        - `'message'`: Either `null` for default message or a string.
-	 *        - `'trace'`: A trace to use instead of generating one.
+	 * @param  array $options Format for outputting stack trace. Available options are:
+ 	 *         - `'start'`: The depth to start with.
+	 *         - `'depth'`: The maximum depth of the trace.
+	 *         - `'message'`: Either `null` for default message or a string.
+	 *         - `'trace'`: A trace to use instead of generating one.
 	 * @return string The Backtrace formatted according to `'format'` option.
 	 */
 	public static function trace($options = []) {
-		$defaults = ['message' => null, 'trace' => [], 'start' => 0, 'depth' => 0];
+		$defaults = ['message' => null, 'trace' => []];
 		$options += $defaults;
 		$back = [];
-		$backtrace = static::normalize($options['trace'] ?: static::backtrace(debug_backtrace()));
+		$backtrace = static::backtrace($options);
 		$error = reset($backtrace);
 
 		$message = '';
@@ -76,15 +76,35 @@ class Debugger {
 		}
 
 		foreach ($backtrace as $trace) {
-			if (!isset($trace['file'])) {
-				continue;
-			}
-			$string = $trace['function'];
-			$back[] = $string .' - ' . $trace['file'] . ', line ' . $trace['line'];
+			$back[] =  static::_traceToString($trace);
 		}
-		$count = count($back);
-		$back = array_splice($back, $options['start'], $options['depth'] ?: $count);
 		return $message . join("\n", $back);
+	}
+
+	/**
+	 * Get a string representation of a trace.
+	 *
+	 * @param  array  $trace A trace array.
+	 * @return string The string representation of a trace.
+	 */
+	protected static function _traceToString($trace) {
+		$loader = static::loader();
+
+		if (!empty($trace['class'])) {
+			$trace['function'] = $trace['class'] . '::' . $trace['function'] . '()';
+		} else {
+			$line = static::_line($trace);
+			$trace['line'] = $line !== $trace['line'] ? $line . ' to ' . $trace['line'] : $trace['line'];
+		}
+
+		if (preg_match("/eval\(\)'d code/", $trace['file']) && $trace['class'] && $loader) {
+			$trace['file'] = $loader->findFile($trace['class']);
+		}
+
+		if (strpos($trace['function'], '{closure}') !== false) {
+			$trace['function'] = "{closure}";
+		}
+		return $trace['function'] .' - ' . $trace['file'] . ', line ' . $trace['line'];
 	}
 
 	/**
@@ -108,42 +128,21 @@ class Debugger {
 		$backtrace = static::normalize($options['trace'] ?: debug_backtrace());
 		$error = reset($backtrace);
 
-		$traceDefault = [
+		$traceDefaults = [
 			'line' => '?',
 			'file' => '[internal]',
 			'class' => null,
 			'function' => '[main]'
 		];
 
-		$loader = static::loader();
 		$back = [];
+		$ignoreFunctions = ['call_user_func_array', 'trigger_error'];
 
 		foreach($backtrace as $i => $trace) {
-			$trace += $traceDefault;
-
-			if (strpos($trace['function'], '{closure}') !== false) {
+			$trace += $traceDefaults;
+			if (strpos($trace['function'], '{closure}') !== false || in_array($trace['function'], $ignoreFunctions)) {
 				continue;
 			}
-
-			if (!empty($trace['class'])) {
-				$trace['function'] = $trace['class'] . '::' . $trace['function'] . '()';
-			} else {
-				$line = static::_line($trace);
-				$trace['line'] = $line !== $trace['line'] ? $line . ' to ' . $trace['line'] : $trace['line'];
-			}
-
-			if (preg_match("/eval\(\)'d code/", $trace['file']) && $trace['class'] && $loader) {
-				$trace['file'] = $loader->findFile($trace['class']);
-			}
-
-			if (in_array($trace['function'], ['call_user_func_array', 'trigger_error'])) {
-				continue;
-			}
-
-			if (strpos($trace['function'], '{closure}') !== false) {
-				$trace['function'] = "{closure}";
-			}
-
 			$back[] = $trace;
 		}
 
