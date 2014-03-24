@@ -9,6 +9,7 @@ use kahlan\analysis\Parser;
 use kahlan\plugin\Stub;
 
 use spec\fixture\plugin\pointcut\Foo;
+use spec\fixture\plugin\stub\Doz;
 
 describe("Stub", function() {
 
@@ -342,6 +343,61 @@ describe("Stub", function() {
 			$class = Stub::classname();
 			expect($class)->toReceive('__construct');
 			$stub = new $class();
+		});
+
+	});
+
+	describe("generate", function() {
+
+		it("generates abstract parent class methods", function() {
+			$result = Stub::generate([
+				'class' => 'spec\plugin\stub\Stub',
+				'extends' => 'spec\fixture\plugin\stub\Doz',
+				'constructor' => false
+			]);
+
+			$expected = <<<EOD
+<?php
+
+namespace spec\\plugin\\stub;
+
+class Stub extends \\spec\\fixture\\plugin\\stub\\Doz {
+
+
+	public function __construct() {}
+
+	function bar(\$var1 = NULL, array \$var2 = array()) {}
+
+
+}
+?>
+EOD;
+			expect($result)->toBe($expected);
+		});
+
+
+		it("overrides the construct method", function() {
+			$result = Stub::generate([
+				'class' => 'spec\plugin\stub\Stub',
+				'extends' => 'spec\fixture\plugin\stub\Doz'
+			]);
+
+			$expected = <<<EOD
+<?php
+
+namespace spec\\plugin\\stub;
+
+class Stub extends \\spec\\fixture\\plugin\\stub\\Doz {
+
+
+
+	function bar(\$var1 = NULL, array \$var2 = array()) {}
+
+
+}
+?>
+EOD;
+			expect($result)->toBe($expected);
 		});
 
 	});

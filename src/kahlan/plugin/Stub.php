@@ -161,13 +161,15 @@ class Stub {
 	 * Create a polyvalent instance.
 	 *
 	 * @param  array  $options Array of options. Options are:
-	 *                - `'class'` : the fully-namespaced class name.
-	 *                - `'extends'` : the fully-namespaced parent class name.
+	 *                - `'class'`  _string_: the fully-namespaced class name.
+	 *                - `'extends'` _string_: the fully-namespaced parent class name.
+	 *                - `'params'` _array_: params to pass to the constructor.
+	 *                - `'constructor'` _boolean_: if set to `false` override to an empty function.
 	 * @return string The created instance.
 	 */
 	public static function create($options = []) {
 		$class = static::classname($options);
-		$instance = new $class();
+		$instance = isset($options['params']) ? new $class($options['params']) : new $class();
 		$call = static::$_classes['call'];
 		new $call($instance);
 		return $instance;
@@ -182,10 +184,7 @@ class Stub {
 	 * @return string The created fully-namespaced class name.
 	 */
 	public static function classname($options = []) {
-		$defaults = [
-			'class' => 'spec\plugin\stub\Stub' . static::$_index++,
-			'extends' => ''
-		];
+		$defaults = ['class' => 'spec\plugin\stub\Stub' . static::$_index++];
 		$options += $defaults;
 		$interceptor = static::$_classes['interceptor'];
 
@@ -214,7 +213,8 @@ class Stub {
 			'class' => 'spec\plugin\stub\Stub' . static::$_index++,
 			'extends' => '',
 			'implements' => [],
-			'uses' => []
+			'uses' => [],
+			'constructor' => true
 		];
 		$options += $defaults;
 
@@ -233,18 +233,19 @@ class Stub {
 		$extends = static::_generateExtends($options['extends']);
 		$implements = static::_generateImplements($options['implements']);
 
-		$methods = static::_generateClassMethods($options['extends']);
-		$methods .= static::_generateInterfaceMethods($options['implements']);
-
 		if (!$options['extends']) {
-			$methods .= static::_defaultMethods();
+			$methods = static::_defaultMethods();
+		} else {
+			$methods = static::_generateConstructor($options['constructor']);
 		}
+		$methods .= static::_generateClassMethods($options['extends']);
+		$methods .= static::_generateInterfaceMethods($options['implements']);
 
 return "<?php\n\n" . $namespace . <<<EOT
 
 class {$class}{$extends}{$implements} {
 
-	{$uses}
+{$uses}
 {$methods}
 
 }
@@ -301,6 +302,13 @@ EOT;
 			$classes[] = '\\' . ltrim($implement, '\\');
 		}
 		return ' implements ' . join(', ', $classes);
+	}
+
+	protected static function _generateConstructor($constructor) {
+		if ($constructor) {
+			return '';
+		}
+		return "\tpublic function __construct() {}\n";
 	}
 
 	/**
@@ -361,17 +369,17 @@ EOT;
 		$result = join(' ', Reflection::getModifierNames($method->getModifiers()));
 		$result = preg_replace('/^abstract /', '', $result);
 		$name = $method->getName();
-		$body = '';
 		if ($name === '__get' || $name === '__call' || $name === '__callStatic') {
 			return '';
 		}
 		$parameters = static::_generateParameters($method);
-		return "\tfunction {$name}({$parameters}) { {$body} }\n\n";
+		return "\n\tfunction {$name}({$parameters}) {}\n";
 	}
 
 	protected static function _defaultMethods() {
 
 	return <<<EOT
+
 	public function __construct() {}
 
 	public function __destruct() {}
@@ -426,6 +434,7 @@ EOT;
 				} else {
 					$default = 'null';
 				}
+				$default = ' = ' . preg_replace('/\s+/', '', $default);
 			}
 
 			$params[] = "{$typehint}{$reference}\${$name}{$default}";
