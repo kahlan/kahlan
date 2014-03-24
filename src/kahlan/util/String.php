@@ -98,7 +98,7 @@ class String {
 	 * @return string A valid double quoted string.
 	 */
 	public static function expands($string) {
-		$es = ['0', 'a', 'b', 't', 'n', 'v', 'f', 'r'];
+		$es = ['0', 'x07', 'x08', 't', 'n', 'v', 'f', 'r'];
 		$unescaped = '';
 		$chars = str_split($string);
 		foreach ($chars as $char) {
@@ -107,11 +107,8 @@ class String {
 			}
 			$value = ord($char);
 			if ($value >= 7 && $value <= 13) {
-				$value -= 6;
-			}
-			if ($value <= 7) {
-				$unescaped .= '\\' . $es[$value];
-			} elseif ($char === '"' || $char === '$') {
+				$unescaped .= '\\' . $es[$value - 6];
+			} elseif ($char === '"' || $char === '$' || $char === '\\') {
 				$unescaped .= '\\' . $char;
 			} else {
 				$unescaped .= $char;

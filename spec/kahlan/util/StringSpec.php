@@ -7,8 +7,8 @@ use kahlan\util\String;
 describe("String::expands", function() {
 
 	it("expands escape sequences and escape special chars", function() {
-		$dump = String::expands(" \t \nHello \0 \a \b \r\n \v \f World\n\n");
-		$this->expect($dump)->toBe(' \t \nHello \0 \a \b \r\n \v \f World\n\n');
+		$dump = String::expands(" \t \nHello \x07 \x08 \r\n \v \f World\n\n");
+		$this->expect($dump)->toBe(" \\t \\nHello \\x07 \\x08 \\r\\n \\v \\f World\\n\\n");
 	});
 
 	it("expands an empty string as \"\"", function() {
