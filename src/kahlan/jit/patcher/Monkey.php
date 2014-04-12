@@ -147,10 +147,6 @@ class Monkey {
 
 		$static = preg_match('/^::/', $matches[5]);
 
-		// TODO: Move this in a dedicated plugin.
-		if ($name === 'exit' || $name === 'die') {
-			return $matches[1] . $matches[2] . 'new \kahlan\ExitException(';
-		}
 		if (isset($this->_blacklist[$name]) || (!$matches[1] && $matches[5] !== '(' && !$static)) {
 			return $matches[0];
 		}

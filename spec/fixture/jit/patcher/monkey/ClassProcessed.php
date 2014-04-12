@@ -106,11 +106,11 @@ $__KMONKEY__13();
 		try{} catch (\Exception $e) {};
 		compact();
 		declare(ticks=1);
-		new \kahlan\ExitException();
+		die();
 		echo('');
 		empty($a);
 		eval('');
-		new \kahlan\ExitException(-1);
+		exit(-1);
 		extract();
 		for($i=0;$i<1;$i++) {};
 		foreach($array as $key=>$value) {}
