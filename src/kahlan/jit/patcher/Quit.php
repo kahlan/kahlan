@@ -40,7 +40,7 @@ class Quit {
 	 */
 	protected function _processTree($nodes) {
 		$alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
-		$regex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)((?:exit|die)*\s*\()/m";
+		$regex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)((?:exit|die)\s*\()/m";
 
 		foreach ($nodes as $node) {
 			$parent = $node->parent;

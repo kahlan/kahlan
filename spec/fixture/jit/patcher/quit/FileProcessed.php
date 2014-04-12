@@ -14,6 +14,7 @@ class Example {
 	public function normalStatement() {
 		fooexit();
 		$instance->exit();
+		$options = (array) $options;
 	}
 
 }
