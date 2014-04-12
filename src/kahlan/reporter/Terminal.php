@@ -58,7 +58,7 @@ class Terminal extends Reporter {
 	 */
 	public function begin($params) {
 		parent::begin($params);
-		$this->console("-");
+		$this->console("\n");
 		$this->console("Kahlan - PHP Testing Framework\n" , 'green');
 		$this->console("\nWorking Directory: ", 'blue');
 		$this->console(getcwd() . "\n\n");
