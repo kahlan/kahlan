@@ -17,25 +17,13 @@ if (!$autoloader) {
     exit(1);
 }
 
-use box\Box;
 use kahlan\cli\Kahlan;
-use kahlan\Suite;
-use kahlan\Matcher;
 
-global $kahlan;
-
-$kahlan = new Box();
-
-$kahlan->service('suite', function() {
-    return new Suite(['box' => $this]);
-});
-$kahlan->service('matcher', function() {
-    return new Matcher();
-});
+global $gdic;
 
 $specs = new Kahlan([
     'autoloader' => $autoloader,
-    'box' => $kahlan
+    'suite' => $gdic['kahlan']->get('suite.global')
 ]);
 $specs->loadConfig($argv);
 $specs->run();

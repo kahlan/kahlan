@@ -67,13 +67,12 @@ class Kahlan {
 
     public function __construct($options = [])
     {
-        $defaults = ['autoloader' => null, 'box' => null];
+        $defaults = ['autoloader' => null, 'suite' => null];
         $options += $defaults;
-        $this->_start = microtime(true);
-        $this->_suite = $options['box']->get('suite');
         $this->_patchers = new Patchers();
         $this->_reporters = new Reporters();
         $this->_autoloader = $options['autoloader'];
+        $this->_suite = $options['suite'];
     }
 
     public function loadConfig($argv = [])
@@ -249,6 +248,7 @@ class Kahlan {
 
     public function run()
     {
+        $this->_start = microtime(true);
         return Filter::on($this, __FUNCTION__, [], function($chain) {
 
             $this->customNamespaces();

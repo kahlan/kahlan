@@ -1,7 +1,10 @@
 <?php
+use box\Box;
 use kahlan\Suite;
 use kahlan\Spec;
 use kahlan\Matcher;
+
+global $gdic;
 
 define('DS', DIRECTORY_SEPARATOR);
 error_reporting(E_ALL);
@@ -26,8 +29,8 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
 
     function describe($message, $closure, $scope = 'normal') {
         if (!Suite::current()) {
-            global $kahlan;
-            $suite = $kahlan->get('suite');
+            global $gdic;
+            $suite = $gdic['kahlan']->get('suite.global');
             return $suite->describe($message, $closure, $scope);
         }
         return Suite::current()->describe($message, $closure, $scope);
@@ -82,5 +85,19 @@ Matcher::register('toMatch', 'kahlan\matcher\ToMatch');
 Matcher::register('toReceive', 'kahlan\matcher\ToReceive');
 Matcher::register('toReceiveNext', 'kahlan\matcher\ToReceiveNext');
 Matcher::register('toThrow', 'kahlan\matcher\ToThrow');
+
+$dic = $gdic['kahlan'] = new Box();
+
+$dic->factory('matcher', function() {
+    return new Matcher();
+});
+
+$dic->factory('suite', function() {
+    return new Suite(['matcher' => $this->get('matcher')]);
+});
+
+$dic->service('suite.global', function() {
+    return $this->get('suite');
+});
 
 ?>

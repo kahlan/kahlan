@@ -43,7 +43,7 @@ class Spec extends Scope
             'parent' => null,
             'root' => null,
             'scope' => 'normal',
-            'box' => null
+            'matcher' => null
         ];
         $options += $defaults;
         extract($options);
@@ -54,7 +54,7 @@ class Spec extends Scope
         $this->_parent = $parent;
         $this->_root = $root;
         $this->_emitExclusive($scope);
-        $this->_matcher = $box->get('matcher');
+        $this->_matcher = $options['matcher'];
     }
 
     /**

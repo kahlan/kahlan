@@ -15,11 +15,11 @@ use kahlan\analysis\Debugger;
 class Suite extends Scope
 {
     /**
-     * DI container
+     * Matcher instance for the test suite
      *
      * @var array
      */
-    protected $_box = null;
+    protected $_matcher = null;
 
     /**
      * The childs array.
@@ -87,13 +87,13 @@ class Suite extends Scope
             'parent' => null,
             'name' => 'describe',
             'scope' => 'normal',
-            'box' => null
+            'matcher' => null
         ];
         $options += $defaults;
         extract($options);
 
         if (!$parent) {
-            $this->_box = $box;
+            $this->_matcher = $matcher;
             $this->_root = $this;
             return;
         }
@@ -152,8 +152,8 @@ class Suite extends Scope
         }
         $parent = $this;
         $root = $this->_root;
-        $box = $this->_root->_box;
-        $spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'box'));
+        $matcher = $this->_root->_matcher;
+        $spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'matcher'));
         $this->_childs[] = $spec;
         return $this;
     }
