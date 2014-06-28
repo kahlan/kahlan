@@ -11,8 +11,8 @@ namespace kahlan;
 use Exception;
 use box\Box;
 
-class Spec extends Scope {
-
+class Spec extends Scope
+{
     /**
      * The matcher instance.
      *
@@ -35,7 +35,8 @@ class Spec extends Scope {
      *              -`'closure'` : the closure of the test.
      *              -`'parent'` : the parent suite instance.
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = [
             'message' => '',
             'closure' => null,
@@ -61,14 +62,16 @@ class Spec extends Scope {
      *
      * @param mixed $actual The expression to check
      */
-    public function expect($actual) {
+    public function expect($actual)
+    {
         return $this->_matcher->expect($actual, $this);
     }
 
     /**
      * Process the spec.
      */
-    public function process() {
+    public function process()
+    {
         if ($this->_locked) {
             throw new Exception('Method not allowed in this context.');
         }
@@ -97,9 +100,8 @@ class Spec extends Scope {
      *
      * @return array
      */
-    public function results() {
+    public function results()
+    {
         return $this->_results;
     }
 }
-
-?>

@@ -36,7 +36,8 @@ class Patchers {
      * @param  object         $patcher A patcher.
      * @return object|boolean The added patcher instance or `false` on failure.
      */
-    public function add($name, $patcher) {
+    public function add($name, $patcher)
+    {
         if (!is_object($patcher)) {
             return false;
         }
@@ -49,7 +50,8 @@ class Patchers {
      * @param  string|object  $patcher A patcher class name or an intance.
      * @return object|boolean The patcher instance or `false` if not founded.
      */
-    public function get($name) {
+    public function get($name)
+    {
         if (isset($this->_patchers[$name])) {
             return $this->_patchers[$name];
         }
@@ -61,7 +63,8 @@ class Patchers {
      * @param  string $name The patcher name.
      * @return boolean
      */
-    public function exists($name) {
+    public function exists($name)
+    {
         return isset($this->_patchers[$name]);
     }
 
@@ -70,7 +73,8 @@ class Patchers {
      *
      * @param string $name The patcher name.
      */
-    public function remove($name) {
+    public function remove($name)
+    {
         unset($this->_patchers[$name]);
     }
 
@@ -79,7 +83,8 @@ class Patchers {
      *
      * @param string $name The patcher name.
      */
-    public function clear() {
+    public function clear()
+    {
         $this->_patchers = [];
     }
 
@@ -89,7 +94,8 @@ class Patchers {
      * @param string $path The original path of the file.
      * @param string The patched file path to load.
      */
-    public function findFile($loader, $class, $file) {
+    public function findFile($loader, $class, $file)
+    {
         foreach ($this->_patchers as $patcher) {
             $file = $patcher->findFile($loader, $class, $file);
         }
@@ -102,7 +108,8 @@ class Patchers {
      * @param  string $code The source code to process.
      * @return string The patched source code.
      */
-    public function process($code) {
+    public function process($code)
+    {
         if (!$code) {
             return '';
         }
@@ -120,7 +127,8 @@ class Patchers {
      * @param  string $path The path of the file.
      * @return array  The modified debug backtrace.
      */
-    public function processBacktrace($options, $backtrace) {
+    public function processBacktrace($options, $backtrace)
+    {
         foreach ($this->_patchers as $patcher) {
             $backtrace = $patcher->processBacktrace($options, $backtrace);
         }
@@ -128,5 +136,3 @@ class Patchers {
     }
 
 }
-
-?>

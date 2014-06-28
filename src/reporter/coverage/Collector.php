@@ -11,8 +11,8 @@ namespace kahlan\reporter\coverage;
 use dir\Dir;
 use kahlan\jit\Interceptor;
 
-class Collector {
-
+class Collector
+{
     /**
      * Class dependencies.
      *
@@ -80,7 +80,8 @@ class Collector {
      *              - `'path'`  : the path(s) which contain the code source files.
      *              - `'prefix'`: some prefix to remove to get the real file path.
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = [
             'driver' => null,
             'path' => [],
@@ -105,14 +106,16 @@ class Collector {
     /**
      * Start collecting coverage data.
      */
-    public function start() {
+    public function start()
+    {
         $this->_driver->start();
     }
 
     /**
      * Stop collecting coverage data.
      */
-    public function stop() {
+    public function stop()
+    {
         $this->add($this->_driver->stop());
     }
 
@@ -122,7 +125,8 @@ class Collector {
      * @param  array $coverage Some coverage data.
      * @return array The current coverage data.
      */
-    public function add($coverage) {
+    public function add($coverage)
+    {
         if (!$coverage) {
             return;
         }
@@ -138,7 +142,8 @@ class Collector {
      * @param  string $file     A file path.
      * @param  array  $coverage Some coverage related to the file path.
      */
-    public function addFile($file, $coverage) {
+    public function addFile($file, $coverage)
+    {
         $prefix = $this->_prefix;
         $file = preg_replace("~^{$prefix}~", '', $file);
         if (preg_match("/eval\(\)'d code$/", $file) || !isset($this->_coverage[$file])) {
@@ -158,7 +163,8 @@ class Collector {
      *
      * @return array The coverage data.
      */
-    public function export() {
+    public function export()
+    {
         return $this->_coverage;
     }
 
@@ -167,7 +173,8 @@ class Collector {
      *
      * @return Metrics The collected metrics.
      */
-    public function metrics() {
+    public function metrics()
+    {
         $this->_metrics = new Metrics();
         foreach ($this->_coverage as $file => $coverage) {
             $node = $this->_parse($file);
@@ -185,7 +192,8 @@ class Collector {
      * @param  array   $coverage The coverage data.
      * @param  string  $path     The naming of the processed node.
      */
-    protected function _processTree($file, $root, $nodes, $coverage, $path = '') {
+    protected function _processTree($file, $root, $nodes, $coverage, $path = '')
+    {
         foreach ($nodes as $node) {
             $this->_processNode($file, $root, $node, $coverage, $path);
         }
@@ -200,7 +208,8 @@ class Collector {
      * @param  array   $coverage The coverage data.
      * @param  string  $path     The naming of the processed node.
      */
-    protected function _processNode($file, $root, $node, $coverage, $path) {
+    protected function _processNode($file, $root, $node, $coverage, $path)
+    {
         if ($node->type === 'class' || $node->type === 'namespace') {
             $path = "{$path}\\" . $node->name;
             $this->_processTree($file, $root, $node->tree, $coverage, $path);
@@ -222,7 +231,8 @@ class Collector {
      * @param  array   $coverage The coverage data.
      * @return array   The collected metrics.
      */
-    protected function _processMethod($file, $root, $node, $coverage) {
+    protected function _processMethod($file, $root, $node, $coverage)
+    {
         $metrics = [
             'loc' => 0,
             'ncloc' => 0,
@@ -255,7 +265,8 @@ class Collector {
      * @param array $coverage The coverage data.
      * @param array $metrics  The output metrics array.
      */
-    protected function _processLine($line, $coverage, &$metrics) {
+    protected function _processLine($line, $coverage, &$metrics)
+    {
         if (!$coverage) {
             return;
         }
@@ -271,7 +282,8 @@ class Collector {
      *
      * @param string $file the file path to use for building the tree structure.
      */
-    protected function _parse($file) {
+    protected function _parse($file)
+    {
         if (isset($this->_tree[$file])) {
             return $this->_tree[$file];
         }
@@ -279,5 +291,3 @@ class Collector {
         return $this->_tree[$file] = $parser::parse(file_get_contents($file), true);
     }
 }
-
-?>

@@ -8,8 +8,8 @@
 
 namespace kahlan\jit\patcher;
 
-class Monkey {
-
+class Monkey
+{
     /**
      * Class dependencies.
      *
@@ -94,7 +94,8 @@ class Monkey {
      * @param  string $file   The correponding finded file path.
      * @return string The patched file path.
      */
-    public function findFile($loader, $class, $file) {
+    public function findFile($loader, $class, $file)
+    {
         return $file;
     }
 
@@ -104,7 +105,8 @@ class Monkey {
      * @param  NodeDef The node to patch.
      * @return NodeDef The patched node.
      */
-    public function process($node) {
+    public function process($node)
+    {
         $this->_processTree($node->tree);
         return $node;
     }
@@ -114,7 +116,8 @@ class Monkey {
      *
      * @param array $nodes A node array to patch.
      */
-    protected function _processTree($nodes) {
+    protected function _processTree($nodes)
+    {
         $alpha = '[\\\a-zA-Z_\\x7f-\\xff]';
         $alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
         $regex = "/(new\s+)?(?<!\:|\\\$|\>|{$alphanum})(\s*)({$alpha}{$alphanum}*)(\s*)(\(|;|::{$alpha}{$alphanum}*\s*\()/m";
@@ -142,7 +145,8 @@ class Monkey {
      *
      * @param array $matches An array of calls to patch.
      */
-    protected function _patchNode($matches) {
+    protected function _patchNode($matches)
+    {
         $name = $matches[3];
 
         $static = preg_match('/^::/', $matches[5]);
@@ -174,9 +178,8 @@ class Monkey {
      * @param  array $backtrace The backtrace array.
      * @return array The patched backtrace.
      */
-    public function processBacktrace($options, $backtrace) {
+    public function processBacktrace($options, $backtrace)
+    {
         return $backtrace;
     }
 }
-
-?>

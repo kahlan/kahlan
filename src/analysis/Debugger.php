@@ -16,8 +16,8 @@ use kahlan\util\String;
  * The `Debugger` class provides basic facilities for generating and rendering meta-data about the
  * state of an application in its current context.
  */
-class Debugger {
-
+class Debugger
+{
     /**
      * Class dependencies.
      *
@@ -45,7 +45,8 @@ class Debugger {
      *
      * @param array $options Options config array.
      */
-    public function config($options = []) {
+    public function config($options = [])
+    {
         $defaults = ['classes' => []];
         $options += $defaults;
         static::$_classes += $options['classes'];
@@ -61,7 +62,8 @@ class Debugger {
      *         - `'trace'`: A trace to use instead of generating one.
      * @return string The Backtrace formatted according to `'format'` option.
      */
-    public static function trace($options = []) {
+    public static function trace($options = [])
+    {
         $defaults = ['message' => null, 'trace' => []];
         $options += $defaults;
         $back = [];
@@ -87,7 +89,8 @@ class Debugger {
      * @param  array  $trace A trace array.
      * @return string The string representation of a trace.
      */
-    protected static function _traceToString($trace) {
+    protected static function _traceToString($trace)
+    {
         $loader = static::loader();
 
         if (!empty($trace['class'])) {
@@ -117,7 +120,8 @@ class Debugger {
      *        - `'trace'`: A trace to use instead of generating one.
      * @return array The backtrace array
      */
-    public static function backtrace($options = []) {
+    public static function backtrace($options = [])
+    {
         $defaults = [
             'trace' => [],
             'start' => 0,
@@ -154,7 +158,8 @@ class Debugger {
         return array_splice($back, $options['start'], $options['depth'] ?: $count);
     }
 
-    public static function normalize($backtrace) {
+    public static function normalize($backtrace)
+    {
         if ($backtrace instanceof Exception) {
             return array_merge([[
                 'code' => $backtrace->getCode(),
@@ -178,7 +183,8 @@ class Debugger {
      * @param  array $trace A backtrace array.
      * @return mixed        Returns the line number where the method called is defined.
      */
-    protected static function _line($trace) {
+    protected static function _line($trace)
+    {
         $path = $trace['file'];
         $callLine = $trace['line'];
         if (!file_exists($path)) {
@@ -213,7 +219,8 @@ class Debugger {
      * @param  integer $callLine The number of line to find.
      * @return mixed             Returns the character position or null if not found.
      */
-    protected static function _findPos($file, $callLine) {
+    protected static function _findPos($file, $callLine)
+    {
         $len = strlen($file);
         $line = 1;
         $i = 0;
@@ -234,7 +241,8 @@ class Debugger {
      * @param  object|null $loader The autoloader to set or `null` to get the default one.
      * @return object      The autoloader.
      */
-    public static function loader($loader = null) {
+    public static function loader($loader = null)
+    {
         if ($loader) {
             return static::$_loader = $loader;
         }
@@ -249,5 +257,3 @@ class Debugger {
         }
     }
 }
-
-?>

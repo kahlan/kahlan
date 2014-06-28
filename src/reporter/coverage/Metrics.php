@@ -8,8 +8,8 @@
 
 namespace kahlan\reporter\coverage;
 
-class Metrics {
-
+class Metrics
+{
     /**
      * Reference to the parent metrics.
      *
@@ -60,7 +60,8 @@ class Metrics {
      *              - `'type'`  : the type of the metrics is about.
      *              - `'parent'`: reference to the parent metrics.
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = ['name' => '', 'type' => 'namespace', 'parent' => null];
         $options += $defaults;
 
@@ -90,7 +91,8 @@ class Metrics {
      *
      * @return Metrics The parent reference
      */
-    public function parent() {
+    public function parent()
+    {
         return $this->_parent;
     }
 
@@ -99,7 +101,8 @@ class Metrics {
      *
      * @return string The name of the metrics.
      */
-    public function name() {
+    public function name()
+    {
         return $this->_name;
     }
 
@@ -108,7 +111,8 @@ class Metrics {
      *
      * @return string The type of the metrics.
      */
-    public function type() {
+    public function type()
+    {
         return $this->_type;
     }
 
@@ -118,7 +122,8 @@ class Metrics {
      * @param string  The name reference of the metrics.
      * @param Metrics The metrics instance.
      */
-    public function add($name, $metrics) {
+    public function add($name, $metrics)
+    {
         if (!$name) {
             return $this->_merge($metrics);
         }
@@ -138,7 +143,8 @@ class Metrics {
      * @param  string The name reference of the metrics.
      * @return array  The metrics data.
      */
-    public function get($name = null) {
+    public function get($name = null)
+    {
         if (!$name) {
             return $this->_metrics;
         }
@@ -156,7 +162,8 @@ class Metrics {
      * @param  string The name reference of the metrics.
      * @return array  The metrics childs.
      */
-    public function childs($name = null) {
+    public function childs($name = null)
+    {
         if (!$name) {
             return $this->_childs;
         }
@@ -174,7 +181,8 @@ class Metrics {
      * @param  string The name reference of the metrics.
      * @return array  The meta info of a metrics.
      */
-    protected function _parseName($name) {
+    protected function _parseName($name)
+    {
         $subname = null;
         if (strpos($name, '\\') !== false) {
             $type = 'namespace';
@@ -194,7 +202,8 @@ class Metrics {
      *
      * @param array Some metrics.
      */
-    protected function _merge($metrics) {
+    protected function _merge($metrics)
+    {
         foreach (['loc', 'ncloc', 'covered', 'eloc', 'methods', 'coveredMethods'] as $name) {
             if (!isset($metrics[$name])) {
                 continue;
@@ -208,5 +217,3 @@ class Metrics {
         }
     }
 }
-
-?>

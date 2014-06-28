@@ -10,8 +10,8 @@ namespace kahlan\matcher;
 
 use Exception;
 
-class ToThrow {
-
+class ToThrow
+{
     /**
      * Expect that `$actual` throws the `$expected` exception.
      *
@@ -22,7 +22,8 @@ class ToThrow {
      *                 exception instance.
      * @return boolean
      */
-    public static function match($actual, $expected = null) {
+    public static function match($actual, $expected = null)
+    {
         $exception = static::expected($expected);
 
         if (!$e = static::actual($actual)) {
@@ -46,7 +47,8 @@ class ToThrow {
      * @param  mixed $actual The actual value to be normalized.
      * @return mixed The normalized value.
      */
-    public static function actual($actual) {
+    public static function actual($actual)
+    {
         try {
             $actual();
         } catch (Exception $e) {
@@ -60,19 +62,19 @@ class ToThrow {
      * @param  mixed $expected The expected value to be normalized.
      * @return mixed The normalized value.
      */
-    public static function expected($expected) {
+    public static function expected($expected)
+    {
         if ($expected === null || is_string($expected)) {
             return new AnyException($expected);
         }
         return $expected;
     }
 
-    public static function description($report) {
+    public static function description($report)
+    {
         $description = "throw a compatible exception.";
         $params['actual'] = static::actual($report['params']['actual']);
         $params['expected'] = static::expected($report['params']['expected']);
         return compact('description', 'params');
     }
 }
-
-?>

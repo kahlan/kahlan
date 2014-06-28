@@ -8,8 +8,8 @@
 
 namespace kahlan\matcher;
 
-class ToContain {
-
+class ToContain
+{
     /**
      * Expect that `$actual` contain the `$expected` value.
      *
@@ -17,7 +17,8 @@ class ToContain {
      * @param  mixed      $expected The expected value.
      * @return boolean
      */
-    public static function match($actual, $expected) {
+    public static function match($actual, $expected)
+    {
         foreach ($actual as $key => $value) {
             if ($value === $expected) {
                 return true;
@@ -26,9 +27,8 @@ class ToContain {
         return false;
     }
 
-    public static function description() {
+    public static function description()
+    {
         return "contain expected.";
     }
 }
-
-?>

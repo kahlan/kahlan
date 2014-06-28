@@ -8,8 +8,8 @@
 
 namespace kahlan\matcher;
 
-class ToBeCloseTo {
-
+class ToBeCloseTo
+{
     /**
      * Expect that `$actual` is close enough to `$expected`.
      *
@@ -18,14 +18,16 @@ class ToBeCloseTo {
      * @param  integer $precision The precision to use.
      * @return boolean
      */
-    public static function match($actual, $expected, $precision = 2) {
+    public static function match($actual, $expected, $precision = 2)
+    {
         if (!is_numeric($actual) || !is_numeric($expected)) {
             return false;
         }
         return abs($expected - $actual) < (pow(10, -$precision) / 2);
     }
 
-    public static function description($report) {
+    public static function description($report)
+    {
         $precision = $report['params']['precision'];
         $description = "be close to expected relying to a precision of {$precision}.";
         $params['actual'] = $report['params']['actual'];
@@ -34,5 +36,3 @@ class ToBeCloseTo {
         return compact('description', 'params');
     }
 }
-
-?>

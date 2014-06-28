@@ -12,8 +12,8 @@ use Exception;
 use kahlan\util\Set;
 use kahlan\analysis\Debugger;
 
-class Suite extends Scope {
-
+class Suite extends Scope
+{
     /**
      * DI container
      *
@@ -79,7 +79,8 @@ class Suite extends Scope {
      *              -`'name'` : the type of the suite.
      *              -`'scope'` : supported scope are `'normal'` & `'exclusive'`.
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = [
             'message' => '',
             'closure' => null,
@@ -111,7 +112,8 @@ class Suite extends Scope {
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function describe($message, $closure, $scope = 'normal') {
+    public function describe($message, $closure, $scope = 'normal')
+    {
         $parent = $this;
         $name = 'describe';
         $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'scope'));
@@ -125,7 +127,8 @@ class Suite extends Scope {
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function context($message, $closure, $scope = 'normal') {
+    public function context($message, $closure, $scope = 'normal')
+    {
         $parent = $this;
         $name = 'context';
         $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'scope'));
@@ -140,7 +143,8 @@ class Suite extends Scope {
      * @param  string         $scope The scope.
      * @return $this
      */
-    public function it($message, $closure = null, $scope = 'normal') {
+    public function it($message, $closure = null, $scope = 'normal')
+    {
         static $inc = 1;
         if ($closure === null) {
             $closure = $message;
@@ -161,7 +165,8 @@ class Suite extends Scope {
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function xdescribe($message, $closure) {
+    public function xdescribe($message, $closure)
+    {
         return $this->describe($message, $closure, 'exclusive');
     }
 
@@ -172,7 +177,8 @@ class Suite extends Scope {
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function xcontext($message, $closure) {
+    public function xcontext($message, $closure)
+    {
         return $this->context($message, $closure, 'exclusive');
     }
 
@@ -183,7 +189,8 @@ class Suite extends Scope {
      * @param  Closure|null   $closure A test case closure or `null`.
      * @return $this
      */
-    public function xit($message, $closure = null) {
+    public function xit($message, $closure = null)
+    {
         return $this->it($message, $closure, 'exclusive');
     }
 
@@ -193,7 +200,8 @@ class Suite extends Scope {
      * @param  Closure $closure A closure
      * @return $this
      */
-    public function before($closure) {
+    public function before($closure)
+    {
         $this->_bind($closure, 'before');
         $this->_callbacks['before'][] = $closure;
         return $this;
@@ -204,7 +212,8 @@ class Suite extends Scope {
      *
      * @param Closure $closure A closure
      */
-    public function after($closure) {
+    public function after($closure)
+    {
         $this->_bind($closure, 'after');
         $this->_callbacks['after'][] = $closure;
         return $this;
@@ -216,7 +225,8 @@ class Suite extends Scope {
      * @param  Closure $closure A closure
      * @return $this
      */
-    public function beforeEach($closure) {
+    public function beforeEach($closure)
+    {
         $this->_bind($closure, 'beforeEach');
         $this->_callbacks['beforeEach'][] = $closure;
         return $this;
@@ -227,7 +237,8 @@ class Suite extends Scope {
      *
      * @param Closure $closure A closure
      */
-    public function afterEach($closure) {
+    public function afterEach($closure)
+    {
         $this->_bind($closure, 'afterEach');
         $this->_callbacks['afterEach'][] = $closure;
         return $this;
@@ -238,7 +249,8 @@ class Suite extends Scope {
      *
      * @return array Process options.
      */
-    protected function _run($options = []) {
+    protected function _run($options = [])
+    {
         if ($this->_locked) {
             throw new Exception('Method not allowed in this context.');
         }
@@ -273,7 +285,8 @@ class Suite extends Scope {
      * @see kahlan\Suite::process()
      * @param object A child spec.
      */
-    protected function _process($child) {
+    protected function _process($child)
+    {
         if ($this->_root->exclusive() && !$child->exclusive()) {
             return;
         }
@@ -301,7 +314,8 @@ class Suite extends Scope {
      *
      * @param string $name The name of the callback (i.e `'beforeEach'` or `'afterEach'`).
      */
-    protected function _callbacks($name, $recursive = true) {
+    protected function _callbacks($name, $recursive = true)
+    {
         $instances = $recursive ? $this->_parents(true) : [$this];
         foreach ($instances as $instance) {
             foreach($instance->_callbacks[$name] as $closure) {
@@ -315,7 +329,8 @@ class Suite extends Scope {
      *
      * @return array
      */
-    public function results() {
+    public function results()
+    {
         $results = $this->_results;
         foreach ($this->_childs as $child) {
             foreach ($child->results() as $type => $result) {
@@ -333,7 +348,8 @@ class Suite extends Scope {
      * @param array   $options An options array. Available options are:
      *                - 'handler': An error handler closure.
      */
-    protected function _errorHandler($enable, $options = []) {
+    protected function _errorHandler($enable, $options = [])
+    {
         $defaults = ['handler' => null];
         $options += $defaults;
         if (!$enable) {
@@ -357,7 +373,8 @@ class Suite extends Scope {
      * @param  array $options Run options.
      * @return array The result array.
      */
-    public function run($options = []) {
+    public function run($options = [])
+    {
         $defaults = ['reporters' => null, 'autoclear' => []];
         $options += $defaults;
 
@@ -385,7 +402,8 @@ class Suite extends Scope {
      *
      * @return array Process options.
      */
-    protected function _build() {
+    protected function _build()
+    {
         static::$_instances[] = $this;
         $closure = $this->_closure;
         if (is_callable($closure)) {
@@ -415,7 +433,8 @@ class Suite extends Scope {
     /**
      * Stop the script and return an exit status code according passed results.
      */
-    public function stop() {
+    public function stop()
+    {
         $results = $this->_results;
 
         if ($this->exclusive()) {
@@ -433,7 +452,8 @@ class Suite extends Scope {
     /**
      * Autoclear plugins.
      */
-    protected function _autoclear() {
+    protected function _autoclear()
+    {
         foreach ($this->_root->_autoclear as $plugin) {
             if (method_exists($plugin, 'clear')) {
                 is_object($plugin) ? $plugin->clear() : $plugin::clear();
@@ -446,7 +466,8 @@ class Suite extends Scope {
      *
      * @param string The scope value
      */
-    protected function _broadcastExclusive($scope = 'exclusive') {
+    protected function _broadcastExclusive($scope = 'exclusive')
+    {
         if ($scope !== 'exclusive') {
             return;
         }
@@ -462,12 +483,11 @@ class Suite extends Scope {
     /**
      * Reset the class
      */
-    public function reset() {
+    public function reset()
+    {
         $this->_childs = [];
         $this->_autoclear = [];
         $this->_reporters = null;
         $this->_exclusives = [];
     }
 }
-
-?>

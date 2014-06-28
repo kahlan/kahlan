@@ -10,8 +10,8 @@ namespace kahlan;
 
 use Exception;
 
-class Arg {
-
+class Arg
+{
     /**
      * Class dependencies.
      *
@@ -42,7 +42,8 @@ class Arg {
      */
     protected $_not = false;
 
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = ['not' => false, 'matcher' => '', 'params' => []];
         $options += $defaults;
         $this->_not = $options['not'];
@@ -57,7 +58,8 @@ class Arg {
      * @param  array   $params The parameters to pass to the matcher.
      * @return boolean
      */
-    public static function __callStatic($name, $params) {
+    public static function __callStatic($name, $params)
+    {
         $not = false;
         if (preg_match('/^not/', $name)) {
             $matcher = lcfirst(substr($name, 3));
@@ -78,7 +80,8 @@ class Arg {
      * @param  string  $name The actual value.
      * @return boolean returns `true` on success and `false` otherwise.
      */
-    public function match($actual) {
+    public function match($actual)
+    {
         $class = $this->_matcher;
         $params = $this->_params;
         array_unshift($params, $actual);
@@ -86,5 +89,3 @@ class Arg {
         return $this->_not ? !$boolean : $boolean;
     }
 }
-
-?>

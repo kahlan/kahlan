@@ -8,8 +8,8 @@
 
 namespace kahlan\matcher;
 
-class ToEcho {
-
+class ToEcho
+{
     /**
      * Expect that `$actual` echo the `$expected` string.
      *
@@ -17,8 +17,8 @@ class ToEcho {
      * @param  mixed   $expected The output string.
      * @return boolean
      */
-    public static function match($actual, $expected = null) {
-
+    public static function match($actual, $expected = null)
+    {
         ob_start();
         $actual();
         $output = ob_get_contents();
@@ -27,9 +27,8 @@ class ToEcho {
         return $output === $expected;
     }
 
-    public static function description() {
+    public static function description()
+    {
         return "echo the expected string.";
     }
 }
-
-?>

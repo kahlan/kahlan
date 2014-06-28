@@ -12,8 +12,8 @@ use Exception;
 use kahlan\analysis\Debugger;
 use kahlan\analysis\Inspector;
 
-class Matcher {
-
+class Matcher
+{
     /**
      * The matchers list
      *
@@ -55,7 +55,8 @@ class Matcher {
      * @param string $name The name of the matcher.
      * @param string $class A fully-namespaced class name.
      */
-    public static function register($name, $class) {
+    public static function register($name, $class)
+    {
         static::$_matchers[$name] = $class;
     }
 
@@ -65,7 +66,8 @@ class Matcher {
      * @param  string $name The name of the matcher.
      * @return mixed  A fully-namespaced class name or `null` if the matcher doesn't exists.
      */
-    public static function get($name) {
+    public static function get($name)
+    {
         return isset(static::$_matchers[$name]) ? static::$_matchers[$name] : null;
     }
 
@@ -75,7 +77,8 @@ class Matcher {
      * @param  string  $name The name of the matcher.
      * @return boolean returns `true` if the matcher exists, `false` otherwise.
      */
-    public static function exists($name) {
+    public static function exists($name)
+    {
         return isset(static::$_matchers[$name]);
     }
 
@@ -85,7 +88,8 @@ class Matcher {
      * @param mixed $name The name of the matcher. If name is `true` unregister all
      *        the matchers.
      */
-    public static function unregister($name) {
+    public static function unregister($name)
+    {
         if ($name === true) {
             static::$_matchers = [];
         } else {
@@ -100,7 +104,8 @@ class Matcher {
      * @param  object  The parent context class.
      * @return boolean
      */
-    public function expect($actual, $parent) {
+    public function expect($actual, $parent)
+    {
         $this->_not = false;
         $this->_parent = $parent;
         $this->_actual = $actual;
@@ -114,7 +119,8 @@ class Matcher {
      * @param  array   $params The parameters to pass to the matcher.
      * @return boolean
      */
-    public function __call($matcher, $params) {
+    public function __call($matcher, $params)
+    {
         if (isset(static::$_matchers[$matcher])) {
             $class = static::$_matchers[$matcher];
             array_unshift($params, $this->_actual);
@@ -136,7 +142,8 @@ class Matcher {
     /**
      * Resolve defered matchers.
      */
-    public function resolve() {
+    public function resolve()
+    {
         foreach($this->_defered as $defered) {
             extract($defered);
             $this->_not = $not;
@@ -159,7 +166,8 @@ class Matcher {
      * @param  array   $data    Test details array.
      * @return boolean
      */
-    protected function _result($boolean, $data = []) {
+    protected function _result($boolean, $data = [])
+    {
         $actual = $this->_actual;
         $not = $this->_not;
         $pass = $not ? !$boolean : $boolean;
@@ -176,7 +184,8 @@ class Matcher {
      *
      * @param string
      */
-    public function __get($name) {
+    public function __get($name)
+    {
         if ($name === 'not') {
             $this->_not = !$this->_not;
             return $this;
@@ -186,9 +195,8 @@ class Matcher {
     /**
      * Reset the class.
      */
-    public static function reset() {
+    public static function reset()
+    {
         static::$_matchers = [];
     }
 }
-
-?>

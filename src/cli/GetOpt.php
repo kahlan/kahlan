@@ -10,7 +10,8 @@ namespace kahlan\cli;
 
 class GetOpt {
 
-    public static function parse($argv, $types = []) {
+    public static function parse($argv, $types = [])
+    {
         $args = array();
         foreach($argv as $arg) {
             if ($arg === '--') {
@@ -24,7 +25,8 @@ class GetOpt {
         return $args;
     }
 
-    protected static function _parseOpt($arg, $types) {
+    protected static function _parseOpt($arg, $types)
+    {
         $pos = strpos($arg, '=');
         if ($pos === false) {
             return static::_cast([$arg, ''], $types);
@@ -32,7 +34,8 @@ class GetOpt {
         return static::_cast([substr($arg, 0, $pos), substr($arg, $pos + 1)], $types);
     }
 
-    protected static function _mergeOpt($args, $key, $value) {
+    protected static function _mergeOpt($args, $key, $value)
+    {
         if (!isset($args[$key])) {
             $args[$key] = $value;
         } else {
@@ -42,7 +45,8 @@ class GetOpt {
         return $args;
     }
 
-    protected static function _cast($arg, $types) {
+    protected static function _cast($arg, $types)
+    {
         if (!isset($types[$arg[0]])) {
             return $arg;
         }
@@ -55,5 +59,3 @@ class GetOpt {
         return $arg;
     }
 }
-
-?>

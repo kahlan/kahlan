@@ -8,9 +8,10 @@
 
 namespace kahlan\matcher;
 
-class ToReceiveNext extends ToReceive {
-
-    public function resolve($report) {
+class ToReceiveNext extends ToReceive
+{
+    public function resolve($report)
+    {
         $call = $this->_classes['call'];
         $success = !!$call::find($this->_actual, $this->_message, false);
         if (!$success) {
@@ -19,5 +20,3 @@ class ToReceiveNext extends ToReceive {
         return $success;
     }
 }
-
-?>

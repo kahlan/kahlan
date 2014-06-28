@@ -8,8 +8,8 @@
 
 namespace kahlan\matcher;
 
-class ToBeGreaterThan {
-
+class ToBeGreaterThan
+{
     /**
      * Expect that `$actual` is greater than `$expected`.
      *
@@ -17,13 +17,13 @@ class ToBeGreaterThan {
      * @param  mixed   $expected The expected value.
      * @return boolean
      */
-    public static function match($actual, $expected) {
+    public static function match($actual, $expected)
+    {
         return $actual > $expected;
     }
 
-    public static function description() {
+    public static function description()
+    {
         return "be greater than expected.";
     }
 }
-
-?>

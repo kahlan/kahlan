@@ -8,8 +8,8 @@
 
 namespace kahlan\analysis\code;
 
-class NodeDef {
-
+class NodeDef
+{
     public $type = 'none';
 
     public $namespace = null;
@@ -32,14 +32,16 @@ class NodeDef {
 
     public $processable = true;
 
-    public function __construct($body = '', $type = null) {
+    public function __construct($body = '', $type = null)
+    {
         if ($type) {
             $this->type = $type;
         }
         $this->body = $body;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         $childs = '';
         foreach ($this->tree as $node) {
             $childs .= (string) $node;
@@ -47,5 +49,3 @@ class NodeDef {
         return $this->body . $childs . $this->close;
     }
 }
-
-?>

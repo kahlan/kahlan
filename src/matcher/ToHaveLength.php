@@ -10,15 +10,16 @@ namespace kahlan\matcher;
 
 use Countable;
 
-class ToHaveLength {
-
+class ToHaveLength
+{
     /**
      * Normalize the actual value in the expected format.
      *
      * @param  mixed $actual The actual value to be normalized.
      * @return mixed The normalized value.
      */
-    public static function actual($actual) {
+    public static function actual($actual)
+    {
         if (is_string($actual)) {
             return strlen($actual);
         } elseif (is_array($actual) || $actual instanceof Countable) {
@@ -33,11 +34,13 @@ class ToHaveLength {
      * @param  mixed   $expected The expected value.
      * @return boolean
      */
-    public static function match($actual, $expected) {
+    public static function match($actual, $expected)
+    {
         return static::actual($actual) === $expected;
     }
 
-    public static function description($report) {
+    public static function description($report)
+    {
         $description = "have the expected length.";
         $params['actual'] = $report['params']['actual'];
         $params['actual length'] = static::actual($report['params']['actual']);
@@ -46,5 +49,3 @@ class ToHaveLength {
     }
 
 }
-
-?>

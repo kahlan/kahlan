@@ -8,8 +8,8 @@
 
 namespace kahlan\analysis\code;
 
-class FunctionDef extends NodeDef {
-
+class FunctionDef extends NodeDef
+{
     public $type = 'function';
 
     public $isClosure = false;
@@ -22,7 +22,8 @@ class FunctionDef extends NodeDef {
 
     public $args = [];
 
-    public function argsToParams($reference = false) {
+    public function argsToParams($reference = false)
+    {
         $args = [];
         foreach ($this->args as $key => $value) {
             $value = is_int($key) ? $value : $key;
@@ -34,5 +35,3 @@ class FunctionDef extends NodeDef {
     }
 
 }
-
-?>

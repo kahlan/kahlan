@@ -12,8 +12,8 @@ use Exception;
 use SplFileObject;
 use ReflectionClass;
 
-class Inspector {
-
+class Inspector
+{
     /**
      * The ReflectionClass instances cache.
      *
@@ -42,7 +42,8 @@ class Inspector {
      * @param  $data   Some default values.
      * @return array
      */
-    public static function parameters($class, $method, $data = null) {
+    public static function parameters($class, $method, $data = null)
+    {
         $params = [];
         $reflexion = Inspector::inspect($class);
         $parameters = $reflexion->getMethod($method)->getParameters();
@@ -71,7 +72,8 @@ class Inspector {
      * @param  ReflectionMethod  $method A instance of `ReflectionParameter`.
      * @return string            The parameter type hint.
      */
-    public static function typehint($parameter) {
+    public static function typehint($parameter)
+    {
         $typehint = '';
         if ($parameter->isArray()) {
             $typehint = 'array ';
@@ -83,5 +85,3 @@ class Inspector {
         return $typehint;
     }
 }
-
-?>

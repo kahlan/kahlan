@@ -8,8 +8,8 @@
 
 namespace kahlan\plugin;
 
-class Pointcut {
-
+class Pointcut
+{
     protected static $_classes = [
         'call' => 'kahlan\plugin\Call',
         'stub' => 'kahlan\plugin\Stub'
@@ -20,7 +20,8 @@ class Pointcut {
      *
      * @return boolean If `true` is returned, the normal execution of the method is aborted.
      */
-    public static function before($method, $self, &$params) {
+    public static function before($method, $self, &$params)
+    {
         list($class, $name) = explode('::', $method);
 
         $call = static::$_classes['call'];
@@ -57,5 +58,3 @@ class Pointcut {
     }
 
 }
-
-?>

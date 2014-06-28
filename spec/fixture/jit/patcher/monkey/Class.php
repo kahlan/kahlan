@@ -8,8 +8,8 @@ function time() {
     return 0;
 }
 
-class Example extends \kahlan\fixture\Parent {
-
+class Example extends \kahlan\fixture\Parent
+{
     use A, B {
         B::smallTalk insteadof A;
         A::bigTalk insteadof B;
@@ -17,75 +17,92 @@ class Example extends \kahlan\fixture\Parent {
 
     public $type = User::TYPE;
 
-    public function classic() {
+    public function classic()
+    {
         rand(2, 5);
     }
 
-    public function rootBased() {
+    public function rootBased()
+    {
         \rand(2, 5);
     }
 
-    public function nested() {
+    public function nested()
+    {
         return rand(rand(2, 5), rand(6, 10));
     }
 
-    public function inString() {
+    public function inString()
+    {
         'rand(2, 5)';
     }
 
-    public function namespaced() {
+    public function namespaced()
+    {
         time();
     }
 
-    public function rootBasedInsteadOfNamespaced() {
+    public function rootBasedInsteadOfNamespaced()
+    {
         \time();
     }
 
-    public function instantiate() {
+    public function instantiate()
+    {
         new stdClass;
     }
 
-    public function instantiateRootBased() {
+    public function instantiateRootBased()
+    {
         new \stdClass;
     }
 
-    public function instantiateFromUsed() {
+    public function instantiateFromUsed()
+    {
         new MongoId;
     }
 
-    public function instantiateRootBasedFromUsed() {
+    public function instantiateRootBasedFromUsed()
+    {
         new \MongoId;
     }
 
-    public function instantiateVariable() {
+    public function instantiateVariable()
+    {
         $class = 'MongoId';
         new $class;
     }
 
-    public function staticCall() {
+    public function staticCall()
+    {
         return Debugger::trace();
     }
 
-    public function staticCallFromUsed() {
+    public function staticCallFromUsed()
+    {
         return String::hash((object) 'hello');
     }
 
-    public function noIndent() {
+    public function noIndent()
+    {
 rand();
     }
 
-    public function closure() {
+    public function closure()
+    {
         $func = function() {
             rand(2.5);
         };
         $func();
     }
 
-    public function staticAttribute() {
+    public function staticAttribute()
+    {
         $type = User::TYPE;
     }
 
-    public function lambda() {
+    public function lambda()
+    {
         $initializers = [
             'name' => function($self) {
                 return basename(str_replace('\\', '/', $self));
@@ -101,7 +118,8 @@ rand();
         ];
     }
 
-    public function ignoreControlStructure() {
+    public function ignoreControlStructure()
+    {
         array();
         try{} catch (\Exception $e) {};
         compact();
@@ -137,5 +155,3 @@ rand();
         while(false){}
     }
 }
-
-?>

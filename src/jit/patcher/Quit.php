@@ -18,7 +18,8 @@ class Quit {
      * @param  string $file   The correponding finded file path.
      * @return string The patched file path.
      */
-    public function findFile($loader, $class, $file) {
+    public function findFile($loader, $class, $file)
+    {
         return $file;
     }
 
@@ -28,7 +29,8 @@ class Quit {
      * @param  NodeDef The node to patch.
      * @return NodeDef The patched node.
      */
-    public function process($node) {
+    public function process($node)
+    {
         $this->_processTree($node->tree);
         return $node;
     }
@@ -38,7 +40,8 @@ class Quit {
      *
      * @param array $nodes A node array to patch.
      */
-    protected function _processTree($nodes) {
+    protected function _processTree($nodes)
+    {
         $alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
         $regex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)((?:exit|die)\s*\()/m";
 
@@ -62,9 +65,8 @@ class Quit {
      * @param  array $backtrace The backtrace array.
      * @return array The patched backtrace.
      */
-    public function processBacktrace($options, $backtrace) {
+    public function processBacktrace($options, $backtrace)
+    {
         return $backtrace;
     }
 }
-
-?>

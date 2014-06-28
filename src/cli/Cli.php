@@ -8,8 +8,8 @@
 
 namespace kahlan\cli;
 
-class Cli {
-
+class Cli
+{
     /**
      * ANSI/VT100 color/format sequences
      *
@@ -65,7 +65,8 @@ class Cli {
      * @param  mixed $name A color name string or a ANSI/VT100 number
      * @return integer a ANSI/VT100 number
      */
-    protected static function _vtcolor($name) {
+    protected static function _vtcolor($name)
+    {
         return static::_vt100($name);
     }
 
@@ -75,7 +76,8 @@ class Cli {
      * @param  mixed $name A backgound color name string or a ANSI/VT100 number
      * @return integer a ANSI/VT100 number
      */
-    protected static function _vtbackground($name) {
+    protected static function _vtbackground($name)
+    {
         if (is_numeric($name)) {
             return $name + 10;
         }
@@ -88,7 +90,8 @@ class Cli {
      * @param  mixed $name A style name string or a ANSI/VT100 number
      * @return integer a ANSI/VT100 number
      */
-    protected static function _vtstyle($name) {
+    protected static function _vtstyle($name)
+    {
         return isset(static::$_vt100['formats'][$name]) ? static::$_vt100['formats'][$name] : 0;
     }
 
@@ -98,7 +101,8 @@ class Cli {
      * @param  mixed $name A color name string or a ANSI/VT100 number
      * @return integer a ANSI/VT100 number
      */
-    protected static function _vt100($name) {
+    protected static function _vt100($name)
+    {
         if (is_numeric($name)) {
             return $name;
         }
@@ -118,7 +122,8 @@ class Cli {
         return $value;
     }
 
-    public static function bell($count = 1) {
+    public static function bell($count = 1)
+    {
         echo str_repeat("\007", $count);
     }
 
@@ -136,7 +141,8 @@ class Cli {
      *                     - `'color'`
      *
      */
-    public static function color($string, $options = null) {
+    public static function color($string, $options = null)
+    {
         if ($options === null) {
             return $string;
         }
@@ -165,5 +171,3 @@ class Cli {
         return $format . $string . "\e[0m";
     }
 }
-
-?>

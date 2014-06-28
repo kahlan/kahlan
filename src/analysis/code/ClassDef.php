@@ -8,8 +8,8 @@
 
 namespace kahlan\analysis\code;
 
-class ClassDef extends NodeDef {
-
+class ClassDef extends NodeDef
+{
     public $type = 'class';
 
     public $name = '';
@@ -17,5 +17,3 @@ class ClassDef extends NodeDef {
     public $extends = '';
 
 }
-
-?>

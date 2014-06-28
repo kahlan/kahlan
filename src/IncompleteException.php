@@ -8,7 +8,6 @@
 
 namespace kahlan;
 
-class IncompleteException extends \Exception {
+class IncompleteException extends \Exception
+{
 }
-
-?>

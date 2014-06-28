@@ -1,19 +1,22 @@
 <?php
 namespace spec\fixture\plugin\stub;
 
-abstract class Doz {
-
+abstract class Doz
+{
     protected $_inited = false;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->_inited = true;
     }
 
-    public function rand($min = 0, $max = 100) {
+    public function rand($min = 0, $max = 100)
+    {
         return rand($min, $max);
     }
 
-    public function datetime($datetime = 'now') {
+    public function datetime($datetime = 'now')
+    {
         return new \DateTime($datetime);
     }
 

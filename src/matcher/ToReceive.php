@@ -10,8 +10,8 @@ namespace kahlan\matcher;
 
 use kahlan\analysis\Debugger;
 
-class ToReceive {
-
+class ToReceive
+{
     /**
      * Class dependencies.
      *
@@ -33,7 +33,8 @@ class ToReceive {
 
     protected $_report = null;
 
-    public function __construct($actual, $expected) {
+    public function __construct($actual, $expected)
+    {
         if (preg_match('/^::.*/', $expected)) {
             $actual = is_object($actual) ? get_class($actual) : $actual;
         }
@@ -45,11 +46,13 @@ class ToReceive {
         $this->_backtrace = Debugger::backtrace(['start' => 4]);
     }
 
-    public function __call($method, $params) {
+    public function __call($method, $params)
+    {
         return call_user_func_array([$this->_message, $method], $params);
     }
 
-    public function resolve($report) {
+    public function resolve($report)
+    {
         $call = $this->_classes['call'];
         $success = !!$call::find($this->_actual, $this->_message);
         if (!$success) {
@@ -58,11 +61,13 @@ class ToReceive {
         return $success;
     }
 
-    public function message() {
+    public function message()
+    {
         return $this->_message;
     }
 
-    public function backtrace() {
+    public function backtrace()
+    {
         return $this->_backtrace;
     }
 
@@ -73,16 +78,19 @@ class ToReceive {
      * @param  mixed   $expected The expected message.
      * @return boolean
      */
-    public static function match($actual, $expected) {
+    public static function match($actual, $expected)
+    {
         $class = get_called_class();
         return new static($actual, $expected);
     }
 
-    public static function description($report) {
+    public static function description($report)
+    {
         return $report['instance']->report();
     }
 
-    public function report($report = null) {
+    public function report($report = null)
+    {
         if ($report === null) {
             return $this->_report;
         }
@@ -105,5 +113,3 @@ class ToReceive {
         $this->_report['params']['expected'] = $report['params']['expected'];
     }
 }
-
-?>

@@ -12,8 +12,8 @@ use InvalidArgumentException;
 use kahlan\util\String;
 use kahlan\plugin\call\Message;
 
-class Call {
-
+class Call
+{
     /**
      * [Optimisation Concern] Cache all watched class
      *
@@ -55,7 +55,8 @@ class Call {
      *
      * @param mixed $reference An instance or a fully namespaced class name.
      */
-    public function __construct($reference, $static = false) {
+    public function __construct($reference, $static = false)
+    {
         $this->_reference = $reference;
         if (is_object($reference)) {
             static::$_watched[get_class($reference)] = $this;
@@ -68,7 +69,8 @@ class Call {
      *
      * @param string $name method name.
      */
-    public function method($name) {
+    public function method($name)
+    {
         $static = false;
         if (preg_match('/^::.*/', $name)) {
             $static = true;
@@ -87,7 +89,8 @@ class Call {
      * @param mixed  $reference An instance or a fully namespaced class name.
      * @param string $call      The method name.
      */
-    public static function log($reference, $call) {
+    public static function log($reference, $call)
+    {
         $hash = String::hash($reference);
         $static = false;
         if (preg_match('/^::.*/', $call['name'])) {
@@ -105,7 +108,8 @@ class Call {
     /**
      * Return Logged calls.
      */
-    public static function logs() {
+    public static function logs()
+    {
         return static::$_logs;
     }
 
@@ -117,7 +121,8 @@ class Call {
      * @param  boolean    $reset     If `true` start finding from the start of the logs.
      * @return array|null Return founded log call.
      */
-    public static function find($reference, $call = null, $reset = true) {
+    public static function find($reference, $call = null, $reset = true)
+    {
         if ($reset) {
             static::$_index = 0;
         }
@@ -140,7 +145,8 @@ class Call {
         return false;
     }
 
-    protected static function _findAll($reference) {
+    protected static function _findAll($reference)
+    {
         $result = [];
         $index = static::$_index;
         $count = count(static::$_logs);
@@ -153,7 +159,8 @@ class Call {
         return $result;
     }
 
-    protected static function _matchReference($reference, $log) {
+    protected static function _matchReference($reference, $log)
+    {
         if (is_object($reference)) {
             if ($reference !== $log['instance']) {
                 return false;
@@ -170,7 +177,8 @@ class Call {
      * @param  string         $class A fully namespaced class name.
      * @return boolean|array
      */
-    public static function watched($class = null) {
+    public static function watched($class = null)
+    {
         if ($class === null) {
             return array_keys(static::$_watched);
         }
@@ -180,11 +188,10 @@ class Call {
     /**
      * Clear the registered references & logs.
      */
-    public static function clear() {
+    public static function clear()
+    {
         static::$_watched = [];
         static::$_logs = [];
         static::$_index = [];
     }
 }
-
-?>

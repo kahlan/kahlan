@@ -12,8 +12,8 @@ use Exception;
 use kahlan\SkipException;
 use kahlan\analysis\Debugger;
 
-abstract class Scope {
-
+abstract class Scope
+{
     /**
      * Instances stack.
      *
@@ -78,7 +78,8 @@ abstract class Scope {
      * @param  string $key The name of the variable.
      * @return mixed  The value of the variable.
      */
-    public function &__get($key) {
+    public function &__get($key)
+    {
         if (array_key_exists($key, $this->_data)) {
             return $this->_data[$key];
         }
@@ -95,7 +96,8 @@ abstract class Scope {
      * @param  mixed  $value The value of the variable.
      * @return mixed  The value of the variable.
      */
-    public function __set($key, $value) {
+    public function __set($key, $value)
+    {
         return $this->_data[$key] = $value;
     }
 
@@ -107,7 +109,8 @@ abstract class Scope {
      * @return mixed
      * @throws Throw an Exception if the property doesn't exists / is not callable.
      */
-    public function __call($name, $params) {
+    public function __call($name, $params)
+    {
         $property = null;
         try {
             $property = $this->__get($name);
@@ -126,7 +129,8 @@ abstract class Scope {
      *
      * @return array
      */
-    public function message() {
+    public function message()
+    {
         return $this->_message;
     }
 
@@ -135,7 +139,8 @@ abstract class Scope {
      *
      * @return array
      */
-    public function messages() {
+    public function messages()
+    {
         $messages = [];
         $instances = $this->_parents(true);
         foreach ($instances as $instance) {
@@ -150,7 +155,8 @@ abstract class Scope {
      * @param boolean $condition
      * @throws SkipException
      */
-    public function skipIf($condition) {
+    public function skipIf($condition)
+    {
         if ($condition) {
             if ($this instanceof Suite) {
                 foreach ($this->_childs as $child) {
@@ -166,7 +172,8 @@ abstract class Scope {
      *
      * @param Exception $exception The catched exception.
      */
-    protected function _exception($exception) {
+    protected function _exception($exception)
+    {
         $data = compact('exception');
         switch(get_class($exception)) {
             case 'kahlan\SkipException':
@@ -186,7 +193,8 @@ abstract class Scope {
      *
      * @param array $data The result data.
      */
-    public function pass($data = []) {
+    public function pass($data = [])
+    {
         $this->log('pass', $data);
     }
 
@@ -195,7 +203,8 @@ abstract class Scope {
      *
      * @param array $data The result data.
      */
-    public function fail($data = []) {
+    public function fail($data = [])
+    {
         $this->log('fail', $data);
     }
 
@@ -204,7 +213,8 @@ abstract class Scope {
      *
      * @param array $data The result data.
      */
-    public function exception($data = []) {
+    public function exception($data = [])
+    {
         $this->log('exception', $data);
     }
 
@@ -213,7 +223,8 @@ abstract class Scope {
      *
      * @param array $data The result data.
      */
-    public function skip($data = []) {
+    public function skip($data = [])
+    {
         $this->log('skip', $data);
     }
 
@@ -222,7 +233,8 @@ abstract class Scope {
      *
      * @param array $data The result data.
      */
-    public function incomplete($data = []) {
+    public function incomplete($data = [])
+    {
         $this->log('incomplete', $data);
     }
 
@@ -231,7 +243,8 @@ abstract class Scope {
      *
      * @param array $data The result data.
      */
-    public function log($type, $data = []) {
+    public function log($type, $data = [])
+    {
         $data['type'] = $type;
         $data += ['messages' => $this->messages()];
         $this->_results[$type][] = $data;
@@ -244,7 +257,8 @@ abstract class Scope {
      * @param  boolean $current If `true` include `$this` to the list.
      * @return array.
      */
-    public function _parents($current = false) {
+    public function _parents($current = false)
+    {
         $instances = [];
         $instance = $current ? $this : $this->_parent;
         while ($instance !== null) {
@@ -261,7 +275,8 @@ abstract class Scope {
      * @param  string   $name Name of the parent type (TODO: to use somewhere).
      * @throws Throw an Exception if the passed parameter is not a closure
      */
-    protected function _bind($closure, $name) {
+    protected function _bind($closure, $name)
+    {
         if (!is_callable($closure)) {
             throw new Exception("Error invalid closure.");
         }
@@ -274,7 +289,8 @@ abstract class Scope {
      * @param  boolean|null For the setter behavior.
      * @return boolean
      */
-    public function exclusive($value = null) {
+    public function exclusive($value = null)
+    {
         if ($value === null) {
             return $this->_exclusive;
         }
@@ -286,7 +302,8 @@ abstract class Scope {
      *
      * @param string The scope value
      */
-    protected function _emitExclusive($scope = 'exclusive') {
+    protected function _emitExclusive($scope = 'exclusive')
+    {
         if ($scope !== 'exclusive') {
             return;
         }
@@ -302,7 +319,8 @@ abstract class Scope {
      *
      * @return object The object instance or `null` if there's no active instance.
      */
-    public static function current() {
+    public static function current()
+    {
         return end(static::$_instances);
     }
 
@@ -312,12 +330,11 @@ abstract class Scope {
      * @param string $type The name of the report.
      * @param array  $data The data to report.
      */
-    public function report($type, $data = null) {
+    public function report($type, $data = null)
+    {
         if (!$this->_root->_reporters) {
             return;
         }
         $this->_root->_reporters->process($type, $data);
     }
 }
-
-?>

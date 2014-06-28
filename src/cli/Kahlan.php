@@ -65,7 +65,8 @@ class Kahlan {
         'reporter' => 'dot'
     ];
 
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = ['autoloader' => null, 'box' => null];
         $options += $defaults;
         $this->_start = microtime(true);
@@ -75,7 +76,8 @@ class Kahlan {
         $this->_autoloader = $options['autoloader'];
     }
 
-    public function loadConfig($argv = []) {
+    public function loadConfig($argv = [])
+    {
         $args = GetOpt::parse($argv, [
             'coverage' => 'numeric'
         ]);
@@ -88,7 +90,8 @@ class Kahlan {
         $this->_args['coverage'] = $this->_args['coverage'];
     }
 
-    public function customNamespaces() {
+    public function customNamespaces()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             if (!$this->_autoloader || !method_exists($this->_autoloader, 'add')) {
                 echo Cli::color("The defined autoloader doesn't support `add()` calls\n", 'yellow');
@@ -103,7 +106,8 @@ class Kahlan {
         });
     }
 
-    public function initPatchers() {
+    public function initPatchers()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $patchers = $this->patchers();
             $patchers->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
@@ -114,7 +118,8 @@ class Kahlan {
         });
     }
 
-    public function patchAutoloader() {
+    public function patchAutoloader()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             Interceptor::patch([
                 'loader' => [$this->_autoloader, 'loadClass'],
@@ -126,7 +131,8 @@ class Kahlan {
         });
     }
 
-    public function loadSpecs() {
+    public function loadSpecs()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $files = Dir::scan([
                 'path' => $this->args('spec'),
@@ -139,7 +145,8 @@ class Kahlan {
         });
     }
 
-    public function initReporters() {
+    public function initReporters()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $this->consoleReporter();
             if ($this->args('coverage')) {
@@ -148,7 +155,8 @@ class Kahlan {
         });
     }
 
-    public function consoleReporter() {
+    public function consoleReporter()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $reporters = $this->reporters();
             $start = $this->_start;
@@ -164,7 +172,8 @@ class Kahlan {
         });
     }
 
-    public function coverageReporter() {
+    public function coverageReporter()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $reporters = $this->reporters();
             $coverage = new Coverage([
@@ -176,12 +185,14 @@ class Kahlan {
         });
     }
 
-    public function preProcess() {
+    public function preProcess()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
         });
     }
 
-    public function runSpecs() {
+    public function runSpecs()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $this->suite()->run([
                 'reporters' => $this->reporters(),
@@ -190,7 +201,8 @@ class Kahlan {
         });
     }
 
-    public function postProcess() {
+    public function postProcess()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $coverage = $this->reporters()->get('coverage');
             if ($coverage && $this->args('coverage-scrutinizer')) {
@@ -202,13 +214,15 @@ class Kahlan {
         });
     }
 
-    public function stop() {
+    public function stop()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $this->suite()->stop();
         });
     }
 
-    public function args($key = null, $value = null) {
+    public function args($key = null, $value = null)
+    {
         if ($key === null) {
             return $this->_args;
         }
@@ -218,19 +232,23 @@ class Kahlan {
         $this->_args[$key] = $value;
     }
 
-    public function suite() {
+    public function suite()
+    {
         return $this->_suite;
     }
 
-    public function patchers() {
+    public function patchers()
+    {
         return $this->_patchers;
     }
 
-    public function reporters() {
+    public function reporters()
+    {
         return $this->_reporters;
     }
 
-    public function run() {
+    public function run()
+    {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
 
             $this->customNamespaces();
@@ -253,4 +271,3 @@ class Kahlan {
         });
     }
 }
-?>

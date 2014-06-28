@@ -1,22 +1,22 @@
 <?php
 namespace spec\fixture\jit\patcher\quit;
 
-class Example {
-
-    public function exitStatement() {
+class Example
+{
+    public function exitStatement()
+    {
         exit(-1);
     }
 
-    public function dieStatement() {
+    public function dieStatement()
+    {
         die();
     }
 
-    public function normalStatement() {
+    public function normalStatement()
+    {
         fooexit();
         $instance->exit();
         $options = (array) $options;
     }
-
 }
-
-?>

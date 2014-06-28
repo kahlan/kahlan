@@ -10,8 +10,8 @@ namespace kahlan\analysis;
 
 use Exception;
 
-class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
-
+class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
+{
     /**
      * The items contained in the collection.
      *
@@ -38,7 +38,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @param string $source Source code
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = ['source' => '', 'wrap' => false];
         $options += $defaults;
         $this->load($options['source'], $options);
@@ -49,7 +50,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @param string $source Source code
      */
-    public function load($source, $options = []) {
+    public function load($source, $options = [])
+    {
         $defaults = ['wrap' => false];
         $options += $defaults;
 
@@ -77,7 +79,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param integer $index Position; if none given, consider the current iteration position
      * @return boolean
      */
-    public function is($type, $index = null) {
+    public function is($type, $index = null)
+    {
         return $this->getType($index) === $type;
     }
 
@@ -87,7 +90,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param integer $index Token position; if none given, consider the current iteration position
      * @return string|integer|null
      */
-    public function getType($index = null) {
+    public function getType($index = null)
+    {
         if ($index === null) {
             $index = $this->_current;
         }
@@ -100,7 +104,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param integer $index Token position; if none given, consider the current iteration position
      * @return string|null
      */
-    public function getValue($index = null) {
+    public function getValue($index = null)
+    {
         if ($index === null) {
             $index = $this->_current;
         }
@@ -113,7 +118,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param integer $index Token position; if none given, consider the current iteration position
      * @return string|null
      */
-    public function getName($index = null) {
+    public function getName($index = null)
+    {
         $type = $this->getType($index);
         return is_int($type) ? token_name($type) : null;
     }
@@ -123,7 +129,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->source();
     }
 
@@ -132,7 +139,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @return integer Returns the number of items in the collection.
      */
-    public function count() {
+    public function count()
+    {
         return $this->_count;
     }
 
@@ -141,7 +149,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @return boolean
      */
-    public function valid() {
+    public function valid()
+    {
         return $this->_current < $this->_count;
     }
 
@@ -151,7 +160,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @var    boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
-    public function rewind($token = false) {
+    public function rewind($token = false)
+    {
         $this->_current = 0;
         return $this->current($token);
     }
@@ -161,7 +171,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @return integer
      */
-    public function key() {
+    public function key()
+    {
         return $this->_current;
     }
 
@@ -171,7 +182,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
-    public function current($token = false) {
+    public function current($token = false)
+    {
         if (!$this->valid()) {
             return null;
         }
@@ -184,7 +196,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param  mixed       $type Token type to search for.
      * @return string|null Returns the skipped text content (the current is not saved).
      */
-    public function next($type = false) {
+    public function next($type = false)
+    {
         if ($type === false || $type === true) {
             $this->_current++;
             return $this->current($type);
@@ -210,7 +223,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @return string|null Returns the skipped text content.
      */
-    public function nextMatchingBracket() {
+    public function nextMatchingBracket()
+    {
         if (!$this->valid()) {
             return null;
         }
@@ -252,7 +266,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param boolean $skipComment Skip docblocks as well
      * @return the skipped string
      */
-    public function skipWhitespaces($skipComment = false) {
+    public function skipWhitespaces($skipComment = false)
+    {
         $spaces = '';
         $skip = [T_WHITESPACE => true];
 
@@ -279,7 +294,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param arrayt $skip The elements array to skip.
      * @return the skipped string
      */
-    public function skipWhile($skip = []) {
+    public function skipWhile($skip = [])
+    {
         $skip = array_fill_keys($skip, true);
         $skipped = '';
         $count = $this->count();
@@ -299,7 +315,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
-    public function prev($token = false) {
+    public function prev($token = false)
+    {
         $this->_current--;
         return $this->current($token);
     }
@@ -311,7 +328,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
-    public function seek($index, $token = false) {
+    public function seek($index, $token = false)
+    {
         $this->_current = (int) $index;
         return $this->current($token);
     }
@@ -323,7 +341,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param mixed $end End offset
      * @return string
      */
-    public function source($start = null, $end = null) {
+    public function source($start = null, $end = null)
+    {
         $source = '';
         $start = (int) $start;
         $end = $end === null ? ($this->count() - 1) : (int) $end;
@@ -339,7 +358,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param  integer $offset Token index
      * @return boolean
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
         return isset($this->_data[$offset]);
     }
 
@@ -349,7 +369,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      * @param  integer $offset Token index
      * @return array
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
     }
 
@@ -358,7 +379,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @throws Exception
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
         throw new Exception('Not supported.');
     }
 
@@ -367,7 +389,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator {
      *
      * @throws Exception
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
         throw new Exception('Not supported.');
     }
 

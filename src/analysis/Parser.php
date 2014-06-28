@@ -18,8 +18,8 @@ use kahlan\analysis\code\NamespaceDef;
 /**
  * Crude parser providing some code block structure of PHP files to facilitate analysis.
  */
-class Parser {
-
+class Parser
+{
     /**
      * The current streamer.
      *
@@ -67,7 +67,8 @@ class Parser {
      * @param  boolean Indicate if the parser need to process line mathing.
      * @return NodeDef the parsed file node.
      */
-    public static function parse($content, $lines = false) {
+    public static function parse($content, $lines = false)
+    {
         static::$_stream = new TokenStream(['source' => $content]);
         $root = static::_resetStates($lines);
         while ($token = static::$_stream->current(true)) {
@@ -156,7 +157,8 @@ class Parser {
     /**
      * Manage brackets.
      */
-    protected static function _closeBracket() {
+    protected static function _closeBracket()
+    {
         static::$_states['bracket']--;
         if (!static::$_states['nodes'] || end(static::$_states['nodes']) < static::$_states['bracket']) {
             $token = static::$_stream->current(true);
@@ -178,7 +180,8 @@ class Parser {
     /**
      * Manage use statement.
      */
-    protected static function _use() {
+    protected static function _use()
+    {
         $current = static::$_states['current'];
         $token = static::$_stream->current(true);
         if ($current->type === 'class') {
@@ -215,7 +218,8 @@ class Parser {
     /**
      * Build a namespace node.
      */
-    protected static function _namespaceNode() {
+    protected static function _namespaceNode()
+    {
         static::_codeNode();
         static::_flushUses();
         $body = static::$_stream->current();
@@ -233,7 +237,8 @@ class Parser {
     /**
      * Attache the founded uses to the current namespace.
      */
-    protected static function _flushUses() {
+    protected static function _flushUses()
+    {
         if ($namespace = static::$_states['namespace']) {
             $namespace->uses = static::$_states['uses'];
             static::$_states['uses'] = [];
@@ -243,7 +248,8 @@ class Parser {
     /**
      * Build a trait node.
      */
-    protected static function _traitNode() {
+    protected static function _traitNode()
+    {
         static::_codeNode();
         $body = static::$_stream->current() . static::$_stream->next([';', '{']);
         static::$_states['body'] .= $body;
@@ -256,7 +262,8 @@ class Parser {
     /**
      * Build an interface node.
      */
-    protected static function _interfaceNode() {
+    protected static function _interfaceNode()
+    {
         static::_codeNode();
         $body = static::$_stream->current() . static::$_stream->next(['{']);
         static::$_states['body'] .= $body;
@@ -269,7 +276,8 @@ class Parser {
     /**
      * Build a class node.
      */
-    protected static function _classNode() {
+    protected static function _classNode()
+    {
         static::_codeNode();
         $node = new ClassDef();
         $token = static::$_stream->current(true);
@@ -296,7 +304,8 @@ class Parser {
     /**
      * Build a function node.
      */
-    protected static function _functionNode() {
+    protected static function _functionNode()
+    {
         static::_codeNode();
         $node = new FunctionDef();
         $token = static::$_stream->current(true);
@@ -335,7 +344,8 @@ class Parser {
      * @param  TokenStream The stream.
      * @return array The function/method args array.
      */
-    protected static function _parseArgs() {
+    protected static function _parseArgs()
+    {
         $inString = false;
         $cpt = 0;
         $last = $char = $value = $name = '';
@@ -385,7 +395,8 @@ class Parser {
     /**
      * Build a code node.
      */
-    protected static function _codeNode() {
+    protected static function _codeNode()
+    {
         if (!static::$_states['body']) {
             return null;
         }
@@ -400,7 +411,8 @@ class Parser {
     /**
      * Build a string node.
      */
-    protected static function _stringNode() {
+    protected static function _stringNode()
+    {
         static::_codeNode();
         $token = static::$_stream->current(true);
         static::$_states['body'] .= $token[0] . static::$_stream->next('"');
@@ -411,7 +423,8 @@ class Parser {
     /**
      * Build a string node.
      */
-    protected static function _constantStringNode() {
+    protected static function _constantStringNode()
+    {
         static::_codeNode();
         $token = static::$_stream->current(true);
         static::$_states['body'] = $token[1];
@@ -422,7 +435,8 @@ class Parser {
     /**
      * Build a comment node.
      */
-    protected static function _commentNode() {
+    protected static function _commentNode()
+    {
         static::_codeNode();
         $token = static::$_stream->current(true);
         static::$_states['body'] = $token[1];
@@ -433,7 +447,8 @@ class Parser {
     /**
      * Contextualize a node.
      */
-    protected static function _contextualize($node) {
+    protected static function _contextualize($node)
+    {
         $parent = static::$_states['current'];
         $node->namespace = $parent ? $parent->namespace : null;
         $node->parent = $parent;
@@ -454,7 +469,8 @@ class Parser {
      *
      * @param  NodeDef The node to match.
      */
-    protected static function _lines($node) {
+    protected static function _lines($node)
+    {
         $body = static::$_states['body'];
         if (!$body) {
             return;
@@ -488,7 +504,8 @@ class Parser {
      * @param  NodeDef The root node.
      * @param  NodeDef
      */
-    protected static function _current($node, $body) {
+    protected static function _current($node, $body)
+    {
         $current = null;
         $parent = static::$_states['current'];
         if (preg_match("/^\s*\n/", $body) && static::$_states['open']) {
@@ -503,7 +520,8 @@ class Parser {
         return $current;
     }
 
-    protected static function _resetStates($lines) {
+    protected static function _resetStates($lines)
+    {
         $root = new NodeDef('', 'file');
         static::$_states = [
             'php'        => false,
@@ -522,7 +540,8 @@ class Parser {
         return $root;
     }
 
-    public static function debug($content) {
+    public static function debug($content)
+    {
         $root = static::parse($content, true);
         $lines = preg_split("~\n~", $content);
         $result = '';
@@ -538,5 +557,3 @@ class Parser {
         return $result;
     }
 }
-
-?>

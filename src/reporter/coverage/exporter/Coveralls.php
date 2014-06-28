@@ -8,8 +8,8 @@
 
 namespace kahlan\reporter\coverage\exporter;
 
-class Coveralls {
-
+class Coveralls
+{
     /**
      * Write a coverage to an ouput file.
      *
@@ -18,7 +18,8 @@ class Coveralls {
      *                 -`'file'` The output file name.
      * @return boolean
      */
-    public static function write($options) {
+    public static function write($options)
+    {
         $defaults = [
             'coverage' => null,
             'file' => null
@@ -43,7 +44,8 @@ class Coveralls {
      *                 -`'run_at'` The date of a timestamp.
      * @return boolean
      */
-    public static function export($options) {
+    public static function export($options)
+    {
         $defaults = [
             'coverage' => null,
             'service_name' => '',
@@ -76,5 +78,3 @@ class Coveralls {
         return json_encode($result);
     }
 }
-
-?>

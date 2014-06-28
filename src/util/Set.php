@@ -11,8 +11,8 @@ namespace kahlan\util;
 use Exception;
 use BadFunctionCallException;
 
-class Set {
-
+class Set
+{
     /**
      * Merging recursively arrays.
      *
@@ -21,7 +21,8 @@ class Set {
      * @param  array ... list of array to merge.
      * @return array The merged array.
      */
-    public static function merge() {
+    public static function merge()
+    {
         if (func_num_args() < 2) {
             throw new BadFunctionCallException("Not enough parameters.");
         }
@@ -52,11 +53,10 @@ class Set {
      * @return array        An array containing both arrays, having the array with requested
      *                      keys first and the remainder as second element
      */
-    public static function slice($data, $keys) {
+    public static function slice($data, $keys)
+    {
         $removed = array_intersect_key($data, array_fill_keys((array) $keys, true));
         $data = array_diff_key($data, $removed);
         return [$data, $removed];
     }
 }
-
-?>

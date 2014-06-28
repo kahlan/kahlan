@@ -8,7 +8,6 @@
 
 namespace kahlan;
 
-class QuitException extends \Exception {
+class QuitException extends \Exception
+{
 }
-
-?>

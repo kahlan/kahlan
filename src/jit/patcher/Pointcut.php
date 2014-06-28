@@ -8,8 +8,8 @@
 
 namespace kahlan\jit\patcher;
 
-class Pointcut {
-
+class Pointcut
+{
     /**
      * Class dependencies.
      *
@@ -34,7 +34,8 @@ class Pointcut {
      * @param  string $file   The correponding finded file path.
      * @return string The patched file path.
      */
-    public function findFile($loader, $class, $file) {
+    public function findFile($loader, $class, $file)
+    {
         return $file;
     }
 
@@ -44,7 +45,8 @@ class Pointcut {
      * @param  NodeDef The node to patch.
      * @return NodeDef The patched node.
      */
-    public function process($node) {
+    public function process($node)
+    {
         $this->_processTree($node->tree);
         return $node;
     }
@@ -54,7 +56,8 @@ class Pointcut {
      *
      * @param array $nodes A node array to patch.
      */
-    protected function _processTree($nodes) {
+    protected function _processTree($nodes)
+    {
         foreach ($nodes as $node) {
             if ($node->type === 'class') {
                 $this->_processMethods($node->tree);
@@ -69,7 +72,8 @@ class Pointcut {
      *
      * @param NodeDef The node to patch.
      */
-    protected function _processMethods($node) {
+    protected function _processMethods($node)
+    {
         foreach ($node as $child) {
             if (!$child->processable) {
                 continue;
@@ -95,7 +99,8 @@ class Pointcut {
      *
      * @return string.
      */
-    protected function _before() {
+    protected function _before()
+    {
         $prefix = static::$prefix;
         return "\$__{$prefix}_ARGS__ = func_get_args(); \$__{$prefix}_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__{$prefix}__ = \kahlan\plugin\Pointcut::before(__METHOD__, \$__{$prefix}_SELF__, \$__{$prefix}_ARGS__)) { return \$__{$prefix}__(\$__{$prefix}_SELF__, \$__{$prefix}_ARGS__); }";
     }
@@ -109,9 +114,8 @@ class Pointcut {
      * @param  array $backtrace The backtrace array.
      * @return array The patched backtrace.
      */
-    public static function processBacktrace($options, $backtrace) {
+    public static function processBacktrace($options, $backtrace)
+    {
         return $backtrace;
     }
 }
-
-?>

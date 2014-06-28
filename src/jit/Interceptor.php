@@ -81,7 +81,8 @@ class Interceptor {
      *
      * @param array $options Options for the constructor.
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = [
             'patchers' => null,
             'exclude' => [],
@@ -107,7 +108,8 @@ class Interceptor {
      * @param  array $options Options for the interceptor autoloader.
      * @throws RuntimeException
      */
-    public static function patch($options = []) {
+    public static function patch($options = [])
+    {
         if (static::$_loader) {
             throw new RuntimeException("An interceptor is already attached.");
         }
@@ -131,7 +133,8 @@ class Interceptor {
      * @param  array $options Options for the interceptor autoloader.
      * @return mixed The founded composer autolaoder or `null` if not found.
      */
-    public static function composer() {
+    public static function composer()
+    {
         $loaders = spl_autoload_functions();
         foreach ($loaders as $key => $loader) {
             if (is_array($loader) && ($loader[0] instanceof ClassLoader)) {
@@ -145,7 +148,8 @@ class Interceptor {
      *
      * @return object|null
      */
-    public static function instance() {
+    public static function instance()
+    {
         if (isset(static::$_loader[0]) && static::$_loader[0] instanceof static) {
             return static::$_loader[0];
         }
@@ -156,7 +160,8 @@ class Interceptor {
      *
      * @param array An array of files to load.
      */
-    public static function loadFiles($files) {
+    public static function loadFiles($files)
+    {
         $files = (array) $files;
         if (!$instance = static::instance()) {
             return;
@@ -171,7 +176,8 @@ class Interceptor {
      *
      * @return array
      */
-    public static function original() {
+    public static function original()
+    {
         return static::$_original;
     }
 
@@ -180,7 +186,8 @@ class Interceptor {
      *
      * @return array
      */
-    public static function originalInstance() {
+    public static function originalInstance()
+    {
         return is_array(static::$_original) ? static::$_original[0] : static::$_original;
     }
 
@@ -190,7 +197,8 @@ class Interceptor {
      * @param  array $loader A autoloader reference.
      * @return mixed Returns `true` on success, `false` otherwise or the loader value if get.
      */
-    public static function loader($loader = null) {
+    public static function loader($loader = null)
+    {
         if ($loader === null) {
             return static::$_loader;
         }
@@ -207,7 +215,8 @@ class Interceptor {
     /**
      * Restore the original autoloader behavior.
      */
-    public static function unpatch() {
+    public static function unpatch()
+    {
         if (!static::$_loader) {
             return false;
         }
@@ -224,7 +233,8 @@ class Interceptor {
      *
      * @return mixed
      */
-    public function patchers() {
+    public function patchers()
+    {
         return $this->_patchers;
     }
 
@@ -234,7 +244,8 @@ class Interceptor {
      * @param  string $class The name of the class.
      * @return boolean|null Returns `true` if loaded, `null` otherwise.
      */
-    public function loadClass($class) {
+    public function loadClass($class)
+    {
         if (!$file = $this->findFile($class)) {
             return;
         }
@@ -251,7 +262,8 @@ class Interceptor {
      * @param  string $class The name of the class to check.
      * @return boolean Returns `true` if the class can be patched, `false` otherwise.
      */
-    public function patchable($class) {
+    public function patchable($class)
+    {
         foreach ($this->_exclude as $namespace) {
             if (strpos($class, $namespace) === 0) {
                 return false;
@@ -271,7 +283,8 @@ class Interceptor {
      * @param  string $class The name of the class.
      * @return bool|null Returns `true` if loaded, null otherwise.
      */
-    public function loadFile($file) {
+    public function loadFile($file)
+    {
         if ($this->_persistent && $path = $this->cache($file)) {
             require $path;
             return true;
@@ -295,7 +308,8 @@ class Interceptor {
      * @param  string $content The patched content to cache.
      * @return string The patched file path or the cache path if called with no params.
      */
-    public function cache($file = null, $content = null) {
+    public function cache($file = null, $content = null)
+    {
         if ($file === null && $content === null) {
             return $this->_cache;
         }
@@ -319,7 +333,8 @@ class Interceptor {
      * @param string $class The name of the class
      * @return string|false The path if found, false otherwise
      */
-    public function findFile($class) {
+    public function findFile($class)
+    {
         $findFile = $this->_findFile;
         $file = static::originalInstance()->$findFile($class);
         if ($this->_patchers) {
@@ -333,10 +348,9 @@ class Interceptor {
      *
      * @return array
      */
-    public static function getClassMap() {
+    public static function getClassMap()
+    {
         $getClassMap = $this->_getClassMap;
         return static::originalInstance()->$getClassMap($class);
     }
 }
-
-?>

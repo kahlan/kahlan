@@ -11,8 +11,8 @@ namespace kahlan\reporter;
 use kahlan\util\Set;
 use kahlan\util\String;
 
-class Bar extends Terminal {
-
+class Bar extends Terminal
+{
     /**
      * Colors preference.
      *
@@ -53,7 +53,8 @@ class Bar extends Terminal {
      *
      * @param array $options The options array.
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         parent::__construct($options);
         $defaults = [
             'size' => 50,
@@ -80,7 +81,8 @@ class Bar extends Terminal {
     /**
      * Callback called when a new spec file is processed.
      */
-    public function progress() {
+    public function progress()
+    {
         parent::progress();
         $this->_progressBar();
     }
@@ -88,7 +90,8 @@ class Bar extends Terminal {
     /**
      * Callback called on failure.
      */
-    public function fail($report) {
+    public function fail($report)
+    {
         $this->_color = $this->_colors['failure'];
         $this->console("\n");
         $this->_report($report);
@@ -97,7 +100,8 @@ class Bar extends Terminal {
     /**
      * Callback called when an exception occur.
      */
-    public function exception($report) {
+    public function exception($report)
+    {
         $this->_color = $this->_colors['failure'];
         $this->console("\n");
         $this->_report($report);
@@ -106,7 +110,8 @@ class Bar extends Terminal {
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      */
-    public function incomplete($report) {
+    public function incomplete($report)
+    {
         $this->_color = $this->_colors['incomplete'];
         $this->console("\n");
         $this->_report($report);
@@ -115,7 +120,8 @@ class Bar extends Terminal {
     /**
      * Ouput the progress bar to STDOUT.
      */
-    protected function _progressBar() {
+    protected function _progressBar()
+    {
         if ($this->_current > $this->_total) {
             return;
         }
@@ -141,11 +147,10 @@ class Bar extends Terminal {
     /**
      * Callback called at the end of specs processing.
      */
-    public function end($results) {
+    public function end($results)
+    {
         $this->console("\n");
         $this->_summary($results);
         $this->_exclusive($results);
     }
 }
-
-?>

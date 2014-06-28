@@ -1,31 +1,33 @@
 #1     [  code   ] #1 > #3         |<?php
 #2     [  code   ] #1 > #3         |use kahlan\Matcher;
 #3     [  code   ] #1 > #3         |
-#4     [  class  ] #4 > #8         |class NoNamespace {
-#5     [function ] #5 > #7         |    public function hello() {
-#6     [  code   ] #6 > #6         |        return "Hello World!";
-#7     [function ] #5 > #7         |    }
-#8     [  class  ] #4 > #8         |}
-#9     [  code   ] #9 > #9         |
-#10    [function ] #10 > #12       |function test() {
-#11    [  code   ] #11 > #11       |    return "It's a test";
-#12    [function ] #10 > #12       |}
-#13    [  code   ] #13 > #14       |
-#14    [  code   ] #13 > #14       |if (true) {
-#15    [  code   ] #15 > #17       |    echo "Hello World!";
-#16    [  code   ] #15 > #17       |}
-#17    [  code   ] #15 > #17       |
-#18    [  code   ] #18 > #18       |Matcher::register('toBe', 'kahlan\matcher\ToBe');
-#19    [  code   ] #19 > #20       |Box::share('kahlan.suite', function() { return new Suite; });
-#20    [  code   ] #19 > #20       |
-#21    [  code   ] #21 > #21       |?>
-#22    [  plain  ] #22 > #24       |
-#23    [  plain  ] #22 > #24       |Outside PHP Tags
-#24    [  plain  ] #22 > #24       |
-#25    [  code   ] #25 > #27       |<?php
-#26    [  code   ] #25 > #27       |
-#27    [  code   ] #25 > #27       |for($i = 0; $i < 10; $i++) {
-#28    [  code   ] #28 > #30       |    echo "Success";
-#29    [  code   ] #28 > #30       |}
-#30    [  code   ] #28 > #30       |
-#31    [  code   ] #31 > #31       |?>
+#4     [  class  ] #4 > #10        |class NoNamespace
+#5     [  class  ] #4 > #10        |{
+#6     [function ] #6 > #9         |    public function hello()
+#7     [function ] #6 > #9         |    {
+#8     [  code   ] #8 > #8         |        return "Hello World!";
+#9     [function ] #6 > #9         |    }
+#10    [  class  ] #4 > #10        |}
+#11    [  code   ] #11 > #11       |
+#12    [function ] #12 > #14       |function test() {
+#13    [  code   ] #13 > #13       |    return "It's a test";
+#14    [function ] #12 > #14       |}
+#15    [  code   ] #15 > #16       |
+#16    [  code   ] #15 > #16       |if (true) {
+#17    [  code   ] #17 > #19       |    echo "Hello World!";
+#18    [  code   ] #17 > #19       |}
+#19    [  code   ] #17 > #19       |
+#20    [  code   ] #20 > #20       |Matcher::register('toBe', 'kahlan\matcher\ToBe');
+#21    [  code   ] #21 > #22       |Box::share('kahlan.suite', function() { return new Suite; });
+#22    [  code   ] #21 > #22       |
+#23    [  code   ] #23 > #23       |?>
+#24    [  plain  ] #24 > #26       |
+#25    [  plain  ] #24 > #26       |Outside PHP Tags
+#26    [  plain  ] #24 > #26       |
+#27    [  code   ] #27 > #29       |<?php
+#28    [  code   ] #27 > #29       |
+#29    [  code   ] #27 > #29       |for($i = 0; $i < 10; $i++) {
+#30    [  code   ] #30 > #32       |    echo "Success";
+#31    [  code   ] #30 > #32       |}
+#32    [  code   ] #30 > #32       |
+#33    [  code   ] #33 > #33       |?>

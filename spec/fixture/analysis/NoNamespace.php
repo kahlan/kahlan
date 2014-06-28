@@ -1,8 +1,10 @@
 <?php
 use kahlan\Matcher;
 
-class NoNamespace {
-    public function hello() {
+class NoNamespace
+{
+    public function hello()
+    {
         return "Hello World!";
     }
 }

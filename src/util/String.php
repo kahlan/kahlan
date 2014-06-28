@@ -13,15 +13,17 @@ use Exception;
 use InvalidArgumentException;
 use kahlan\util\Set;
 
-class String {
-
-    public static function dump($value) {
+class String
+{
+    public static function dump($value)
+    {
         $type = gettype($value);
         $value = static::toString($value, ['quote' => true]);
         return "({$type}) {$value}";
     }
 
-    public static function toString($value, $options = []) {
+    public static function toString($value, $options = [])
+    {
         $defaults = [
             'quote' => false,
             'array' => [
@@ -62,7 +64,8 @@ class String {
         return '"' . static::expands($value) . '"';
     }
 
-    protected static function _arrayToString($datas, $options) {
+    protected static function _arrayToString($datas, $options)
+    {
         if (!count($datas)) {
             return '[]';
         }
@@ -97,7 +100,8 @@ class String {
      * @param  string $string A string which contain escape sequence.
      * @return string A valid double quoted string.
      */
-    public static function expands($string) {
+    public static function expands($string)
+    {
         $es = ['0', 'x07', 'x08', 't', 'n', 'v', 'f', 'r'];
         $unescaped = '';
         $chars = str_split($string);
@@ -139,7 +143,8 @@ class String {
      *                - `'clean'`: A boolean or array with instructions for `String::clean()`.
      * @return string
      */
-    public static function insert($str, array $data, array $options = array()) {
+    public static function insert($str, $data, $options = [])
+    {
         $options += ['before' => '{:', 'after' => '}', 'clean' => false];
 
         $replace = [];
@@ -169,7 +174,8 @@ class String {
      *                - `'word'`: Regular expression matching words.
      * @return string The cleaned string.
      */
-    public static function clean($str, array $options = array()) {
+    public static function clean($str, $options = [])
+    {
         $options += [
             'before' => '{:',
             'after' => '}',
@@ -196,7 +202,8 @@ class String {
      * @return string A stirng hash.
      * @throws InvalidArgumentException
      */
-    public static function hash($reference) {
+    public static function hash($reference)
+    {
         if (is_object($reference)) {
             return spl_object_hash($reference);
         }
@@ -206,5 +213,3 @@ class String {
         throw new InvalidArgumentException("Invalid reference.");
     }
 }
-
-?>

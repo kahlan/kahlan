@@ -8,8 +8,8 @@
 
 namespace kahlan\plugin\stub;
 
-class Method extends \kahlan\plugin\call\Message {
-
+class Method extends \kahlan\plugin\call\Message
+{
     /**
      * Index value in the `Method::$_returns` array.
      *
@@ -41,7 +41,8 @@ class Method extends \kahlan\plugin\call\Message {
      *                       - `'returns'`: the returns values for this stub (used only if
      *                         the `'closure'` option is missing).
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = ['closure' => null, 'params' => [], 'returns' => [], 'static' => false];
         $options += $defaults;
         parent::__construct($options);
@@ -56,7 +57,8 @@ class Method extends \kahlan\plugin\call\Message {
      * @param  array  $params The call parameters array.
      * @return mixed  The returned stub result.
      */
-    public function __invoke($self, $params) {
+    public function __invoke($self, $params)
+    {
         if ($this->_closure) {
             if (is_string($self)) {
                 $closure = $this->_closure->bindTo(null, $self);
@@ -76,7 +78,8 @@ class Method extends \kahlan\plugin\call\Message {
      *
      * @param Closure $closure The logic.
      */
-    public function run($closure) {
+    public function run($closure)
+    {
         if ($this->_returns) {
             throw new Exception("Some return values are already set.");
         }
@@ -91,7 +94,8 @@ class Method extends \kahlan\plugin\call\Message {
      *
      * @param mixed <0,n> Return value(s).
      */
-    public function andReturn() {
+    public function andReturn()
+    {
         if ($this->_closure) {
             throw new Exception("Closure already set.");
         }
@@ -101,5 +105,3 @@ class Method extends \kahlan\plugin\call\Message {
     }
 
 }
-
-?>

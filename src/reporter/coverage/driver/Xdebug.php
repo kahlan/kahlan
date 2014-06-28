@@ -10,12 +10,13 @@ namespace kahlan\reporter\coverage\driver;
 
 use RuntimeException;
 
-class Xdebug {
-
+class Xdebug
+{
     /**
      * Construct.
      */
-    public function __construct() {
+    public function __construct()
+    {
         if (!extension_loaded('xdebug')) {
             throw new RuntimeException('Xdebug is not loaded.');
         }
@@ -28,7 +29,8 @@ class Xdebug {
     /**
      * Start code coverage.
      */
-    public function start() {
+    public function start()
+    {
         xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
     }
 
@@ -54,5 +56,3 @@ class Xdebug {
     }
 
 }
-
-?>

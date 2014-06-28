@@ -8,8 +8,8 @@
 
 namespace kahlan\reporter;
 
-class Reporter {
-
+class Reporter
+{
     /**
      * Starting time
      *
@@ -36,7 +36,8 @@ class Reporter {
      *
      * @param array $options (Unused).
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = ['start' => microtime(true)];
         $options += $defaults;
         $this->_start = $options['start'];
@@ -47,7 +48,8 @@ class Reporter {
      *
      * @param array $params The suite params array.
      */
-    public function begin($params) {
+    public function begin($params)
+    {
         $this->_start = $this->_start ?: microtime(true);
         $this->_total = max(1, $params['total']);
     }
@@ -55,57 +57,64 @@ class Reporter {
     /**
      * Callback called before a spec.
      */
-    public function before() {
+    public function before()
+    {
     }
 
     /**
      * Callback called after a spec.
      */
-    public function after() {
+    public function after()
+    {
     }
 
     /**
      * Callback called when a new spec file is processed.
      */
-    public function progress() {
+    public function progress()
+    {
         $this->_current++;
     }
 
     /**
      * Callback called on successful spec.
      */
-    public function pass($report) {
+    public function pass($report)
+    {
     }
 
     /**
      * Callback called on failure.
      */
-    public function fail($report) {
+    public function fail($report)
+    {
     }
 
     /**
      * Callback called when an exception occur.
      */
-    public function exception($report) {
+    public function exception($report)
+    {
     }
 
     /**
      * Callback called on a skipped spec.
      */
-    public function skip($report) {
+    public function skip($report)
+    {
     }
 
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      */
-    public function incomplete($report) {
+    public function incomplete($report)
+    {
     }
 
     /**
      * Callback called at the end of specs processing.
      */
-    public function end($results) {
+    public function end($results)
+    {
     }
 }
-
-?>

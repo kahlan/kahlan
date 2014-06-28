@@ -17,7 +17,8 @@ class Substitute {
      */
     protected $_namespaces = [];
 
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = ['namespaces' => []];
         $options += $defaults;
         $this->_namespaces = (array) $options['namespaces'];
@@ -31,7 +32,8 @@ class Substitute {
      * @param  string $file   The correponding finded file path.
      * @return string The patched file path.
      */
-    public function findFile($loader, $class, $file) {
+    public function findFile($loader, $class, $file)
+    {
         if ($file) {
             return $file;
         }
@@ -54,7 +56,8 @@ class Substitute {
      * @param  NodeDef The node to patch.
      * @return NodeDef The patched node.
      */
-    public function process($node) {
+    public function process($node)
+    {
         return $node;
     }
 
@@ -65,7 +68,8 @@ class Substitute {
      * @param  string $class     The class name.
      * @return string A Substitute.
      */
-    public static function generate($options = []) {
+    public static function generate($options = [])
+    {
         extract($options);
 
         if (($pos = strrpos($class, '\\')) !== false) {
@@ -107,9 +111,8 @@ EOT;
      * @param  array $backtrace The backtrace array.
      * @return array The patched backtrace.
      */
-    public function processBacktrace($options, $backtrace) {
+    public function processBacktrace($options, $backtrace)
+    {
         return $backtrace;
     }
 }
-
-?>

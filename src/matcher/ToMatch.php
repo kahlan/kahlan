@@ -8,8 +8,8 @@
 
 namespace kahlan\matcher;
 
-class ToMatch extends ToEqual {
-
+class ToMatch extends ToEqual
+{
     /**
      * Expect that `$actual` match the `$expected` pattern.
      *
@@ -17,14 +17,14 @@ class ToMatch extends ToEqual {
      * @param  mixed   $expected The expected pattern.
      * @return boolean
      */
-    public static function match($actual, $expected) {
+    public static function match($actual, $expected)
+    {
         $actual = static::_nl($actual);
         return !!preg_match($expected, $actual);
     }
 
-    public static function description() {
+    public static function description()
+    {
         return "match expected.";
     }
 }
-
-?>

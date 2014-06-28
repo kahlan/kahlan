@@ -11,8 +11,8 @@ namespace kahlan\reporter\coverage\exporter;
 use DOMDocument;
 use RuntimeException;
 
-class Scrutinizer {
-
+class Scrutinizer
+{
     /**
      * Write a coverage to an ouput file.
      *
@@ -21,7 +21,8 @@ class Scrutinizer {
      *                 -`'file'` The output file name.
      * @return boolean
      */
-    public static function write($options) {
+    public static function write($options)
+    {
         $defaults = [
             'coverage' => null,
             'file' => null
@@ -42,7 +43,8 @@ class Scrutinizer {
      *                 -`'coverage'` The coverage instance.
      * @return boolean
      */
-    public static function export($options) {
+    public static function export($options)
+    {
         $defaults = ['coverage' => null];
         $options += $defaults;
         $coverage = $options['coverage'];
@@ -65,12 +67,6 @@ class Scrutinizer {
         return $xmlDocument->saveXML();
     }
 
-/**
-     * Export the coverage of a metrics.
-     *
-     * @param  DOMDocument $xmlDocument The XML root node.
-     * @return object      the XML file node.
-     */
     /**
      * Export the coverage of a file.
      *
@@ -78,7 +74,8 @@ class Scrutinizer {
      *                 -`'coverage'` The coverage instance.
      * @return object  the XML file node.
      */
-    protected static function _exportFile($xmlDocument, $file, $data) {
+    protected static function _exportFile($xmlDocument, $file, $data)
+    {
         $xmlFile = $xmlDocument->createElement('file');
         $xmlFile->setAttribute('name', $file);
         foreach ($data as $line => $node) {
@@ -97,7 +94,8 @@ class Scrutinizer {
      * @param  DOMDocument $xmlDocument The XML root node.
      * @return object      the XML file node.
      */
-    protected static function _exportMetrics($xmlDocument, $metrics) {
+    protected static function _exportMetrics($xmlDocument, $metrics)
+    {
         $data = $metrics->get();
         $xmlMetrics = $xmlDocument->createElement('metrics');
         $xmlMetrics->setAttribute('loc', $data['loc']);

@@ -16,8 +16,8 @@ use kahlan\util\String;
 use kahlan\analysis\Inspector;
 use kahlan\plugin\stub\Method;
 
-class Stub {
-
+class Stub
+{
     /**
      * Class dependencies.
      *
@@ -62,7 +62,8 @@ class Stub {
      *
      * @param mixed $reference An instance or a fully namespaced class name.
      */
-    public function __construct($reference) {
+    public function __construct($reference)
+    {
         $this->_reference = $reference;
     }
 
@@ -72,7 +73,8 @@ class Stub {
 
      * @return mixed Return the array of stubbed methods.
      */
-    public function methods() {
+    public function methods()
+    {
         return $this->_stubs;
     }
 
@@ -82,7 +84,8 @@ class Stub {
      * @param mixed $name Method name or array of stubs where key are method names and
      *              values the stubs.
      */
-    public function method($name, $closure = null) {
+    public function method($name, $closure = null)
+    {
         if (is_array($name)) {
             foreach ($name as $method => $returns) {
                 $stub = $this->method($method);
@@ -115,7 +118,8 @@ class Stub {
      *
      * @param mixed $reference An instance or a fully namespaced class name.
      */
-    public static function on($reference) {
+    public static function on($reference)
+    {
         $hash = String::hash($reference);
         if (isset(static::$_registered[$hash])) {
             return static::$_registered[$hash];
@@ -132,7 +136,8 @@ class Stub {
      * @param  array       $params     The required arguments.
      * @return object|null Return the subbed method or `null` if not founded.
      */
-    public static function find($references, $method = null, $params = []) {
+    public static function find($references, $method = null, $params = [])
+    {
         $references = (array) $references;
         $stub = null;
         $refs = [];
@@ -167,7 +172,8 @@ class Stub {
      *                - `'constructor'` _boolean_: if set to `false` override to an empty function.
      * @return string The created instance.
      */
-    public static function create($options = []) {
+    public static function create($options = [])
+    {
         $class = static::classname($options);
         $instance = isset($options['params']) ? new $class($options['params']) : new $class();
         $call = static::$_classes['call'];
@@ -183,7 +189,8 @@ class Stub {
      *                - `'extends'` : the fully-namespaced parent class name.
      * @return string The created fully-namespaced class name.
      */
-    public static function classname($options = []) {
+    public static function classname($options = [])
+    {
         $defaults = ['class' => 'spec\plugin\stub\Stub' . static::$_index++];
         $options += $defaults;
         $interceptor = static::$_classes['interceptor'];
@@ -208,7 +215,8 @@ class Stub {
      *                - `'extends'` : the fully-namespaced parent class name.
      * @return string The generated class string content.
      */
-    public static function generate($options = []) {
+    public static function generate($options = [])
+    {
         $defaults = [
             'class' => 'spec\plugin\stub\Stub' . static::$_index++,
             'extends' => '',
@@ -260,7 +268,8 @@ EOT;
      * @param  array  $uses An array of traits.
      * @return string The generated `use` definition.
      */
-    protected static function _generateUses($uses) {
+    protected static function _generateUses($uses)
+    {
         if (!$uses) {
             return '';
         }
@@ -280,7 +289,8 @@ EOT;
      * @param  string $extends The parent class name.
      * @return string The generated `extends` definition.
      */
-    protected static function _generateExtends($extends) {
+    protected static function _generateExtends($extends)
+    {
         if (!$extends) {
             return '';
         }
@@ -293,7 +303,8 @@ EOT;
      * @param  array  $uses An array of interfaces.
      * @return string The generated `implements` definition.
      */
-    protected static function _generateImplements($implements) {
+    protected static function _generateImplements($implements)
+    {
         if (!$implements) {
             return '';
         }
@@ -304,7 +315,8 @@ EOT;
         return ' implements ' . join(', ', $classes);
     }
 
-    protected static function _generateConstructor($constructor) {
+    protected static function _generateConstructor($constructor)
+    {
         if ($constructor) {
             return '';
         }
@@ -318,7 +330,8 @@ EOT;
      * @param  int    $mask  The method mask to filter.
      * @return string The generated methods.
      */
-    protected static function _generateClassMethods($class, $mask = ReflectionMethod::IS_ABSTRACT) {
+    protected static function _generateClassMethods($class, $mask = ReflectionMethod::IS_ABSTRACT)
+    {
         if (!$class) {
             return '';
         }
@@ -341,7 +354,8 @@ EOT;
      * @param  int    $mask  The method mask to filter.
      * @return string The generated methods.
      */
-    protected static function _generateInterfaceMethods($interfaces, $mask = 255) {
+    protected static function _generateInterfaceMethods($interfaces, $mask = 255)
+    {
         if (!$interfaces) {
             return '';
         }
@@ -365,7 +379,8 @@ EOT;
      * @param  ReflectionMethod  $method A instance of `ReflectionMethod`.
      * @return string            The generated method.
      */
-    protected static function _generateMethod($method) {
+    protected static function _generateMethod($method)
+    {
         $result = join(' ', Reflection::getModifierNames($method->getModifiers()));
         $result = preg_replace('/^abstract /', '', $result);
         $name = $method->getName();
@@ -376,9 +391,9 @@ EOT;
         return "\n    function {$name}({$parameters}) {}\n";
     }
 
-    protected static function _defaultMethods() {
-
-    return <<<EOT
+    protected static function _defaultMethods()
+    {
+        return <<<EOT
 
     public function __construct() {}
 
@@ -420,7 +435,8 @@ EOT;
      * @param  ReflectionMethod  $method A instance of `ReflectionMethod`.
      * @return string            The parameters definition list.
      */
-    protected static function _generateParameters($method){
+    protected static function _generateParameters($method)
+    {
         $params = [];
         foreach ($method->getParameters() as $num => $parameter) {
             $typehint = Inspector::typehint($parameter);
@@ -448,7 +464,8 @@ EOT;
      * @param  mixed         $hash An instance hash or a fully namespaced class name.
      * @return boolean|array
      */
-    public static function registered($hash = null) {
+    public static function registered($hash = null)
+    {
         if ($hash === null) {
             return array_keys(static::$_registered);
         }
@@ -461,7 +478,8 @@ EOT;
      * @param  string         $class A fully namespaced class name.
      * @return boolean|array
      */
-    public static function stubbed($class = null) {
+    public static function stubbed($class = null)
+    {
         if ($class === null) {
             return array_keys(static::$_stubbed);
         }
@@ -473,7 +491,8 @@ EOT;
      *
      * @param string $reference An instance or a fully namespaced class name or `null` to clear all.
      */
-    public static function clear($reference = null) {
+    public static function clear($reference = null)
+    {
         if ($reference === null) {
             static::$_registered = [];
             static::$_stubbed = [];
@@ -488,5 +507,3 @@ EOT;
         }
     }
 }
-
-?>

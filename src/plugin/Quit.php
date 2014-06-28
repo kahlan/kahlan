@@ -10,8 +10,8 @@ namespace kahlan\plugin;
 
 use kahlan\QuitException;
 
-class Quit {
-
+class Quit
+{
     /**
      * Indicates if the `exit` or `die` statements are disabled or not.
      */
@@ -22,7 +22,8 @@ class Quit {
      *
      * @return boolean $active
      */
-    public static function disabled() {
+    public static function disabled()
+    {
         return static::$_enabled;
     }
 
@@ -31,7 +32,8 @@ class Quit {
      *
      * @param boolean $active
      */
-    public static function disable($disable = true) {
+    public static function disable($disable = true)
+    {
         static::$_disabled = $disable;
     }
 
@@ -41,7 +43,8 @@ class Quit {
      * @param  integer              $status Use 0 for a successful exit.
      * @throws kahlan\QuitException         Only if disableed is `true`.
      */
-    public static function quit($status = 0) {
+    public static function quit($status = 0)
+    {
         if (!static::$_disabled) {
             exit($status);
         }
@@ -51,9 +54,8 @@ class Quit {
     /**
      * Clear class to default values.
      */
-    public static function clear() {
+    public static function clear()
+    {
         static::$_disabled = false;
     }
 }
-
-?>

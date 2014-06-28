@@ -12,8 +12,8 @@ use kahlan\cli\Cli;
 use kahlan\util\String;
 use kahlan\analysis\Debugger;
 
-class Terminal extends Reporter {
-
+class Terminal extends Reporter
+{
     /**
      * Output stream, STDOUT
      *
@@ -26,7 +26,8 @@ class Terminal extends Reporter {
      *
      * @param array $options.
      */
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         parent::__construct($options);
         $defaults = ['output' => fopen('php://stdout', 'r')];
         $options += $defaults;
@@ -47,7 +48,8 @@ class Terminal extends Reporter {
      *                     - `'color'`
      *
      */
-    public function console($string, $options = null) {
+    public function console($string, $options = null)
+    {
         fwrite($this->_output, Cli::color($string, $options));
     }
 
@@ -56,7 +58,8 @@ class Terminal extends Reporter {
      *
      * @param array $params The suite params array.
      */
-    public function begin($params) {
+    public function begin($params)
+    {
         parent::begin($params);
         $this->console("\n");
         $this->console("Kahlan - PHP Testing Framework\n" , 'green');
@@ -69,7 +72,8 @@ class Terminal extends Reporter {
      *
      * @param array $report A report array.
      */
-    protected function _report($report) {
+    protected function _report($report)
+    {
         switch($report['type']) {
             case 'fail':
                 $this->_reportFailure($report);
@@ -91,7 +95,8 @@ class Terminal extends Reporter {
      *
      * @param array $report A report array.
      */
-    protected function _reportFailure($report) {
+    protected function _reportFailure($report)
+    {
         $this->console("[Failure] ", "n;red");
         $this->_messages($report['messages']);
         $this->_reportDescription($report);
@@ -107,7 +112,8 @@ class Terminal extends Reporter {
      *
      * @param array $report A report array.
      */
-    protected function _reportDescription($report) {
+    protected function _reportDescription($report)
+    {
         $not = $report['not'];
         $description = $report['description'];
         if (is_array($description)) {
@@ -133,7 +139,8 @@ class Terminal extends Reporter {
      *
      * @param array $report A report array.
      */
-    protected function _reportIncomplete($report) {
+    protected function _reportIncomplete($report)
+    {
         $this->console("[Incomplete test] ", "n;yellow");
         $this->_messages($report['messages']);
         $this->console("Description:", "n;magenta");
@@ -150,7 +157,8 @@ class Terminal extends Reporter {
      *
      * @param array $report A report array.
      */
-    protected function _reportException($report) {
+    protected function _reportException($report)
+    {
         $this->console("[Uncatched Exception] ", "n;magenta");
         $this->_messages($report['messages']);
         $this->console("Trace:\n", "n;yellow");
@@ -163,7 +171,8 @@ class Terminal extends Reporter {
      *
      * @param array $messages An array of description message.
      */
-    protected function _messages($messages) {
+    protected function _messages($messages)
+    {
         $tab = 0;
         foreach ($messages as $message) {
             $this->console(str_repeat("    ", $tab));
@@ -181,8 +190,8 @@ class Terminal extends Reporter {
      *
      * @param array $results The results array of the execution.
      */
-    public function _summary($report) {
-
+    public function _summary($report)
+    {
         $results = $report['specs'];
 
         $passed = count($results['pass']) + count($results['skip']);
@@ -229,7 +238,8 @@ class Terminal extends Reporter {
      *
      * @param array $report A report array.
      */
-    protected function _exclusive($report) {
+    protected function _exclusive($report)
+    {
         if (!$backtrace = $report['exclusive']) {
             return;
         }
@@ -244,11 +254,10 @@ class Terminal extends Reporter {
     /**
      * Destructor
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->_output) {
             fclose($this->_output);
         }
     }
 }
-
-?>

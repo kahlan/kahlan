@@ -8,8 +8,8 @@
 
 namespace kahlan\plugin\call;
 
-class Message {
-
+class Message
+{
     /**
      * Class dependencies.
      *
@@ -40,7 +40,8 @@ class Message {
      */
     protected $_static = false;
 
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         $defaults = ['name' => null, 'params' => [], 'static' => false];
         $options += $defaults;
 
@@ -54,7 +55,8 @@ class Message {
      *
      * @param mixed <0,n> Parameter(s).
      */
-    public function with() {
+    public function with()
+    {
         $this->_params = func_get_args();
         return $this;
     }
@@ -65,7 +67,8 @@ class Message {
      * @param  array   $call A call array.
      * @return boolean
      */
-    public function match($call) {
+    public function match($call)
+    {
         if ($call['static'] !== $this->_static) {
             return false;
         }
@@ -86,7 +89,8 @@ class Message {
      * @param  array   $params The passed args.
      * @return boolean
      */
-    public function matchParams($params) {
+    public function matchParams($params)
+    {
         if (!$this->_params) {
             return true;
         }
@@ -104,17 +108,18 @@ class Message {
         return true;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->_name;
     }
 
-    public function getWith() {
+    public function getWith()
+    {
         return $this->_params;
     }
 
-    public function getStatic() {
+    public function getStatic()
+    {
         return $this->_static;
     }
 }
-
-?>

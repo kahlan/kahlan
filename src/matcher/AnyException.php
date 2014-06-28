@@ -8,7 +8,6 @@
 
 namespace kahlan\matcher;
 
-class AnyException extends \Exception {
+class AnyException extends \Exception
+{
 }
-
-?>

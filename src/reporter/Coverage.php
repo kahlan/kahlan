@@ -10,8 +10,8 @@ namespace kahlan\reporter;
 
 use kahlan\reporter\coverage\Collector;
 
-class Coverage extends Terminal {
-
+class Coverage extends Terminal
+{
     /**
      * Collect time
      *
@@ -44,7 +44,8 @@ class Coverage extends Terminal {
      *                  - 4 : coverage for namespaces, classes, methods and functions.
      */
 
-    public function __construct($options = []) {
+    public function __construct($options = [])
+    {
         parent::__construct($options);
         $defaults = ['verbosity' => 1];
         $options += $defaults;
@@ -57,34 +58,39 @@ class Coverage extends Terminal {
      *
      * @param array $params The suite params array.
      */
-    public function begin($params) {
+    public function begin($params)
+    {
     }
 
     /**
      * Callback called before a spec.
      */
-    public function before() {
+    public function before()
+    {
         $this->_collector->start();
     }
 
     /**
      * Callback called after a spec.
      */
-    public function after() {
+    public function after()
+    {
         $this->_collector->stop();
     }
 
     /**
      * Returns the coverage result.
      */
-    public function export() {
+    public function export()
+    {
         return $this->_collector->export();
     }
 
     /**
      * Returns the metrics about the coverage result.
      */
-    public function metrics() {
+    public function metrics()
+    {
         $this->_start = microtime(true);
         $result = $this->_collector->metrics();
         $this->_time = microtime(true) - $this->_start;
@@ -102,7 +108,8 @@ class Coverage extends Terminal {
      *                  - 3 : coverage for namespaces and classes.
      *                  - 4 : coverage for namespaces, classes, methods and functions.
      */
-    protected function _renderMetrics($metrics, $verbosity = 1) {
+    protected function _renderMetrics($metrics, $verbosity = 1)
+    {
         $type = $metrics->type();
         if ($verbosity === 2 && ($type === 'class' || $type === 'function')) {
             return;
@@ -130,7 +137,8 @@ class Coverage extends Terminal {
      *
      * @param integer $percent The coverage rate in percent.
      */
-    protected function _style($percent) {
+    protected function _style($percent)
+    {
         switch(true) {
             case $percent >= 80:
                 return 'n;green';
@@ -148,7 +156,8 @@ class Coverage extends Terminal {
     /**
      * Callback called at the end of specs processing.
      */
-    public function end($results) {
+    public function end($results)
+    {
         $this->console("\nCoverage Summary\n----------------\n\n");
         $this->_renderMetrics($this->metrics(), $this->_verbosity);
         $time = number_format($this->_time, 3);
@@ -156,5 +165,3 @@ class Coverage extends Terminal {
     }
 
 }
-
-?>

@@ -1,8 +1,8 @@
 <?php
 namespace spec\fixture\plugin\pointcut;
 
-class Foo {
-
+class Foo
+{
     protected $_classes = [
         'bar' => 'spec\fixture\plugin\pointcut\Bar'
     ];
@@ -15,43 +15,49 @@ class Foo {
 
     protected static $_messageStatic = 'Hello Static World!';
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->_inited = true;
     }
 
-    public function inited() {
+    public function inited()
+    {
         return $this->_inited;
     }
 
-    public function message($message = null) {
+    public function message($message = null)
+    {
         if ($message === null) {
             return $this->_message;
         }
         $this->_message = $message;
     }
 
-    public static function messageStatic($message = null) {
+    public static function messageStatic($message = null)
+    {
         if ($message === null) {
             return static::$_messageStatic;
         }
         static::$_messageStatic = $message;
     }
 
-    public function bar() {
+    public function bar()
+    {
         $bar = $this->_classes['bar'];
         $bar = new $bar();
         return $bar->send();
     }
 
-    public function __call($name, $params) {
+    public function __call($name, $params)
+    {
     }
 
-    public static function __callStatic($name, $params) {
+    public static function __callStatic($name, $params)
+    {
     }
 
-    public static function version() {
+    public static function version()
+    {
         return '0.0.8b';
     }
 }
-
-?>
