@@ -3,18 +3,18 @@
 $autoloader = null;
 
 if (file_exists($file = __DIR__ . '/../../../autoload.php')) {
-	$autoloader = include $file;
-	chdir(__DIR__ . '/../../../..');
+    $autoloader = include $file;
+    chdir(__DIR__ . '/../../../..');
 } elseif (file_exists($file = __DIR__ . '/../vendor/autoload.php')) {
-	$autoloader = include $file;
-	chdir(__DIR__ . '/..');
+    $autoloader = include $file;
+    chdir(__DIR__ . '/..');
 }
 
 if (!$autoloader) {
-	echo "\033[1;31mYou need to set up the project dependencies using the following commands: \033[0m" . PHP_EOL;
-	echo 'curl -s http://getcomposer.org/installer | php' . PHP_EOL;
-	echo 'php composer.phar install' . PHP_EOL;
-	exit(1);
+    echo "\033[1;31mYou need to set up the project dependencies using the following commands: \033[0m" . PHP_EOL;
+    echo 'curl -s http://getcomposer.org/installer | php' . PHP_EOL;
+    echo 'php composer.phar install' . PHP_EOL;
+    exit(1);
 }
 
 use box\Box;
@@ -27,15 +27,15 @@ global $kahlan;
 $kahlan = new Box();
 
 $kahlan->service('suite', function() {
-	return new Suite(['box' => $this]);
+    return new Suite(['box' => $this]);
 });
 $kahlan->service('matcher', function() {
-	return new Matcher();
+    return new Matcher();
 });
 
 $specs = new Kahlan([
-	'autoloader' => $autoloader,
-	'box' => $kahlan
+    'autoloader' => $autoloader,
+    'box' => $kahlan
 ]);
 $specs->loadConfig($argv);
 $specs->run();

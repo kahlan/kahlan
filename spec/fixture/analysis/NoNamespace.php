@@ -2,17 +2,17 @@
 use kahlan\Matcher;
 
 class NoNamespace {
-	public function hello() {
-		return "Hello World!";
-	}
+    public function hello() {
+        return "Hello World!";
+    }
 }
 
 function test() {
-	return "It's a test";
+    return "It's a test";
 }
 
 if (true) {
-	echo "Hello World!";
+    echo "Hello World!";
 }
 
 Matcher::register('toBe', 'kahlan\matcher\ToBe');
@@ -25,7 +25,7 @@ Outside PHP Tags
 <?php
 
 for($i = 0; $i < 10; $i++) {
-	echo "Success";
+    echo "Success";
 }
 
 ?>

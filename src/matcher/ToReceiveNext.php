@@ -10,14 +10,14 @@ namespace kahlan\matcher;
 
 class ToReceiveNext extends ToReceive {
 
-	public function resolve($report) {
-		$call = $this->_classes['call'];
-		$success = !!$call::find($this->_actual, $this->_message, false);
-		if (!$success) {
-			$this->report($report);
-		}
-		return $success;
-	}
+    public function resolve($report) {
+        $call = $this->_classes['call'];
+        $success = !!$call::find($this->_actual, $this->_message, false);
+        if (!$success) {
+            $this->report($report);
+        }
+        return $success;
+    }
 }
 
 ?>

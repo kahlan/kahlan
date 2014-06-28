@@ -11,46 +11,46 @@
 #11    [  code   ] #7 > #12        |use stdObj;
 #12    [  code   ] #7 > #12        |
 #13    [function ] #13 > #17       |function slice($data, $keys) {
-#14    [  code   ] #14 > #16       |	$removed = array_intersect_key($data, array_fill_keys((array) $keys, true));
-#15    [  code   ] #14 > #16       |	$data = array_diff_key($data, $removed);
-#16    [  code   ] #14 > #16       |	return array($data, $removed);
+#14    [  code   ] #14 > #16       |    $removed = array_intersect_key($data, array_fill_keys((array) $keys, true));
+#15    [  code   ] #14 > #16       |    $data = array_diff_key($data, $removed);
+#16    [  code   ] #14 > #16       |    return array($data, $removed);
 #17    [function ] #13 > #17       |}
 #18    [  code   ] #18 > #18       |
 #19    [  class  ] #19 > #49       |class Sample extends \kahlan\fixture\Parent {
 #20    [  code   ] #20 > #20       |
-#21    [ comment ] #21 > #21       |	// Using a tab
-#22    [  code   ] #22 > #25       |	protected	$_public = true;
+#21    [ comment ] #21 > #21       |    // Using a tab
+#22    [  code   ] #22 > #25       |    protected    $_public = true;
 #23    [  code   ] #22 > #25       |
-#24    [  code   ] #22 > #25       |	protected $_variable = true;
+#24    [  code   ] #22 > #25       |    protected $_variable = true;
 #25    [  code   ] #22 > #25       |
-#26    [function ] #26 > #28       |	public function bracketInString() {
-#27    [  code   ] #27 > #27       |		"/^({$pattern})/";
-#28    [function ] #26 > #28       |	}
+#26    [function ] #26 > #28       |    public function bracketInString() {
+#27    [  code   ] #27 > #27       |        "/^({$pattern})/";
+#28    [function ] #26 > #28       |    }
 #29    [  code   ] #29 > #29       |
-#30    [function ] #30 > #31       |	public function method1($a, $b = array(), $c = [], $d = 0, $f = 'hello') {
-#31    [function ] #30 > #31       |	}
+#30    [function ] #30 > #31       |    public function method1($a, $b = array(), $c = [], $d = 0, $f = 'hello') {
+#31    [function ] #30 > #31       |    }
 #32    [  code   ] #32 > #32       |
-#33    [function ] #33 > #41       |	public function method2(
-#34    [function ] #33 > #41       |		$a,
-#35    [function ] #33 > #41       |		$b = array(),
-#36    [function ] #33 > #41       |		$c = [],
-#37    [function ] #33 > #41       |		$d = 0,
-#38    [function ] #33 > #41       |		$f = 'hello')
-#39    [function ] #33 > #41       |	{
-#40    [  code   ] #40 > #40       |		return rand($a * ($d + 1));
-#41    [function ] #33 > #41       |	}
+#33    [function ] #33 > #41       |    public function method2(
+#34    [function ] #33 > #41       |        $a,
+#35    [function ] #33 > #41       |        $b = array(),
+#36    [function ] #33 > #41       |        $c = [],
+#37    [function ] #33 > #41       |        $d = 0,
+#38    [function ] #33 > #41       |        $f = 'hello')
+#39    [function ] #33 > #41       |    {
+#40    [  code   ] #40 > #40       |        return rand($a * ($d + 1));
+#41    [function ] #33 > #41       |    }
 #42    [  code   ] #42 > #42       |
-#43    [function ] #43 > #43       |	abstract public function abstractMethod();
+#43    [function ] #43 > #43       |    abstract public function abstractMethod();
 #44    [  code   ] #44 > #44       |
-#45    [function ] #45 > #45       |	final public function finalMethod() {}
+#45    [function ] #45 > #45       |    final public function finalMethod() {}
 #46    [  code   ] #46 > #46       |
-#47    [function ] #47 > #48       |	public function inlineComment() {
-#48    [ comment ] #48 > #48       |	} // end function
+#47    [function ] #47 > #48       |    public function inlineComment() {
+#48    [ comment ] #48 > #48       |    } // end function
 #49    [  class  ] #19 > #49       |}
 #50    [  code   ] #50 > #50       |
 #51    [  class  ] #51 > #54       |class
-#52    [  class  ] #51 > #54       |	Sample2
-#53    [  class  ] #51 > #54       |	extends Sample2 {
+#52    [  class  ] #51 > #54       |    Sample2
+#53    [  class  ] #51 > #54       |    extends Sample2 {
 #54    [  class  ] #51 > #54       |}
 #55    [  code   ] #55 > #55       |
 #56    [interface] #56 > #60       |interface Template1
@@ -73,7 +73,7 @@
 #73    [  code   ] #73 > #73       |
 #74    [ comment ] #74 > #74       |//No scope
 #75    [  code   ] #75 > #78       |for($i = 0; $i <= 10; $i++) {
-#76    [  code   ] #75 > #78       |	$rand = rand();
+#76    [  code   ] #75 > #78       |    $rand = rand();
 #77    [  code   ] #75 > #78       |}
 #78    [  code   ] #75 > #78       |
 #79    [  code   ] #79 > #79       |?>
@@ -88,9 +88,9 @@
 #88    [namespace] #88 > #97       |namespace kahlan\spec\fixture\parser;
 #89    [  code   ] #89 > #89       |
 #90    [  class  ] #90 > #94       |class Sample3 extends Sample2 {
-#91    [function ] #91 > #93       |	public function myMethod() {
-#92    [  code   ] #92 > #92       |		return 'Hello World';
-#93    [function ] #91 > #93       |	}
+#91    [function ] #91 > #93       |    public function myMethod() {
+#92    [  code   ] #92 > #92       |        return 'Hello World';
+#93    [function ] #91 > #93       |    }
 #94    [  class  ] #90 > #94       |}
 #95    [  code   ] #95 > #95       |
 #96    [  code   ] #96 > #96       |?>

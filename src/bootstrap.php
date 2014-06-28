@@ -8,59 +8,59 @@ error_reporting(E_ALL);
 
 if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
 
-	function before($closure) {
-		return Suite::current()->before($closure);
-	}
+    function before($closure) {
+        return Suite::current()->before($closure);
+    }
 
-	function after($closure) {
-		return Suite::current()->after($closure);
-	}
+    function after($closure) {
+        return Suite::current()->after($closure);
+    }
 
-	function beforeEach($closure) {
-		return Suite::current()->beforeEach($closure);
-	}
+    function beforeEach($closure) {
+        return Suite::current()->beforeEach($closure);
+    }
 
-	function afterEach($closure) {
-		return Suite::current()->afterEach($closure);
-	}
+    function afterEach($closure) {
+        return Suite::current()->afterEach($closure);
+    }
 
-	function describe($message, $closure, $scope = 'normal') {
-		if (!Suite::current()) {
-			global $kahlan;
-			$suite = $kahlan->get('suite');
-			return $suite->describe($message, $closure, $scope);
-		}
-		return Suite::current()->describe($message, $closure, $scope);
-	}
+    function describe($message, $closure, $scope = 'normal') {
+        if (!Suite::current()) {
+            global $kahlan;
+            $suite = $kahlan->get('suite');
+            return $suite->describe($message, $closure, $scope);
+        }
+        return Suite::current()->describe($message, $closure, $scope);
+    }
 
-	function context($message, $closure, $scope = 'normal') {
-		return Suite::current()->context($message, $closure, $scope);
-	}
+    function context($message, $closure, $scope = 'normal') {
+        return Suite::current()->context($message, $closure, $scope);
+    }
 
-	function it($message, $closure = null, $scope = 'normal') {
-		return Suite::current()->it($message, $closure, $scope);
-	}
+    function it($message, $closure = null, $scope = 'normal') {
+        return Suite::current()->it($message, $closure, $scope);
+    }
 
-	function xdescribe($message, $closure) {
-		return describe($message, $closure, 'exclusive');
-	}
+    function xdescribe($message, $closure) {
+        return describe($message, $closure, 'exclusive');
+    }
 
-	function xcontext($message, $closure) {
-		return context($message, $closure, 'exclusive');
-	}
+    function xcontext($message, $closure) {
+        return context($message, $closure, 'exclusive');
+    }
 
-	function xit($message, $closure = null) {
-		return it($message, $closure, 'exclusive');
-	}
+    function xit($message, $closure = null) {
+        return it($message, $closure, 'exclusive');
+    }
 
-	function expect($actual) {
-		return Spec::current()->expect($actual);
-	}
+    function expect($actual) {
+        return Spec::current()->expect($actual);
+    }
 
-	function skipIf($condition) {
-		$current = Spec::current() ?: Suite::current();
-		return $current->skipIf($condition);
-	}
+    function skipIf($condition) {
+        $current = Spec::current() ?: Suite::current();
+        return $current->skipIf($condition);
+    }
 }
 
 Matcher::register('toBe', 'kahlan\matcher\ToBe');

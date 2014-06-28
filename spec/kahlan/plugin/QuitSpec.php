@@ -12,35 +12,35 @@ use spec\fixture\plugin\quit\Foo;
 
 describe("Quit::quit", function() {
 
-	/**
-	 * Save current & reinitialize the Interceptor class.
-	 */
-	before(function() {
-		$this->previous = Interceptor::loader();
-		Interceptor::unpatch();
+    /**
+     * Save current & reinitialize the Interceptor class.
+     */
+    before(function() {
+        $this->previous = Interceptor::loader();
+        Interceptor::unpatch();
 
-		$patchers = new Patchers();
-		$patchers->add('quit', new QuitPatcher());
-		Interceptor::patch(compact('patchers'));
-	});
+        $patchers = new Patchers();
+        $patchers->add('quit', new QuitPatcher());
+        Interceptor::patch(compact('patchers'));
+    });
 
-	/**
-	 * Restore Interceptor class.
-	 */
-	after(function() {
-		Interceptor::loader($this->previous);
-	});
+    /**
+     * Restore Interceptor class.
+     */
+    after(function() {
+        Interceptor::loader($this->previous);
+    });
 
-	it("throws an exception when an exit statement occurs if not allowed", function() {
-		Quit::disable();
+    it("throws an exception when an exit statement occurs if not allowed", function() {
+        Quit::disable();
 
-		$closure = function() {
-			$foo = new Foo();
-			$foo->exitStatement(-1);
-		};
+        $closure = function() {
+            $foo = new Foo();
+            $foo->exitStatement(-1);
+        };
 
-		expect($closure)->toThrow(new QuitException('Exit statement occured', -1));
-	});
+        expect($closure)->toThrow(new QuitException('Exit statement occured', -1));
+    });
 });
 
 ?>

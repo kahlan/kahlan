@@ -10,11 +10,11 @@ namespace kahlan\analysis\code;
 
 class NamespaceDef extends NodeDef{
 
-	public $type = 'namespace';
+    public $type = 'namespace';
 
-	public $uses = [];
+    public $uses = [];
 
-	public $name = '';
+    public $name = '';
 }
 
 ?>

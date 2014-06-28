@@ -10,9 +10,9 @@ namespace kahlan\analysis\code;
 
 class TraitDef extends NodeDef {
 
-	public $type = 'trait';
+    public $type = 'trait';
 
-	public $name = '';
+    public $name = '';
 }
 
 ?>

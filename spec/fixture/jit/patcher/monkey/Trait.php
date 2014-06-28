@@ -5,9 +5,9 @@ use kahlan\util\String;
 
 trait Filterable {
 
-	protected function dump() {
-		return String::dump('Hello');
-	}
+    protected function dump() {
+        return String::dump('Hello');
+    }
 
 }
 
