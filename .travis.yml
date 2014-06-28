@@ -15,7 +15,7 @@ before_script:
   - git checkout master
   - composer self-update && composer install
 
-script: bin/kahlan --config=kahlan-config.travis.php --coverage=1 --coverage-scrutinizer="scrutinizer.xml" --coverage-coveralls="coveralls.json"
+script: bin/kahlan --config=kahlan-config.travis.php
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
