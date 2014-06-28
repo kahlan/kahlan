@@ -15,8 +15,10 @@
         "crysalead/filter": "dev-master"
     },
     "autoload": {
-        "psr-0": { "kahlan\\": "src/" },
-        "files": ["src/kahlan/bootstrap.php"]
+        "psr-4": {
+            "kahlan\\": "src/"
+        },
+        "files": ["src/bootstrap.php"]
     },
     "bin": ["bin/kahlan"],
     "minimum-stability": "dev"
