@@ -8,6 +8,8 @@
 
 namespace kahlan\plugin;
 
+use kahlan\Suite;
+
 class Pointcut
 {
     protected static $_classes = [
@@ -22,15 +24,18 @@ class Pointcut
      */
     public static function before($method, $self, &$params)
     {
+        if (!Suite::registered()) {
+            return false;
+        }
+
         list($class, $name) = explode('::', $method);
 
         $call = static::$_classes['call'];
         $stub = static::$_classes['stub'];
 
         $lsb = is_object($self) ? get_class($self) : $self;
-        $valid = $call::watched($lsb) || $call::watched($class) || $stub::stubbed($lsb) || $stub::stubbed($class);
 
-        if (!$valid) {
+        if (!Suite::registered($lsb) || !Suite::registered($class)) {
             return false;
         }
 

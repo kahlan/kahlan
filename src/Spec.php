@@ -9,7 +9,6 @@
 namespace kahlan;
 
 use Exception;
-use box\Box;
 
 class Spec extends Scope
 {

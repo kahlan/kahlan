@@ -9,11 +9,19 @@
 namespace kahlan;
 
 use Exception;
+use InvalidArgumentException;
 use kahlan\util\Set;
 use kahlan\analysis\Debugger;
 
 class Suite extends Scope
 {
+    /**
+     * Store all hashed references.
+     *
+     * @var array
+     */
+    protected static $_registered = [];
+
     /**
      * Matcher instance for the test suite
      *
@@ -488,6 +496,7 @@ class Suite extends Scope
                 is_object($plugin) ? $plugin->clear() : $plugin::clear();
             }
         }
+        static::clear();
     }
 
     /**
@@ -519,4 +528,52 @@ class Suite extends Scope
         $this->_reporters = null;
         $this->_exclusives = [];
     }
+
+    /**
+     * Generate a hash from an instance or a string.
+     *
+     * @param  mixed $reference An instance or a fully namespaced class name.
+     * @return string           A string hash.
+     * @throws InvalidArgumentException
+     */
+    public static function hash($reference)
+    {
+        if (is_object($reference)) {
+            return spl_object_hash($reference);
+        }
+        if (is_string($reference)) {
+            return $reference;
+        }
+        throw new InvalidArgumentException("Invalid `$reference` parameter.");
+    }
+
+    /**
+     * Register a hash. [Mainly used for optimization]
+     *
+     * @param  mixed  $hash A hash to register.
+     */
+    public static function register($hash) {
+        static::$_registered[$hash] = true;
+    }
+
+    /**
+     * Get registered hashes. [Mainly used for optimizations]
+     *
+     * @param  string  $hash The hash to look up. If `null` return all registered hashes.
+     */
+    public static function registered($hash = null) {
+        if(!$hash) {
+            return static::$_registered;
+        }
+        return isset(static::$_registered[$hash]);
+    }
+
+    /**
+     * Clear the registered hash.
+     */
+    public static function clear()
+    {
+        static::$_registered = [];
+    }
+
 }

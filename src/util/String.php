@@ -195,21 +195,4 @@ class String
         return preg_replace_callback('/(' . $pattern .')+/', $callback, $str);
     }
 
-    /**
-     * Hash helper
-     *
-     * @param  mixed  $reference An instance or a fully namespaced class name.
-     * @return string A stirng hash.
-     * @throws InvalidArgumentException
-     */
-    public static function hash($reference)
-    {
-        if (is_object($reference)) {
-            return spl_object_hash($reference);
-        }
-        if (is_string($reference)) {
-            return $reference;
-        }
-        throw new InvalidArgumentException("Invalid reference.");
-    }
 }

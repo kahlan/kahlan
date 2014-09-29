@@ -8,20 +8,11 @@
 
 namespace kahlan\plugin;
 
-use InvalidArgumentException;
-use kahlan\util\String;
+use kahlan\Suite;
 use kahlan\plugin\call\Message;
 
 class Call
 {
-    /**
-     * [Optimisation Concern] Cache all watched class
-     *
-     * @var array
-     * @see kahlan\plugin\Call::watched()
-     */
-    protected static $_watched = [];
-
     /**
      * Logged calls
      *
@@ -59,9 +50,9 @@ class Call
     {
         $this->_reference = $reference;
         if (is_object($reference)) {
-            static::$_watched[get_class($reference)] = $this;
+            Suite::register(get_class($reference));
         }
-        static::$_watched[String::hash($reference)] = $this;
+        Suite::register(Suite::hash($reference));
     }
 
     /**
@@ -91,7 +82,6 @@ class Call
      */
     public static function log($reference, $call)
     {
-        $hash = String::hash($reference);
         $static = false;
         if (preg_match('/^::.*/', $call['name'])) {
             $call['name'] = substr($call['name'], 2);
@@ -172,25 +162,10 @@ class Call
     }
 
     /**
-     * [Optimisation Concern] Check if a specific class is watched
-     *
-     * @param  string         $class A fully namespaced class name.
-     * @return boolean|array
-     */
-    public static function watched($class = null)
-    {
-        if ($class === null) {
-            return array_keys(static::$_watched);
-        }
-        return isset(static::$_watched[$class]);
-    }
-
-    /**
      * Clear the registered references & logs.
      */
     public static function clear()
     {
-        static::$_watched = [];
         static::$_logs = [];
         static::$_index = [];
     }

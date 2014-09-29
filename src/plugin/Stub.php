@@ -10,9 +10,8 @@ namespace kahlan\plugin;
 
 use Reflection;
 use ReflectionMethod;
-use InvalidArgumentException;
+use kahlan\Suite;
 use kahlan\IncompleteException;
-use kahlan\util\String;
 use kahlan\analysis\Inspector;
 use kahlan\plugin\stub\Method;
 
@@ -34,14 +33,6 @@ class Stub
      * @var array
      */
     protected static $_registered = [];
-
-    /**
-     * [Optimisation Concern] Cache all stubbed class
-     *
-     * @var array
-     * @see kahlan\plugin\Call::stubbed()
-     */
-    protected static $_stubbed = [];
 
     /**
      * Stubbed methods
@@ -101,14 +92,14 @@ class Stub
             $reference = is_object($reference) ? get_class($reference) : $reference;
             $name = substr($name, 2);
         }
-        $hash = String::hash($reference);
+        $hash = Suite::hash($reference);
         if (!isset(static::$_registered[$hash])) {
             static::$_registered[$hash] = $this;
         }
         if (is_object($reference)) {
-            static::$_stubbed[get_class($reference)] = true;
+            Suite::register(get_class($reference));
         } else {
-            static::$_stubbed[$reference] = true;
+            Suite::register($reference);
         }
         return $this->_stubs[$name] = new Method(compact('name', 'static', 'closure'));
     }
@@ -120,7 +111,7 @@ class Stub
      */
     public static function on($reference)
     {
-        $hash = String::hash($reference);
+        $hash = Suite::hash($reference);;
         if (isset(static::$_registered[$hash])) {
             return static::$_registered[$hash];
         }
@@ -142,7 +133,7 @@ class Stub
         $stub = null;
         $refs = [];
         foreach ($references as $reference) {
-            $hash = String::hash($reference);
+            $hash = Suite::hash($reference);
             if (isset(static::$_registered[$hash])) {
                 $stubs = static::$_registered[$hash]->methods();
                 $static = false;
@@ -473,20 +464,6 @@ EOT;
     }
 
     /**
-     * [Optimisation Concern] Check if a specific class has been stubbed
-     *
-     * @param  string         $class A fully namespaced class name.
-     * @return boolean|array
-     */
-    public static function stubbed($class = null)
-    {
-        if ($class === null) {
-            return array_keys(static::$_stubbed);
-        }
-        return isset(static::$_stubbed[$class]);
-    }
-
-    /**
      * Clear the registered references.
      *
      * @param string $reference An instance or a fully namespaced class name or `null` to clear all.
@@ -495,15 +472,8 @@ EOT;
     {
         if ($reference === null) {
             static::$_registered = [];
-            static::$_stubbed = [];
             return;
         }
-        $hash = String::hash($reference);
-        unset(static::$_registered[$hash]);
-        if (is_object($reference)) {
-            unset(static::$_stubbed[get_class($reference)]);
-        } else {
-            unset(static::$_stubbed[$reference]);
-        }
+        unset(static::$_registered[Suite::hash($reference)]);
     }
 }
