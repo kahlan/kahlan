@@ -2,6 +2,7 @@
 use filter\Filter;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
+$this->args('ff', 1);
 $this->args('coverage', 3);
 $this->args('coverage-scrutinizer', 'scrutinizer.xml');
 $this->args('coverage-coveralls', 'coveralls.json');

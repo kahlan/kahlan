@@ -205,6 +205,7 @@ abstract class Scope
      */
     public function fail($data = [])
     {
+        $this->_root->_failure++;
         $this->log('fail', $data);
     }
 
@@ -215,6 +216,7 @@ abstract class Scope
      */
     public function exception($data = [])
     {
+        $this->_root->_failure++;
         $this->log('exception', $data);
     }
 

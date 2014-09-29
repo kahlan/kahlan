@@ -70,6 +70,22 @@ class Suite extends Scope
     protected $_exclusives = [];
 
     /**
+     * Set the number of fails allowed before aborting. `0` mean no fast fail.
+     *
+     * @see ::failfast()
+     * @var integer
+     */
+    protected $_ff = 0;
+
+    /**
+     * Count the number of failure or exception.
+     *
+     * @see ::failfast()
+     * @var integer
+     */
+    protected $_failure = 0;
+
+    /**
      * Constructor.
      *
      * @param array $options The Suite config array. Options are:
@@ -263,6 +279,9 @@ class Suite extends Scope
             $this->_callbacks('before', false);
 
             foreach($this->_childs as $child) {
+                if ($this->failfast()) {
+                    break;
+                }
                 $this->_process($child);
             }
 
@@ -277,6 +296,15 @@ class Suite extends Scope
         $this->_errorHandler(false);
         array_pop(static::$_instances);
         $this->_locked = false;
+    }
+
+    /**
+     * Returns `true` if the suite reach the number of allowed failure by the fail-fast parameter.
+     *
+     * @return boolean;
+     */
+    protected function failfast() {
+        return $this->_root->_ff && $this->_root->_failure >= $this->_root->_ff;
     }
 
     /**
@@ -375,13 +403,14 @@ class Suite extends Scope
      */
     public function run($options = [])
     {
-        $defaults = ['reporters' => null, 'autoclear' => []];
+        $defaults = ['reporters' => null, 'autoclear' => [], 'ff' => 0];
         $options += $defaults;
 
         $build = $this->_build();
 
         $this->_reporters = $options['reporters'];
         $this->_autoclear = (array) $options['autoclear'];
+        $this->_ff = $options['ff'];
 
         $total = $this->exclusive() ? $build['exclusive'] : $build['specs'];
         $this->report('begin', ['total' => $total]);

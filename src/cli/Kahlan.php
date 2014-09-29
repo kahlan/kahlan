@@ -52,6 +52,7 @@ class Kahlan {
         'config' => null,
         'src' => 'src',
         'spec' => 'spec',
+        'ff' => null,
         'interceptor-include' => [],
         'interceptor-exclude' => [],
         'interceptor-persistent' => true,
@@ -78,7 +79,8 @@ class Kahlan {
     public function loadConfig($argv = [])
     {
         $args = GetOpt::parse($argv, [
-            'coverage' => 'numeric'
+            'coverage' => 'numeric',
+            'ff'       => 'numeric'
         ]);
         if (!empty($args['config'])) {
             require $args['config'];
@@ -86,7 +88,6 @@ class Kahlan {
             require 'kahlan-config.php';
         }
         $this->_args = $args + $this->_args;
-        $this->_args['coverage'] = $this->_args['coverage'];
     }
 
     public function customNamespaces()
@@ -195,7 +196,8 @@ class Kahlan {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $this->suite()->run([
                 'reporters' => $this->reporters(),
-                'autoclear' => $this->args('autoclear')
+                'autoclear' => $this->args('autoclear'),
+                'ff'        => $this->args('ff')
             ]);
         });
     }
