@@ -2,7 +2,7 @@
 namespace spec\fixture\jit\patcher\monkey;
 
 use kahlan\MongoId;
-use kahlan\util\String;
+use string\String;
 
 function time() {
     return 0;
@@ -79,7 +79,7 @@ class Example extends \kahlan\fixture\Parent
     }
 
     public function staticCallFromUsed()
-    {$__KMONKEY__12 = \kahlan\plugin\Monkey::patched(null, 'kahlan\util\String');
+    {$__KMONKEY__12 = \kahlan\plugin\Monkey::patched(null, 'string\String');
         return $__KMONKEY__12::hash((object) 'hello');
     }
 

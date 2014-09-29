@@ -8,8 +8,8 @@
 
 namespace kahlan\reporter;
 
-use kahlan\util\Set;
-use kahlan\util\String;
+use set\Set;
+use string\String;
 
 class Bar extends Terminal
 {

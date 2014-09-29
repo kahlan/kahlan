@@ -8,8 +8,8 @@
 
 namespace kahlan\reporter;
 
+use string\String;
 use kahlan\cli\Cli;
-use kahlan\util\String;
 use kahlan\analysis\Debugger;
 
 class Terminal extends Reporter

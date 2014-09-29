@@ -218,9 +218,9 @@ describe("Stub", function() {
         });
 
         it("stubs an instance with a parent class", function() {
-            $stub = Stub::create(['extends' => 'kahlan\util\String']);
+            $stub = Stub::create(['extends' => 'string\String']);
             expect(is_object($stub))->toBe(true);
-            expect(get_parent_class($stub))->toBe('kahlan\util\String');
+            expect(get_parent_class($stub))->toBe('string\String');
         });
 
         it("stubs an instance using a trait", function() {

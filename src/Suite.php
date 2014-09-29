@@ -10,7 +10,7 @@ namespace kahlan;
 
 use Exception;
 use InvalidArgumentException;
-use kahlan\util\Set;
+use set\Set;
 use kahlan\analysis\Debugger;
 
 class Suite extends Scope

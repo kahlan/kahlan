@@ -10,6 +10,8 @@
     ],
     "require": {
         "php": ">=5.4",
+        "crysalead/set": "dev-master",
+        "crysalead/string": "dev-master",
         "crysalead/box": "dev-master",
         "crysalead/dir": "dev-master",
         "crysalead/filter": "dev-master"

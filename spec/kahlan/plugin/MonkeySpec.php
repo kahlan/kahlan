@@ -34,7 +34,7 @@ class MyDateTime {
 
 class MyString {
 
-    public static function hash($value) {
+    public static function dump($value) {
         return 'myhashvalue';
     }
 
@@ -87,8 +87,8 @@ describe("Monkey::patch", function() {
 
     it("patches a class", function() {
         $foo = new Foo();
-        Monkey::patch('kahlan\util\String', 'spec\plugin\MyString');
-        expect($foo->hash((object)'hello'))->toBe('myhashvalue');
+        Monkey::patch('string\String', 'spec\plugin\MyString');
+        expect($foo->dump((object)'hello'))->toBe('myhashvalue');
     });
 
     it("can unpatch a monkey patch", function() {

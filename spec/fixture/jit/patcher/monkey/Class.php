@@ -2,7 +2,7 @@
 namespace spec\fixture\jit\patcher\monkey;
 
 use kahlan\MongoId;
-use kahlan\util\String;
+use string\String;
 
 function time() {
     return 0;

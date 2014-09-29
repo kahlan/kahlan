@@ -1,7 +1,7 @@
 <?php
 namespace spec\fixture\jit\patcher\monkey;
 
-use kahlan\util\String;
+use string\String;
 
 trait Filterable
 {
