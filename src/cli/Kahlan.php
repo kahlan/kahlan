@@ -21,6 +21,7 @@ use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Substitute;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\jit\patcher\Monkey;
+use kahlan\jit\patcher\Rebase;
 use kahlan\jit\patcher\Quit;
 use kahlan\Reporters;
 use kahlan\reporter\Dot;
@@ -113,6 +114,7 @@ class Kahlan {
             $patchers->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
             $patchers->add('pointcut', new Pointcut());
             $patchers->add('monkey', new Monkey());
+            $patchers->add('rebase', new Rebase());
             $patchers->add('quit', new Quit());
             return $patchers;
         });

@@ -8,7 +8,7 @@
 
 namespace kahlan\jit\patcher;
 
-class Quit {
+class Rebase {
 
     /**
      * The JIT find file patcher.
@@ -32,27 +32,34 @@ class Quit {
      */
     public function process($node, $path = null)
     {
-        $this->_processTree($node->tree);
+        $this->_processTree($node->tree, $path);
         return $node;
     }
 
     /**
      * Helper for `Monkey::process()`.
      *
-     * @param array $nodes A node array to patch.
+     * @param array  $nodes A node array to patch.
+     * @param string $path  The file path of the source code.
      */
-    protected function _processTree($nodes)
+    protected function _processTree($nodes, $path)
     {
+        $path = addcslashes($path, "'");
+        $dir = "'" . dirname($path) . "'";
+        $file = "'" . $path . "'";
+
         $alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
-        $regex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)((?:exit|die)\s*\()/m";
+        $dirRegex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)(__DIR__)/";
+        $fileRegex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)(__FILE__)/";
 
         foreach ($nodes as $node) {
             $parent = $node->parent;
             if ($node->processable && $node->type === 'code') {
-                $node->body = preg_replace($regex, '\1\kahlan\plugin\Quit::quit(', $node->body);
+                $node->body = preg_replace($dirRegex, $dir, $node->body);
+                $node->body = preg_replace($fileRegex, $file, $node->body);
             }
             if (count($node->tree)) {
-                $this->_processTree($node->tree);
+                $this->_processTree($node->tree, $path);
             }
         }
     }

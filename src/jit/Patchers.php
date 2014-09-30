@@ -106,9 +106,10 @@ class Patchers {
      * Run file patchers.
      *
      * @param  string $code The source code to process.
+     * @param  string $path The file path of the source code.
      * @return string The patched source code.
      */
-    public function process($code)
+    public function process($code, $path = null)
     {
         if (!$code) {
             return '';
@@ -116,7 +117,7 @@ class Patchers {
         $parser = $this->_classes['parser'];
         $nodes = $parser::parse($code);
         foreach ($this->_patchers as $patcher) {
-            $patcher->process($nodes);
+            $patcher->process($nodes, $path);
         }
         return $parser::unparse($nodes);
     }

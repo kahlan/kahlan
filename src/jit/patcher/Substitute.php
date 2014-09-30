@@ -53,10 +53,11 @@ class Substitute {
     /**
      * The JIT patcher.
      *
-     * @param  NodeDef The node to patch.
-     * @return NodeDef The patched node.
+     * @param  NodeDef $node The node to patch.
+     * @param  string  $path The file path of the source code.
+     * @return NodeDef       The patched node.
      */
-    public function process($node)
+    public function process($node, $path = null)
     {
         return $node;
     }

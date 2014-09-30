@@ -290,7 +290,7 @@ class Interceptor {
             return true;
         }
         $code = file_get_contents($file);
-        $rewrite = $this->_patchers ? $this->_patchers->process($code) : $code;
+        $rewrite = $this->_patchers ? $this->_patchers->process($code, $file) : $code;
         if ($rewrite) {
             if ($this->_cache) {
                 require $this->cache($file, $rewrite);
