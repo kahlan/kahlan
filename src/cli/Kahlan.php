@@ -15,7 +15,7 @@ use filter\Filter;
 use filter\behavior\Filterable;
 use kahlan\Suite;
 use kahlan\cli\Cli;
-use kahlan\cli\GetOpt;
+use kahlan\cli\Args;
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Substitute;
@@ -49,23 +49,7 @@ class Kahlan {
 
     protected $_reporters = null;
 
-    protected $_args = [
-        'config' => null,
-        'src' => 'src',
-        'spec' => 'spec',
-        'ff' => null,
-        'interceptor-include' => [],
-        'interceptor-exclude' => [],
-        'interceptor-persistent' => true,
-        'coverage' => null,
-        'coverage-scrutinizer' => null,
-        'autoclear' => [
-            'kahlan\plugin\Monkey',
-            'kahlan\plugin\Call',
-            'kahlan\plugin\Stub'
-        ],
-        'reporter' => 'dot'
-    ];
+    protected $_args = null;
 
     public function __construct($options = [])
     {
@@ -79,16 +63,80 @@ class Kahlan {
 
     public function loadConfig($argv = [])
     {
-        $args = GetOpt::parse($argv, [
-            'coverage' => 'numeric',
-            'ff'       => 'numeric'
+        $this->_args = new Args([
+            'src'                    => ['array' => 'true'],
+            'spec'                   => ['array' => 'true'],
+            'interceptor-include'    => ['array' => 'true'],
+            'interceptor-exclude'    => ['array' => 'true'],
+            'autoclear'              => ['array' => 'true'],
+            'coverage'               => ['type'  => 'numeric'],
+            'ff'                     => ['type'  => 'numeric'],
+            'interceptor-persistent' => ['type'  => 'boolean'],
         ]);
-        if (!empty($args['config'])) {
-            require $args['config'];
+
+        $this->_args->defaults([
+            'src' => 'src',
+            'spec' => 'spec',
+            'interceptor-persistent' => true,
+            'autoclear' => [
+                'kahlan\plugin\Monkey',
+                'kahlan\plugin\Call',
+                'kahlan\plugin\Stub'
+            ],
+            'reporter' => 'dot'
+        ]);
+
+        $this->_args->parse($argv);
+
+        if ($this->_args->get('help')) {
+            return $this->_help();
+        }
+        if ($this->_args->get('config')) {
+            require $this->_args->get('config');
         } elseif (file_exists('kahlan-config.php')) {
             require 'kahlan-config.php';
         }
-        $this->_args = $args + $this->_args;
+    }
+
+    protected function _help() {
+        echo <<<EOD
+Kahlan - PHP Testing Framework
+
+Usage: kahlan [options]
+
+Configuration Options:
+
+  --config=<file>                   The PHP configuration file to use (default: `'kahlan-config.php'`).
+  --src=<path>                      The path of the source directory (default: `'src'`).
+  --spec=<path>                     The path of the specifications directory (default: `'spec'`).
+
+Reporter Options:
+
+  --reporter=<string>               The name of the text reporter to use, the buit-in text reporters
+                                    are `'dot'` & `'bar'` (default: `'dot'`).
+
+Code Coverage Options:
+
+  --coverage=<integer>              Generate code coverage report. The value specify the level of
+                                    detail for the code coverage report (0-4) (default `0`).
+  --coverage-scrutinizer=<file>     Export code coverage report in Scrutinizer format.
+
+Test Execution Options:
+
+  --ff=<integer>                     Fast fail option. `0` mean unlimited (default: `0`).
+  --interceptor-include=<string>     Paths to include for patching. Empty mean all (default: empty).
+  --interceptor-exclude=<string>     Paths to exclude from patching. Empty mean none (default: empty).
+  --interceptor-persistent=<bool>    Cache patched files (default: `true`).
+  --autoclear                        classes to autoclear after each spec (default: `'kahlan\plugin\Monkey'`,
+                                     `'kahlan\plugin\Call'`, `'kahlan\plugin\Stub'`)
+
+Miscellaneous Options:
+
+  --help                 Prints this usage information.
+
+
+EOD;
+    exit();
     }
 
     public function customNamespaces()
@@ -98,7 +146,7 @@ class Kahlan {
                 echo Cli::color("The defined autoloader doesn't support `add()` calls\n", 'yellow');
                 return;
             }
-            $paths = (array) $this->args('spec');
+            $paths = $this->args('spec');
             foreach ($paths as $path) {
                 $path = realpath($path);
                 $namespace = basename($path) . '\\';
@@ -224,15 +272,12 @@ class Kahlan {
         });
     }
 
-    public function args($key = null, $value = null)
+    public function args($name = null, $value = null)
     {
-        if ($key === null) {
-            return $this->_args;
+        if (func_num_args() < 2) {
+            return $this->_args->get($name);
         }
-        if ($value === null) {
-            return isset($this->_args[$key]) ? $this->_args[$key] : null;
-        }
-        $this->_args[$key] = $value;
+        $this->_args->set($name, $value);
     }
 
     public function suite()
