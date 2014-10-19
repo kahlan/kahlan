@@ -75,15 +75,16 @@ class Kahlan {
         ]);
 
         $this->_args->defaults([
-            'src' => 'src',
-            'spec' => 'spec',
+            'src'                    => 'src',
+            'spec'                   => 'spec',
+            'interceptor-include'    => ['*'],
             'interceptor-persistent' => true,
-            'autoclear' => [
+            'reporter'               => 'dot',
+            'autoclear'              => [
                 'kahlan\plugin\Monkey',
                 'kahlan\plugin\Call',
                 'kahlan\plugin\Stub'
-            ],
-            'reporter' => 'dot'
+            ]
         ]);
 
         $this->_args->parse($argv);
@@ -124,8 +125,8 @@ Code Coverage Options:
 Test Execution Options:
 
   --ff=<integer>                     Fast fail option. `0` mean unlimited (default: `0`).
-  --interceptor-include=<string>     Paths to include for patching. Empty mean all (default: empty).
-  --interceptor-exclude=<string>     Paths to exclude from patching. Empty mean none (default: empty).
+  --interceptor-include=<string>     Paths to include for patching. (default: `['*']`).
+  --interceptor-exclude=<string>     Paths to exclude from patching. (default: []).
   --interceptor-persistent=<bool>    Cache patched files (default: `true`).
   --autoclear                        classes to autoclear after each spec (default: `'kahlan\plugin\Monkey'`,
                                      `'kahlan\plugin\Call'`, `'kahlan\plugin\Stub'`)

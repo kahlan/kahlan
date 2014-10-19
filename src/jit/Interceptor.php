@@ -86,7 +86,7 @@ class Interceptor {
         $defaults = [
             'patchers' => null,
             'exclude' => [],
-            'include' => [],
+            'include' => ['*'],
             'persistent' => true,
             'findFile' => 'findFile',
             'getClassMap' => 'getClassMap',
@@ -269,12 +269,15 @@ class Interceptor {
                 return false;
             }
         }
+        if ($this->_include === ['*']) {
+            return true;
+        }
         foreach ($this->_include as $namespace) {
             if (strpos($class, $namespace) === 0) {
                 return true;
             }
         }
-        return !$this->_include;
+        return false;
     }
 
     /**
