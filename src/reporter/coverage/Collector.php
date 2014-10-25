@@ -14,6 +14,13 @@ use kahlan\jit\Interceptor;
 class Collector
 {
     /**
+     * Stack of active collectors.
+     *
+     * @var array
+     */
+    protected static $_collectors = [];
+
+    /**
      * Class dependencies.
      *
      * @var array
@@ -105,18 +112,42 @@ class Collector
 
     /**
      * Start collecting coverage data.
+     *
+     * @return boolean
      */
     public function start()
     {
+        if ($collector = end(static::$_collectors)) {
+            $collector->add($collector->_driver->stop());
+        }
+        static::$_collectors[] = $this;
         $this->_driver->start();
+        return true;
     }
 
     /**
      * Stop collecting coverage data.
+     *
+     * @return boolean
      */
-    public function stop()
+    public function stop($mergeToParent = true)
     {
-        $this->add($this->_driver->stop());
+        $collector = end(static::$_collectors);
+        $collected = [];
+        if ($collector !== $this) {
+            return false;
+        }
+        array_pop(static::$_collectors);
+        $collected = $this->_driver->stop();
+        $this->add($collected);
+
+        $collector = end(static::$_collectors);
+        if (!$collector) {
+            return true;
+        }
+        $collector->add($mergeToParent ? $collected : []);
+        $collector->_driver->start();
+        return true;
     }
 
     /**

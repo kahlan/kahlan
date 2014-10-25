@@ -147,7 +147,7 @@ class Bar extends Terminal
     /**
      * Callback called at the end of specs processing.
      */
-    public function end($results)
+    public function end($results = [])
     {
         $this->console("\n");
         $this->_summary($results);

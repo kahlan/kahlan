@@ -295,10 +295,10 @@ class Suite extends Scope
 
             $this->_callbacks('after', false);
         } catch (Exception $exception) {
-            $this->_exception($exception);
             try {
                 $this->_callbacks('after', false);
             } catch (Exception $exception) {}
+            $this->_exception($exception);
         }
 
         $this->_errorHandler(false);

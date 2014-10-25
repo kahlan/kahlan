@@ -83,9 +83,12 @@ class Spec extends Scope
         try {
             $this->report('before');
             $closure($this);
-            $this->report('after');
             $this->_matcher->resolve();
+            $this->report('after');
         } catch (Exception $exception) {
+            try {
+                $this->report('after');
+            } catch (Exception $exception) {}
             $this->_exception($exception);
         }
 

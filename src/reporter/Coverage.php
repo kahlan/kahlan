@@ -122,8 +122,8 @@ class Coverage extends Terminal
         $percent = number_format($stats['percent'], 2);
         $style = $this->_style($percent);
         $this->console(str_pad("Lines: {$percent}%", 15), $style);
-        $this->console(str_pad("({$stats['covered']}/{$stats['eloc']})", 20));
-        $this->console("{$name}\n");
+        $this->console(trim(str_pad("({$stats['covered']}/{$stats['eloc']})", 20) . "{$name}"));
+        $this->console("\n");
         if ($verbosity === 1) {
             return;
         }
@@ -156,7 +156,7 @@ class Coverage extends Terminal
     /**
      * Callback called at the end of specs processing.
      */
-    public function end($results)
+    public function end($results = [])
     {
         $this->console("\nCoverage Summary\n----------------\n\n");
         $this->_renderMetrics($this->metrics(), $this->_verbosity);
