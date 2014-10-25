@@ -89,7 +89,7 @@ class ToReceive
         return $report['instance']->report();
     }
 
-    public function report($report = null)
+    public function report($report = null, $startIndex = 0)
     {
         if ($report === null) {
             return $this->_report;
@@ -98,7 +98,8 @@ class ToReceive
 
         $with = $this->_message->getWith();
         $this->_message->with();
-        if ($log = $call::find($this->_actual, $this->_message)) {
+
+        if ($log = $call::find($this->_actual, $this->_message, $startIndex)) {
             $this->_report['description'] = 'receive correct parameters.';
             $this->_report['params']['actual with'] = $with;
             $this->_report['params']['expected with'] = $log['params'];
@@ -106,10 +107,11 @@ class ToReceive
         }
 
         $this->_report['description'] = 'receive the correct message.';
-        $this->_report['params']['actual received'] = [];
-        foreach($call::find($this->_actual) as $log) {
-            $this->_report['params']['actual received'][] = $log['name'];
+        $called = [];
+        foreach($call::find($this->_actual, null, $startIndex) as $log) {
+            $called[] = $log['static'] ? '::' . $log['name'] : $log['name'];
         }
+        $this->_report['params']['actual received'] = $called;
         $this->_report['params']['expected'] = $report['params']['expected'];
     }
 }

@@ -47,6 +47,26 @@ describe("toReceiveNext::match", function() {
         $foo->message();
     });
 
+    it("expects to work as `toReceive` for the first call", function() {
+        $foo = new Foo();
+        expect($foo)->toReceiveNext('message');
+        $foo->message();
+    });
+
+    it("expects called methods are consumated", function() {
+        $foo = new Foo();
+        expect($foo)->toReceive('message');
+        expect($foo)->not->toReceiveNext('message');
+        $foo->message();
+    });
+
+    it("expects called methods are consumated using classname", function() {
+        $foo = new Foo();
+        expect('spec\fixture\plugin\pointcut\Foo')->toReceive('message');
+        expect('spec\fixture\plugin\pointcut\Foo')->not->toReceiveNext('message');
+        $foo->message();
+    });
+
 });
 
 ?>

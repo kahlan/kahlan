@@ -82,6 +82,18 @@ class Call
      */
     public static function log($reference, $call)
     {
+        $calls = [];
+        if (is_array($reference)) {
+            foreach ($reference as $value) {
+                $calls[] = static::_call($value, $call);
+            }
+        } else {
+            $calls[] = static::_call($reference, $call);
+        }
+        static::$_logs[] = $calls;
+    }
+
+    public static function _call($reference, $call) {
         $static = false;
         if (preg_match('/^::.*/', $call['name'])) {
             $call['name'] = substr($call['name'], 2);
@@ -92,7 +104,7 @@ class Call
         } else {
             $call += ['instance' => null, 'class' => $reference, 'static' => $static];
         }
-        static::$_logs[] = $call;
+        return $call;
     }
 
     /**
@@ -104,26 +116,35 @@ class Call
     }
 
     /**
+     * Get set the find index
+     *
+     * @param  integer $index The index value to set or `null` to get the current one.
+     * @return integer        Return founded log call.
+     */
+    public static function lastFindIndex($index = null) {
+        if ($index !== null) {
+            static::$_index = $index;
+        }
+        return static::$_index;
+    }
+
+    /**
      * Find a logged call.
      *
      * @param  mixed      $reference An instance or a fully namespaced class name.
      * @param  string     $method    The method name.
-     * @param  boolean    $reset     If `true` start finding from the start of the logs.
+     * @param  interger   $index     Start index.
      * @return array|null Return founded log call.
      */
-    public static function find($reference, $call = null, $reset = true)
+    public static function find($reference, $call = null, $index = 0)
     {
-        if ($reset) {
-            static::$_index = 0;
-        }
         if ($call === null) {
-            return static::_findAll($reference);
+            return static::_findAll($reference, $index);
         }
-        $index = static::$_index;
         $count = count(static::$_logs);
         for ($i = $index; $i < $count; $i++) {
-            $log = static::$_logs[$i];
-            if (!static::_matchReference($reference, $log)) {
+            $logs = static::$_logs[$i];
+            if (!$log = static::_matchReference($reference, $logs)) {
                 continue;
             }
 
@@ -135,30 +156,30 @@ class Call
         return false;
     }
 
-    protected static function _findAll($reference)
+    protected static function _findAll($reference, $index)
     {
         $result = [];
-        $index = static::$_index;
         $count = count(static::$_logs);
         for ($i = $index; $i < $count; $i++) {
-            $log = static::$_logs[$i];
-            if (static::_matchReference($reference, $log)) {
+            $logs = static::$_logs[$i];
+            if ($log = static::_matchReference($reference, $logs)) {
                 $result[] = $log;
             }
         }
         return $result;
     }
 
-    protected static function _matchReference($reference, $log)
+    protected static function _matchReference($reference, $logs = [])
     {
-        if (is_object($reference)) {
-            if ($reference !== $log['instance']) {
-                return false;
+        foreach ($logs as $log) {
+            if (is_object($reference)) {
+                if ($reference === $log['instance']) {
+                    return $log;
+                }
+            } elseif ($reference === $log['class']) {
+                return $log;
             }
-        } elseif ($reference !== $log['class']) {
-            return false;
         }
-        return true;
     }
 
     /**
@@ -167,6 +188,6 @@ class Call
     public static function clear()
     {
         static::$_logs = [];
-        static::$_index = [];
+        static::$_index = 0;
     }
 }

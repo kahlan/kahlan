@@ -51,9 +51,7 @@ class Pointcut
             $name = '::' . $name;
         }
 
-        foreach ($list as $value) {
-            $call::log($value, compact('name', 'params'));
-        }
+        $call::log($list, compact('name', 'params'));
 
         if ($method = $stub::find($list, $name, $params)) {
             return $method;
