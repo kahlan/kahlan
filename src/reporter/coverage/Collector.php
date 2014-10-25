@@ -90,9 +90,16 @@ class Collector
     public function __construct($options = [])
     {
         $defaults = [
-            'driver' => null,
-            'path' => [],
-            'prefix' => rtrim(Interceptor::instance()->cache(), DS)
+            'driver'         => null,
+            'path'           => [],
+            'include'        => '*.php',
+            'exclude'        => [],
+            'type'           => 'file',
+            'skipDots'       => true,
+            'leavesOnly'     => false,
+            'followSymlinks' => true,
+            'recursive'      => true,
+            'prefix'         => rtrim(Interceptor::instance()->cache(), DS)
         ];
         $options += $defaults;
 
@@ -100,11 +107,7 @@ class Collector
         $this->_paths = (array) $options['path'];
         $this->_prefix = $options['prefix'];
 
-        $files = Dir::scan([
-            'path' => $this->_paths,
-            'include' => '*.php',
-            'type' => 'file'
-        ]);
+        $files = Dir::scan($options);
         foreach ($files as $file) {
             $this->_coverage[realpath($file)] = [];
         }
