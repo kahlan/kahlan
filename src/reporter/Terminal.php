@@ -15,6 +15,13 @@ use kahlan\analysis\Debugger;
 class Terminal extends Reporter
 {
     /**
+     * Use colors in console mode
+     *
+     * @var boolean
+     */
+    protected $_colors = true;
+
+    /**
      * Output stream, STDOUT
      *
      * @var stream
@@ -29,9 +36,13 @@ class Terminal extends Reporter
     public function __construct($options = [])
     {
         parent::__construct($options);
-        $defaults = ['output' => fopen('php://stdout', 'r')];
+        $defaults = [
+            'colors' => true,
+            'output' => fopen('php://output', 'r')
+        ];
         $options += $defaults;
         $this->_output = $options['output'];
+        $this->_colors = $options['colors'];
     }
 
     /**
@@ -50,7 +61,8 @@ class Terminal extends Reporter
      */
     public function console($string, $options = null)
     {
-        fwrite($this->_output, Cli::color($string, $options));
+        $string = $this->_colors ? Cli::color($string, $options) : $string;
+        fwrite($this->_output, $string);
     }
 
     /**

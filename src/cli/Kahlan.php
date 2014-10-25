@@ -71,12 +71,14 @@ class Kahlan {
             'autoclear'              => ['array' => 'true'],
             'coverage'               => ['type'  => 'numeric'],
             'ff'                     => ['type'  => 'numeric'],
+            'no-colors'              => ['type'  => 'boolean'],
             'interceptor-persistent' => ['type'  => 'boolean'],
         ]);
 
         $this->_args->defaults([
             'src'                    => 'src',
             'spec'                   => 'spec',
+            'no-colors'              => false,
             'interceptor-include'    => ['*'],
             'interceptor-persistent' => true,
             'reporter'               => 'dot',
@@ -107,29 +109,30 @@ Usage: kahlan [options]
 
 Configuration Options:
 
-  --config=<file>                   The PHP configuration file to use (default: `'kahlan-config.php'`).
-  --src=<path>                      The path of the source directory (default: `'src'`).
-  --spec=<path>                     The path of the specifications directory (default: `'spec'`).
+  --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
+  --src=<path>                        The path of the source directory (default: `'src'`).
+  --spec=<path>                       The path of the specifications directory (default: `'spec'`).
 
 Reporter Options:
 
-  --reporter=<string>               The name of the text reporter to use, the buit-in text reporters
-                                    are `'dot'` & `'bar'` (default: `'dot'`).
+  --reporter=<string>                 The name of the text reporter to use, the buit-in text reporters
+                                      are `'dot'` & `'bar'` (default: `'dot'`).
 
 Code Coverage Options:
 
-  --coverage=<integer>              Generate code coverage report. The value specify the level of
-                                    detail for the code coverage report (0-4) (default `0`).
-  --coverage-scrutinizer=<file>     Export code coverage report in Scrutinizer format.
+  --coverage=<integer>                Generate code coverage report. The value specify the level of
+                                      detail for the code coverage report (0-4) (default `0`).
+  --coverage-scrutinizer=<file>       Export code coverage report in Scrutinizer format.
 
 Test Execution Options:
 
-  --ff=<integer>                     Fast fail option. `0` mean unlimited (default: `0`).
-  --interceptor-include=<string>     Paths to include for patching. (default: `['*']`).
-  --interceptor-exclude=<string>     Paths to exclude from patching. (default: []).
-  --interceptor-persistent=<bool>    Cache patched files (default: `true`).
-  --autoclear                        classes to autoclear after each spec (default: `'kahlan\plugin\Monkey'`,
-                                     `'kahlan\plugin\Call'`, `'kahlan\plugin\Stub'`)
+  --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
+  --no-colors=<boolean>               To turn off colors. (default: `false`).
+  --interceptor-include=<string>      Paths to include for patching. (default: `'*'`).
+  --interceptor-exclude=<string>      Paths to exclude from patching. (default: `''`).
+  --interceptor-persistent=<boolean>  Cache patched files (default: `true`).
+  --autoclear                         classes to autoclear after each spec (default: `'kahlan\plugin\Monkey'`,
+                                      `'kahlan\plugin\Call'`, `'kahlan\plugin\Stub'`)
 
 Miscellaneous Options:
 
@@ -211,11 +214,12 @@ EOD;
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $reporters = $this->reporters();
             $start = $this->_start;
+            $colors = !$this->args('no-colors');
             if ($this->args('reporter') === 'dot') {
-                $reporter = new Dot(compact('start'));
+                $reporter = new Dot(compact('start', 'colors'));
             }
             if ($this->args('reporter') === 'bar') {
-                $reporter = new Bar(compact('start'));
+                $reporter = new Bar(compact('start', 'colors'));
             }
             if ($reporter) {
                 $reporters->add('console', $reporter);
@@ -230,7 +234,8 @@ EOD;
             $coverage = new Coverage([
                 'verbosity' => $this->args('coverage'),
                 'driver' => new Xdebug(),
-                'path' => $this->args('src')
+                'path' => $this->args('src'),
+                'colors' => !$this->args('no-colors')
             ]);
             $reporters->add('coverage', $coverage);
         });
