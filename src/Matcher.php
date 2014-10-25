@@ -127,7 +127,9 @@ class Matcher
             $result = call_user_func_array($class . '::match', $params);
             $params = Inspector::parameters($class, 'match', $params);
             if (!is_object($result)) {
-                $description = !$result ? $class::description(compact('class', 'matcher', 'params')) : '';
+                $success = $result;
+                $success = $this->_not ? !$success : $success;
+                $description = $success ? '' : $class::description(compact('class', 'matcher', 'params'));
                 $this->_result($result, compact('class', 'matcher', 'params', 'description'));
                 return $this;
             }

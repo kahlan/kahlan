@@ -29,16 +29,18 @@ class ToThrow
         if (!$e = static::actual($actual)) {
             return false;
         }
-        if (is_string($expected)) {
-            return $e->getMessage() === $expected;
+
+        if ($exception instanceof AnyException) {
+            return $exception->match($e);
         }
-        $class = get_class($exception);
-        if ($class === 'kahlan\matcher\AnyException' || get_class($e) === $class) {
+
+        if (get_class($e) === get_class($exception)) {
             $sameCode = $e->getCode() === $exception->getCode();
             $sameMessage = $e->getMessage() === $exception->getMessage();
             $sameMessage = $sameMessage || !$exception->getMessage();
             return $sameCode && $sameMessage;
         }
+        return false;
     }
 
     /**
@@ -62,10 +64,10 @@ class ToThrow
      * @param  mixed $expected The expected value to be normalized.
      * @return mixed The normalized value.
      */
-    public static function expected($expected)
+    public static function expected($expected, $code = 0)
     {
         if ($expected === null || is_string($expected)) {
-            return new AnyException($expected);
+            return new AnyException($expected, $code);
         }
         return $expected;
     }

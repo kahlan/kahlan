@@ -18,11 +18,31 @@ describe("toThrow::match", function() {
         expect($closure)->toThrow();
     });
 
+    it("catches any kind of exception but with a specific code", function() {
+        $closure = function() {
+            throw new RuntimeException('runtime error', 500);
+        };
+        expect($closure)->toThrow(null, 500);
+
+        $closure = function() {
+            throw new Exception('exception message', 500);
+        };
+        expect($closure)->toThrow(null, 500);
+    });
+
     it("catches a detailed exception", function() {
         $closure = function() {
             throw new RuntimeException('exception message');
         };
         expect($closure)->toThrow(new RuntimeException('exception message'));
+    });
+
+    it("catches a detailed exception with some specific code", function() {
+        $closure = function() {
+            throw new RuntimeException('exception message', 500);
+        };
+        expect($closure)->not->toThrow(new RuntimeException('exception message'));
+        expect($closure)->toThrow(new RuntimeException('exception message', 500));
     });
 
     it("catches a detailed exception using the message name only", function() {
