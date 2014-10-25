@@ -125,7 +125,10 @@ class Terminal extends Reporter
         foreach ($params as $key => $value) {
             $this->console("{$key}: ", 'n;yellow');
             $type = gettype($value);
-            $this->console("({$type}) " . String::toString($value) . "\n");
+			$toString = function($instance) {
+                return 'an instance of `' . get_class($instance) . '`';
+            };
+            $this->console("({$type}) " . String::toString($value, ['object' => ['method' => $toString]]) . "\n");
         }
         $this->console("Description:", "n;magenta");
         $this->console(" {$report['matcher']} expected actual to ");
