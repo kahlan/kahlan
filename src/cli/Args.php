@@ -88,10 +88,7 @@ class Args {
     protected function _get($name)
     {
         if (!isset($this->_args[$name])) {
-            if (!isset($this->_defaults[$name])) {
-                return;
-            }
-            $value = $this->_defaults[$name];
+            $value = isset($this->_defaults[$name]) ? $this->_defaults[$name] : null;
         } else {
             $value = $this->_args[$name];
         }
@@ -122,7 +119,7 @@ class Args {
             return $result;
         }
         if ($type === 'boolean') {
-            $value = ($value === 'false' || $value === '0') ? false : true;
+            $value = ($value === 'false' || $value === '0' || $value === false || $value === null) ? false : true;
         } elseif ($type === 'numeric') {
             $value = $value !== '' ? $value + 0 : 1;
         }

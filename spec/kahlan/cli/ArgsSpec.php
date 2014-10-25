@@ -63,7 +63,7 @@ describe("Args", function() {
                 'option4' => false
             ]);
 
-            expect($args->get('option5'))->toEqual(false);
+            expect($args->get('option5'))->toBe(false);
         });
 
         it("allows integer casting", function() {
@@ -84,7 +84,36 @@ describe("Args", function() {
             ]);
         });
 
+        context("with defaults options", function() {
+
+            it("allows boolean casting", function() {
+                $args = new Args([
+                    'option1' => ['type' => 'boolean'],
+                    'option2' => ['type' => 'boolean'],
+                    'option3' => ['type' => 'boolean'],
+                    'option4' => ['type' => 'boolean']
+                ]);
+                $args->defaults([
+                    'option1' => true,
+                    'option2' => false,
+                    'option3' => true,
+                    'option4' => false
+                ]);
+                $actual = $args->parse([
+                    'command', '--option1', '--option2'
+                ]);
+                expect($actual)->toEqual([
+                    'option1' => true,
+                    'option2' => true,
+                    'option3' => true,
+                    'option4' => false
+                ]);
+            });
+
+        });
+
     });
+
 
 });
 
