@@ -825,20 +825,21 @@ use filter\Filter;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
 // Below we are setting some defaults options (Note: the ones in the command line will overwrite the ones below)
-$this->args('ff', 1);
-$this->args('coverage', 3);
-$this->args('coverage-scrutinizer', 'scrutinizer.xml');
-$this->args('coverage-coveralls', 'coveralls.json');
+$args = $this->args();
+$args->option('ff', 'default', 1);
+$args->option('coverage', 'default', 3);
+$args->option('coverage-scrutinizer', 'default', 'scrutinizer.xml');
+$args->option('coverage-coveralls', 'default', 'coveralls.json');
 
 // Change the Kahlan workflow to add a job at a `postProcess` level.
 Filter::register('kahlan.coveralls_reporting', function($chain) {
 	$coverage = $this->reporters()->get('coverage');
-	if (!$coverage || !$this->args('coverage-coveralls')) {
+	if (!$coverage || !$this->args()->get('coverage-coveralls')) {
 		return $chain->next();
 	}
 	Coveralls::write([
 		'coverage' => $coverage,
-		'file' => $this->args('coverage-coveralls'),
+		'file' => $this->args()->get('coverage-coveralls'),
 		'service_name' => 'travis-ci',
 		'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
 	]);
@@ -880,7 +881,7 @@ Notice that this approach will make your code to be runned a bit slower than you
 The following example will only limit patching to a bunch of namespaces/classes:
 
 ```php
-$this->args('interceptor-include', [
+$this->args()->set('interceptor-include', [
     'myapp',
     'lithium',
     'li3_zendserver\data\Job',
@@ -890,7 +891,7 @@ $this->args('interceptor-include', [
 
 Conversely you can also exclude some external dependencies to speed up performances if you don't intend to Monkey Patch/Stub some namespaces/classes:
 ```php
-$this->args('interceptor-exclude', [
+$this->args()->set('interceptor-exclude', [
     'Symfony',
     'Doctrine'
 ]);
@@ -898,6 +899,6 @@ $this->args('interceptor-exclude', [
 
 You can also remove all the patchers if you prefer to deal with DI only and are not interested to Monkey Patching:
 ```php
-$this->args('interceptor-include', []);
+$this->args()->set('interceptor-include', []);
 ```
 **Note:** You will still able stub instances/classes created with `Stub::create()`/`Stub::classname()` anyway.

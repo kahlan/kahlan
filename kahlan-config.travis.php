@@ -4,17 +4,18 @@ use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
-$this->args('ff', 1);
-$this->args('coverage', 3);
-$this->args('coverage-scrutinizer', 'scrutinizer.xml');
-$this->args('coverage-coveralls', 'coveralls.json');
+$args = $this->args();
+$args->option('ff', 'default', 1);
+$args->option('coverage', 'default', 3);
+$args->option('coverage-scrutinizer', 'default', 'scrutinizer.xml');
+$args->option('coverage-coveralls', 'default', 'coveralls.json');
 
 Filter::register('kahlan.coverage', function($chain) {
     $reporters = $this->reporters();
     $coverage = new Coverage([
-        'verbosity' => $this->args('coverage'),
+        'verbosity' => $this->args()->get('coverage'),
         'driver'    => new Xdebug(),
-        'path'      => $this->args('src'),
+        'path'      => $this->args()->get('src'),
         'exclude'   => [
             //Exclude Workflow from code coverage reporting
             'src/cli/Kahlan.php',
@@ -28,7 +29,7 @@ Filter::register('kahlan.coverage', function($chain) {
             'src/reporter/Reporter.php',
             'src/reporter/Coverage.php',
         ],
-        'colors'    => !$this->args('no-colors')
+        'colors'    => !$this->args()->get('no-colors')
     ]);
     $reporters->add('coverage', $coverage);
 });
@@ -37,12 +38,12 @@ Filter::apply($this, 'coverageReporter', 'kahlan.coverage');
 
 Filter::register('kahlan.coveralls_reporting', function($chain) {
     $coverage = $this->reporters()->get('coverage');
-    if (!$coverage || !$this->args('coverage-coveralls')) {
+    if (!$coverage || !$this->args()->get('coverage-coveralls')) {
         return $chain->next();
     }
     Coveralls::write([
         'coverage' => $coverage,
-        'file' => $this->args('coverage-coveralls'),
+        'file' => $this->args()->get('coverage-coveralls'),
         'service_name' => 'travis-ci',
         'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
     ]);

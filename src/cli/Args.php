@@ -10,18 +10,39 @@ namespace kahlan\cli;
 
 class Args {
 
-    protected $_defaults = [];
-
     protected $_args = [];
 
-    protected $_types = [];
+    protected $_options = [];
 
-    public function __construct($types = []) {
-        $this->_types = $types;
+    public function __construct($options = []) {
+        foreach ($options as $name => $config) {
+            $this->option($name, $config);
+        }
     }
 
-    public function defaults($defaults = []) {
-        $this->_defaults = $defaults;
+    public function options() {
+        return $this->_options;
+    }
+
+    public function option($name = null, $config = null, $value = null) {
+        $defaults = [
+            'type'    => 'string',
+            'array'   => false,
+            'default' => null
+        ];
+        if (func_num_args() === 1) {
+            if (isset($this->_options[$name])) {
+                return $this->_options[$name];
+            }
+            return $defaults;
+        }
+        if (is_array($config)) {
+            $config += $defaults;
+            return $this->_options[$name] = $config;
+        }
+        $attribute = $config;
+        $config = $this->option($name);
+        return $this->_options[$name] = [$attribute => $value] + $config;
     }
 
     public function parse($argv)
@@ -59,11 +80,11 @@ class Args {
 
     public function add($name, $value)
     {
-        $type = $this->type($name);
-        if ($type['array']) {
+        $config = $this->option($name);
+        if ($config['array']) {
             $this->_args[$name][] = $value;
         } else {
-            $this->_args[$name] = $value;
+            $this->set($name, $value);
         }
         return $this->_args;
     }
@@ -72,13 +93,13 @@ class Args {
     {
         if ($name === null) {
             $result = [];
-            foreach ($this->_args as $key => $value) {
-                $result[$key] = $this->_get($key);
-            }
-            foreach ($this->_defaults as $key => $value) {
-                if (!isset($result[$key])) {
+            foreach ($this->_options as $key => $value) {
+                if (isset($value['default'])) {
                     $result[$key] = $this->_get($key);
                 }
+            }
+            foreach ($this->_args as $key => $value) {
+                $result[$key] = $this->_get($key);
             }
             return $result;
         }
@@ -87,26 +108,9 @@ class Args {
 
     protected function _get($name)
     {
-        if (!isset($this->_args[$name])) {
-            $value = isset($this->_defaults[$name]) ? $this->_defaults[$name] : null;
-        } else {
-            $value = $this->_args[$name];
-        }
-
-        $type = $this->type($name);
-        return $this->cast($value, $type['type'], $type['array']);
-    }
-
-    public function type($name) {
-        $type = [
-            'type'  => 'string',
-            'array' => false
-        ];
-
-        if (isset($this->_types[$name])) {
-            $type = $this->_types[$name] + $type;
-        }
-        return $type;
+        $config = $this->option($name);
+        $value = isset($this->_args[$name]) ? $this->_args[$name] : $config['default'];
+        return $this->cast($value, $config['type'], $config['array']);
     }
 
     public function cast($value, $type, $array = false)

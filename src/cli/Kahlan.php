@@ -63,41 +63,31 @@ class Kahlan {
 
     public function loadConfig($argv = [])
     {
-        $this->_args = new Args([
-            'src'                    => ['array' => 'true'],
-            'spec'                   => ['array' => 'true'],
-            'interceptor-include'    => ['array' => 'true'],
-            'interceptor-exclude'    => ['array' => 'true'],
-            'autoclear'              => ['array' => 'true'],
-            'coverage'               => ['type'  => 'numeric'],
-            'ff'                     => ['type'  => 'numeric'],
-            'no-colors'              => ['type'  => 'boolean'],
-            'interceptor-persistent' => ['type'  => 'boolean'],
-        ]);
+        $args = $this->_args = new Args();
+        $args->option('src', ['array' => 'true', 'default' => 'src']);
+        $args->option('spec', ['array' => 'true', 'default' => 'spec']);
+        $args->option('reporter', ['default' => 'dot']);
+        $args->option('coverage', ['type' => 'numeric','default' => 0]);
+        $args->option('config', ['default' => 'kahlan-config.php']);
+        $args->option('ff', ['type' => 'numeric', 'default' => 0]);
+        $args->option('no-colors', ['type' => 'boolean', 'default' => false]);
+        $args->option('interceptor-include', ['array' => 'true', 'default' => '*']);
+        $args->option('interceptor-exclude', ['array' => 'true', 'default' => '']);
+        $args->option('interceptor-persistent', ['type'  => 'boolean', 'default' => true]);
+        $args->option('autoclear', ['array' => 'true', 'default' => [
+            'kahlan\plugin\Monkey',
+            'kahlan\plugin\Call',
+            'kahlan\plugin\Stub'
+        ]]);
 
-        $this->_args->defaults([
-            'src'                    => 'src',
-            'spec'                   => 'spec',
-            'no-colors'              => false,
-            'interceptor-include'    => ['*'],
-            'interceptor-persistent' => true,
-            'reporter'               => 'dot',
-            'autoclear'              => [
-                'kahlan\plugin\Monkey',
-                'kahlan\plugin\Call',
-                'kahlan\plugin\Stub'
-            ]
-        ]);
+        $args->parse($argv);
 
-        $this->_args->parse($argv);
-
-        if ($this->_args->get('help')) {
+        if ($args->get('help')) {
             return $this->_help();
         }
-        if ($this->_args->get('config')) {
-            require $this->_args->get('config');
-        } elseif (file_exists('kahlan-config.php')) {
-            require 'kahlan-config.php';
+
+        if (file_exists($args->get('config'))) {
+            require $args->get('config');
         }
     }
 
@@ -150,7 +140,7 @@ EOD;
                 echo Cli::color("The defined autoloader doesn't support `add()` calls\n", 'yellow');
                 return;
             }
-            $paths = $this->args('spec');
+            $paths = $this->args()->get('spec');
             foreach ($paths as $path) {
                 $path = realpath($path);
                 $namespace = basename($path) . '\\';
@@ -178,9 +168,9 @@ EOD;
             Interceptor::patch([
                 'loader' => [$this->_autoloader, 'loadClass'],
                 'patchers' => $this->patchers(),
-                'include' => $this->args('interceptor-include'),
-                'exclude' => $this->args('interceptor-exclude'),
-                'persistent' => $this->args('interceptor-persistent')
+                'include' => $this->args()->get('interceptor-include'),
+                'exclude' => $this->args()->get('interceptor-exclude'),
+                'persistent' => $this->args()->get('interceptor-persistent')
             ]);
         });
     }
@@ -189,7 +179,7 @@ EOD;
     {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $files = Dir::scan([
-                'path' => $this->args('spec'),
+                'path' => $this->args()->get('spec'),
                 'include' => '*Spec.php',
                 'type' => 'file'
             ]);
@@ -203,7 +193,7 @@ EOD;
     {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $this->consoleReporter();
-            if ($this->args('coverage')) {
+            if ($this->args()->get('coverage')) {
                 $this->coverageReporter();
             }
         });
@@ -214,11 +204,11 @@ EOD;
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $reporters = $this->reporters();
             $start = $this->_start;
-            $colors = !$this->args('no-colors');
-            if ($this->args('reporter') === 'dot') {
+            $colors = !$this->args()->get('no-colors');
+            if ($this->args()->get('reporter') === 'dot') {
                 $reporter = new Dot(compact('start', 'colors'));
             }
-            if ($this->args('reporter') === 'bar') {
+            if ($this->args()->get('reporter') === 'bar') {
                 $reporter = new Bar(compact('start', 'colors'));
             }
             if ($reporter) {
@@ -232,10 +222,10 @@ EOD;
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $reporters = $this->reporters();
             $coverage = new Coverage([
-                'verbosity' => $this->args('coverage'),
+                'verbosity' => $this->args()->get('coverage'),
                 'driver' => new Xdebug(),
-                'path' => $this->args('src'),
-                'colors' => !$this->args('no-colors')
+                'path' => $this->args()->get('src'),
+                'colors' => !$this->args()->get('no-colors')
             ]);
             $reporters->add('coverage', $coverage);
         });
@@ -252,8 +242,8 @@ EOD;
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $this->suite()->run([
                 'reporters' => $this->reporters(),
-                'autoclear' => $this->args('autoclear'),
-                'ff'        => $this->args('ff')
+                'autoclear' => $this->args()->get('autoclear'),
+                'ff'        => $this->args()->get('ff')
             ]);
         });
     }
@@ -262,10 +252,10 @@ EOD;
     {
         return Filter::on($this, __FUNCTION__, [], function($chain) {
             $coverage = $this->reporters()->get('coverage');
-            if ($coverage && $this->args('coverage-scrutinizer')) {
+            if ($coverage && $this->args()->get('coverage-scrutinizer')) {
                 Scrutinizer::write([
                     'coverage' => $coverage,
-                    'file' => $this->args('coverage-scrutinizer')
+                    'file' => $this->args()->get('coverage-scrutinizer')
                 ]);
             }
         });
@@ -278,12 +268,9 @@ EOD;
         });
     }
 
-    public function args($name = null, $value = null)
+    public function args()
     {
-        if (func_num_args() < 2) {
-            return $this->_args->get($name);
-        }
-        $this->_args->set($name, $value);
+        return $this->_args;
     }
 
     public function suite()

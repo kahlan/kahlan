@@ -5,9 +5,49 @@ use kahlan\cli\Args;
 
 describe("Args", function() {
 
+    describe("option", function() {
+
+        it("sets an option config", function() {
+
+            $args = new Args();
+            $args->option('option1', ['type' => 'boolean']);
+            expect($args->option('option1'))->toEqual([
+                'type' => 'boolean',
+                'array' => false,
+                'default' => null
+            ]);
+
+        });
+
+        it("gets the default config", function() {
+
+            $args = new Args();
+            expect($args->option('option1'))->toEqual([
+                'type' => 'string',
+                'array' => false,
+                'default' => null
+            ]);
+
+        });
+
+        it("sets/updates an attribute of an option using an alternative syntax", function() {
+
+            $args = new Args();
+            $args->option('option1', 'default', 'value1');
+            expect($args->option('option1'))->toEqual([
+                'type' => 'string',
+                'array' => false,
+                'default' => 'value1'
+            ]);
+
+        });
+
+    });
+
     describe("parse", function() {
 
         it("parses command line options", function() {
+
             $args = new Args();
             $actual = $args->parse([
                 'command', '--option1', '--option3=value3', '--', '--ingored'
@@ -16,9 +56,11 @@ describe("Args", function() {
                 'option1' => '',
                 'option3' => 'value3'
             ]);
+
         });
 
         it("parses command line options with dashed names", function() {
+
             $args = new Args([
                 'double-dashed-option' => ['type' => 'boolean']
             ]);
@@ -29,9 +71,11 @@ describe("Args", function() {
                 'dashed-option' => 'value',
                 'double-dashed-option' => true
             ]);
+
         });
 
         it("provides an array when some multiple occurences of a same option are present", function() {
+
             $args = new Args(['option1' => ['array' => true]]);
             $actual = $args->parse([
                 'command', '--option1', '--option1=value1' , '--option1=value2'
@@ -43,9 +87,11 @@ describe("Args", function() {
                     'value2'
                 ]
             ]);
+
         });
 
         it("allows boolean casting", function() {
+
             $args = new Args([
                 'option1' => ['type' => 'boolean'],
                 'option2' => ['type' => 'boolean'],
@@ -64,9 +110,11 @@ describe("Args", function() {
             ]);
 
             expect($args->get('option5'))->toBe(false);
+
         });
 
         it("allows integer casting", function() {
+
             $args = new Args([
                 'option'  => ['type' => 'numeric'],
                 'option0' => ['type' => 'numeric'],
@@ -82,23 +130,20 @@ describe("Args", function() {
                 'option1' => 1,
                 'option2' => 2
             ]);
+
         });
 
         context("with defaults options", function() {
 
             it("allows boolean casting", function() {
+
                 $args = new Args([
-                    'option1' => ['type' => 'boolean'],
-                    'option2' => ['type' => 'boolean'],
-                    'option3' => ['type' => 'boolean'],
-                    'option4' => ['type' => 'boolean']
+                    'option1' => ['type' => 'boolean', 'default' => true],
+                    'option2' => ['type' => 'boolean', 'default' => false],
+                    'option3' => ['type' => 'boolean', 'default' => true],
+                    'option4' => ['type' => 'boolean', 'default' => false]
                 ]);
-                $args->defaults([
-                    'option1' => true,
-                    'option2' => false,
-                    'option3' => true,
-                    'option4' => false
-                ]);
+
                 $actual = $args->parse([
                     'command', '--option1', '--option2'
                 ]);
@@ -108,6 +153,7 @@ describe("Args", function() {
                     'option3' => true,
                     'option4' => false
                 ]);
+
             });
 
         });
