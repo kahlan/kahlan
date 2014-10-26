@@ -1,46 +1,64 @@
-# Kahlan - The PHP Test Framework
-— the Freedom, Truth, and Justice **in one page** —
+# Kahlan
+— for Freedom, Truth, and Justice —
 
-* [1 - Why Using It ?](#why-using-it)
+* [1 - Why This One ?](#why-this-one)
 * [2 - Getting Started](#getting-started)
 * [3 - Overview](#overview)
 * [4 - Matchers](#matchers)
-    * [Classic matchers](#classic)
-    * [Method invocation matchers](#method)
-    * [Argument matchers](#argument)
-    * [Custom matchers](#custom)
+  * [Classic matchers](#classic)
+  * [Method invocation matchers](#method)
+  * [Argument matchers](#argument)
+  * [Custom matchers](#custom)
 * [5 - Stubs](#stubs)
+  * [Method Stubing](#method-stubing)
+  * [Instance Stubing](#instance-stubing)
+  * [Class Stubing](#class-stubing)
 * [6 - Monkey Patching](#monkey-patching)
+  * [Monkey Patch Quit Statements](#monkey-patch-quit-statements)
 * [7 - Reporters](#reporters)
 * [8 - Pro Tips](#pro-tips)
 
-## <a name="why-using-it"></a>1 - Why Using It ?
+## <a name="why-this-one"></a>1 - Why This One ?
 
-You know that writing tests is the way to go, all the arguments make sense. But once the initial rush has passed the troubles start to apprear. Your tests are overcomplicated and need complete rewrite at each new code refactoring.
+Because who can trust a framework which achieve only [23.80% of code coverage after more that 10 years of experience in tests](assets/phpunit_4.4_code_coverage.png)?
 
-Don't worry, nobody seems performing very well in this domain myself included. Writing good tests requires to be as resilient as possible to refactoring and changes. So it's like playing chess, you need to anticipate your next moves to be in a "least worst" position after your next code refactoring/changes.
+Anyhow it's not so much about the code coverage score and I respect all the work done on PHPUnit, but to me PHPUnit was mediocre right from start and 20.000 lines code for a library with no substance doesn't make any sense for me.
 
-```
-"Debugging is twice as hard as writing the code in the first place.
-Therefore, if you write the code as cleverly as possible, you are,
-by definition, not smart enough to debug it."
--- Brian Kernighan --
-```
+**However there always have some alternatives:**
 
-I found this definition pretty commonsensical here. Indeed if your tests are over complicated at the first place, it's like playing chess with hundred of pieces. And your ability to get out of it will only depends on your cleverness.
+* [phpspec](http://phpspec.net)
+* [atoum](http://docs.atoum.org)
+* [SimpleTest](http://www.simpletest.org)
+* [Enhance-PHP](https://github.com/Enhance-PHP/Enhance-PHP)
+* etc.
 
-However tooling can be of a great help here. And there's a lot of awesome testing libraries arround like Jasmin, Mocha, Rspec, etc. which help you to keep your tests simple & organized.
+All these "old school" frameworks are mature enough but they don't support the `describe-it` syntax which allow a better organisation of tests and simplify their maintenance.
 
-So Kahlan was created out of frustration with all existing PHP testing frameworks. Instead of introducing some new philosophical concepts, tools, java practices, crap, Kahlan just provide an environment which allow you to easily test your code even wich hard coded references.
+**Hopefully` there's some new frameworks:**
 
-To achieve this goal Kahlan allow to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions. That way you won't need to put some [DI everywhere just for being able to write a test](http://david.heinemeierhansson.com/2012/dependency-injection-is-not-a-virtue.html).
+* [Peridot](https://github.com/peridot-php/peridot)
+* [pho](https://github.com/danielstjules/pho)
+* [Testify](https://github.com/marco-fiset/Testify.php)
+* [pecs](https://github.com/noonat/pecs)
+* [speciphy](https://github.com/speciphy/speciphy)
+* [dspec](https://github.com/davedevelopment/dspec)
+* [preview](https://github.com/v2e4lisp/preview)
+* etc.
+
+However in these list above, only [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough but only provide the `describe-it` feature.
+
+So Kahlan was created out of frustration with all existing PHP testing frameworks. And instead of introducing some new philosophical concepts, tools, java practices, crap, Kahlan just provide an environment which allow you to **easily test your code even wich hard coded references**.
+
+To achieve this goal **Kahlan allow to stub or monkey patch your code** directly like in Ruby or JavaScript without any required PECL-extentions. That way you won't need to put some [DI everywhere just for being able to write a test](http://david.heinemeierhansson.com/2012/dependency-injection-is-not-a-virtue.html).
+
+Some projects like [AspectMock](https://github.com/Codeception/AspectMock) also provide the researched behavior of allowing to stub/mock your PHP code directly and Kahlan aimed to gather all this kind of tools in a full-featured framework using lightweight approach and a simple API.
 
 ### Main Features
 
 * Small API & Small code base (~5k loc)
 * Code Coverage metrics (xdebug will be required)
-* Built-in Reporters/Exporters (Text, Coveralls, Scrutinizers)
-* Easily extensible & customizable
+* Built-in Reporters/Exporters (Terminal, Coveralls, Scrutinizers)
+* Easily extensible & customizable workflow
 
 If you are using the [Composer](https://getcomposer.org/) autoloader in your project you will be able to:
  * Set stubs on your class methods directly (also work for static methods).
@@ -448,7 +466,7 @@ To enable **Method Stubbing** add the following use statement in the top of your
 use kahlan\plugin\Stub;
 ```
 
-### Method Stubbing
+### <a name="method-stubing"></a>Method Stubbing
 
 `Subs::on()` can stub any existing methods on any class (and also unexisting methods if `__call()` and or `__callStatic()` are defined in your class).
 
@@ -494,7 +512,7 @@ it("stubs a method using a closure", function() {
 });
 ```
 
-### Instance Stubbing
+### <a name="instance-stubing"></a>Instance Stubbing
 
 When you are testing your application, sometimes you need a simple polyvalent instance to simply receive a couple of calls for unit testing a behavior. In this case your can create a simple polyvalent instance using `Stub::create()`:
 
@@ -505,7 +523,7 @@ it("generates a polyvalent instance", function() {
 });
 ```
 
-### Class Stubbing
+### <a name="class-stubing"></a>Class Stubbing
 
 You can also create some specific class using `Stub::classname()`:
 
@@ -611,9 +629,9 @@ Using the same syntax, you can also patch any core classes or PHP classes by jus
 
 You can find [another example on how to use Monkey Patching here](https://github.com/warrenseymour/kahlan-lightning-talk).
 
-### Monkey Patch Quit Statements
+### <a name="monkey-patch-quit-statements"></a>Monkey Patch Quit Statements
 
-When a unit test exercises code that contains an `exit()` or `die()` statement, the execution of the whole test suite is aborted.
+When a unit test exercises code that contains an `exit()` or `die()` statement, the execution of the whole test suite is aborted. With Kahlan, you can make all quit statements (i.e. `exit()` or `die()`) to throw a `QuitException` instead by using `Quit::disable()`:
 
 To enable **Monkey Patching on Quit Statements** add the following use statements in the top of your tests:
 
@@ -622,22 +640,21 @@ use kahlan\QuitException;
 use kahlan\plugin\Quit;
 ```
 
-Then in your spec you can make all quit statements (i.e. `exit()` or `die()`) to throw a `QuitException` instead by using `Quit::disable()`:
+And then use `Quit::disable()` like in the following:
 ```php
 it("throws an exception when an exit statement occurs if not allowed", function() {
     Quit::disable();
 
     $closure = function() {
         $foo = new Foo();
-        $foo->exitStatement(-1);  // This code will run something like:
-                                     `function($status) {exit($status);}`
+        $foo->runCodeWithSomeQuitStatementInside(-1);
     };
 
     expect($closure)->toThrow(new QuitException('Exit statement occured', -1));
 });
 ```
 
-**Note:** This only work for classes loaded by Composer. If you try to create a stub with a `exitStatement()` method defined by a closure containing an `exit()` statement, it won't get intercepted by patchers so your application will quit for real. In other words, code in `*Spec.php` files are not patched.
+**Note:** This only work **for classes loaded by Composer**. If you try to create a stub with a `exit()` statement it won't get intercepted by patchers and the application will quit for real. Indeed, **code in `*Spec.php` files are not patched**.
 
 ## <a name="reporters"></a>7 - Reporters
 
@@ -654,11 +671,11 @@ And the other looks like more a progress bar:
 ./bin/kahlan --reporter=bar
 ```
 
-However you can easily roll you own if thess reporters doesn't fit your needs.
+However you can easily roll you own if these reporters don't fit your needs.
 
-First you'll need to create your custom reporter class. Since I want a console based reporter I'll just create a PHP class which extends `kahlan\reporter\Terminal` otherwise if I wanted to create some kind of JSON reporter I would use `kahlan\reporter\Reporter`. The `Terminal` just offers some useful method like the `console()` method for doing some echos on the terminal.
+First you'll need to create your custom reporter class. For this example I want a console based reporter so I'll just create a PHP class which extends `kahlan\reporter\Terminal`. If you wanted to create some kind of JSON reporter extending from `kahlan\reporter\Reporter` will be enough. The `Terminal` just offers some useful methods like `console()` for doing some echos on the terminal.
 
-Example of custome reporter:
+Example of a custom reporter:
 ```php
 <?php
 namespace my\namespace;
@@ -756,12 +773,12 @@ Example of config file:
 use filter\Filter;
 use my\namespace\reporter\MyReporter;
 
-Filter::register('kahlan.my_reporting', function($chain) {
+Filter::register('kahlan.myconsole', function($chain) {
 	$reporters = $this->reporters();
 	$reporters->add('myconsole', new MyReporter(['start' => $this->_start));
 });
 
-Filter::apply($this, 'consoleReporter', 'kahlan.my_reporting');
+Filter::apply($this, 'console', 'kahlan.myconsole');
 ?>
 ```
 
@@ -791,7 +808,7 @@ will stop the process as soon as 3 tests failed.
 
 ### Use the exclusive prefix `x`
 
-When writing your tests sometimes you want to only exectute the test(s) you are working on. For this, you can prefix your spec with an `x` like in the following example:
+When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec with an `x` like in the following example:
 
 ```php
 describe("test exclusive mode", function() {
@@ -824,34 +841,44 @@ Example of a config file:
 use filter\Filter;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
-// Below we are setting some defaults options (Note: the ones in the command line will overwrite the ones below)
+// Below we are overriding some default value attached to some options
+// Note: the ones in the command line will overwrite the ones defined below
 $args = $this->args();
 $args->option('ff', 'default', 1);
 $args->option('coverage', 'default', 3);
 $args->option('coverage-scrutinizer', 'default', 'scrutinizer.xml');
 $args->option('coverage-coveralls', 'default', 'coveralls.json');
 
-// Change the Kahlan workflow to add a job at a `postProcess` level.
+// Creating the job using the filter syntax
 Filter::register('kahlan.coveralls', function($chain) {
+
+    // Get the reporter called `'coverage'` from the list of reporters
 	$coverage = $this->reporters()->get('coverage');
+
+    // Abort if the coveralls coverage can't be generated.
 	if (!$coverage || !$this->args()->get('coverage-coveralls')) {
 		return $chain->next();
 	}
+
+    // Use the `Coveralls` class to write the JSON coverage into a file
 	Coveralls::write([
 		'coverage' => $coverage,
 		'file' => $this->args()->get('coverage-coveralls'),
 		'service_name' => 'travis-ci',
 		'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
 	]);
+
+    // Continue the chain
 	return $chain->next();
 });
 
+// Change the Kahlan workflow to add the job at the `'reporting'` level.
 Filter::apply($this, 'reporting', 'kahlan.coveralls');
 ```
 
-Above `'kahlan.coveralls_reporting'` is just a custom name and could be whatever as long as `Filter::register()` && `Filter::apply()` are consistent with the name.
+Above `'kahlan.coveralls'` is just a custom name and could be whatever as long as `Filter::register()` && `Filter::apply()` are consistent with the name.
 
-`$this` is the Kahlan instance so $this->reporters()->get('coverage') will give you the instance of the coverage reporter. This coverage reporter contain all raw data which will be formatter for the coveralls service using the `Coveralls` exporter.
+`$this` refer to the Kahlan instance so `$this->reporters()->get('coverage')` will give you the instance of the coverage reporter. This coverage reporter will contain all raw data which will be formatter for the coveralls service using the `Coveralls` exporter.
 
 For more information about filters, take a look at [the documentation of the filter library](https://github.com/crysalead/filter).
 
@@ -859,15 +886,15 @@ The filterable entry points are the following:
 
 * `'workflow`'           # The one to rule them all
   * `'namespaces`'       # Adds some namespaces not managed by composer (like `spec`)
-  * `'patchers`'         # Set up your code patchers
-  * `'interceptor`'      # Set up the autoloader interceptor
-  * `'loadSpecs`'        # Load specs
-  * `'reporters`'        # Init default reporters
-    * `'console'`        # Init the console reporter
-    * `'coverage'`       # Init the coverage reporter
+  * `'patchers`'         # Adds patchers
+  * `'interceptor`'      # Setups the autoloader interceptor
+  * `'loadSpecs`'        # Loads specs
+  * `'reporters`'        # Adds reporters
+    * `'console'`        # Creates the console reporter
+    * `'coverage'`       # Creates the coverage reporter
   * `'start`'            # Useful for registering some pre process tasks
-  * `'run`'              # Run the test suite
-  * `'reporting`'        # Run some additionnal reporting tasks
+  * `'run`'              # Runs the test suite
+  * `'reporting`'        # Runs some additionnal reporting tasks
   * `'stop`'             # Useful for registering some post process tasks
 
 
