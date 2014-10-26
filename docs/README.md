@@ -832,7 +832,7 @@ $args->option('coverage-scrutinizer', 'default', 'scrutinizer.xml');
 $args->option('coverage-coveralls', 'default', 'coveralls.json');
 
 // Change the Kahlan workflow to add a job at a `postProcess` level.
-Filter::register('kahlan.coveralls_reporting', function($chain) {
+Filter::register('kahlan.coveralls', function($chain) {
 	$coverage = $this->reporters()->get('coverage');
 	if (!$coverage || !$this->args()->get('coverage-coveralls')) {
 		return $chain->next();
@@ -846,7 +846,7 @@ Filter::register('kahlan.coveralls_reporting', function($chain) {
 	return $chain->next();
 });
 
-Filter::apply($this, 'postProcess', 'kahlan.coveralls_reporting');
+Filter::apply($this, 'reporting', 'kahlan.coveralls');
 ```
 
 Above `'kahlan.coveralls_reporting'` is just a custom name and could be whatever as long as `Filter::register()` && `Filter::apply()` are consistent with the name.
@@ -857,18 +857,19 @@ For more information about filters, take a look at [the documentation of the fil
 
 The filterable entry points are the following:
 
-* `'customNamespaces`'
-* `'initPatchers`'
-* `'patchAutoloader`'
-* `'loadSpecs`'
-* `'initReporters`'
-  * `'consoleReporter'`  # Useful for initializing your custom reporter
-  * `'coverageReporter'` # Useful for initializing your custom coverage reporter
-* `'preProcess`'         # Useful for registering your custom matchers
-* `'runSpecs`'
-* `'postProcess`'        # Useful for some further process
-* `'stop`'
-* `'run`'                # The one to rule them all
+* `'workflow`'           # The one to rule them all
+  * `'namespaces`'       # Adds some namespaces not managed by composer (like `spec`)
+  * `'patchers`'         # Set up your code patchers
+  * `'interceptor`'      # Set up the autoloader interceptor
+  * `'loadSpecs`'        # Load specs
+  * `'reporters`'        # Init default reporters
+    * `'console'`        # Init the console reporter
+    * `'coverage'`       # Init the coverage reporter
+  * `'start`'            # Useful for registering some pre process tasks
+  * `'run`'              # Run the test suite
+  * `'reporting`'        # Run some additionnal reporting tasks
+  * `'stop`'             # Useful for registering some post process tasks
+
 
 [You can see more details about how the workflow works here](https://github.com/crysalead/kahlan/blob/master/src/cli/Kahlan.php) (start reading with the `run()` method).
 

@@ -35,35 +35,66 @@ class Kahlan {
     use Filterable;
 
     /**
-     * Starting time
+     * Starting time.
      *
      * @var float
      */
     protected $_start = 0;
 
+    /**
+     * The suite instance.
+     *
+     * @var object
+     */
     protected $_suite = null;
 
+    /**
+     * The runtime autoloader.
+     *
+     * @var object
+     */
     protected $_autoloader = null;
 
+    /**
+     * The patcher container.
+     *
+     * @var object
+     */
     protected $_patchers = null;
 
+    /**
+     * The reporter container.
+     *
+     * @var object
+     */
     protected $_reporters = null;
 
+    /**
+     * The arguments.
+     *
+     * @var object
+     */
     protected $_args = null;
 
+    /**
+     * The Constructor.
+     *
+     * @param array $options Possible options are:
+     *                       - `'autoloader'` _object_ : The autoloader instance.
+     *                       - `'suite'`      _object_ : The suite instance.
+     */
     public function __construct($options = [])
     {
         $defaults = ['autoloader' => null, 'suite' => null];
         $options += $defaults;
-        $this->_patchers = new Patchers();
-        $this->_reporters = new Reporters();
+
         $this->_autoloader = $options['autoloader'];
         $this->_suite = $options['suite'];
-    }
 
-    public function loadConfig($argv = [])
-    {
-        $args = $this->_args = new Args();
+        $this->_patchers = new Patchers();
+        $this->_reporters = new Reporters();
+        $this->_args = $args = new Args();
+
         $args->option('src', ['array' => 'true', 'default' => 'src']);
         $args->option('spec', ['array' => 'true', 'default' => 'spec']);
         $args->option('reporter', ['default' => 'dot']);
@@ -79,18 +110,71 @@ class Kahlan {
             'kahlan\plugin\Call',
             'kahlan\plugin\Stub'
         ]]);
+    }
 
-        $args->parse($argv);
+    /**
+     * Returns arguments instance.
+     *
+     * @return object
+     */
+    public function args()
+    {
+        return $this->_args;
+    }
 
-        if ($args->get('help')) {
+    /**
+     * Returns the suite.
+     *
+     * @return object
+     */
+    public function suite()
+    {
+        return $this->_suite;
+    }
+
+    /**
+     * Returns the patcher container.
+     *
+     * @return object
+     */
+    public function patchers()
+    {
+        return $this->_patchers;
+    }
+
+    /**
+     * Returns the reporter container.
+     *
+     * @return object
+     */
+    public function reporters()
+    {
+        return $this->_reporters;
+    }
+
+    /**
+     * Load the config.
+     *
+     * @param string $argv The command line string
+     */
+    public function loadConfig($argv = [])
+    {
+        $this->_args->parse($argv);
+
+        if ($this->_args->get('help')) {
             return $this->_help();
         }
 
-        if (file_exists($args->get('config'))) {
-            require $args->get('config');
+        if (file_exists($this->_args->get('config'))) {
+            require $this->_args->get('config');
         }
     }
 
+    /**
+     * Echoes the help.
+     *
+     * @return string
+     */
     protected function _help() {
         echo <<<EOD
 Kahlan - PHP Testing Framework
@@ -133,9 +217,45 @@ EOD;
     exit();
     }
 
-    public function customNamespaces()
+    /**
+     * Run the workflow.
+     */
+    public function run()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
+        $this->_start = microtime(true);
+        return Filter::on($this, 'workflow', [], function($chain) {
+
+            $this->_namespaces();
+
+            $this->_patchers();
+
+            $this->_interceptor();
+
+            $this->_load();
+
+            $this->_reporters();
+
+            $this->_start();
+
+            $this->_run();
+
+            $this->_reporting();
+
+            $this->_stop();
+        });
+    }
+
+    public function status()
+    {
+        return $this->suite()->status();
+    }
+
+    /**
+     * Set up the default `'namespace'` filter.
+     */
+    protected function _namespaces()
+    {
+        return Filter::on($this, 'namespaces', [], function($chain) {
             if (!$this->_autoloader || !method_exists($this->_autoloader, 'add')) {
                 echo Cli::color("The defined autoloader doesn't support `add()` calls\n", 'yellow');
                 return;
@@ -149,9 +269,12 @@ EOD;
         });
     }
 
-    public function initPatchers()
+    /**
+     * Set up the default `'patcher'` filter.
+     */
+    protected function _patchers()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
+        return Filter::on($this, 'patchers', [], function($chain) {
             $patchers = $this->patchers();
             $patchers->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
             $patchers->add('pointcut', new Pointcut());
@@ -162,9 +285,12 @@ EOD;
         });
     }
 
-    public function patchAutoloader()
+    /**
+     * Set up the default `'interceptor'` filter.
+     */
+    protected function _interceptor()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
+        return Filter::on($this, 'autoloader', [], function($chain) {
             Interceptor::patch([
                 'loader' => [$this->_autoloader, 'loadClass'],
                 'patchers' => $this->patchers(),
@@ -175,9 +301,12 @@ EOD;
         });
     }
 
-    public function loadSpecs()
+    /**
+     * Set up the default `'load'` filter.
+     */
+    protected function _load()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
+        return Filter::on($this, 'load', [], function($chain) {
             $files = Dir::scan([
                 'path' => $this->args()->get('spec'),
                 'include' => '*Spec.php',
@@ -189,19 +318,25 @@ EOD;
         });
     }
 
-    public function initReporters()
+    /**
+     * Set up the default `'reporters'` filter.
+     */
+    protected function _reporters()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
-            $this->consoleReporter();
+        return Filter::on($this, 'reporters', [], function($chain) {
+            $this->_console();
             if ($this->args()->get('coverage')) {
-                $this->coverageReporter();
+                $this->_coverage();
             }
         });
     }
 
-    public function consoleReporter()
+    /**
+     * Set up the default `'console'` filter.
+     */
+    protected function _console()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
+        return Filter::on($this, 'console', [], function($chain) {
             $reporters = $this->reporters();
             $start = $this->_start;
             $colors = !$this->args()->get('no-colors');
@@ -217,9 +352,12 @@ EOD;
         });
     }
 
-    public function coverageReporter()
+    /**
+     * Set up the default `'coverage'` filter.
+     */
+    protected function _coverage()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
+        return Filter::on($this, 'coverage', [], function($chain) {
             $reporters = $this->reporters();
             $coverage = new Coverage([
                 'verbosity' => $this->args()->get('coverage'),
@@ -231,15 +369,20 @@ EOD;
         });
     }
 
-    public function preProcess()
+    /**
+     * Set up the default `'start'` filter.
+     */
+    protected function _start()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
-        });
+        return Filter::on($this, 'start', [], function($chain) {});
     }
 
-    public function runSpecs()
+    /**
+     * Set up the default `'run'` filter.
+     */
+    protected function _run()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
+        return Filter::on($this, 'run', [], function($chain) {
             $this->suite()->run([
                 'reporters' => $this->reporters(),
                 'autoclear' => $this->args()->get('autoclear'),
@@ -248,9 +391,12 @@ EOD;
         });
     }
 
-    public function postProcess()
+    /**
+     * Set up the default `'reporting'` filter.
+     */
+    protected function _reporting()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
+        return Filter::on($this, 'reporting', [], function($chain) {
             $coverage = $this->reporters()->get('coverage');
             if ($coverage && $this->args()->get('coverage-scrutinizer')) {
                 Scrutinizer::write([
@@ -261,55 +407,12 @@ EOD;
         });
     }
 
-    public function stop()
+    /**
+     * Set up the default `'stop'` filter.
+     */
+    protected function _stop()
     {
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
-            $this->suite()->stop();
-        });
+        return Filter::on($this, 'stop', [], function($chain) {});
     }
 
-    public function args()
-    {
-        return $this->_args;
-    }
-
-    public function suite()
-    {
-        return $this->_suite;
-    }
-
-    public function patchers()
-    {
-        return $this->_patchers;
-    }
-
-    public function reporters()
-    {
-        return $this->_reporters;
-    }
-
-    public function run()
-    {
-        $this->_start = microtime(true);
-        return Filter::on($this, __FUNCTION__, [], function($chain) {
-
-            $this->customNamespaces();
-
-            $this->initPatchers();
-
-            $this->patchAutoloader();
-
-            $this->loadSpecs();
-
-            $this->initReporters();
-
-            $this->preProcess();
-
-            $this->runSpecs();
-
-            $this->postProcess();
-
-            $this->stop();
-        });
-    }
 }

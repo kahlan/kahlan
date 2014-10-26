@@ -42,5 +42,4 @@ $specs = new Kahlan([
 ]);
 $specs->loadConfig($argv);
 $specs->run();
-
-?>
+exit($specs->status());

@@ -19,10 +19,10 @@ Filter::register('kahlan.coverage', function($chain) {
         'exclude'   => [
             //Exclude Workflow from code coverage reporting
             'src/cli/Kahlan.php',
-            //Exclude coverage classes from code coverage reporting
+            //Exclude coverage classes from code coverage reporting (don't know how to test the tester)
             'src/reporter/coverage/driver/Xdebug.php',
             'src/reporter/coverage/Collector.php',
-            //Exclude text based reporter classes from code coverage reporting
+            //Exclude text based reporter classes from code coverage reporting (a bit useless)
             'src/reporter/Dot.php',
             'src/reporter/Bar.php',
             'src/reporter/Terminal.php',
@@ -34,9 +34,9 @@ Filter::register('kahlan.coverage', function($chain) {
     $reporters->add('coverage', $coverage);
 });
 
-Filter::apply($this, 'coverageReporter', 'kahlan.coverage');
+Filter::apply($this, 'coverage', 'kahlan.coverage');
 
-Filter::register('kahlan.coveralls_reporting', function($chain) {
+Filter::register('kahlan.coveralls', function($chain) {
     $coverage = $this->reporters()->get('coverage');
     if (!$coverage || !$this->args()->get('coverage-coveralls')) {
         return $chain->next();
@@ -50,6 +50,6 @@ Filter::register('kahlan.coveralls_reporting', function($chain) {
     return $chain->next();
 });
 
-Filter::apply($this, 'postProcess', 'kahlan.coveralls_reporting');
+Filter::apply($this, 'reporting', 'kahlan.coveralls');
 
 ?>

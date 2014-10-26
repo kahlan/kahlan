@@ -468,22 +468,19 @@ class Suite extends Scope
     }
 
     /**
-     * Stop the script and return an exit status code according passed results.
+     * Returns an exit status code according passed results.
      */
-    public function stop()
+    public function status()
     {
         $results = $this->_results;
 
         if ($this->exclusive()) {
-            exit(-1);
-        }
-        if (!isset($results['fail']) || !isset($results['exception']) || !isset($results['incomplete'])) {
-            exit(-1);
+            return -1;
         }
         if (empty($results['fail']) && empty($results['exception']) && empty($results['incomplete'])) {
-            exit(0);
+            return 0;
         }
-        exit(-1);
+        return -1;
     }
 
     /**
