@@ -1,6 +1,7 @@
 <?php
 namespace spec\cli;
 
+use Exception;
 use kahlan\cli\Args;
 
 describe("Args", function() {
@@ -30,10 +31,15 @@ describe("Args", function() {
 
         });
 
-        it("sets/updates an attribute of an option using an alternative syntax", function() {
+    });
+
+    describe("attribute", function() {
+
+        it("sets/updates an attribute of an option", function() {
 
             $args = new Args();
-            $args->option('option1', 'default', 'value1');
+            $args->option('option1', []);
+            $args->attribute('option1', 'default', 'value1');
             expect($args->option('option1'))->toEqual([
                 'type' => 'string',
                 'array' => false,

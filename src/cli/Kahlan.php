@@ -175,7 +175,8 @@ class Kahlan {
      *
      * @return string
      */
-    protected function _help() {
+    protected function _help()
+    {
         echo <<<EOD
 Kahlan - PHP Testing Framework
 

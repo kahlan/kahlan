@@ -5,10 +5,10 @@ use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
 $args = $this->args();
-$args->option('ff', 'default', 1);
-$args->option('coverage', 'default', 3);
-$args->option('coverage-scrutinizer', 'default', 'scrutinizer.xml');
-$args->option('coverage-coveralls', 'default', 'coveralls.json');
+$args->attribute('ff', 'default', 1);
+$args->attribute('coverage', 'default', 3);
+$args->attribute('coverage-scrutinizer', 'default', 'scrutinizer.xml');
+$args->attribute('coverage-coveralls', 'default', 'coveralls.json');
 
 Filter::register('kahlan.coverage', function($chain) {
     $reporters = $this->reporters();
