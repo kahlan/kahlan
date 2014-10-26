@@ -197,9 +197,12 @@ class Collector
      *
      * @return array The coverage data.
      */
-    public function export()
+    public function export($file = null)
     {
-        return $this->_coverage;
+        if (!$file) {
+            return $this->_coverage;
+        }
+        return isset($this->_coverage[$file]) ? $this->_coverage[$file] : [];
     }
 
     /**
@@ -282,7 +285,7 @@ class Collector
         for ($line = $node->lines['start']; $line <= $node->lines['stop']; $line++) {
             $this->_processLine($line, $coverage, $metrics);
         }
-        $metrics['file'] = $file;
+        $metrics['files'][] = $file;
         $metrics['line'] = $node->lines['start'];
         $metrics['loc'] = ($node->lines['stop'] - $node->lines['start']) + 1;
         $metrics['eloc'] = $metrics['loc'] - $metrics['ncloc'];

@@ -98,7 +98,7 @@ class Kahlan {
         $args->option('src', ['array' => 'true', 'default' => 'src']);
         $args->option('spec', ['array' => 'true', 'default' => 'spec']);
         $args->option('reporter', ['default' => 'dot']);
-        $args->option('coverage', ['type' => 'numeric','default' => 0]);
+        $args->option('coverage', ['type' => 'string','default' => '0']);
         $args->option('config', ['default' => 'kahlan-config.php']);
         $args->option('ff', ['type' => 'numeric', 'default' => 0]);
         $args->option('no-colors', ['type' => 'boolean', 'default' => false]);

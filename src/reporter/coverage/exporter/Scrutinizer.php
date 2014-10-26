@@ -96,7 +96,7 @@ class Scrutinizer
      */
     protected static function _exportMetrics($xmlDocument, $metrics)
     {
-        $data = $metrics->get();
+        $data = $metrics->data();
         $xmlMetrics = $xmlDocument->createElement('metrics');
         $xmlMetrics->setAttribute('loc', $data['loc']);
         $xmlMetrics->setAttribute('ncloc', $data['ncloc']);

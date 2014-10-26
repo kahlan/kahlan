@@ -42,7 +42,8 @@ class Metrics
         'covered' => 0,
         'eloc' => 0,
         'methods' => 0,
-        'coveredMethods' => 0
+        'coveredMethods' => 0,
+        'files' => []
     ];
 
     /**
@@ -117,6 +118,26 @@ class Metrics
     }
 
     /**
+     * Retruns the metrics stats.
+     *
+     * @return array  The metrics data.
+     */
+    public function data($metrics = [])
+    {
+        if (func_num_args() === 0) {
+            return $this->_metrics;
+        }
+
+        $this->_metrics = $metrics + $this->_metrics;
+
+        if ($this->_metrics['eloc']) {
+            $this->_metrics['percent'] = ($this->_metrics['covered'] * 100) / $this->_metrics['eloc'];
+        } else {
+            $this->_metrics['percent'] = 0;
+        }
+    }
+
+    /**
      * Add some metrics to the current metrics.
      *
      * @param string  The name reference of the metrics.
@@ -125,7 +146,7 @@ class Metrics
     public function add($name, $metrics)
     {
         if (!$name) {
-            return $this->_merge($metrics);
+            return $this->data($metrics);
         }
         list($name, $subname, $type) = $this->_parseName($name);
 
@@ -141,12 +162,12 @@ class Metrics
      * Get the metrics from a name.
      *
      * @param  string The name reference of the metrics.
-     * @return array  The metrics data.
+     * @return object The metrics instance.
      */
     public function get($name = null)
     {
         if (!$name) {
-            return $this->_metrics;
+            return $this;
         }
         list($name, $subname, $type) = $this->_parseName($name);
 
@@ -202,18 +223,20 @@ class Metrics
      *
      * @param array Some metrics.
      */
-    protected function _merge($metrics)
+    protected function _merge($metrics = [])
     {
         foreach (['loc', 'ncloc', 'covered', 'eloc', 'methods', 'coveredMethods'] as $name) {
             if (!isset($metrics[$name])) {
                 continue;
             }
-            $this->_metrics[$name] += $metrics[$name];
+            $metrics[$name] += $this->_metrics[$name];
         }
-        if ($this->_metrics['eloc']) {
-            $this->_metrics['percent'] = ($this->_metrics['covered'] * 100) / $this->_metrics['eloc'];
-        } else {
-            $this->_metrics['percent'] = 0;
+
+        if (isset($metrics['files'])) {
+            $metrics['files'] = array_merge($this->_metrics['files'], $metrics['files']);
+            $metrics['files'] = array_unique($metrics['files']);
         }
+        unset($metrics['line']);
+        $this->data($metrics);
     }
 }
