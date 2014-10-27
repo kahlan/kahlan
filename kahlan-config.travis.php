@@ -38,7 +38,7 @@ Filter::apply($this, 'coverage', 'kahlan.coverage');
 
 Filter::register('kahlan.coveralls', function($chain) {
     $coverage = $this->reporters()->get('coverage');
-    if (!$coverage || !$this->args()->get('coverage-coveralls')) {
+    if (!$coverage || !$this->args()->exists('coverage-coveralls')) {
         return $chain->next();
     }
     Coveralls::write([

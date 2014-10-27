@@ -22,6 +22,9 @@ See the whole [documentation here](docs/README.md).
 Example of output:
 ![Kahlan](docs/assets/kahlan.png)
 
+Example of detailed code coverage on a specific scope.
+![code_coverage_example](docs/assets/code_coverage_example.png)
+
 # Installation
 
 ```
@@ -29,5 +32,5 @@ git clone git@github.com:crysalead/kahlan.git
 cd kahlan
 composer install
 bin/kahlan              # to run specs or,
-bin/kahlan --coverage=3 # to run specs with coverage info for namespaces, classes & methods (require xdebug)
+bin/kahlan --coverage=4 # to run specs with coverage info for namespaces, classes & methods (require xdebug)
 ```

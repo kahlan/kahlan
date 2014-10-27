@@ -32,9 +32,9 @@ Anyhow it's not so much about the code coverage score and I respect all the work
 * [Enhance-PHP](https://github.com/Enhance-PHP/Enhance-PHP)
 * etc.
 
-All these "old school" frameworks are mature enough but they don't support the `describe-it` syntax which allow a better organisation of tests and simplify their maintenance.
+All these "old school frameworks" are mature enough but they don't support the `describe-it` syntax which allow a better organisation of tests and simplify their maintenance.
 
-**Hopefully` there's some new frameworks:**
+**Hopefully there's some new frameworks around:**
 
 * [Peridot](https://github.com/peridot-php/peridot)
 * [pho](https://github.com/danielstjules/pho)
@@ -45,27 +45,27 @@ All these "old school" frameworks are mature enough but they don't support the `
 * [preview](https://github.com/v2e4lisp/preview)
 * etc.
 
-However in these list above, only [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough but only provide the `describe-it` feature.
+However in these list above, if [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough it provides only the basics at the time I'm writing this documentation.
 
-So Kahlan was created out of frustration with all existing PHP testing frameworks. And instead of introducing some new philosophical concepts, tools, java practices, crap, Kahlan just provide an environment which allow you to **easily test your code even wich hard coded references**.
+So Kahlan was created out of frustration with all existing PHP testing frameworks. And instead of introducing some new philosophical concepts, tools, java practices, crap, Kahlan just provide an environment which allow you to **easily test your code even with hard coded references**.
 
 To achieve this goal **Kahlan allow to stub or monkey patch your code** directly like in Ruby or JavaScript without any required PECL-extentions. That way you won't need to put some [DI everywhere just for being able to write a test](http://david.heinemeierhansson.com/2012/dependency-injection-is-not-a-virtue.html).
 
-Some projects like [AspectMock](https://github.com/Codeception/AspectMock) also provide the researched behavior of allowing to stub/mock your PHP code directly and Kahlan aimed to gather all this kind of tools in a full-featured framework using lightweight approach and a simple API.
+Some projects like [AspectMock](https://github.com/Codeception/AspectMock) also provide such behavior but Kahlan aimed to gather all this facilities in a full-featured framework using a lightweight approach and a simple API.
 
 ### Main Features
 
-* Small API & Small code base (~5k loc)
-* Code Coverage metrics (xdebug will be required)
+* Small API
+* Small code base (~5k loc)
+* Complete Code Coverage metrics (xdebug required)
+* Set stubs on your class methods directly (also work for static methods).
+* Do some Monkey Patching (ie. allows replacement of core functions/classes on the fly).
+* Check called methods on your class/instances.
 * Built-in Reporters/Exporters (Terminal, Coveralls, Scrutinizers)
-* Easily extensible & customizable workflow
+* An extensible & customizable workflow
 
-If you are using the [Composer](https://getcomposer.org/) autoloader in your project you will be able to:
- * Set stubs on your class methods directly (also work for static methods).
- * Do some Monkey Patching (ie. allows replacement of core functions/classes on the fly).
- * Check called methods on your class/instances.
-
-PS: If you want to use you custom autoloader you will need to create your own patcher for it.
+**PS:**
+All this features works with the [Composer](https://getcomposer.org/) autoloader out of the box, but if you want to make it works with your custom autoloader you will need to create your own `Interceptor` class for it.
 
 ## <a name="getting-started"></a>2 - Getting started
 
@@ -75,7 +75,7 @@ To make a long story short let's take [the following repository](https://github.
 
 It's a simple string class in PHP which give you a better understanding on how to structure a project to be easily testable with Kahlan.
 
-Bellow you can see the detailed version of the tree structure adopted for this project:
+Below you can see the detailed version of the tree structure adopted for this project:
 
 ```
 ├── bin
@@ -92,7 +92,7 @@ Bellow you can see the detailed version of the tree structure adopted for this p
 │   └── String.php
 ```
 
-So to start playing with it you just need to:
+So to start playing with it you'll need to:
 
 ```
 git clone git@github.com:crysalead/string.git
@@ -100,7 +100,7 @@ cd string
 composer install
 ```
 
-And then you'll be able to run specs with:
+And then run the following command to run specs:
 ```
 ./bin/kahlan --coverage=4
 ```
@@ -116,10 +116,14 @@ You should now be able to build you own project by following the structure above
 Because test's organization is one of the key point of keeping clean and maintainable tests, Kahlan allow to group tests syntaxically using a closure syntax.
 
 ```php
-describe("toBe::match", function() {
+describe("ToBe", function() {
 
-	it("passes if true === true", function() {
-		expect(true)->toBe(true);
+	describe("::match()", function() {
+
+		it("passes if true === true", function() {
+			expect(true)->toBe(true);
+		});
+
 	});
 
 });
@@ -127,7 +131,7 @@ describe("toBe::match", function() {
 
 * `describe`: it generally contains all specs for a method. Using the class method's name is probably the better option for a clean description.
 * `context`: it's used to group tests according to some use cases. Using "when" or "with" followed by the description of the use case is generally a good practice.
-* `it`: it contain the code to test. Keep its corresponding description short and clear.
+* `it`: it contains the code to test. Keep its corresponding description short and clear.
 
 ### Setup and Teardown
 
@@ -268,7 +272,8 @@ it("passes if $actual is truthy", function() {
 
 ```php
 it("passes if $actual is falsy", function() {
-	expect(0)->toBeTruthy();
+	expect(0)->toBeFalsy();
+	expect(0)->toBeEmpty();
 });
 ```
 
@@ -406,7 +411,7 @@ it("expects $foo to receive message() but not followed by foo()", function() {
 
 ### <a name="argument"></a>Argument Matchers
 
-To enable **Argument Matching** just add the following use statement in the top of your tests:
+To enable **Argument Matching** just add the following `use` statement in the top of your tests:
 
 ```php
 use kahlan\Arg;
@@ -460,7 +465,7 @@ kahlan\Matcher::register('toBeZero', 'my\namespace\ToBeZero');
 
 ## <a name="stubs"></a>5 - Stubs
 
-To enable **Method Stubbing** add the following use statement in the top of your tests:
+To enable **Method Stubbing** add the following `use` statement in the top of your tests:
 
 ```php
 use kahlan\plugin\Stub;
@@ -566,7 +571,7 @@ it("stubs an instance using a trait", function() {
 
 ## <a name="monkey-patching"></a>6 - Monkey Patching
 
-To enable **Monkey Patching** add the following use statement in the top of your tests:
+To enable **Monkey Patching** add the following `use` statement in the top of your tests:
 
 ```php
 use kahlan\plugin\Monkey;
@@ -633,7 +638,7 @@ You can find [another example on how to use Monkey Patching here](https://github
 
 When a unit test exercises code that contains an `exit()` or `die()` statement, the execution of the whole test suite is aborted. With Kahlan, you can make all quit statements (i.e. `exit()` or `die()`) to throw a `QuitException` instead by using `Quit::disable()`:
 
-To enable **Monkey Patching on Quit Statements** add the following use statements in the top of your tests:
+To enable **Monkey Patching on Quit Statements** add the following `use` statements in the top of your tests:
 
 ```php
 use kahlan\QuitException;
@@ -796,7 +801,7 @@ A bit ubgly but the check marks and the skulls are present.
 
 ## <a name="pro-tips"></a>8 - Pro Tips
 
-### Use the --ff option
+### Use the `--ff` option
 
 `--ff` is the fast fail option. If used, the test suite will be stopped as soon as a failing test occurs. You can also specify a number of "allowed" fails before stoping the process. For example:
 
@@ -805,6 +810,35 @@ A bit ubgly but the check marks and the skulls are present.
 ```
 
 will stop the process as soon as 3 tests failed.
+
+### Use `--coverage` option
+
+Kahlan has some built-in code coverage exporter (e.g. Coveralls & Scrutinizer exporters) but it can also be used to generates some detailed code coverage report directy inside the console.
+
+**`--coverage=<integer>`** will generates some code coverage summary depending on the passed integer.
+
+* 0: no coverage
+* 1: code coverage summary of the whole project
+* 2: code coverage summary detailed by namespaces
+* 3: code coverage summary detailed by classes
+* 4: code coverage summary detailed by methods
+
+However sometimes it's interesting to see in details all covered/uncovered lines. To achieve this, you can pass a string to the `--coverage` option.
+
+**`--coverage=<string>`** will generates some detailed code coverage according to the specified namespace, class or method definition.
+
+Example:
+
+```php
+./bin/kahlan --coverage="kahlan\reporter\coverage\driver\Xdebug::stop()"
+```
+
+Will give you the detailed code coverage of the `Xdebug::stop()` method.
+
+![code_coverage_example](assets/code_coverage_example.png)
+
+**Note:**
+All available namespaces, classed or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
 
 ### Use the exclusive prefix `x`
 
@@ -856,7 +890,7 @@ Filter::register('kahlan.coveralls', function($chain) {
 	$coverage = $this->reporters()->get('coverage');
 
     // Abort if the coveralls coverage can't be generated.
-	if (!$coverage || !$this->args()->get('coverage-coveralls')) {
+	if (!$coverage || !$this->args()->exists('coverage-coveralls')) {
 		return $chain->next();
 	}
 

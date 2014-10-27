@@ -95,15 +95,15 @@ class Kahlan {
         $this->_reporters = new Reporters();
         $this->_args = $args = new Args();
 
-        $args->option('src', ['array' => 'true', 'default' => 'src']);
-        $args->option('spec', ['array' => 'true', 'default' => 'spec']);
+        $args->option('src', ['array' => 'true', 'default' => ['src']]);
+        $args->option('spec', ['array' => 'true', 'default' => ['spec']]);
         $args->option('reporter', ['default' => 'dot']);
         $args->option('coverage', ['type' => 'string','default' => '0']);
         $args->option('config', ['default' => 'kahlan-config.php']);
         $args->option('ff', ['type' => 'numeric', 'default' => 0]);
         $args->option('no-colors', ['type' => 'boolean', 'default' => false]);
-        $args->option('interceptor-include', ['array' => 'true', 'default' => '*']);
-        $args->option('interceptor-exclude', ['array' => 'true', 'default' => '']);
+        $args->option('interceptor-include', ['array' => 'true', 'default' => ['*']]);
+        $args->option('interceptor-exclude', ['array' => 'true', 'default' => []]);
         $args->option('interceptor-persistent', ['type'  => 'boolean', 'default' => true]);
         $args->option('autoclear', ['array' => 'true', 'default' => [
             'kahlan\plugin\Monkey',
@@ -185,8 +185,8 @@ Usage: kahlan [options]
 Configuration Options:
 
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
-  --src=<path>                        The path of the source directory (default: `'src'`).
-  --spec=<path>                       The path of the specifications directory (default: `'spec'`).
+  --src=<path>                        Paths of source directories (default: `['src']`).
+  --spec=<path>                       Paths of specifications directories (default: `['spec']`).
 
 Reporter Options:
 
@@ -195,24 +195,28 @@ Reporter Options:
 
 Code Coverage Options:
 
-  --coverage=<integer>                Generate code coverage report. The value specify the level of
-                                      detail for the code coverage report (0-4) (default `0`).
-  --coverage-scrutinizer=<file>       Export code coverage report in Scrutinizer format.
+  --coverage=<integer|string>         Generate code coverage report. The value specify the level of
+                                      detail for the code coverage report (0-4). If a namespace, class or
+                                      method definition is provided, if will generate a detailled code
+                                      coverage of this specific scope (default `0`).
+  --coverage-scrutinizer=<file>       Export code coverage report into a Scrutinizer compatible format.
 
 Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
   --no-colors=<boolean>               To turn off colors. (default: `false`).
-  --interceptor-include=<string>      Paths to include for patching. (default: `'*'`).
-  --interceptor-exclude=<string>      Paths to exclude from patching. (default: `''`).
+  --interceptor-include=<string>      Paths to include for patching. (default: `['*']`).
+  --interceptor-exclude=<string>      Paths to exclude from patching. (default: `[]`).
   --interceptor-persistent=<boolean>  Cache patched files (default: `true`).
-  --autoclear                         classes to autoclear after each spec (default: `'kahlan\plugin\Monkey'`,
-                                      `'kahlan\plugin\Call'`, `'kahlan\plugin\Stub'`)
+  --autoclear                         classes to autoclear after each spec (default: [`'kahlan\plugin\Monkey'`,
+                                      `'kahlan\plugin\Call'`, `'kahlan\plugin\Stub'`])
 
 Miscellaneous Options:
 
   --help                 Prints this usage information.
 
+Note: The `[]` notation in default values mean that the related option can accepts an array of values.
+To add additionnal values, just repeat the same option many times in the command line.
 
 EOD;
     exit();
@@ -326,7 +330,7 @@ EOD;
     {
         return Filter::on($this, 'reporters', [], function($chain) {
             $this->_console();
-            if ($this->args()->get('coverage')) {
+            if ($this->args()->exists('coverage')) {
                 $this->_coverage();
             }
         });
@@ -399,7 +403,7 @@ EOD;
     {
         return Filter::on($this, 'reporting', [], function($chain) {
             $coverage = $this->reporters()->get('coverage');
-            if ($coverage && $this->args()->get('coverage-scrutinizer')) {
+            if ($coverage && $this->args()->exists('coverage-scrutinizer')) {
                 Scrutinizer::write([
                     'coverage' => $coverage,
                     'file' => $this->args()->get('coverage-scrutinizer')

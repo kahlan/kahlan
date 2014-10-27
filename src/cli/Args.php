@@ -127,6 +127,17 @@ class Args {
     }
 
     /**
+     * Check if an option has been setted the value of a specific option.
+     *
+     * @param  string  $name      The name of the option.
+     * @return boolean
+     */
+    public function exists($name)
+    {
+        return array_key_exists($name, $this->_values);
+    }
+
+    /**
      * Set the value of a specific option.
      *
      * @param  string $name      The name of the option.
