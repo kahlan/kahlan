@@ -213,9 +213,15 @@ class Stub
             'extends' => '',
             'implements' => [],
             'uses' => [],
-            'constructor' => true
+            'methods' => []
         ];
         $options += $defaults;
+
+        if ($options['extends']) {
+            $options += ['magicMethods' => false];
+        } else {
+            $options += ['magicMethods' => true];
+        }
 
         $class = $options['class'];
         $namespace = '';
@@ -232,25 +238,42 @@ class Stub
         $extends = static::_generateExtends($options['extends']);
         $implements = static::_generateImplements($options['implements']);
 
-        if (!$options['extends']) {
-            $methods = static::_defaultMethods();
-        } else {
-            $methods = static::_generateConstructor($options['constructor']);
-        }
-        $methods .= static::_generateClassMethods($options['extends']);
-        $methods .= static::_generateInterfaceMethods($options['implements']);
+        $methods = static::_generateMethodStubs($options['methods'], $options['magicMethods']);
+        $methods = array_merge($methods, static::_generateClassMethods($options['extends']));
+        $methods = array_merge($methods, static::_generateInterfaceMethods($options['implements']));
+
+        $methods = $methods ? '    ' . join("\n    ", $methods) : '';
 
 return "<?php\n\n" . $namespace . <<<EOT
 
 class {$class}{$extends}{$implements} {
 
-{$uses}
-{$methods}
+{$uses}{$methods}
 
 }
 ?>
 EOT;
 
+    }
+
+    public static function _getMagicMethods()
+    {
+        return [
+            '__construct'  =>  "public function __construct() {}",
+            '__destruct'   =>  "public function __destruct() {}",
+            '__call'       =>  "public function __call(\$name, \$params) { return new static(); }",
+            '__callStatic' =>  "public static function __callStatic(\$name, \$params) {}",
+            '__get'        =>  "public function __get(\$key){ return new static(); }",
+            '__set'        =>  "public function __set(\$name, \$value) {}",
+            '__isset'      =>  "public function __isset(\$name) {}",
+            '__unset'      =>  "public function __unset(\$name) {}",
+            '__sleep'      =>  "public function __sleep() { return []; }",
+            '__wakeup'     =>  "public function __wakeup() {}",
+            '__toString'   =>  "public function __toString() { return get_class(); }",
+            '__invoke'     =>  "public function __invoke() {}",
+            '__set_sate'   =>  "public function __set_sate(\$properties) {}",
+            '__clone'      =>  "public function __clone() {}"
+        ];
     }
 
     /**
@@ -271,7 +294,7 @@ EOT;
             }
             $traits[] = '\\' . ltrim($use, '\\');
         }
-        return 'use ' . join(', ', $traits) . ';';
+        return '    use ' . join(', ', $traits) . ';';
     }
 
     /**
@@ -306,12 +329,31 @@ EOT;
         return ' implements ' . join(', ', $classes);
     }
 
-    protected static function _generateConstructor($constructor)
+    protected static function _generateMethodStubs($methods, $defaults = true)
     {
-        if ($constructor) {
-            return '';
+        $result = [];
+        $methods = $methods !== null ? (array) $methods : [];
+
+        if ($defaults) {
+            $methods = array_merge($methods, array_keys(static::_getMagicMethods()));
         }
-        return "    public function __construct() {}\n";
+        $methods = array_unique($methods);
+
+        $magicMethods = static::_getMagicMethods();
+
+        foreach ($methods as $name) {
+            if (isset($magicMethods[$name])) {
+                $result[] = $magicMethods[$name];
+            } else {
+                $return = '';
+                if ($name[0] === '&') {
+                    $return = '$r = null; return $r;';
+                }
+                $result[] = "public function {$name}() {{$return}}";
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -324,16 +366,16 @@ EOT;
     protected static function _generateClassMethods($class, $mask = ReflectionMethod::IS_ABSTRACT)
     {
         if (!$class) {
-            return '';
+            return [];
         }
-        $result = '';
+        $result = [];
         if (!class_exists($class)) {
             throw new IncompleteException("Unexisting interface `{$class}`");
         }
         $reflection = Inspector::inspect($class);
         $methods = $reflection->getMethods($mask);
         foreach ($methods as $method) {
-            $result .= static::_generateMethod($method);
+            $result[] = static::_generateMethod($method);
         }
         return $result;
     }
@@ -348,9 +390,9 @@ EOT;
     protected static function _generateInterfaceMethods($interfaces, $mask = 255)
     {
         if (!$interfaces) {
-            return '';
+            return [];
         }
-        $result = '';
+        $result = [];
         foreach ($interfaces as $interface) {
             if (!interface_exists($interface)) {
                 throw new IncompleteException("Unexisting interface `{$interface}`");
@@ -358,7 +400,7 @@ EOT;
             $reflection = Inspector::inspect($interface);
             $methods = $reflection->getMethods($mask);
             foreach ($methods as $method) {
-                $result .= static::_generateMethod($method);
+                $result[] = static::_generateMethod($method);
             }
         }
         return $result;
@@ -379,45 +421,7 @@ EOT;
             return '';
         }
         $parameters = static::_generateParameters($method);
-        return "\n    function {$name}({$parameters}) {}\n";
-    }
-
-    protected static function _defaultMethods()
-    {
-        return <<<EOT
-
-    public function __construct() {}
-
-    public function __destruct() {}
-
-    public function __call(\$name, \$params) {
-        return new static();
-    }
-
-    public static function __callStatic(\$name, \$params) {}
-
-    public function __get(\$key){
-        return new static();
-    }
-
-    public function __set(\$name, \$value) {}
-
-    public function __isset(\$name) {}
-
-    public function __unset(\$name) {}
-
-    public function __sleep() { return []; }
-
-    public function __wakeup() {}
-
-    public function __toString() { return get_class(); }
-
-    public function __invoke() {}
-
-    public function __set_sate(\$properties) {}
-
-    public function __clone() {}
-EOT;
+        return "function {$name}({$parameters}) {}";
     }
 
     /**

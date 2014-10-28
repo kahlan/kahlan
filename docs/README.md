@@ -528,6 +528,20 @@ it("generates a polyvalent instance", function() {
 });
 ```
 
+**Note:** Generated stubs implements by default `__call()`, `__callStatic()`,`__get()`, `__set()` and some other magic methods so you should be able to use the generated instance for any kind of substitution.
+
+The fact that magic methods are included by default on `Stub::create()` will also allow to apply `Stub::on()` on any method name. Indeed `__call()` will manage the method stub. However, you should get that `method_exists` won't work on the "virtually" created method names.
+
+So if you need a method stub which answer to `method_exists` you will need to set up this "endpoint" using the `'methods'` option like in the following example:
+
+```php
+it("stubs a static method", function() {
+	$stub = Stub::create(['methods' => ['myMethod']]); // Adds the method endpoint `'myMethod'`
+	Stub::on($stub)->method('::myMethod')->andReturn('Good Morning World!');
+	expect(method_exists($stub, 'myMethod'))->toBe(true); // It works !
+});
+```
+
 ### <a name="class-stubing"></a>Class Stubbing
 
 You can also create some specific class using `Stub::classname()`:
@@ -538,8 +552,6 @@ it("generates a polyvalent class", function() {
 	expect(is_string($stub))->toBe(true);
 });
 ```
-
-Generated stubs implement by default `__call()`, `__callStatic()`,`__get()`, `__set()` and some other magic methods so you should be able to use it for any kind of instance/class substitution.
 
 ### Custom Stubs
 
@@ -552,6 +564,42 @@ it("stubs an instance with a parent class", function() {
     expect(get_parent_class($stub))->toBe('string\String');
 });
 ```
+
+**Note:** If the `'extends'` option is used, all magic methods won't be included by default to avoid any conflict between your tested classes and some extra behavior.
+
+However if you want to include all magic methods you can manually set the `'magicMethods'` option to `true`:
+
+```php
+it("stubs an instance with a parent class", function() {
+    $stub = Stub::create([
+        'extends'      => 'string\String',
+        'magicMethods' => true
+    ]);
+
+    expect($stub)->toReceive('__get');
+    expect($stub)->toReceiveNext('__set');
+    expect($stub)->toReceiveNext('__isset');
+    expect($stub)->toReceiveNext('__unset');
+    expect($stub)->toReceiveNext('__sleep');
+    expect($stub)->toReceiveNext('__toString');
+    expect($stub)->toReceiveNext('__invoke');
+    expect(get_class($stub))->toReceive('__wakeup');
+    expect(get_class($stub))->toReceiveNext('__clone');
+
+    $prop = $stub->prop;
+    $stub->prop = $prop;
+    isset($stub->prop);
+    unset($stub->prop);
+    $serialized = serialize($stub);
+    unserialize($serialized);
+    $string = (string) $stub;
+    $stub();
+    $stub2 = clone $stub;
+});
+```
+
+You can also use `'implements'`:
+
 ```php
 it("stubs an instance implementing some interface", function() {
     $stub = Stub::create(['implements' => ['ArrayAccess', 'Iterator']]);
@@ -562,6 +610,9 @@ it("stubs an instance implementing some interface", function() {
     expect(isset($interfaces['Traversable']))->toBe(true); //Comes with `'Iterator'`
 });
 ```
+
+As well as `'uses'` to test your traits directly:
+
 ```php
 it("stubs an instance using a trait", function() {
     $stub = Stub::create(['uses' => 'spec\mock\plugin\stub\HelloTrait']);
