@@ -72,9 +72,9 @@ class Debugger
 
         $message = '';
         if ($options['message'] === null && isset($error['code'])) {
-            $message = "Code({$error['code']}): {$error['message']}\n";
+            $message = $error['message'] . "\n\n";
         } elseif($options['message']) {
-            $message = $options['message'] . "\n";
+            $message = $options['message'] . "\\n";
         }
 
         foreach ($backtrace as $trace) {
@@ -161,9 +161,11 @@ class Debugger
     public static function normalize($backtrace)
     {
         if ($backtrace instanceof Exception) {
+            $code = $backtrace->getCode();
+            $name = get_class($backtrace);
             return array_merge([[
                 'code' => $backtrace->getCode(),
-                'message' => $backtrace->getMessage(),
+                'message' => "`{$name}` Code({$code}): " . $backtrace->getMessage(),
                 'function' => '',
                 'file' => $backtrace->getFile(),
                 'line' => $backtrace->getLine(),
@@ -172,6 +174,9 @@ class Debugger
         } elseif (isset($backtrace['trace'])) {
             $trace = $backtrace['trace'];
             unset($backtrace['trace']);
+            $code = isset($backtrace['code']) ? $backtrace['code'] : 0;
+            $name = static::errorType($code);
+            $backtrace['message'] = "`{$name}` Code({$code}): " . $backtrace['message'];
             return array_merge([$backtrace], $trace);
         }
         return $backtrace;
@@ -255,5 +260,43 @@ class Debugger
                 return static::$_loader = $loader[0];
             }
         }
+    }
+
+    public static function errorType($value)
+    {
+        switch($value)
+        {
+            case E_ERROR:
+                return 'E_ERROR';
+            case E_WARNING:
+                return 'E_WARNING';
+            case E_PARSE:
+                return 'E_PARSE';
+            case E_NOTICE:
+                return 'E_NOTICE';
+            case E_CORE_ERROR:
+                return 'E_CORE_ERROR';
+            case E_CORE_WARNING:
+                return 'E_CORE_WARNING';
+            case E_CORE_ERROR:
+                return 'E_COMPILE_ERROR';
+            case E_CORE_WARNING:
+                return 'E_COMPILE_WARNING';
+            case E_USER_ERROR:
+                return 'E_USER_ERROR';
+            case E_USER_WARNING:
+                return 'E_USER_WARNING';
+            case E_USER_NOTICE:
+                return 'E_USER_NOTICE';
+            case E_STRICT:
+                return 'E_STRICT';
+            case E_RECOVERABLE_ERROR:
+                return 'E_RECOVERABLE_ERROR';
+            case E_DEPRECATED:
+                return 'E_DEPRECATED';
+            case E_USER_DEPRECATED:
+                return 'E_USER_DEPRECATED';
+        }
+        return '<INVALID>';
     }
 }
