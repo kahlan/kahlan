@@ -361,22 +361,6 @@ class Suite extends Scope
     }
 
     /**
-     * Getter which return the runned tests result array.
-     *
-     * @return array
-     */
-    public function results()
-    {
-        $results = $this->_results;
-        foreach ($this->_childs as $child) {
-            foreach ($child->results() as $type => $result) {
-                $results[$type] = array_merge($results[$type], $result);
-            }
-        }
-        return $results;
-    }
-
-    /**
      * Override the default error handler
      *
      * @param boolean $enable If `true` override the default error handler,
@@ -424,9 +408,6 @@ class Suite extends Scope
         $this->report('begin', ['total' => $total]);
 
         $this->_run();
-        foreach ($this->results() as $type => $result) {
-            $this->_results[$type] = array_merge($this->_results[$type], $result);
-        }
         $report['specs'] = $this->_results;
         $report['exclusive'] = $this->_exclusives;
 
@@ -469,6 +450,8 @@ class Suite extends Scope
 
     /**
      * Returns an exit status code according passed results.
+     *
+     * @return boolean Returns `0` if no error occurred, `-1` otherwise.
      */
     public function status()
     {
@@ -477,10 +460,30 @@ class Suite extends Scope
         if ($this->exclusive()) {
             return -1;
         }
+        return $this->passed() ? 0 : -1;
+    }
+
+    /**
+     * Checks if all test passed.
+     *
+     * @return boolean Returns `true` if no error occurred, `false` otherwise.
+     */
+    public function passed()
+    {
         if (empty($results['fail']) && empty($results['exception']) && empty($results['incomplete'])) {
-            return 0;
+            return true;
         }
-        return -1;
+        return false;
+    }
+
+    /**
+     * Getter which return the runned tests result array.
+     *
+     * @return array
+     */
+    public function results()
+    {
+        return $this->_results;
     }
 
     /**

@@ -249,7 +249,7 @@ abstract class Scope
     {
         $data['type'] = $type;
         $data += ['messages' => $this->messages()];
-        $this->_results[$type][] = $data;
+        $this->_root->_results[$type][] = $data;
         $this->report($type, $data);
     }
 

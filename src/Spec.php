@@ -96,14 +96,4 @@ class Spec extends Scope
         $this->_locked = false;
     }
 
-
-    /**
-     * Getter which return the runned tests result array.
-     *
-     * @return array
-     */
-    public function results()
-    {
-        return $this->_results;
-    }
 }

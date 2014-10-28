@@ -108,7 +108,7 @@ describe("Suite", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = [];
+                $this->exectuted = ['it' => 0, 'xit' => 0];
 
                 $this->xdescribe("xdescribe", function() {
 
@@ -138,9 +138,10 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['xit' => 2]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'xit' => 2]);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -152,7 +153,7 @@ describe("Suite", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = [];
+                $this->exectuted = ['it' => 0, 'xit' => 0];
 
                 $this->xcontext("xcontext", function() {
 
@@ -182,9 +183,10 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['xit' => 2]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'xit' => 2]);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -196,7 +198,7 @@ describe("Suite", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = [];
+                $this->exectuted = ['it' => 0, 'xit' => 0];
 
                 $this->it("an it", function() {
                     $this->exectuted['it']++;
@@ -218,9 +220,10 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['xit' => 2]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'xit' => 2]);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
 
         });
 
