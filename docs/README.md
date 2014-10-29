@@ -22,7 +22,7 @@
 
 Because who can trust a framework which achieve only [23.80% of code coverage after more that 10 years of experience in tests](assets/phpunit_4.4_code_coverage.png)?
 
-Anyhow it's not so much about the code coverage score and I respect all the work done on PHPUnit, but to me PHPUnit was mediocre right from start and 20.000 lines code for a library with no substance doesn't make any sense for me.
+Anyhow it's not so much about the code coverage score and I respect all the work done on PHPUnit, but to me PHPUnit was mediocre right from start and still.
 
 **However there always have some alternatives:**
 
@@ -473,7 +473,7 @@ use kahlan\plugin\Stub;
 
 ### <a name="method-stubing"></a>Method Stubbing
 
-`Subs::on()` can stub any existing methods on any class (and also unexisting methods if `__call()` and or `__callStatic()` are defined in your class).
+`Subs::on()` can stub any existing methods on any class.
 
 ```php
 it("stubs a method", function() {
@@ -483,7 +483,7 @@ it("stubs a method", function() {
 });
 ```
 
-You can also stub static methods:
+You can also stub static methods using `::`:
 
 ```php
 it("stubs a static method", function() {
@@ -493,7 +493,7 @@ it("stubs a static method", function() {
 });
 ```
 
-You can use also use an array based syntax for reducing verbosity:
+You can use an array based syntax for reducing verbosity:
 
 ```php
 it("stubs many methods", function() {
@@ -509,7 +509,7 @@ it("stubs many methods", function() {
 });
 ```
 
-Or a closure:
+And it's also possible to use a closure:
 
 ```php
 it("stubs a method using a closure", function() {
@@ -519,7 +519,7 @@ it("stubs a method using a closure", function() {
 
 ### <a name="instance-stubing"></a>Instance Stubbing
 
-When you are testing your application, sometimes you need a simple polyvalent instance to simply receive a couple of calls for unit testing a behavior. In this case your can create a simple polyvalent instance using `Stub::create()`:
+When you are testing your application, sometimes you need a simple & polyvalent instance to receive a couple of calls. `Stub::create()` can create such instance:
 
 ```php
 it("generates a polyvalent instance", function() {
@@ -528,15 +528,15 @@ it("generates a polyvalent instance", function() {
 });
 ```
 
-**Note:** Generated stubs implements by default `__call()`, `__callStatic()`,`__get()`, `__set()` and some other magic methods so you should be able to use the generated instance for any kind of substitution.
+**Note:** Generated stubs implements by default `__call()`, `__callStatic()`,`__get()`, `__set()` and some other magic methods for a maximum of interoperability.
 
-The fact that magic methods are included by default on `Stub::create()` will also allow to apply `Stub::on()` on any method name. Indeed `__call()` will manage the method stub. However, you should get that `method_exists` won't work on the "virtually" created method names.
+The fact that magic methods are included by default allows `Stub::on()` to be used with any method name. Indeed `__call()` will manage the created method stubs. However, you should pay attention that `method_exists` won't work on this method stubs since only `__call()` is a valid method.
 
-So if you need a method stub which answer to `method_exists` you will need to set up this "endpoint" using the `'methods'` option like in the following example:
+To make it works, you will need to add the necessary "endpoint(s)" using the `'methods'` option like in the following example:
 
 ```php
 it("stubs a static method", function() {
-	$stub = Stub::create(['methods' => ['myMethod']]); // Adds the method endpoint `'myMethod'`
+	$stub = Stub::create(['methods' => ['myMethod']]); // Adds the method `'myMethod'` as an "endpoint"
 	Stub::on($stub)->method('::myMethod')->andReturn('Good Morning World!');
 	expect(method_exists($stub, 'myMethod'))->toBe(true); // It works !
 });
@@ -544,7 +544,7 @@ it("stubs a static method", function() {
 
 ### <a name="class-stubing"></a>Class Stubbing
 
-You can also create some specific class using `Stub::classname()`:
+You can also create some specific class name using `Stub::classname()`:
 
 ```php
 it("generates a polyvalent class", function() {
@@ -555,8 +555,9 @@ it("generates a polyvalent class", function() {
 
 ### Custom Stubs
 
-You can also create some stub which inherits some classes, implements interfaces or uses traits.
+There's also a couple of options for creating some stub which inherits some classes, implements interfaces or uses traits.
 
+An example using `'extends'`:
 ```php
 it("stubs an instance with a parent class", function() {
     $stub = Stub::create(['extends' => 'string\String']);
@@ -564,13 +565,14 @@ it("stubs an instance with a parent class", function() {
     expect(get_parent_class($stub))->toBe('string\String');
 });
 ```
+**Note:** You can extends from an abstract class. In this case, all missing methods will be automatically added to your stub.
 
-**Note:** If the `'extends'` option is used, all magic methods won't be included by default to avoid any conflict between your tested classes and some extra behavior.
+**Note:** If the `'extends'` option is used, all magic methods won't be included to avoid any conflict between your tested classes and the magic method behaviors.
 
-However if you want to include all magic methods you can manually set the `'magicMethods'` option to `true`:
+However if you still want to include them you can manually set the `'magicMethods'` option to `true`:
 
 ```php
-it("stubs an instance with a parent class", function() {
+it("stubs an instance with a parent class and keeps magic methods", function() {
     $stub = Stub::create([
         'extends'      => 'string\String',
         'magicMethods' => true
@@ -598,7 +600,7 @@ it("stubs an instance with a parent class", function() {
 });
 ```
 
-You can also use `'implements'`:
+An other example using `'implements'`:
 
 ```php
 it("stubs an instance implementing some interface", function() {
@@ -611,7 +613,7 @@ it("stubs an instance implementing some interface", function() {
 });
 ```
 
-As well as `'uses'` to test your traits directly:
+A last example using `'uses'` to test your traits directly:
 
 ```php
 it("stubs an instance using a trait", function() {
@@ -710,19 +712,19 @@ it("throws an exception when an exit statement occurs if not allowed", function(
 });
 ```
 
-**Note:** This only work **for classes loaded by Composer**. If you try to create a stub with a `exit()` statement it won't get intercepted by patchers and the application will quit for real. Indeed, **code in `*Spec.php` files are not patched**.
+**Note:** This only work **for classes loaded by Composer**. If you try to create a stub with a `exit()` statement inside a closure it won't get intercepted by patchers and the application will quit for real. Indeed, **code in `*Spec.php` files are not intercepted/patched**.
 
 ## <a name="reporters"></a>7 - Reporters
 
 Kahlan provide a flexible reporter system which can be extended easily.
 
-By default there's two build-in reporters. The default is the dotted one:
+There's two build-in reporters and default is the dotted one:
 
 ```php
 ./bin/kahlan --reporter=dot
 ```
 
-And the other looks like more a progress bar:
+The following command use the bar one which looks like more a progress bar:
 ```php
 ./bin/kahlan --reporter=bar
 ```
