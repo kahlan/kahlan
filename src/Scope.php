@@ -22,6 +22,52 @@ abstract class Scope
     protected static $_instances = [];
 
     /**
+     * List of reserved keywords which can't be used as scope variable.
+     *
+     * @var array
+     */
+    protected static $_reserved = [
+        '__construct' => true,
+        '__call'      => true,
+        '__get'       => true,
+        '__set'       => true,
+        'after'       => true,
+        'afterEach'   => true,
+        'before'      => true,
+        'beforeEach'  => true,
+        'clear'       => true,
+        'context'     => true,
+        'current'     => true,
+        'describe'    => true,
+        'exception'   => true,
+        'exclusive'   => true,
+        'expect'      => true,
+        'fail'        => true,
+        'failfast'    => true,
+        'hash'        => true,
+        'incomplete'  => true,
+        'it'          => true,
+        'log'         => true,
+        'message'     => true,
+        'messages'    => true,
+        'pass'        => true,
+        'passed'      => true,
+        'process'     => true,
+        'register'    => true,
+        'registered'  => true,
+        'report'      => true,
+        'reset'       => true,
+        'results'     => true,
+        'run'         => true,
+        'skip'        => true,
+        'skipIf'      => true,
+        'status'      => true,
+        'xcontext'    => true,
+        'xdescribe'   => true,
+        'xit'         => true
+    ];
+
+    /**
      * The root instance.
      *
      * @var object
@@ -98,6 +144,9 @@ abstract class Scope
      */
     public function __set($key, $value)
     {
+        if (isset(static::$_reserved[$key])) {
+            throw new Exception("Sorry `{$key}` is a reserved keyword, it can't be used as a scope variable.");
+        }
         return $this->_data[$key] = $value;
     }
 
@@ -259,7 +308,7 @@ abstract class Scope
      * @param  boolean $current If `true` include `$this` to the list.
      * @return array.
      */
-    public function _parents($current = false)
+    protected function _parents($current = false)
     {
         $instances = [];
         $instance = $current ? $this : $this->_parent;

@@ -1,6 +1,8 @@
 <?php
 namespace spec;
 
+use Exception;
+
 describe("Scope", function() {
 
     describe("__get/__set", function() {
@@ -13,7 +15,60 @@ describe("Scope", function() {
             expect(isset($this->foo))->toBe(false);
         });
 
-        context("when nested", function() {
+        it("throw an new exception for reserved keywords", function() {
+
+            $reserved = [
+                '__construct',
+                '__call',
+                '__get',
+                '__set',
+                'after',
+                'afterEach',
+                'before',
+                'beforeEach',
+                'clear',
+                'context',
+                'current',
+                'describe',
+                'exception',
+                'exclusive',
+                'expect',
+                'fail',
+                'failfast',
+                'hash',
+                'incomplete',
+                'it',
+                'log',
+                'message',
+                'messages',
+                'pass',
+                'passed',
+                'process',
+                'register',
+                'registered',
+                'report',
+                'reset',
+                'results',
+                'run',
+                'skip',
+                'skipIf',
+                'status',
+                'xcontext',
+                'xdescribe',
+                'xit'
+            ];
+
+            foreach ($reserved as $keyword) {
+                $closure = function() use ($keyword) {
+                    $this->{$keyword} = 'some value';
+                };
+                expect($closure)->toThrow(new Exception("Sorry `{$keyword}` is a reserved keyword, it can't be used as a scope variable."));
+            }
+
+        });
+
+        context("when nested",
+                function() {
 
             beforeEach(function() {
                 $this->bar = 1;

@@ -311,7 +311,7 @@ class Suite extends Scope
      *
      * @return boolean;
      */
-    protected function failfast() {
+    public function failfast() {
         return $this->_root->_ff && $this->_root->_failure >= $this->_root->_ff;
     }
 
