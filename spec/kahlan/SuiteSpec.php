@@ -11,99 +11,121 @@ describe("Suite", function() {
         $this->suite = new Suite(['matcher' => new Matcher()]);
     });
 
-    describe("before", function() {
+    describe("->before()", function() {
 
-        $nb = 0;
+        $this->nb = 0;
 
-        before(function() use (&$nb) {
-            $nb++;
+        before(function() {
+            $this->nb++;
         });
 
         it("passes if `before` has been executed", function() use (&$nb) {
-            expect($nb)->toBe(1);
+
+            expect($this->nb)->toBe(1);
+
         });
 
         it("passes if `before` has not been executed twice", function() use (&$nb) {
-            expect($nb)->toBe(1);
+
+            expect($this->nb)->toBe(1);
+
         });
 
     });
 
-    describe("beforeEach", function() {
+    describe("->beforeEach()", function() {
 
-        $nb = 0;
+        $this->nb = 0;
 
-        beforeEach(function() use (&$nb) {
-            $nb++;
+        beforeEach(function() {
+            $this->nb++;
         });
 
-        it("passes if `beforeEach` has been executed", function() use (&$nb) {
-            expect($nb)->toBe(1);
+        it("passes if `beforeEach` has been executed", function() {
+
+            expect($this->nb)->toBe(1);
+
         });
 
-        it("passes if `beforeEach` has been executed twice", function() use (&$nb) {
-            expect($nb)->toBe(2);
+        it("passes if `beforeEach` has been executed twice", function() {
+
+            expect($this->nb)->toBe(2);
+
         });
 
-        context("with sub scope", function() use (&$nb) {
+        context("with sub scope", function() {
 
-            it("passes if `beforeEach` has been executed once more", function() use (&$nb) {
-                expect($nb)->toBe(3);
+            it("passes if `beforeEach` has been executed once more", function() {
+
+                expect($this->nb)->toBe(3);
+
             });
 
         });
 
-        it("passes if `beforeEach` has been executed once more", function() use (&$nb) {
-            expect($nb)->toBe(4);
+        it("passes if `beforeEach` has been executed once more", function() {
+
+            expect($this->nb)->toBe(4);
+
         });
 
     });
 
-    describe("after", function() {
+    describe("->after()", function() {
 
-        $nb = 0;
+        $this->nb = 0;
 
-        after(function() use (&$nb) {
-            $nb++;
+        after(function() {
+            $this->nb++;
         });
 
-        it("passes if `after` has not been executed", function() use (&$nb) {
-            expect($nb)->toBe(0);
+        it("passes if `after` has not been executed", function() {
+
+            expect($this->nb)->toBe(0);
+
         });
 
     });
 
-    describe("afterEach", function() {
+    describe("->afterEach()", function() {
 
-        $nb = 0;
+        $this->nb = 0;
 
-        afterEach(function() use (&$nb) {
-            $nb++;
+        afterEach(function() {
+            $this->nb++;
         });
 
-        it("passes if `afterEach` has not been executed", function() use (&$nb) {
-            expect($nb)->toBe(0);
+        it("passes if `afterEach` has not been executed", function() {
+
+            expect($this->nb)->toBe(0);
+
         });
 
-        it("passes if `afterEach` has been executed", function() use (&$nb) {
-            expect($nb)->toBe(1);
+        it("passes if `afterEach` has been executed", function() {
+
+            expect($this->nb)->toBe(1);
+
         });
 
-        context("with sub scope", function() use (&$nb) {
+        context("with sub scope", function() {
 
-            it("passes if `afterEach` has been executed once more", function() use (&$nb) {
-                expect($nb)->toBe(2);
+            it("passes if `afterEach` has been executed once more", function() {
+
+                expect($this->nb)->toBe(2);
+
             });
 
         });
 
-        it("passes if `afterEach` has been executed once more", function() use (&$nb) {
-            expect($nb)->toBe(3);
+        it("passes if `afterEach` has been executed once more", function() {
+
+            expect($this->nb)->toBe(3);
+
         });
 
     });
 
-    describe("xdescribe", function() {
+    describe("->xdescribe()", function() {
 
         it("executes only the exclusive `it`", function() {
 
@@ -111,7 +133,7 @@ describe("Suite", function() {
 
                 $this->exectuted = ['it' => 0, 'xit' => 0];
 
-                $this->xdescribe("xdescribe", function() {
+                $this->xdescribe("->xdescribe()", function() {
 
                     $this->it("xdescribe it", function() {
                         $this->exectuted['xit']++;
@@ -123,7 +145,7 @@ describe("Suite", function() {
 
                 });
 
-                $this->describe("describe", function() {
+                $this->describe("->describe()", function() {
 
                     $this->it("describe it", function() {
                         $this->exectuted['it']++;
@@ -148,7 +170,7 @@ describe("Suite", function() {
 
     });
 
-    describe("xcontext", function() {
+    describe("->xcontext()", function() {
 
         it("executes only the exclusive `it`", function() {
 
@@ -193,7 +215,7 @@ describe("Suite", function() {
 
     });
 
-    describe("xit", function() {
+    describe("->xit()", function() {
 
         it("executes only the exclusive `it`", function() {
 
@@ -239,6 +261,7 @@ describe("Suite", function() {
                 $a = $b;
             };
             expect($closure)->toThrow(new PhpErrorException("`E_NOTICE` Undefined variable: b"));
+
         });
 
         it("converts E_WARNING error to an exception", function() {
@@ -247,10 +270,9 @@ describe("Suite", function() {
                 $a = array_merge();
             };
             expect($closure)->toThrow(new PhpErrorException("`E_WARNING` array_merge() expects at least 1 parameter, 0 given"));
+
         });
 
     });
 
 });
-
-?>

@@ -12,7 +12,7 @@ describe("Parser", function() {
         $this->noNamespaceTxt = file_get_contents('spec/fixture/analysis/NoNamespace.txt');
     });
 
-    describe("parse", function() {
+    describe("->parse()", function() {
 
         it("parses consistently", function() {
             $parsed = Parser::parse($this->sample);
@@ -21,7 +21,7 @@ describe("Parser", function() {
 
     });
 
-    describe("debug", function() {
+    describe("->debug()", function() {
 
         it("attaches the correct lines", function() {
             $parsed = Parser::debug($this->sample);
@@ -35,5 +35,3 @@ describe("Parser", function() {
     });
 
 });
-
-?>

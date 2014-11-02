@@ -8,7 +8,7 @@ use kahlan\jit\patcher\Substitute;
 
 describe("Substitute", function() {
 
-    describe("create", function() {
+    describe("->create()", function() {
 
         /**
          * Warning: with a no namespaces limitation configuration all is_callable will
@@ -85,5 +85,3 @@ describe("Substitute", function() {
     });
 
 });
-
-?>

@@ -24,7 +24,7 @@ describe("Coverage", function() {
 
     });
 
-    describe("export", function() {
+    describe("->export()", function() {
 
         it("exports covered lines", function() {
 
@@ -122,7 +122,7 @@ describe("Coverage", function() {
 
     });
 
-    describe("start/stop", function() {
+    describe("->start/stop()", function() {
 
         it("return `true` on success", function() {
 
@@ -133,7 +133,7 @@ describe("Coverage", function() {
 
     });
 
-    describe("stop", function() {
+    describe("->stop()", function() {
 
         it("does nothing if not the collector has not been started", function() {
 
@@ -156,7 +156,7 @@ describe("Coverage", function() {
 
     });
 
-    describe("metrics", function() {
+    describe("->metrics()", function() {
 
         it("returns the metrics", function() {
 
@@ -167,7 +167,6 @@ describe("Coverage", function() {
             $this->collector->stop();
 
             $metrics = $this->collector->metrics();
-
             expect($metrics)->toBeAnInstanceOf('kahlan\reporter\coverage\Metrics');
         });
 

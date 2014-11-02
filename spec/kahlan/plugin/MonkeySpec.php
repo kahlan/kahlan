@@ -40,7 +40,7 @@ class MyString {
 
 }
 
-describe("Monkey::patch", function() {
+describe("Monkey", function() {
 
     /**
      * Save current & reinitialize the Interceptor class.
@@ -62,43 +62,58 @@ describe("Monkey::patch", function() {
     });
 
     it("patches a core function", function() {
+
         $foo = new Foo();
         Monkey::patch('time', 'spec\plugin\mytime');
         expect($foo->time())->toBe(245026800);
+
     });
 
-    it("patches a core function with a closure", function() {
-        $foo = new Foo();
-        Monkey::patch('time', function(){return 123;});
-        expect($foo->time())->toBe(123);
+    describe("::patch()", function() {
+
+        it("patches a core function with a closure", function() {
+
+            $foo = new Foo();
+            Monkey::patch('time', function(){return 123;});
+            expect($foo->time())->toBe(123);
+
+        });
+
+        it("patches a core class", function() {
+
+            $foo = new Foo();
+            Monkey::patch('DateTime', 'spec\plugin\MyDateTime');
+            expect($foo->datetime()->getTimestamp())->toBe(245026800);
+
+        });
+
+        it("patches a function", function() {
+
+            $foo = new Foo();
+            Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\plugin\myrand');
+            expect($foo->rand(0, 100))->toBe(101);
+
+        });
+
+        it("patches a class", function() {
+
+            $foo = new Foo();
+            Monkey::patch('string\String', 'spec\plugin\MyString');
+            expect($foo->dump((object)'hello'))->toBe('myhashvalue');
+
+        });
+
+        it("can unpatch a monkey patch", function() {
+
+            $foo = new Foo();
+            Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\plugin\myrand');
+            expect($foo->rand(0, 100))->toBe(101);
+
+            Monkey::clear('spec\fixture\plugin\monkey\rand');
+            expect($foo->rand(0, 100))->toBe(50);
+
+        });
+
     });
 
-    it("patches a core class", function() {
-        $foo = new Foo();
-        Monkey::patch('DateTime', 'spec\plugin\MyDateTime');
-        expect($foo->datetime()->getTimestamp())->toBe(245026800);
-    });
-
-    it("patches a function", function() {
-        $foo = new Foo();
-        Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\plugin\myrand');
-        expect($foo->rand(0, 100))->toBe(101);
-    });
-
-    it("patches a class", function() {
-        $foo = new Foo();
-        Monkey::patch('string\String', 'spec\plugin\MyString');
-        expect($foo->dump((object)'hello'))->toBe('myhashvalue');
-    });
-
-    it("can unpatch a monkey patch", function() {
-        $foo = new Foo();
-        Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\plugin\myrand');
-        expect($foo->rand(0, 100))->toBe(101);
-
-        Monkey::clear('spec\fixture\plugin\monkey\rand');
-        expect($foo->rand(0, 100))->toBe(50);
-    });
 });
-
-?>

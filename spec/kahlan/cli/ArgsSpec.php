@@ -6,7 +6,7 @@ use kahlan\cli\Args;
 
 describe("Args", function() {
 
-    describe("option", function() {
+    describe("->option()", function() {
 
         it("sets an option config", function() {
 
@@ -33,7 +33,7 @@ describe("Args", function() {
 
     });
 
-    describe("attribute", function() {
+    describe("->attribute()", function() {
 
         it("sets/updates an attribute of an option", function() {
 
@@ -50,7 +50,7 @@ describe("Args", function() {
 
     });
 
-    describe("parse", function() {
+    describe("->parse()", function() {
 
         it("parses command line options", function() {
 
@@ -166,7 +166,4 @@ describe("Args", function() {
 
     });
 
-
 });
-
-?>

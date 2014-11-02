@@ -1,12 +1,16 @@
 <?php
 namespace spec\matcher;
 
-describe("toMatch::match", function() {
+describe("toMatch", function() {
 
-    it("passes if 'Hello World!' match '/^H(?*)!$/'", function() {
-        expect('Hello World!')->toMatch('/^H(.*?)!$/');
+    describe("::match()", function() {
+
+        it("passes if 'Hello World!' match '/^H(?*)!$/'", function() {
+
+            expect('Hello World!')->toMatch('/^H(.*?)!$/');
+
+        });
+
     });
 
 });
-
-?>

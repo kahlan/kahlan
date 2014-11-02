@@ -5,14 +5,19 @@ use Exception;
 
 describe("Scope", function() {
 
-    describe("__get/__set", function() {
+    describe("->__get/__set()", function() {
+
         it("defines a value in the current scope", function() {
+
             $this->foo = 2;
             expect($this->foo)->toEqual(2);
+
         });
 
         it("is not influenced by the previous spec", function() {
+
             expect(isset($this->foo))->toBe(false);
+
         });
 
         it("throw an new exception for reserved keywords", function() {
@@ -75,7 +80,9 @@ describe("Scope", function() {
             });
 
             it("can access variable from the parent scope", function() {
+
                 expect($this->bar)->toBe(1);
+
             });
         });
     });
@@ -91,37 +98,49 @@ describe("Scope", function() {
             });
 
             it("skips this spec", function() use (&$executed) {
+
                 expect(true)->toBe(false);
                 $executed++;
+
             });
 
             it("skips this spec too", function() use (&$executed) {
+
                 expect(true)->toBe(false);
                 $executed++;
+
             });
 
         });
 
         it("expects that no spec have been runned", function() use (&$executed) {
+
             expect($executed)->toBe(0);
+
         });
 
         context("when used in a spec", function() use (&$executed) {
 
             it("skips this spec", function() use (&$executed) {
+
                 skipIf(true);
                 expect(true)->toBe(false);
                 $executed++;
+
             });
 
             it("doesn't skip this spec", function() use (&$executed) {
+
                 $executed++;
+
             });
 
         });
 
         it("expects that only one test have been runned", function() use (&$executed) {
+
             expect($executed)->toBe(1);
+
         });
 
     });
@@ -134,12 +153,13 @@ describe("Scope", function() {
         };
 
         it("calls closure assigned to scope property to be inkovable", function() {
+
             $actual = $this->customMethod($this);
             expect($actual)->toBe('called');
             expect($this->called)->toBe(true);
+
         });
 
     });
 
 });
-?>

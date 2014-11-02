@@ -32,7 +32,7 @@ describe("Stub", function() {
         Interceptor::loader($this->previous);
     });
 
-    describe("on", function() {
+    describe("::on()", function() {
 
         context("with an instance", function() {
 
@@ -242,7 +242,7 @@ describe("Stub", function() {
 
     });
 
-    describe("create", function() {
+    describe("::create()", function() {
 
         it("stubs an instance", function() {
 
@@ -380,7 +380,7 @@ describe("Stub", function() {
 
     });
 
-    describe("classname", function() {
+    describe("::classname()", function() {
 
         it("stubs class", function() {
 
@@ -447,7 +447,7 @@ describe("Stub", function() {
 
     });
 
-   describe("generate", function() {
+   describe("::generate()", function() {
 
         it("overrides the construct method", function() {
 
@@ -547,4 +547,3 @@ EOD;
     });
 
 });
-?>

@@ -6,7 +6,7 @@ use kahlan\jit\patcher\Rebase;
 
 describe("Rebase", function() {
 
-    describe("process", function() {
+    describe("->process()", function() {
 
         beforeEach(function() {
             $this->path = 'spec/fixture/jit/patcher/rebase';
@@ -25,5 +25,3 @@ describe("Rebase", function() {
     });
 
 });
-
-?>
