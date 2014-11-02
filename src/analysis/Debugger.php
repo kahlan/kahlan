@@ -64,23 +64,16 @@ class Debugger
      */
     public static function trace($options = [])
     {
-        $defaults = ['message' => null, 'trace' => []];
+        $defaults = ['trace' => []];
         $options += $defaults;
         $back = [];
         $backtrace = static::backtrace($options);
         $error = reset($backtrace);
 
-        $message = '';
-        if ($options['message'] === null && isset($error['code'])) {
-            $message = $error['message'] . "\n\n";
-        } elseif($options['message']) {
-            $message = $options['message'] . "\\n";
-        }
-
         foreach ($backtrace as $trace) {
             $back[] =  static::_traceToString($trace);
         }
-        return $message . join("\n", $back);
+        return join("\n", $back);
     }
 
     /**
@@ -130,13 +123,12 @@ class Debugger
         $options += $defaults;
 
         $backtrace = static::normalize($options['trace'] ?: debug_backtrace());
-        $error = reset($backtrace);
 
         $traceDefaults = [
             'line' => '?',
             'file' => '[internal]',
             'class' => null,
-            'function' => '[main]'
+            'function' => '[NA]'
         ];
 
         $back = [];
@@ -161,12 +153,8 @@ class Debugger
     public static function normalize($backtrace)
     {
         if ($backtrace instanceof Exception) {
-            $code = $backtrace->getCode();
-            $name = get_class($backtrace);
             return array_merge([[
-                'code' => $backtrace->getCode(),
-                'message' => "`{$name}` Code({$code}): " . $backtrace->getMessage(),
-                'function' => '',
+                'function' => '[NA]',
                 'file' => $backtrace->getFile(),
                 'line' => $backtrace->getLine(),
                 'args' => []
@@ -174,12 +162,22 @@ class Debugger
         } elseif (isset($backtrace['trace'])) {
             $trace = $backtrace['trace'];
             unset($backtrace['trace']);
-            $code = isset($backtrace['code']) ? $backtrace['code'] : 0;
-            $name = static::errorType($code);
-            $backtrace['message'] = "`{$name}` Code({$code}): " . $backtrace['message'];
             return array_merge([$backtrace], $trace);
         }
         return $backtrace;
+    }
+
+    public static function message($backtrace)
+    {
+        if ($backtrace instanceof Exception) {
+            $name = get_class($backtrace);
+            $code = $backtrace->getCode();
+            return "`{$name}` Code({$code}): " . $backtrace->getMessage();
+        } elseif (isset($backtrace['message'])) {
+            $code = isset($backtrace['code']) ? $backtrace['code'] : 0;
+            $name = static::errorType($code);
+            return "`{$name}` Code({$code}): " . $backtrace['message'];
+        }
     }
 
     /**

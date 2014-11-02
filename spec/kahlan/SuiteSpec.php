@@ -1,6 +1,7 @@
 <?php
 namespace spec;
 
+use kahlan\PhpErrorException;
 use kahlan\Suite;
 use kahlan\Matcher;
 
@@ -225,6 +226,27 @@ describe("Suite", function() {
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
+        });
+
+    });
+
+
+    describe("->_errorHandler()", function() {
+
+        it("converts E_NOTICE error to an exception", function() {
+
+            $closure = function() {
+                $a = $b;
+            };
+            expect($closure)->toThrow(new PhpErrorException("`E_NOTICE` Undefined variable: b"));
+        });
+
+        it("converts E_WARNING error to an exception", function() {
+
+            $closure = function() {
+                $a = array_merge();
+            };
+            expect($closure)->toThrow(new PhpErrorException("`E_WARNING` array_merge() expects at least 1 parameter, 0 given"));
         });
 
     });

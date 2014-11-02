@@ -112,7 +112,8 @@ class Terminal extends Reporter
         $this->console("[Failure] ", "n;red");
         $this->_messages($report['messages']);
         $this->_reportDescription($report);
-        $this->console("Trace: ", "n;yellow");
+        $this->console("Trace:", "n;yellow");
+        $this->console("\n");
         $this->console(Debugger::trace([
             'trace' => $report['exception'], 'depth' => 1
         ]));
@@ -161,7 +162,8 @@ class Terminal extends Reporter
         $this->_messages($report['messages']);
         $this->console("Description:", "n;magenta");
         $this->console(" You are using an unexisting class.\n");
-        $this->console("Trace: ", "n;yellow");
+        $this->console("Trace:", "n;yellow");
+        $this->console("\n");
         $this->console(Debugger::trace([
             'trace' => $report['exception'], 'start' => 1, 'depth' => 1
         ]));
@@ -177,7 +179,10 @@ class Terminal extends Reporter
     {
         $this->console("[Uncatched Exception] ", "n;magenta");
         $this->_messages($report['messages']);
-        $this->console("Trace:\n", "n;yellow");
+        $this->console("Description:", "n;magenta");
+        $this->console(" " . String::toString($report['exception']) ."\n");
+        $this->console("Trace:", "n;yellow");
+        $this->console("\n");
         $this->console(Debugger::trace(['trace' => $report['exception']]));
         $this->console("\n\n");
     }

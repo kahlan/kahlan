@@ -11,6 +11,7 @@ namespace kahlan;
 use Exception;
 use InvalidArgumentException;
 use set\Set;
+use kahlan\PhpErrorException;
 use kahlan\analysis\Debugger;
 
 class Suite extends Scope
@@ -378,10 +379,10 @@ class Suite extends Scope
         $handler = function($code, $message, $file, $line = 0, $args = []) {
             $trace = debug_backtrace();
             $trace = array_slice($trace, 1, count($trace));
-            $instance = Spec::current() ?: static::current();
-            $messages = $instance->messages();
-            $exception = compact('code', 'message', 'file', 'line', 'trace', 'args');
-            $this->exception(compact('messages', 'exception'));
+            $message = "`" . Debugger::errorType($code) . "` {$message}";
+            $code = 0;
+            $exception = compact('code', 'message', 'file', 'line', 'trace');
+            throw new PhpErrorException($exception);
         };
         $options['handler'] = $options['handler'] ?: $handler;
         set_error_handler($options['handler']);
