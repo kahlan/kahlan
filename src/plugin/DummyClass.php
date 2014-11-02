@@ -1,12 +1,12 @@
 <?php
 namespace kahlan\plugin;
 
-use kahlan\QuitException;
-
-class Quit
+class DummyClass
 {
     /**
-     * Indicates if the `exit` or `die` statements are disabled or not.
+     * Enable/disable the dummy class feature.
+     *
+     * @var boolean
      */
     protected static $_disabled = false;
 
@@ -28,20 +28,6 @@ class Quit
     public static function disable($disable = true)
     {
         static::$_disabled = $disable;
-    }
-
-    /**
-     * Run a controlled quit statement.
-     *
-     * @param  integer              $status Use 0 for a successful exit.
-     * @throws kahlan\QuitException         Only if disableed is `true`.
-     */
-    public static function quit($status = 0)
-    {
-        if (!static::disabled()) {
-            exit($status);
-        }
-        throw new QuitException('Exit statement occured', $status);
     }
 
     /**

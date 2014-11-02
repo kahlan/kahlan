@@ -4,9 +4,10 @@ namespace spec\jit\patcher;
 use kahlan\IncompleteException;
 use kahlan\jit\Patchers;
 use kahlan\jit\Interceptor;
-use kahlan\jit\patcher\Substitute;
+use kahlan\jit\patcher\DummyClass as DummyClassPatcher;
+use kahlan\plugin\DummyClass;
 
-describe("Substitute", function() {
+describe("DummyClass", function() {
 
     describe("->create()", function() {
 
@@ -23,7 +24,7 @@ describe("Substitute", function() {
                 Interceptor::unpatch();
 
                 $patchers = new Patchers();
-                $patchers->add('substitute', new Substitute());
+                $patchers->add('substitute', new DummyClassPatcher());
                 Interceptor::patch(compact('patchers'));
             });
 
@@ -35,15 +36,43 @@ describe("Substitute", function() {
             });
 
             it("throws an IncompleteException when creating an unexisting class", function() {
+
                 $closure = function() {
                     $mock = new Abcd();
                     $mock->helloWorld();
                 };
                 expect($closure)->toThrow(new IncompleteException);
+
             });
 
             it("allows magic call static on live mock", function() {
+
                 expect(function(){ Abcd::helloWorld(); })->toThrow(new IncompleteException);
+
+            });
+
+            it("makes `class_exists` to return `true` when enabled", function() {
+
+                $closure = function() {
+                    return class_exists('KahlanDummyClass1');
+                };
+
+                $result = $closure();
+                expect($result)->toBe(true);
+
+            });
+
+            it("allows `class_exists` to return `false` when disabled", function() {
+
+                DummyClass::disable();
+
+                $closure = function() {
+                    return class_exists('KahlanDummyClass2');
+                };
+
+                $result = $closure();
+                expect($result)->toBe(false);
+
             });
 
         });
@@ -57,7 +86,7 @@ describe("Substitute", function() {
                 Interceptor::unpatch();
 
                 $patchers = new Patchers();
-                $patchers->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
+                $patchers->add('substitute', new DummyClassPatcher(['namespaces' => ['spec\\']]));
                 Interceptor::patch(compact('patchers'));
             });
 
@@ -69,15 +98,19 @@ describe("Substitute", function() {
             });
 
             it("throws an IncompleteException when creating an unexisting class", function() {
+
                 $closure = function() {
                     $mock = new Abcd();
                     $mock->helloWorld();
                 };
                 expect($closure)->toThrow(new IncompleteException);
+
             });
 
             it("allows magic call static on live mock", function() {
+
                 expect(function(){ Abcd::helloWorld(); })->toThrow(new IncompleteException);
+
             });
 
         });

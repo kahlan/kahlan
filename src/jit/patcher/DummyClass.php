@@ -1,7 +1,9 @@
 <?php
 namespace kahlan\jit\patcher;
 
-class Substitute {
+use kahlan\plugin\DummyClass as DummyClassPlugin;
+
+class DummyClass {
 
     /**
      * Namespaces which allow auto mock on unexisting classes.
@@ -23,7 +25,7 @@ class Substitute {
      * @param  object $loader The autloader instance.
      * @param  string $class  The fully-namespaced class name.
      * @param  string $file   The correponding finded file path.
-     * @return string The patched file path.
+     * @return string         The patched file path.
      */
     public function findFile($loader, $class, $file)
     {
@@ -36,11 +38,11 @@ class Substitute {
                 $allowed = true;
             }
         }
-        if (!$allowed) {
+        if (DummyClassPlugin::disabled() || !$allowed) {
             return $file;
         }
         $classpath = strtr($class, '\\', DS);
-        return $loader->cache('/substitute/' . $classpath . '.php', static::generate(compact('class')));
+        return $loader->cache('/dummies/' . $classpath . '.php', static::generate(compact('class')));
     }
 
     /**
@@ -56,11 +58,11 @@ class Substitute {
     }
 
     /**
-     * Create a Substitute.
+     * Create a Dummy Class.
      *
      * @param  string $namespace The namespace name.
      * @param  string $class     The class name.
-     * @return string A Substitute.
+     * @return string            The Dummy Class content.
      */
     public static function generate($options = [])
     {
@@ -103,10 +105,11 @@ EOT;
      *
      * @param  array $options   Format for outputting stack trace.
      * @param  array $backtrace The backtrace array.
-     * @return array The patched backtrace.
+     * @return array            The patched backtrace.
      */
     public function processBacktrace($options, $backtrace)
     {
         return $backtrace;
     }
+
 }

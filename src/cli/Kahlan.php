@@ -11,7 +11,7 @@ use kahlan\cli\Cli;
 use kahlan\cli\Args;
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
-use kahlan\jit\patcher\Substitute;
+use kahlan\jit\patcher\DummyClass;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\jit\patcher\Monkey;
 use kahlan\jit\patcher\Rebase;
@@ -101,7 +101,9 @@ class Kahlan {
         $args->option('autoclear', ['array' => 'true', 'default' => [
             'kahlan\plugin\Monkey',
             'kahlan\plugin\Call',
-            'kahlan\plugin\Stub'
+            'kahlan\plugin\Stub',
+            'kahlan\plugin\Quit',
+            'kahlan\plugin\DummyClass'
         ]]);
     }
 
@@ -201,8 +203,13 @@ Test Execution Options:
   --interceptor-include=<string>      Paths to include for patching. (default: `['*']`).
   --interceptor-exclude=<string>      Paths to exclude from patching. (default: `[]`).
   --interceptor-persistent=<boolean>  Cache patched files (default: `true`).
-  --autoclear                         classes to autoclear after each spec (default: [`'kahlan\plugin\Monkey'`,
-                                      `'kahlan\plugin\Call'`, `'kahlan\plugin\Stub'`])
+  --autoclear                         classes to autoclear after each spec (default: [
+                                          `'kahlan\plugin\Monkey'`,
+                                          `'kahlan\plugin\Call'`,
+                                          `'kahlan\plugin\Stub'`,
+                                          `'kahlan\plugin\Quit'`,
+                                          `'kahlan\plugin\DummyClass'`
+                                      ])
 
 Miscellaneous Options:
 
@@ -274,7 +281,7 @@ EOD;
     {
         return Filter::on($this, 'patchers', [], function($chain) {
             $patchers = $this->patchers();
-            $patchers->add('substitute', new Substitute(['namespaces' => ['spec\\']]));
+            $patchers->add('substitute', new DummyClass(/*['namespaces' => ['spec\\']]*/));
             $patchers->add('pointcut', new Pointcut());
             $patchers->add('monkey', new Monkey());
             $patchers->add('rebase', new Rebase());
