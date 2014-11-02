@@ -20,19 +20,19 @@
 
 ## <a name="why-this-one"></a>1 - Why This One ?
 
-Because Kahlan is a way ahead all existing test framework for PHP. And who can trust a framework which achieve only [23.80% of code coverage after more that 10 years of experience in tests](assets/phpunit_4.4_code_coverage.png) ? Well it's not so much about the code coverage score and I respect all the work done on PHPUnit, but to me PHPUnit was mediocre right from start and still.
+Kahlan brings all good testing practices from dynamic languages like Ruby or Javascript into PHP. It provides all necessary tools to test your code with and keep a super simple API a la Jasmine.
 
 **So what about alternatives ?**
-
+* [PHPUnit](https://phpunit.de) [which reaches 23.80% of code coverage after > 10 years of experience in tests by the way](assets/phpunit_4.4_code_coverage.png)
 * [phpspec](http://phpspec.net)
 * [atoum](http://docs.atoum.org)
 * [SimpleTest](http://www.simpletest.org)
 * [Enhance-PHP](https://github.com/Enhance-PHP/Enhance-PHP)
 * etc.
 
-If all these "old school frameworks" are mature enough, the fact that don't use the `describe-it` syntax doesn't allow a better organisation of tests and simplify their maintenance.
+If all these "old school frameworks" are mature enough, the fact that they don't use the `describe-it` syntax doesn't allow a better organization of tests to simplify their maintenance (i.e avoiding [this kind of organization](https://github.com/sebastianbergmann/phpunit/tree/master/tests/Regression) for example). And the `describe-it` syntax also makes your tests a more reader-friendly (i.e [even better than the atoum fluent syntax organization](https://github.com/atoum/atoum/blob/master/tests/units/classes/asserters/dateInterval.php)
 
-**And what about new frameworks ?**
+**And what about new frameworks for PHP ?**
 
 * [Peridot](https://github.com/peridot-php/peridot)
 * [pho](https://github.com/danielstjules/pho)
@@ -43,9 +43,9 @@ If all these "old school frameworks" are mature enough, the fact that don't use 
 * [preview](https://github.com/v2e4lisp/preview)
 * etc.
 
-In these list above, if [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough it only provides the basics at the time I'm writing this documentation (i.e the `describe-it` syntax).
+In these list above, if [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough it only provides the basics (i.e the `describe-it` syntax) and all others seems to be some simple proof of concept at the time I'm writing this documentation.
 
-So Kahlan was created out of frustration with all existing PHP testing frameworks. And instead of introducing some new philosophical concepts, tools, java practices, crap, Kahlan just provide an environment which allow you to **easily test your code even with hard coded references** for PHP coder.
+So Kahlan was created out of frustration with all existing PHP testing frameworks. And instead of introducing some new philosophical concepts, tools, java practices, craps, Kahlan just provide an environment which allow you to **easily test your code even with hard coded references** for PHP coder.
 
 To achieve this goal **Kahlan allow to stub or monkey patch your code** directly like in Ruby or JavaScript without any required PECL-extentions. That way you won't need to put some [DI everywhere just for being able to write a test](http://david.heinemeierhansson.com/2012/dependency-injection-is-not-a-virtue.html).
 
