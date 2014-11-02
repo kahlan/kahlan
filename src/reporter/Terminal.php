@@ -154,7 +154,7 @@ class Terminal extends Reporter
         $this->console("[Incomplete test] ", "n;yellow");
         $this->_messages($report['messages']);
         $this->console("Description:", "n;magenta");
-        $this->console(" You are using an unexisting class.\n");
+        $this->console(" " . Debugger::message($report['exception']) ."\n");
         $this->console("Trace:", "n;yellow");
         $this->console("\n");
         $this->console(Debugger::trace([
