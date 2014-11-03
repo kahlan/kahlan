@@ -28,7 +28,7 @@ class Pointcut
 
         $lsb = is_object($self) ? get_class($self) : $self;
 
-        if (!Suite::registered($lsb) || !Suite::registered($class)) {
+        if (!Suite::registered($lsb) && !Suite::registered($class)) {
             return false;
         }
 

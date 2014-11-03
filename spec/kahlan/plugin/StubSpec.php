@@ -9,6 +9,7 @@ use kahlan\analysis\Parser;
 use kahlan\plugin\Stub;
 
 use spec\fixture\plugin\pointcut\Foo;
+use spec\fixture\plugin\pointcut\SubBar;
 use spec\fixture\plugin\stub\Doz;
 
 describe("Stub", function() {
@@ -237,7 +238,26 @@ describe("Stub", function() {
                     expect($foo3->bar())->toBe('Hello Bar!');
 
                 });
+
             });
+
+        });
+
+        context("with a trait", function() {
+
+            it("stubs a method", function() {
+
+                Stub::on('spec\fixture\plugin\pointcut\SubBar')
+                    ->method('traitMethod')
+                    ->andReturn('trait method stubbed !');
+
+                $subBar = new SubBar();
+                expect($subBar->traitMethod())->toBe('trait method stubbed !');
+                $subBar2 = new SubBar();
+                expect($subBar2->traitMethod())->toBe('trait method stubbed !');
+
+            });
+
         });
 
     });
