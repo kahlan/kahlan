@@ -113,7 +113,7 @@ class Parser
                 case T_PROTECTED:
                 case T_PUBLIC:
                 case T_STATIC:
-                    if ($current->type === 'class') {
+                    if ($current->type === 'class' || $current->type === 'trait') {
                         static::$_states['visibility'] .= $token[1];
                     } else {
                         static::$_states['body'] .= $token[1];
@@ -177,7 +177,7 @@ class Parser
     {
         $current = static::$_states['current'];
         $token = static::$_stream->current(true);
-        if ($current->type === 'class') {
+        if ($current->type === 'class' || $current->type === 'trait') {
             static::$_states['body'] .= $token[1];
             return;
         }
@@ -311,7 +311,7 @@ class Parser
         $args = static::_parseArgs();
         $node->args = $args['args'];
         $body .= $args['body'] . static::$_stream->next([';', '{']);
-        $isMethod = $parent && $parent->type === 'class';
+        $isMethod = $parent && ($parent->type === 'class' || $parent->type === 'trait');
         $node->isMethod = $isMethod;
         $node->isClosure = !$node->name;
         if ($isMethod) {
