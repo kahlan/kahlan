@@ -281,7 +281,7 @@ EOD;
     {
         return Filter::on($this, 'patchers', [], function($chain) {
             $patchers = $this->patchers();
-            $patchers->add('substitute', new DummyClass(/*['namespaces' => ['spec\\']]*/));
+            $patchers->add('substitute', new DummyClass(['namespaces' => ['spec\\']]));
             $patchers->add('pointcut', new Pointcut());
             $patchers->add('monkey', new Monkey());
             $patchers->add('rebase', new Rebase());
