@@ -20,19 +20,19 @@
 
 ## <a name="why-this-one"></a>1 - Why This One ?
 
-Kahlan brings all good testing practices from dynamic languages like Ruby or Javascript into PHP. It provides all necessary tools to test your code with and keep a super simple API a la Jasmine.
+One of PHP's assumption is that once you define a function/constant/class it stays defined forever. If this assumption is not really problematic when you are building an application, things get a bit more complicated when you want to unit test your application easily.
 
-**So what about alternatives ?**
-* [PHPUnit](https://phpunit.de) [which reaches 23.80% of code coverage after > 10 years of experience in tests by the way](assets/phpunit_4.4_code_coverage.png)
+**So what are the existing test platform for PHP ?**
+* [PHPUnit](https://phpunit.de) which reaches [23.80% of code coverage after > 10 years of experience](assets/phpunit_4.4_code_coverage.png) in tests by the way
 * [phpspec](http://phpspec.net)
 * [atoum](http://docs.atoum.org)
 * [SimpleTest](http://www.simpletest.org)
 * [Enhance-PHP](https://github.com/Enhance-PHP/Enhance-PHP)
 * etc.
 
-If all these "old school frameworks" are mature enough, the fact that they don't use the `describe-it` syntax doesn't allow a better organization of tests to simplify their maintenance (i.e avoiding [this kind of organization](https://github.com/sebastianbergmann/phpunit/tree/master/tests/Regression) for example). And the `describe-it` syntax also makes your tests a more reader-friendly (i.e [even better than the atoum fluent syntax organization](https://github.com/atoum/atoum/blob/master/tests/units/classes/asserters/dateInterval.php)
+If all these "old school frameworks" are mature enough, they don't allow to test hard coded references easily. And the fact that they don't use the `describe-it` syntax either doesn't allow a clean organization of tests to simplify their maintenance (and avoiding [this kind of organization](https://github.com/sebastianbergmann/phpunit/tree/master/tests/Regression) for example). Moreover the `describe-it` syntax makes tests more reader-friendly (i.e even better than the[atoum fluent syntax organization](https://github.com/atoum/atoum/blob/master/tests/units/classes/asserters/dateInterval.php)
 
-**And what about new frameworks for PHP ?**
+**So what about new frameworks for PHP ?**
 
 * [Peridot](https://github.com/peridot-php/peridot)
 * [pho](https://github.com/danielstjules/pho)
@@ -43,13 +43,13 @@ If all these "old school frameworks" are mature enough, the fact that they don't
 * [preview](https://github.com/v2e4lisp/preview)
 * etc.
 
-In these list above, if [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough it only provides the basics (i.e the `describe-it` syntax) and all others seems to be some simple proof of concept at the time I'm writing this documentation.
+In these list above, if [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough it only provides the basics (i.e the `describe-it` syntax) and all others seems to be some proof of concept only of the `describe-it` syntax at the time I'm writing this documentation.
 
-So Kahlan was created out of frustration with all existing PHP testing frameworks. And instead of introducing some new philosophical concepts, tools, java practices, craps, Kahlan just provide an environment which allow you to **easily test your code even with hard coded references** for PHP coder.
+So Kahlan was created out of frustration with all existing testing frameworks in PHP. Instead of introducing some new philosophical concepts, tools, java practices, craps, Kahlan just provide an environment which allow you to **easily test your code even with hard coded references**.
 
-To achieve this goal **Kahlan allow to stub or monkey patch your code** directly like in Ruby or JavaScript without any required PECL-extentions. That way you won't need to put some [DI everywhere just for being able to write a test](http://david.heinemeierhansson.com/2012/dependency-injection-is-not-a-virtue.html).
+To achieve this goal **Kahlan allow to stub or monkey patch your code** like in Ruby or JavaScript without any required PECL-extentions. That way you won't need to put some [DI everywhere just for being able to write a test](http://david.heinemeierhansson.com/2012/dependency-injection-is-not-a-virtue.html).
 
-Some projects like [AspectMock](https://github.com/Codeception/AspectMock) also provides such kind of useful feature but Kahlan aimed to gather all this facilities in a full-featured framework using a lightweight approach and a simple API.
+Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attempted to bring this kind of metaprogramming flexibility for PHPUnit but Kahlan aimed to gather all this facilities in a full-featured framework using a `describe-it` syntax, a lightweight approach and a simple API.
 
 ### Main Features
 
