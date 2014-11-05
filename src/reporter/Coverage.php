@@ -6,6 +6,15 @@ use kahlan\reporter\coverage\Collector;
 class Coverage extends Terminal
 {
     /**
+     * Class dependencies.
+     *
+     * @var array
+     */
+    protected static $_classes = [
+        'interceptor' => 'kahlan\jit\Interceptor'
+    ];
+
+    /**
      * Collect time
      *
      * @var float
@@ -45,6 +54,15 @@ class Coverage extends Terminal
         $this->_verbosity = $options['verbosity'];
         if (is_numeric($this->_verbosity)) {
             $this->_verbosity = (integer) $this->_verbosity;
+        } else {
+            $this->_verbosity = (string) $this->_verbosity;
+            $interceptor = static::$_classes['interceptor'];
+            if ($loader = $interceptor::instance()) {
+                $class = preg_replace('/(::)?\w+\(\)$/', '', $this->_verbosity);
+                if ($path = $loader->findPath($class)) {
+                    $options['path'] = $path;
+                }
+            }
         }
         $this->_collector = new Collector($options);
     }

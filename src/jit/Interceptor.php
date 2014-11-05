@@ -28,6 +28,20 @@ class Interceptor {
     protected $_getClassMap = 'getClassMap';
 
     /**
+     * Method name to the delegated the parent for getting PSR-0 prefixes.
+     *
+     * @var string
+     */
+    protected $_getPrefixes = 'getPrefixes';
+
+    /**
+     * Method name to the delegated the parent for getting PSR-4 prefixes.
+     *
+     * @var string
+     */
+    protected $_getPrefixesPsr4 = 'getPrefixesPsr4';
+
+    /**
      * Is cached file are persistent.
      *
      * @var array
@@ -77,18 +91,22 @@ class Interceptor {
     public function __construct($options = [])
     {
         $defaults = [
-            'patchers' => null,
-            'exclude' => [],
-            'include' => ['*'],
-            'persistent' => true,
-            'findFile' => 'findFile',
-            'getClassMap' => 'getClassMap',
-            'cache' => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
+            'patchers'        => null,
+            'exclude'         => [],
+            'include'         => ['*'],
+            'persistent'      => true,
+            'findFile'        => 'findFile',
+            'getClassMap'     => 'getClassMap',
+            'getPrefixes'     => 'getPrefixes',
+            'getPrefixesPsr4' => 'getPrefixesPsr4',
+            'cache'           => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
         ];
         $options += $defaults;
         $this->_patchers = $options['patchers'];
         $this->_findFile = $options['findFile'];
         $this->_getClassMap = $options['getClassMap'];
+        $this->_getPrefixes = $options['getPrefixes'];
+        $this->_getPrefixesPsr4 = $options['getPrefixesPsr4'];
         $this->_cache = rtrim($options['cache'], DS);
         $this->_persistent = $options['persistent'];
         $this->_exclude = $options['exclude'] ? (array) $options['exclude'] : ['kahlan\\'];
@@ -348,5 +366,68 @@ class Interceptor {
     {
         $getClassMap = $this->_getClassMap;
         return static::originalInstance()->$getClassMap($class);
+    }
+
+    /**
+     * Returns the class map array.
+     *
+     * @return array
+     */
+    public function getPrefixes()
+    {
+        $getPrefixes = $this->_getPrefixes;
+        return static::originalInstance()->$getPrefixes();
+    }
+
+    /**
+     * Returns the class map array.
+     *
+     * @return array
+     */
+    public function getPrefixesPsr4()
+    {
+        $getPrefixesPsr4 = $this->_getPrefixesPsr4;
+        return static::originalInstance()->$getPrefixesPsr4();
+    }
+
+    public function getPaths() {
+        $ds = DIRECTORY_SEPARATOR;
+        $paths = $this->getPrefixesPsr4();
+        foreach ($this->getPrefixes() as $namespace => $dirs) {
+            foreach ($dirs as $key => $dir) {
+                $paths[$namespace][$key] = $dir . $ds . trim(strtr($namespace, '\\', $ds), $ds);
+            }
+        }
+        return $paths;
+    }
+
+    /**
+     * Returns the path of a namespace.
+     *
+     * @return string
+     */
+    public function findPath($namespace)
+    {
+        $loader = static::originalInstance();
+
+        $paths = $this->getPaths();
+        $logicalPath = trim(strtr($namespace, '\\', DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+
+        foreach ($paths as $prefix => $dirs) {
+            if (strpos($namespace, $prefix) === 0) {
+                foreach ($dirs as $dir) {
+                    $path = $dir . DIRECTORY_SEPARATOR . substr($logicalPath, strlen($prefix));
+                    if (is_dir($path)) {
+                        return $path;
+                    }
+                    if (file_exists($file = $path . '.php')) {
+                        return $file ;
+                    }
+                    if (file_exists($file = $path . '.hh')) {
+                        return $file;
+                    }
+                }
+            }
+        }
     }
 }
