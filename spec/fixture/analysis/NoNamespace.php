@@ -17,8 +17,17 @@ if (true) {
     echo "Hello World!";
 }
 
-Matcher::register('toBe', 'kahlan\matcher\ToBe');
-Box::share('kahlan.suite', function() { return new Suite; });
+Matcher::register(
+	'toBe',
+	'kahlan\matcher\ToBe'
+);
+
+Box::share(
+	'kahlan.suite',
+	function() {
+		return new Suite;
+	}
+);
 
 ?>
 

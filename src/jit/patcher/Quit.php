@@ -40,7 +40,6 @@ class Quit {
         $regex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)((?:exit|die)\s*\()/m";
 
         foreach ($nodes as $node) {
-            $parent = $node->parent;
             if ($node->processable && $node->type === 'code') {
                 $node->body = preg_replace($regex, '\1\kahlan\plugin\Quit::quit(', $node->body);
             }

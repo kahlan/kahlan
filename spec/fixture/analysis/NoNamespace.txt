@@ -1,33 +1,42 @@
-#1     [  code   ] #1 > #3         |<?php
-#2     [  code   ] #1 > #3         |use kahlan\Matcher;
-#3     [  code   ] #1 > #3         |
-#4     [  class  ] #4 > #10        |class NoNamespace
-#5     [  class  ] #4 > #10        |{
-#6     [function ] #6 > #9         |    public function hello()
-#7     [function ] #6 > #9         |    {
-#8     [  code   ] #8 > #8         |        return "Hello World!";
-#9     [function ] #6 > #9         |    }
-#10    [  class  ] #4 > #10        |}
-#11    [  code   ] #11 > #11       |
-#12    [function ] #12 > #14       |function test() {
-#13    [  code   ] #13 > #13       |    return "It's a test";
-#14    [function ] #12 > #14       |}
-#15    [  code   ] #15 > #16       |
-#16    [  code   ] #15 > #16       |if (true) {
-#17    [  code   ] #17 > #19       |    echo "Hello World!";
-#18    [  code   ] #17 > #19       |}
-#19    [  code   ] #17 > #19       |
-#20    [  code   ] #20 > #20       |Matcher::register('toBe', 'kahlan\matcher\ToBe');
-#21    [  code   ] #21 > #22       |Box::share('kahlan.suite', function() { return new Suite; });
-#22    [  code   ] #21 > #22       |
-#23    [  code   ] #23 > #23       |?>
-#24    [  plain  ] #24 > #26       |
-#25    [  plain  ] #24 > #26       |Outside PHP Tags
-#26    [  plain  ] #24 > #26       |
-#27    [  code   ] #27 > #29       |<?php
-#28    [  code   ] #27 > #29       |
-#29    [  code   ] #27 > #29       |for($i = 0; $i < 10; $i++) {
-#30    [  code   ] #30 > #32       |    echo "Success";
-#31    [  code   ] #30 > #32       |}
-#32    [  code   ] #30 > #32       |
-#33    [  code   ] #33 > #33       |?>
+#1     [          open           ] #1 > #1         |<?php
+#2     [            c            ] #2 > #2         |use kahlan\Matcher;
+#3     [                         ] #3 > #3         |
+#4     [          class          ] #4 > #10        |class NoNamespace
+#5     [          class          ] #5 > #10        |{
+#6     [           fct           ] #6 > #9         |    public function hello()
+#7     [           fct           ] #7 > #9         |    {
+#8     [         c,str,c         ] #8 > #8         |        return "Hello World!";
+#9     [           fct           ] #9 > #9         |    }
+#10    [          class          ] #10 > #10       |}
+#11    [                         ] #11 > #11       |
+#12    [           fct           ] #12 > #14       |function test() {
+#13    [         c,str,c         ] #13 > #13       |    return "It's a test";
+#14    [           fct           ] #14 > #14       |}
+#15    [                         ] #15 > #15       |
+#16    [            c            ] #16 > #16       |if (true) {
+#17    [         c,str,c         ] #17 > #17       |    echo "Hello World!";
+#18    [            c            ] #18 > #23       |}
+#19    [            c            ] #19 > #23       |
+#20    [            c            ] #20 > #23       |Matcher::register(
+#21    [          str,c          ] #21 > #21       |	'toBe',
+#22    [           str           ] #22 > #22       |	'kahlan\matcher\ToBe'
+#23    [            c            ] #23 > #23       |);
+#24    [                         ] #24 > #24       |
+#25    [            c            ] #25 > #30       |Box::share(
+#26    [          str,c          ] #26 > #26       |	'kahlan.suite',
+#27    [           fct           ] #27 > #29       |	function() {
+#28    [            c            ] #28 > #28       |		return new Suite;
+#29    [           fct           ] #29 > #29       |	}
+#30    [            c            ] #30 > #30       |);
+#31    [                         ] #31 > #31       |
+#32    [          close          ] #32 > #32       |?>
+#33    [                         ] #33 > #33       |
+#34    [            p            ] #34 > #34       |Outside PHP Tags
+#35    [                         ] #35 > #35       |
+#36    [          open           ] #36 > #36       |<?php
+#37    [                         ] #37 > #37       |
+#38    [          c,c,c          ] #38 > #38       |for($i = 0; $i < 10; $i++) {
+#39    [         c,str,c         ] #39 > #39       |    echo "Success";
+#40    [            c            ] #40 > #40       |}
+#41    [                         ] #41 > #41       |
+#42    [          close          ] #42 > #42       |?>

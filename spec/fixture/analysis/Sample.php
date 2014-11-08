@@ -45,7 +45,50 @@ class Sample extends \kahlan\fixture\Parent {
     final public function finalMethod() {}
 
     public function inlineComment() {
+
+        $a = 3; //comment
+
     } // end function
+
+    public function weirdSyntax() {
+
+        foreach ($variable as $key => $value) {}
+
+    $i++;}
+
+    public function phpArray() {
+
+        $array = array("hello");
+
+        $array = array
+        (
+            "hello"
+        );
+
+        $array = array(
+            "hello",
+            "world",
+            "world!",
+        );
+
+        $array = [
+            "hello",
+            "world",
+            "world!",
+        ];
+
+    }
+
+    public function multilineConditions() {
+
+        return ($a && (
+            $b
+            ||
+            $c
+        ));
+
+    }
+
 }
 
 class

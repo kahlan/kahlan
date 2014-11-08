@@ -118,15 +118,15 @@ class Monkey
 
         foreach ($nodes as $node) {
             $this->_variables = [];
-            $parent = $node->parent;
             if ($node->processable && $node->type === 'code') {
                 $this->_uses = $node->namespace ? $node->namespace->uses : [];
                 $node->body = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
                 $code = $this->_classes['node'];
                 $patch = new $code(join('', $this->_variables), 'code');
-                $patch->parent = $node->parent;
+                $patch->parent = $node->function ?: $node->parent;
+                $patch->function = $node->function;
                 $patch->namespace = $node->namespace;
-                array_unshift($node->parent->tree, $patch);
+                array_unshift($patch->parent->tree, $patch);
             }
             if (count($node->tree)) {
                 $this->_processTree($node->tree);

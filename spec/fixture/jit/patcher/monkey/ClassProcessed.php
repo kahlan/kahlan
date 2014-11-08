@@ -118,6 +118,12 @@ $__KMONKEY__13();
         ];
     }
 
+    public function subChild() {$__KMONKEY__19 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'RecursiveIteratorIterator', false);
+        if ($options['recursive']) {
+            $worker = new $__KMONKEY__19($worker, $iteratorFlags);
+        }
+    }
+
     public function ignoreControlStructure()
     {
         array();

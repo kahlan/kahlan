@@ -5,6 +5,16 @@ use kahlan\MongoId;
 
 class Simple extends \kahlan\fixture\Parent
 {
+    protected $_classes = [
+        'bar' => 'spec\fixture\plugin\pointcut\Bar'
+    ];
+
+    protected $_status = 'none';
+
+    protected $_message = 'Hello World!';
+
+    protected static $_messageStatic = 'Hello Static World!';
+
     protected $_variable = true;
 
     public function __construct($options)

@@ -318,6 +318,6 @@ class Collector
             return $this->_tree[$file];
         }
         $parser = $this->_classes['parser'];
-        return $this->_tree[$file] = $parser::parse(file_get_contents($file), true);
+        return $this->_tree[$file] = $parser::parse(file_get_contents($file), ['lines' => true]);
     }
 }

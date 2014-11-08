@@ -46,7 +46,6 @@ class Rebase {
         $fileRegex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)(__FILE__)/";
 
         foreach ($nodes as $node) {
-            $parent = $node->parent;
             if ($node->processable && $node->type === 'code') {
                 $node->body = preg_replace($dirRegex, $dir, $node->body);
                 $node->body = preg_replace($fileRegex, $file, $node->body);

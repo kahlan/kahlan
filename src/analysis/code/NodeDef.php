@@ -9,6 +9,8 @@ class NodeDef
 
     public $parent = null;
 
+    public $function = null;
+
     public $inPhp = false;
 
     public $body = '';

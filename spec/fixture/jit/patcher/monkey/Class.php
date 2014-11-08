@@ -118,6 +118,12 @@ rand();
         ];
     }
 
+    public function subChild() {
+        if ($options['recursive']) {
+            $worker = new RecursiveIteratorIterator($worker, $iteratorFlags);
+        }
+    }
+
     public function ignoreControlStructure()
     {
         array();
