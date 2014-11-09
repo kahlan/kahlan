@@ -13,6 +13,8 @@ class NodeDef
 
     public $inPhp = false;
 
+    public $hasMethods = false;
+
     public $body = '';
 
     public $close = '';

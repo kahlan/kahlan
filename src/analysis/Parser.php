@@ -2,11 +2,8 @@
 namespace kahlan\analysis;
 
 use kahlan\analysis\code\NodeDef;
-use kahlan\analysis\code\ClassDef;
-use kahlan\analysis\code\TraitDef;
-use kahlan\analysis\code\InterfaceDef;
 use kahlan\analysis\code\FunctionDef;
-use kahlan\analysis\code\NamespaceDef;
+use kahlan\analysis\code\BlockDef;
 
 /**
  * Crude parser providing some code block structure of PHP files to facilitate analysis.
@@ -142,7 +139,7 @@ class Parser
                 case T_PROTECTED:
                 case T_PUBLIC:
                 case T_STATIC:
-                    if ($current->type === 'class' || $current->type === 'trait') {
+                    if ($current->hasMethods) {
                         $this->_states['visibility'] .= $token[1];
                     } else {
                         $this->_states['body'] .= $token[1];
@@ -214,7 +211,7 @@ class Parser
     {
         $current = $this->_states['current'];
         $token = $this->_stream->current(true);
-        if ($current->type === 'class' || $current->type === 'trait') {
+        if ($current->hasMethods) {
             $this->_states['body'] .= $token[1];
             return;
         }
@@ -255,7 +252,8 @@ class Parser
         $body = $this->_stream->current();
         $name = $this->_stream->next([';', '{']);
         $this->_states['body'] .= $body;
-        $node = new NamespaceDef($body . $name);
+        $node = new BlockDef($body . $name, 'namespace');
+        $node->hasMethods = false;
         $node->name = trim(substr($name, 0, -1));
         $this->_states['braces'] = [$this->_states['brace']];
         $this->_states['brace'] = 1;
@@ -283,7 +281,7 @@ class Parser
         $this->_codeNode();
         $body = $this->_stream->current() . $this->_stream->next([';', '{']);
         $this->_states['body'] .= $body;
-        $node = new TraitDef($body);
+        $node = new BlockDef($body, 'trait');
         $node->name = substr($body, 0, -1);
         $this->_states['braces'][] = $this->_states['brace'];
         return $this->_states['current'] = $this->_contextualize($node);
@@ -297,7 +295,8 @@ class Parser
         $this->_codeNode();
         $body = $this->_stream->current() . $this->_stream->next(['{']);
         $this->_states['body'] .= $body;
-        $node = new InterfaceDef($body);
+        $node = new BlockDef($body, 'interface');
+        $node->hasMethods = false;
         $node->name = substr($body, 0, -1);
         $this->_states['braces'][] = $this->_states['brace'];
         return $this->_states['current'] = $this->_contextualize($node);
@@ -309,23 +308,27 @@ class Parser
     protected function _classNode()
     {
         $this->_codeNode();
-        $node = new ClassDef();
+
         $token = $this->_stream->current(true);
         $body = $token[1];
         $body .= $this->_stream->skipWhitespaces();
-        $body .= $node->name = $this->_stream->current();
+        $body .= $name = $this->_stream->current();
         $body .= $this->_stream->next(['{', T_EXTENDS]);
         $token = $this->_stream->current(true);
+        $extends = '';
         if ($token[0] === T_EXTENDS) {
             $body .= $this->_stream->skipWhitespaces();
-            $body .= $node->extends = $this->_stream->skipWhile([T_STRING, T_NS_SEPARATOR]);
+            $body .= $extends = $this->_stream->skipWhile([T_STRING, T_NS_SEPARATOR]);
             if ($this->_stream->current() === '{') {
                 $body .= $this->_stream->current();
             } else {
                 $body .= $this->_stream->current() . $this->_stream->next('{');
             }
         }
-        $node->body = $body;
+        $node = new BlockDef($body, 'class');
+        $node->name = $name;
+        $node->extends = $extends;
+
         $this->_states['body'] .= $body;
         $this->_states['braces'][] = $this->_states['brace'];
         return $this->_states['current'] = $this->_contextualize($node);
@@ -348,7 +351,7 @@ class Parser
         $args = $this->_parseArgs();
         $node->args = $args['args'];
         $body .= $args['body'] . $this->_stream->next([';', '{']);
-        $isMethod = $parent && ($parent->type === 'class' || $parent->type === 'trait');
+        $isMethod = $parent && ($parent->hasMethods);
         $node->isMethod = $isMethod;
         $node->isClosure = !$node->name;
         if ($isMethod) {
@@ -641,8 +644,7 @@ class Parser
             foreach ($nodes as $node) {
                 $parent = $node->parent;
                 if ($parent && $node->type === 'code') {
-                    $inBlock = $parent->type === 'class' || $parent->type === 'trait' || $parent->type === 'interface';
-                    $types[] = $abbr[$inBlock ? 'attribute' : 'code'];
+                    $types[] = $abbr[$parent->hasMethods || $parent->type === 'interface' ? 'attribute' : 'code'];
                 } else {
                     $types[] = $abbr[$node->type];
                 }

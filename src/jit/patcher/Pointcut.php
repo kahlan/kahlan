@@ -53,7 +53,7 @@ class Pointcut
     protected function _processTree($nodes)
     {
         foreach ($nodes as $node) {
-            if ($node->type === 'class' || $node->type === 'trait') {
+            if ($node->hasMethods) {
                 $this->_processMethods($node->tree);
             } elseif (count($node->tree)) {
                 $this->_processTree($node->tree);
