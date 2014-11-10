@@ -1098,10 +1098,10 @@ The filterable entry points are the following:
   * `'reporters`'        # Adds reporters
     * `'console'`        # Creates the console reporter
     * `'coverage'`       # Creates the coverage reporter
-  * `'start`'            # Useful for registering some pre process tasks
+  * `'before`'           # Useful for registering some pre process tasks
   * `'run`'              # Runs the test suite
   * `'reporting`'        # Runs some additionnal reporting tasks
-  * `'stop`'             # Useful for registering some post process tasks
+  * `'end`'              # Trigger the end of the processing
 
 
 [You can see more details about how the workflow works here](https://github.com/crysalead/kahlan/blob/master/src/cli/Kahlan.php) (start reading with the `run()` method).

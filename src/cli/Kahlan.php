@@ -240,13 +240,13 @@ EOD;
 
             $this->_reporters();
 
-            $this->_start();
+            $this->_before();
 
             $this->_run();
 
             $this->_reporting();
 
-            $this->_stop();
+            $this->_end();
         });
     }
 
@@ -375,11 +375,11 @@ EOD;
     }
 
     /**
-     * Set up the default `'start'` filter.
+     * Set up the default `'before'` filter.
      */
-    protected function _start()
+    protected function _before()
     {
-        return Filter::on($this, 'start', [], function($chain) {});
+        return Filter::on($this, 'before', [], function($chain) {});
     }
 
     /**
@@ -413,11 +413,13 @@ EOD;
     }
 
     /**
-     * Set up the default `'stop'` filter.
+     * Set up the default `'end'` filter.
      */
-    protected function _stop()
+    protected function _end()
     {
-        return Filter::on($this, 'stop', [], function($chain) {});
+        return Filter::on($this, 'end', [], function($chain) {
+            $this->suite()->end();
+        });
     }
 
 }

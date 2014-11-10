@@ -402,11 +402,18 @@ class Suite extends Scope
         $this->report('begin', ['total' => $total]);
 
         $this->_run();
+        return $this->passed();
+    }
+
+    /**
+     * Trigger the `end` event.
+     */
+    public function end()
+    {
+        $report = [];
         $report['specs'] = $this->_results;
         $report['exclusive'] = $this->_exclusives;
-
         $this->report('end', $report);
-        return $this->_results;
     }
 
     /**
@@ -478,6 +485,16 @@ class Suite extends Scope
     public function results()
     {
         return $this->_results;
+    }
+
+    /**
+     * Getter which return the references of runned exclusives tests.
+     *
+     * @return array
+     */
+    public function exclusives()
+    {
+        return $this->_exclusives;
     }
 
     /**
