@@ -477,7 +477,7 @@ class Suite extends Scope
      */
     public function passed()
     {
-        if (empty($results['fail']) && empty($results['exception']) && empty($results['incomplete'])) {
+        if (empty($this->_results['fail']) && empty($this->_results['exception']) && empty($this->_results['incomplete'])) {
             return true;
         }
         return false;
