@@ -248,6 +248,7 @@ class Parser
         }
         $this->_states['body'] .= $token[0];
         $as ? $this->_states['uses'][$alias] = $use : $this->_states['uses'][$last] = $use;
+        $this->_codeNode('use');
     }
 
     /**
@@ -605,7 +606,8 @@ class Parser
             'code'      => 'c',
             'comment'   => 'doc',
             'plain'     => 'p',
-            'string'    => 'str'
+            'string'    => 'str',
+            'use'       => 'u'
         ];
 
         foreach ($root->lines['content'] as $num => $nodes) {

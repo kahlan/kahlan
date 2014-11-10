@@ -5,10 +5,10 @@
 #5     [                         ] #5 > #5         |
 #6     [           ns            ] #6 > #153       |namespace spec\fixture\analysis;
 #7     [                         ] #7 > #7         |
-#8     [            c            ] #8 > #11        |use kahlan\A;
-#9     [            c            ] #9 > #11        |use kahlan\B, kahlan\C;
-#10    [            c            ] #10 > #11       |use kahlan\E as F;
-#11    [            c            ] #11 > #11       |use stdObj;
+#8     [            u            ] #8 > #8         |use kahlan\A;
+#9     [            u            ] #9 > #9         |use kahlan\B, kahlan\C;
+#10    [            u            ] #10 > #10       |use kahlan\E as F;
+#11    [            u            ] #11 > #11       |use stdObj;
 #12    [                         ] #12 > #12       |
 #13    [           fct           ] #13 > #17       |function slice($data, $keys) {
 #14    [            c            ] #14 > #14       |    $removed = array_intersect_key($data, array_fill_keys((array) $keys, true));

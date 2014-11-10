@@ -1,5 +1,5 @@
 #1     [          open           ] #1 > #1         |<?php
-#2     [            c            ] #2 > #2         |use kahlan\Matcher;
+#2     [            u            ] #2 > #2         |use kahlan\Matcher;
 #3     [                         ] #3 > #3         |
 #4     [          class          ] #4 > #10        |class NoNamespace
 #5     [          class          ] #5 > #10        |{
