@@ -524,7 +524,8 @@ class Parser
         $nb = count($lines) - 1;
 
         foreach ($lines as $i => $line) {
-            if (!trim($line) || $line === '}') {
+            $trim = trim($line);
+            if (!$trim || $trim === '}') {
                 continue;
             }
             $index = $num + $i;
