@@ -176,7 +176,12 @@ class Collector
         if (preg_match("/eval\(\)'d code$/", $file) || !isset($this->_coverage[$file])) {
             return;
         }
+        $nbLines = count(file($file));
+
         foreach ($coverage as $line => $value) {
+            if ($line >= $nbLines) {
+                continue;
+            }
             if (!isset($this->_coverage[$file][$line])) {
                 $this->_coverage[$file][$line] = $value;
             } else {
