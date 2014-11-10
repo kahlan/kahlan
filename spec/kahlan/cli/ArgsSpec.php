@@ -166,4 +166,33 @@ describe("Args", function() {
 
     });
 
+    describe("->exists()", function() {
+
+        it("returns `true` if the argument exists", function() {
+
+            $args = new Args();
+            $actual = $args->parse([
+                'command', '--option1', '--option2=true' , '--option3=false', '--option4=0'
+            ]);
+            expect($args->exists('option1'))->toBe(true);
+            expect($args->exists('option2'))->toBe(true);
+            expect($args->exists('option3'))->toBe(true);
+            expect($args->exists('option4'))->toBe(true);
+            expect($args->exists('option5'))->toBe(false);
+
+        });
+
+        it("returns `true` if the argument as a default value", function() {
+
+            $args = new Args();
+            $args->option('option1', ['type' => 'boolean']);
+            $args->option('option2', ['type' => 'boolean', 'default' => false]);
+
+            expect($args->exists('option1'))->toBe(false);
+            expect($args->exists('option2'))->toBe(true);
+
+        });
+
+    });
+
 });

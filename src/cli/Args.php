@@ -127,7 +127,13 @@ class Args {
      */
     public function exists($name)
     {
-        return array_key_exists($name, $this->_values);
+        if (array_key_exists($name, $this->_values)) {
+            return true;
+        }
+        if (isset($this->_options[$name])) {
+            return isset($this->_options[$name]['default']);
+        }
+        return false;
     }
 
     /**
