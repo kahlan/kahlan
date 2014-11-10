@@ -7,8 +7,8 @@ use kahlan\reporter\coverage\exporter\Coveralls;
 $args = $this->args();
 $args->attribute('ff', 'default', 1);
 $args->attribute('coverage', 'default', 3);
-$args->attribute('coverage-scrutinizer', 'default', 'scrutinizer.xml');
-$args->attribute('coverage-coveralls', 'default', 'coveralls.json');
+$args->attribute('scrutinizer', 'default', 'scrutinizer.xml');
+$args->attribute('coveralls', 'default', 'coveralls.json');
 
 Filter::register('kahlan.coverage', function($chain) {
     $reporters = $this->reporters();
@@ -38,12 +38,12 @@ Filter::apply($this, 'coverage', 'kahlan.coverage');
 
 Filter::register('kahlan.coveralls', function($chain) {
     $coverage = $this->reporters()->get('coverage');
-    if (!$coverage || !$this->args()->exists('coverage-coveralls')) {
+    if (!$coverage || !$this->args()->exists('coveralls')) {
         return $chain->next();
     }
     Coveralls::write([
         'coverage' => $coverage,
-        'file' => $this->args()->get('coverage-coveralls'),
+        'file' => $this->args()->get('coveralls'),
         'service_name' => 'travis-ci',
         'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
     ]);

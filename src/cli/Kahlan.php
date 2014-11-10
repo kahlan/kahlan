@@ -95,9 +95,9 @@ class Kahlan {
         $args->option('config', ['default' => 'kahlan-config.php']);
         $args->option('ff', ['type' => 'numeric', 'default' => 0]);
         $args->option('no-colors', ['type' => 'boolean', 'default' => false]);
-        $args->option('interceptor-include', ['array' => 'true', 'default' => ['*']]);
-        $args->option('interceptor-exclude', ['array' => 'true', 'default' => []]);
-        $args->option('interceptor-persistent', ['type'  => 'boolean', 'default' => true]);
+        $args->option('include', ['array' => 'true', 'default' => ['*']]);
+        $args->option('exclude', ['array' => 'true', 'default' => []]);
+        $args->option('persistent', ['type'  => 'boolean', 'default' => true]);
         $args->option('autoclear', ['array' => 'true', 'default' => [
             'kahlan\plugin\Monkey',
             'kahlan\plugin\Call',
@@ -194,15 +194,15 @@ Code Coverage Options:
                                       detail for the code coverage report (0-4). If a namespace, class or
                                       method definition is provided, if will generate a detailled code
                                       coverage of this specific scope (default `0`).
-  --coverage-scrutinizer=<file>       Export code coverage report into a Scrutinizer compatible format.
+  --scrutinizer=<file>                Export code coverage report into a Scrutinizer compatible format.
 
 Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
   --no-colors=<boolean>               To turn off colors. (default: `false`).
-  --interceptor-include=<string>      Paths to include for patching. (default: `['*']`).
-  --interceptor-exclude=<string>      Paths to exclude from patching. (default: `[]`).
-  --interceptor-persistent=<boolean>  Cache patched files (default: `true`).
+  --include=<string>                  Paths to include for patching. (default: `['*']`).
+  --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
+  --persistent=<boolean>              Cache patched files (default: `true`).
   --autoclear                         classes to autoclear after each spec (default: [
                                           `'kahlan\plugin\Monkey'`,
                                           `'kahlan\plugin\Call'`,
@@ -299,9 +299,9 @@ EOD;
             Interceptor::patch([
                 'loader' => [$this->_autoloader, 'loadClass'],
                 'patchers' => $this->patchers(),
-                'include' => $this->args()->get('interceptor-include'),
-                'exclude' => $this->args()->get('interceptor-exclude'),
-                'persistent' => $this->args()->get('interceptor-persistent')
+                'include' => $this->args()->get('include'),
+                'exclude' => $this->args()->get('exclude'),
+                'persistent' => $this->args()->get('persistent')
             ]);
         });
     }
@@ -403,10 +403,10 @@ EOD;
     {
         return Filter::on($this, 'reporting', [], function($chain) {
             $coverage = $this->reporters()->get('coverage');
-            if ($coverage && $this->args()->exists('coverage-scrutinizer')) {
+            if ($coverage && $this->args()->exists('scrutinizer')) {
                 Scrutinizer::write([
                     'coverage' => $coverage,
-                    'file' => $this->args()->get('coverage-scrutinizer')
+                    'file' => $this->args()->get('scrutinizer')
                 ]);
             }
         });
