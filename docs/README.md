@@ -1101,7 +1101,7 @@ The filterable entry points are the following:
   * `'before`'           # Useful for registering some pre process tasks
   * `'run`'              # Runs the test suite
   * `'reporting`'        # Runs some additionnal reporting tasks
-  * `'end`'              # Trigger the end of the processing
+  * `'stop`'             # Trigger the stop of the process
 
 
 [You can see more details about how the workflow works here](https://github.com/crysalead/kahlan/blob/master/src/cli/Kahlan.php) (start reading with the `run()` method).

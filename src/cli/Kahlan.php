@@ -246,7 +246,7 @@ EOD;
 
             $this->_reporting();
 
-            $this->_end();
+            $this->_stop();
         });
     }
 
@@ -413,12 +413,12 @@ EOD;
     }
 
     /**
-     * Set up the default `'end'` filter.
+     * Set up the default `'stop'` filter.
      */
-    protected function _end()
+    protected function _stop()
     {
-        return Filter::on($this, 'end', [], function($chain) {
-            $this->suite()->end();
+        return Filter::on($this, 'stop', [], function($chain) {
+            $this->suite()->stop();
         });
     }
 

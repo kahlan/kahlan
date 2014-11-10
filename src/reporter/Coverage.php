@@ -203,9 +203,9 @@ class Coverage extends Terminal
     }
 
     /**
-     * Callback called at the end of specs processing.
+     * Callback called at the end of the process.
      */
-    public function end($results = [])
+    public function stop($results = [])
     {
         $this->console("\nCoverage Summary\n----------------\n\n");
         if (is_numeric($this->_verbosity)) {

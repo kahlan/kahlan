@@ -110,4 +110,11 @@ class Reporter
     public function end($results = [])
     {
     }
+
+    /**
+     * Callback called at the end of the process.
+     */
+    public function stop($results = [])
+    {
+    }
 }

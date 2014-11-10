@@ -402,18 +402,24 @@ class Suite extends Scope
         $this->report('begin', ['total' => $total]);
 
         $this->_run();
-        return $this->passed();
-    }
 
-    /**
-     * Trigger the `end` event.
-     */
-    public function end()
-    {
         $report = [];
         $report['specs'] = $this->_results;
         $report['exclusive'] = $this->_exclusives;
         $this->report('end', $report);
+
+        return $this->passed();
+    }
+
+    /**
+     * Trigger the `stop` event.
+     */
+    public function stop()
+    {
+        $report = [];
+        $report['specs'] = $this->_results;
+        $report['exclusive'] = $this->_exclusives;
+        $this->report('stop', $report);
     }
 
     /**
