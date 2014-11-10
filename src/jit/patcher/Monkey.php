@@ -122,7 +122,11 @@ class Monkey
                 $this->_uses = $node->namespace ? $node->namespace->uses : [];
                 $node->body = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
                 $code = $this->_classes['node'];
-                $patch = new $code(join('', $this->_variables), 'code');
+                $body = '';
+                foreach ($this->_variables as $variable) {
+                    $body .= $variable['name'] . $variable['patch'];
+                }
+                $patch = new $code($body, 'code');
                 $patch->parent = $node->function ?: $node->parent;
                 $patch->function = $node->function;
                 $patch->namespace = $node->namespace;
@@ -149,7 +153,6 @@ class Monkey
             return $matches[0];
         }
 
-        $variable = '$__' . static::$prefix . '__' . $this->_counter++;
         if ($name[0] === '\\') {
             $name = substr($name, 1);
             $args = "null , '{$name}'";
@@ -159,7 +162,15 @@ class Monkey
             $isFunc = $matches[1] || $static ? 'false' : 'true';
             $args = "__NAMESPACE__ , '{$name}', {$isFunc}";
         }
-        $this->_variables[] = $variable . " = \kahlan\plugin\Monkey::patched({$args});";
+
+        if (!isset($this->_variables[$name])) {
+            $variable = '$__' . static::$prefix . '__' . $this->_counter++;
+            $this->_variables[$name]['name'] = $variable;
+            $this->_variables[$name]['patch'] = " = \kahlan\plugin\Monkey::patched({$args});";
+        } else {
+            $variable = $this->_variables[$name]['name'];
+        }
+
         return $matches[1] . $matches[2] . $variable . $matches[4] . $matches[5];
     }
 

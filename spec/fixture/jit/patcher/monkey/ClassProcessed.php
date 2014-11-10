@@ -28,8 +28,8 @@ class Example extends \kahlan\fixture\Parent
     }
 
     public function nested()
-    {$__KMONKEY__2 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);$__KMONKEY__3 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);$__KMONKEY__4 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
-        return $__KMONKEY__2($__KMONKEY__3(2, 5), $__KMONKEY__4(6, 10));
+    {$__KMONKEY__2 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
+        return $__KMONKEY__2($__KMONKEY__2(2, 5), $__KMONKEY__2(6, 10));
     }
 
     public function inString()
@@ -38,33 +38,33 @@ class Example extends \kahlan\fixture\Parent
     }
 
     public function namespaced()
-    {$__KMONKEY__5 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'time', true);
-        $__KMONKEY__5();
+    {$__KMONKEY__3 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'time', true);
+        $__KMONKEY__3();
     }
 
     public function rootBasedInsteadOfNamespaced()
-    {$__KMONKEY__6 = \kahlan\plugin\Monkey::patched(null , 'time');
-        $__KMONKEY__6();
+    {$__KMONKEY__4 = \kahlan\plugin\Monkey::patched(null , 'time');
+        $__KMONKEY__4();
     }
 
     public function instantiate()
-    {$__KMONKEY__7 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'stdClass', false);
-        new $__KMONKEY__7;
+    {$__KMONKEY__5 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'stdClass', false);
+        new $__KMONKEY__5;
     }
 
     public function instantiateRootBased()
-    {$__KMONKEY__8 = \kahlan\plugin\Monkey::patched(null , 'stdClass');
-        new $__KMONKEY__8;
+    {$__KMONKEY__6 = \kahlan\plugin\Monkey::patched(null , 'stdClass');
+        new $__KMONKEY__6;
     }
 
     public function instantiateFromUsed()
-    {$__KMONKEY__9 = \kahlan\plugin\Monkey::patched(null, 'kahlan\MongoId');
-        new $__KMONKEY__9;
+    {$__KMONKEY__7 = \kahlan\plugin\Monkey::patched(null, 'kahlan\MongoId');
+        new $__KMONKEY__7;
     }
 
     public function instantiateRootBasedFromUsed()
-    {$__KMONKEY__10 = \kahlan\plugin\Monkey::patched(null , 'MongoId');
-        new $__KMONKEY__10;
+    {$__KMONKEY__8 = \kahlan\plugin\Monkey::patched(null , 'MongoId');
+        new $__KMONKEY__8;
     }
 
     public function instantiateVariable()
@@ -74,24 +74,24 @@ class Example extends \kahlan\fixture\Parent
     }
 
     public function staticCall()
-    {$__KMONKEY__11 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'Debugger', false);
-        return $__KMONKEY__11::trace();
+    {$__KMONKEY__9 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'Debugger', false);
+        return $__KMONKEY__9::trace();
     }
 
     public function staticCallFromUsed()
-    {$__KMONKEY__12 = \kahlan\plugin\Monkey::patched(null, 'string\String');
-        return $__KMONKEY__12::hash((object) 'hello');
+    {$__KMONKEY__10 = \kahlan\plugin\Monkey::patched(null, 'string\String');
+        return $__KMONKEY__10::hash((object) 'hello');
     }
 
     public function noIndent()
-    {$__KMONKEY__13 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
-$__KMONKEY__13();
+    {$__KMONKEY__11 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
+$__KMONKEY__11();
     }
 
     public function closure()
     {
-        $func = function() {$__KMONKEY__14 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
-            $__KMONKEY__14(2.5);
+        $func = function() {$__KMONKEY__12 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
+            $__KMONKEY__12(2.5);
         };
         $func();
     }
@@ -104,23 +104,23 @@ $__KMONKEY__13();
     public function lambda()
     {
         $initializers = [
-            'name' => function($self) {$__KMONKEY__15 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'basename', true);$__KMONKEY__16 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'str_replace', true);
-                return $__KMONKEY__15($__KMONKEY__16('\\', '/', $self));
+            'name' => function($self) {$__KMONKEY__13 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'basename', true);$__KMONKEY__14 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'str_replace', true);
+                return $__KMONKEY__13($__KMONKEY__14('\\', '/', $self));
             },
-            'source' => function($self) {$__KMONKEY__17 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'Inflector', false);
-                return $__KMONKEY__17::tableize($self::meta('name'));
+            'source' => function($self) {$__KMONKEY__15 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'Inflector', false);
+                return $__KMONKEY__15::tableize($self::meta('name'));
             },
-            'title' => function($self) {$__KMONKEY__18 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'array_merge', true);
+            'title' => function($self) {$__KMONKEY__16 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'array_merge', true);
                 $titleKeys = array('title', 'name');
-                $titleKeys = $__KMONKEY__18($titleKeys, (array) $self::meta('key'));
+                $titleKeys = $__KMONKEY__16($titleKeys, (array) $self::meta('key'));
                 return $self::hasField($titleKeys);
             }
         ];
     }
 
-    public function subChild() {$__KMONKEY__19 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'RecursiveIteratorIterator', false);
+    public function subChild() {$__KMONKEY__17 = \kahlan\plugin\Monkey::patched(__NAMESPACE__ , 'RecursiveIteratorIterator', false);
         if ($options['recursive']) {
-            $worker = new $__KMONKEY__19($worker, $iteratorFlags);
+            $worker = new $__KMONKEY__17($worker, $iteratorFlags);
         }
     }
 

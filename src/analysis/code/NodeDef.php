@@ -3,6 +3,8 @@ namespace kahlan\analysis\code;
 
 class NodeDef
 {
+    public $processable = true;
+
     public $type = 'none';
 
     public $namespace = null;
@@ -26,8 +28,6 @@ class NodeDef
         'start' => null,
         'stop'  => 0
     ];
-
-    public $processable = true;
 
     public function __construct($body = '', $type = null)
     {
