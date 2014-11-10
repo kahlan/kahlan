@@ -32,6 +32,7 @@ describe("Parser", function() {
             $parsed = Parser::debug($this->noNamespace);
             $this->expect($parsed)->toBe($this->noNamespaceTxt);
         });
+
     });
 
 });

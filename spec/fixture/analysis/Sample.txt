@@ -3,7 +3,7 @@
 #3     [           doc           ] #3 > #4         | * Some comments
 #4     [           doc           ] #4 > #4         | */
 #5     [                         ] #5 > #5         |
-#6     [           ns            ] #6 > #130       |namespace spec\fixture\analysis;
+#6     [           ns            ] #6 > #142       |namespace spec\fixture\analysis;
 #7     [                         ] #7 > #7         |
 #8     [            c            ] #8 > #11        |use kahlan\A;
 #9     [            c            ] #9 > #11        |use kahlan\B, kahlan\C;
@@ -16,7 +16,7 @@
 #16    [            c            ] #16 > #16       |    return array($data, $removed);
 #17    [           fct           ] #17 > #17       |}
 #18    [                         ] #18 > #18       |
-#19    [          class          ] #19 > #92       |class Sample extends \kahlan\fixture\Parent {
+#19    [          class          ] #19 > #104      |class Sample extends \kahlan\fixture\Parent {
 #20    [                         ] #20 > #20       |
 #21    [           doc           ] #21 > #21       |    // Using a tab
 #22    [          attr           ] #22 > #22       |    protected    $_public = true;
@@ -52,8 +52,8 @@
 #52    [                         ] #52 > #52       |
 #53    [           fct           ] #53 > #57       |    public function weirdSyntax() {
 #54    [                         ] #54 > #54       |
-#55    [           c,c           ] #55 > #57       |        foreach ($variable as $key => $value) {}
-#56    [            c            ] #56 > #57       |
+#55    [            c            ] #55 > #55       |        foreach ($variable as $key => $value) {}
+#56    [                         ] #56 > #56       |
 #57    [          fct,c          ] #57 > #57       |    $i++;}
 #58    [                         ] #58 > #58       |
 #59    [           fct           ] #59 > #80       |    public function phpArray() {
@@ -89,52 +89,70 @@
 #89    [                         ] #89 > #89       |
 #90    [           fct           ] #90 > #90       |    }
 #91    [                         ] #91 > #91       |
-#92    [          class          ] #92 > #92       |}
+#92    [           fct           ] #92 > #102      |    public function codeEndAfterSemicolonAndBraces() {
 #93    [                         ] #93 > #93       |
-#94    [          class          ] #94 > #97       |class
-#95    [          class          ] #95 > #97       |    Sample2
-#96    [          class          ] #96 > #97       |    extends Sample2 {
-#97    [          class          ] #97 > #97       |}
+#94    [         c,str,c         ] #94 > #95       |        if (!$options['file'])
+#95    [            c            ] #95 > #95       |        {
+#96    [                         ] #96 > #96       |
+#97    [         c,str,c         ] #97 > #97       |            throw new RuntimeException("Missing file name");
 #98    [                         ] #98 > #98       |
-#99    [        interface        ] #99 > #103      |interface Template1
-#100   [        interface        ] #100 > #103     |{
-#101   [        attr,fct         ] #101 > #101     |    public function setVariable($name, $var);
-#102   [        attr,fct         ] #102 > #102     |    public function getHtml($template);
-#103   [        interface        ] #103 > #103     |}
-#104   [                         ] #104 > #104     |
-#105   [          trait          ] #105 > #112     |trait Template2 {
-#106   [           fct           ] #106 > #108     |    public function setVariable($name, $var) {
-#107   [                         ] #107 > #107     |
-#108   [           fct           ] #108 > #108     |    }
-#109   [           fct           ] #109 > #111     |    public function getHtml($template) {
+#99    [                         ] #99 > #99       |        }
+#100   [                         ] #100 > #100     |
+#101   [         c,str,c         ] #101 > #101     |        return file_put_contents($options['file'], static::export($options));
+#102   [           fct           ] #102 > #102     |    }
+#103   [                         ] #103 > #103     |
+#104   [          class          ] #104 > #104     |}
+#105   [                         ] #105 > #105     |
+#106   [          class          ] #106 > #109     |class
+#107   [          class          ] #107 > #109     |    Sample2
+#108   [          class          ] #108 > #109     |    extends Sample2 {
+#109   [          class          ] #109 > #109     |}
 #110   [                         ] #110 > #110     |
-#111   [           fct           ] #111 > #111     |    }
-#112   [          trait          ] #112 > #112     |}
-#113   [                         ] #113 > #113     |
-#114   [          class          ] #114 > #115     |class Dir extends \FilterIterator{
-#115   [          class          ] #115 > #115     |}
+#111   [        interface        ] #111 > #115     |interface Template1
+#112   [        interface        ] #112 > #115     |{
+#113   [        attr,fct         ] #113 > #113     |    public function setVariable($name, $var);
+#114   [        attr,fct         ] #114 > #114     |    public function getHtml($template);
+#115   [        interface        ] #115 > #115     |}
 #116   [                         ] #116 > #116     |
-#117   [           doc           ] #117 > #117     |//No scope
-#118   [          c,c,c          ] #118 > #118     |for($i = 0; $i <= 10; $i++) {
-#119   [            c            ] #119 > #119     |    $rand = rand();
-#120   [            c            ] #120 > #120     |}
-#121   [                         ] #121 > #121     |
-#122   [          close          ] #122 > #122     |?>
-#123   [                         ] #123 > #123     |
-#124   [            p            ] #124 > #124     |<i> Hello World </i>
+#117   [          trait          ] #117 > #124     |trait Template2 {
+#118   [           fct           ] #118 > #120     |    public function setVariable($name, $var) {
+#119   [                         ] #119 > #119     |
+#120   [           fct           ] #120 > #120     |    }
+#121   [           fct           ] #121 > #123     |    public function getHtml($template) {
+#122   [                         ] #122 > #122     |
+#123   [           fct           ] #123 > #123     |    }
+#124   [          trait          ] #124 > #124     |}
 #125   [                         ] #125 > #125     |
-#126   [          open           ] #126 > #126     |<?php
-#127   [           doc           ] #127 > #129     |/**
-#128   [           doc           ] #128 > #129     | * Some comments2
-#129   [           doc           ] #129 > #129     | */
-#130   [           ns            ] #130 > #130     |
-#131   [           ns            ] #131 > #139     |namespace kahlan\spec\fixture\parser;
-#132   [                         ] #132 > #132     |
-#133   [          class          ] #133 > #137     |class Sample3 extends Sample2 {
-#134   [           fct           ] #134 > #136     |    public function myMethod() {
-#135   [         c,str,c         ] #135 > #135     |        return 'Hello World';
-#136   [           fct           ] #136 > #136     |    }
-#137   [          class          ] #137 > #137     |}
-#138   [                         ] #138 > #138     |
-#139   [        ns,close         ] #139 > #139     |?>
-#140   [                         ] #140 > #140     |
+#126   [          class          ] #126 > #127     |class Dir extends \FilterIterator{
+#127   [          class          ] #127 > #127     |}
+#128   [                         ] #128 > #128     |
+#129   [           doc           ] #129 > #129     |//No scope
+#130   [          c,c,c          ] #130 > #130     |for($i = 0; $i <= 10; $i++) {
+#131   [            c            ] #131 > #131     |    $rand = rand();
+#132   [                         ] #132 > #132     |}
+#133   [                         ] #133 > #133     |
+#134   [          close          ] #134 > #134     |?>
+#135   [                         ] #135 > #135     |
+#136   [            p            ] #136 > #136     |<i> Hello World </i>
+#137   [                         ] #137 > #137     |
+#138   [          open           ] #138 > #138     |<?php
+#139   [           doc           ] #139 > #141     |/**
+#140   [           doc           ] #140 > #141     | * Some comments2
+#141   [           doc           ] #141 > #141     | */
+#142   [           ns            ] #142 > #142     |
+#143   [           ns            ] #143 > #152     |namespace kahlan\spec\fixture\parser;
+#144   [                         ] #144 > #144     |
+#145   [          class          ] #145 > #149     |class Sample3 extends Sample2 {
+#146   [           fct           ] #146 > #148     |    public function myMethod() {
+#147   [         c,str,c         ] #147 > #147     |        return 'Hello World';
+#148   [           fct           ] #148 > #148     |    }
+#149   [          class          ] #149 > #149     |}
+#150   [                         ] #150 > #150     |
+#151   [          close          ] #151 > #151     |?>
+#152   [         ns,open         ] #152 > #152     |<?php
+#153   [           ns            ] #153 > #158     |namespace kahlan\spec\fixture\whatever;
+#154   [                         ] #154 > #154     |
+#155   [          class          ] #155 > #158     |class NoPhpEndTag
+#156   [          class          ] #156 > #158     |{
+#157   [                         ] #157 > #157     |
+#158   [        class,ns         ] #158 > #158     |}

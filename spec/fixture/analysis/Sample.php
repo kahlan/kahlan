@@ -89,6 +89,18 @@ class Sample extends \kahlan\fixture\Parent {
 
     }
 
+    public function codeEndAfterSemicolonAndBraces() {
+
+        if (!$options['file'])
+        {
+
+            throw new RuntimeException("Missing file name");
+
+        }
+
+        return file_put_contents($options['file'], static::export($options));
+    }
+
 }
 
 class
@@ -137,3 +149,10 @@ class Sample3 extends Sample2 {
 }
 
 ?>
+<?php
+namespace kahlan\spec\fixture\whatever;
+
+class NoPhpEndTag
+{
+
+}

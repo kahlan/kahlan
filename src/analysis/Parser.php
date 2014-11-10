@@ -117,7 +117,7 @@ class Parser
                 break;
                 case '{':
                 case ';':
-                    $this->_states['body'] .= $token[1];
+                    $this->_states['body'] .= $token[0];
                     $this->_codeNode();
                     $current = $this->_states['current'];
                     if ($current->type === 'code') {
@@ -187,6 +187,7 @@ class Parser
         if (!$this->_states['braces'] || end($this->_states['braces']) < $this->_states['brace']) {
             $token = $this->_stream->current(true);
             $this->_states['body'] .= $token[0];
+            $this->_codeNode();
             return;
         }
         array_pop($this->_states['braces']);
@@ -205,6 +206,7 @@ class Parser
         if ($this->_states['lines']) {
             $current->lines['stop'] = $this->_states['num'];
             $this->_states['num'] += substr_count($current->close, "\n");
+            $current->parent->lines['stop'] = $this->_states['num'];
         }
 
         $this->_states['current'] = $current->parent;
@@ -535,6 +537,8 @@ class Parser
         $num = $this->_states['num'];
         $nb = substr_count($body, "\n");
 
+        $code = trim($body);
+
         $ignoreStart = 0;
         if (preg_match_all('/^(\s*\n)+/', $body, $match)) {
             $ignoreStart = substr_count($match[0][0], "\n");
@@ -549,19 +553,18 @@ class Parser
         while ($i <= $nb - $ignoreEnd) {
             $line = $num + $i;
 
-            $this->_root->lines['content'][$line][] = $node;
+            if ($code !== '}') {
+                $this->_root->lines['content'][$line][] = $node;
+            }
 
             if ($node->lines['start'] === null) {
                 $node->lines['start'] = $line;
             }
             $node->lines['stop'] = $line;
-            $node = $node;
             $i++;
         }
 
-        if ($node->parent) {
-            $node->parent->lines['stop'] = $num + $nb - ($ignoreEnd ? 1 : 0);
-        }
+        $node->parent->lines['stop'] = $num + $nb - ($ignoreEnd ? 1 : 0);
 
         $this->_states['num'] += $nb;
     }
@@ -640,7 +643,7 @@ class Parser
             $types = [];
             foreach ($nodes as $node) {
                 $parent = $node->parent;
-                if ($parent && $node->type === 'code') {
+                if ($node->type === 'code') {
                     $types[] = $abbr[$parent->hasMethods || $parent->type === 'interface' ? 'attribute' : 'code'];
                 } else {
                     $types[] = $abbr[$node->type];
