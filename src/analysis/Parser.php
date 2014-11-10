@@ -107,7 +107,7 @@ class Parser
                     $this->_commentNode();
                 break;
                 case T_CONSTANT_ENCAPSED_STRING:
-                    $this->_constantStringNode();
+                    $this->_stringNode(true);
                 break;
                 case '"':
                     $this->_stringNode();
@@ -441,12 +441,11 @@ class Parser
     protected function _codeNode($type = null)
     {
         if (!$this->_states['body']) {
-            return null;
+            return;
         }
         if ($type) {
             $node = new NodeDef($this->_states['body'], $type);
-        }
-        else if ($this->_states['open']) {
+        } elseif ($this->_states['open']) {
             $parent = $this->_states['current'];
             $node = new NodeDef($this->_states['body'], 'code');
         } else {
@@ -458,31 +457,25 @@ class Parser
     /**
      * Build a string node.
      */
-    protected function _stringNode()
+    protected function _stringNode($constant = false)
     {
         if ($this->_states['current']->type !== 'code') {
-            $this->_states['current'] = $this->_codeNode();
+            $parent = $this->_codeNode();
+            if (!$parent) {
+                $parent = end($this->_states['current']->tree);
+            }
+            if ($parent && $parent->type === 'code') {
+                $this->_states['current'] = $parent;
+            }
         } else {
             $this->_codeNode();
         }
         $token = $this->_stream->current(true);
-        $this->_states['body'] .= $token[0] . $this->_stream->next('"');
-        $node = new NodeDef($this->_states['body'], 'string');
-        return $this->_contextualize($node);
-    }
-
-    /**
-     * Build a string node.
-     */
-    protected function _constantStringNode()
-    {
-        if ($this->_states['current']->type !== 'code') {
-            $this->_states['current'] = $this->_codeNode();
+        if ($constant) {
+            $this->_states['body'] = $token[1];
         } else {
-            $this->_codeNode();
+            $this->_states['body'] .= $token[0] . $this->_stream->next('"');
         }
-        $token = $this->_stream->current(true);
-        $this->_states['body'] = $token[1];
         $node = new NodeDef($this->_states['body'], 'string');
         return $this->_contextualize($node);
     }

@@ -3,7 +3,7 @@
 #3     [           doc           ] #3 > #4         | * Some comments
 #4     [           doc           ] #4 > #4         | */
 #5     [                         ] #5 > #5         |
-#6     [           ns            ] #6 > #142       |namespace spec\fixture\analysis;
+#6     [           ns            ] #6 > #153       |namespace spec\fixture\analysis;
 #7     [                         ] #7 > #7         |
 #8     [            c            ] #8 > #11        |use kahlan\A;
 #9     [            c            ] #9 > #11        |use kahlan\B, kahlan\C;
@@ -16,7 +16,7 @@
 #16    [            c            ] #16 > #16       |    return array($data, $removed);
 #17    [           fct           ] #17 > #17       |}
 #18    [                         ] #18 > #18       |
-#19    [          class          ] #19 > #104      |class Sample extends \kahlan\fixture\Parent {
+#19    [          class          ] #19 > #115      |class Sample extends \kahlan\fixture\Parent {
 #20    [                         ] #20 > #20       |
 #21    [           doc           ] #21 > #21       |    // Using a tab
 #22    [          attr           ] #22 > #22       |    protected    $_public = true;
@@ -101,58 +101,69 @@
 #101   [         c,str,c         ] #101 > #101     |        return file_put_contents($options['file'], static::export($options));
 #102   [           fct           ] #102 > #102     |    }
 #103   [                         ] #103 > #103     |
-#104   [          class          ] #104 > #104     |}
-#105   [                         ] #105 > #105     |
-#106   [          class          ] #106 > #109     |class
-#107   [          class          ] #107 > #109     |    Sample2
-#108   [          class          ] #108 > #109     |    extends Sample2 {
-#109   [          class          ] #109 > #109     |}
-#110   [                         ] #110 > #110     |
-#111   [        interface        ] #111 > #115     |interface Template1
-#112   [        interface        ] #112 > #115     |{
-#113   [        attr,fct         ] #113 > #113     |    public function setVariable($name, $var);
-#114   [        attr,fct         ] #114 > #114     |    public function getHtml($template);
-#115   [        interface        ] #115 > #115     |}
+#104   [           fct           ] #104 > #113     |    public function funkySyntax()
+#105   [           fct           ] #105 > #113     |    {
+#106   [   c,str,c,str,c,str,c   ] #106 > #106     |        $this->{"_{$key}"} = "Hello" + $this->{"_{$key}"};
+#107   [                         ] #107 > #107     |
+#108   [            c            ] #108 > #108     |        $this->{
+#109   [           str           ] #109 > #109     |            "_{$key}"
+#110   [         c,str,c         ] #110 > #110     |        } = "Hello" + $this->{
+#111   [           str           ] #111 > #111     |            "_{$key}"
+#112   [            c            ] #112 > #112     |        };
+#113   [           fct           ] #113 > #113     |    }
+#114   [                         ] #114 > #114     |
+#115   [          class          ] #115 > #115     |}
 #116   [                         ] #116 > #116     |
-#117   [          trait          ] #117 > #124     |trait Template2 {
-#118   [           fct           ] #118 > #120     |    public function setVariable($name, $var) {
-#119   [                         ] #119 > #119     |
-#120   [           fct           ] #120 > #120     |    }
-#121   [           fct           ] #121 > #123     |    public function getHtml($template) {
-#122   [                         ] #122 > #122     |
-#123   [           fct           ] #123 > #123     |    }
-#124   [          trait          ] #124 > #124     |}
-#125   [                         ] #125 > #125     |
-#126   [          class          ] #126 > #127     |class Dir extends \FilterIterator{
-#127   [          class          ] #127 > #127     |}
-#128   [                         ] #128 > #128     |
-#129   [           doc           ] #129 > #129     |//No scope
-#130   [          c,c,c          ] #130 > #130     |for($i = 0; $i <= 10; $i++) {
-#131   [            c            ] #131 > #131     |    $rand = rand();
-#132   [                         ] #132 > #132     |}
+#117   [          class          ] #117 > #120     |class
+#118   [          class          ] #118 > #120     |    Sample2
+#119   [          class          ] #119 > #120     |    extends Sample2 {
+#120   [          class          ] #120 > #120     |}
+#121   [                         ] #121 > #121     |
+#122   [        interface        ] #122 > #126     |interface Template1
+#123   [        interface        ] #123 > #126     |{
+#124   [        attr,fct         ] #124 > #124     |    public function setVariable($name, $var);
+#125   [        attr,fct         ] #125 > #125     |    public function getHtml($template);
+#126   [        interface        ] #126 > #126     |}
+#127   [                         ] #127 > #127     |
+#128   [          trait          ] #128 > #135     |trait Template2 {
+#129   [           fct           ] #129 > #131     |    public function setVariable($name, $var) {
+#130   [                         ] #130 > #130     |
+#131   [           fct           ] #131 > #131     |    }
+#132   [           fct           ] #132 > #134     |    public function getHtml($template) {
 #133   [                         ] #133 > #133     |
-#134   [          close          ] #134 > #134     |?>
-#135   [                         ] #135 > #135     |
-#136   [            p            ] #136 > #136     |<i> Hello World </i>
-#137   [                         ] #137 > #137     |
-#138   [          open           ] #138 > #138     |<?php
-#139   [           doc           ] #139 > #141     |/**
-#140   [           doc           ] #140 > #141     | * Some comments2
-#141   [           doc           ] #141 > #141     | */
-#142   [           ns            ] #142 > #142     |
-#143   [           ns            ] #143 > #152     |namespace kahlan\spec\fixture\parser;
+#134   [           fct           ] #134 > #134     |    }
+#135   [          trait          ] #135 > #135     |}
+#136   [                         ] #136 > #136     |
+#137   [          class          ] #137 > #138     |class Dir extends \FilterIterator{
+#138   [          class          ] #138 > #138     |}
+#139   [                         ] #139 > #139     |
+#140   [           doc           ] #140 > #140     |//No scope
+#141   [          c,c,c          ] #141 > #141     |for($i = 0; $i <= 10; $i++) {
+#142   [            c            ] #142 > #142     |    $rand = rand();
+#143   [                         ] #143 > #143     |}
 #144   [                         ] #144 > #144     |
-#145   [          class          ] #145 > #149     |class Sample3 extends Sample2 {
-#146   [           fct           ] #146 > #148     |    public function myMethod() {
-#147   [         c,str,c         ] #147 > #147     |        return 'Hello World';
-#148   [           fct           ] #148 > #148     |    }
-#149   [          class          ] #149 > #149     |}
-#150   [                         ] #150 > #150     |
-#151   [          close          ] #151 > #151     |?>
-#152   [         ns,open         ] #152 > #152     |<?php
-#153   [           ns            ] #153 > #158     |namespace kahlan\spec\fixture\whatever;
-#154   [                         ] #154 > #154     |
-#155   [          class          ] #155 > #158     |class NoPhpEndTag
-#156   [          class          ] #156 > #158     |{
-#157   [                         ] #157 > #157     |
-#158   [        class,ns         ] #158 > #158     |}
+#145   [          close          ] #145 > #145     |?>
+#146   [                         ] #146 > #146     |
+#147   [            p            ] #147 > #147     |<i> Hello World </i>
+#148   [                         ] #148 > #148     |
+#149   [          open           ] #149 > #149     |<?php
+#150   [           doc           ] #150 > #152     |/**
+#151   [           doc           ] #151 > #152     | * Some comments2
+#152   [           doc           ] #152 > #152     | */
+#153   [           ns            ] #153 > #153     |
+#154   [           ns            ] #154 > #163     |namespace kahlan\spec\fixture\parser;
+#155   [                         ] #155 > #155     |
+#156   [          class          ] #156 > #160     |class Sample3 extends Sample2 {
+#157   [           fct           ] #157 > #159     |    public function myMethod() {
+#158   [         c,str,c         ] #158 > #158     |        return 'Hello World';
+#159   [           fct           ] #159 > #159     |    }
+#160   [          class          ] #160 > #160     |}
+#161   [                         ] #161 > #161     |
+#162   [          close          ] #162 > #162     |?>
+#163   [         ns,open         ] #163 > #163     |<?php
+#164   [           ns            ] #164 > #169     |namespace kahlan\spec\fixture\whatever;
+#165   [                         ] #165 > #165     |
+#166   [          class          ] #166 > #169     |class NoPhpEndTag
+#167   [          class          ] #167 > #169     |{
+#168   [                         ] #168 > #168     |
+#169   [        class,ns         ] #169 > #169     |}

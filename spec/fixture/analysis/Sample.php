@@ -101,6 +101,17 @@ class Sample extends \kahlan\fixture\Parent {
         return file_put_contents($options['file'], static::export($options));
     }
 
+    public function funkySyntax()
+    {
+        $this->{"_{$key}"} = "Hello" + $this->{"_{$key}"};
+
+        $this->{
+            "_{$key}"
+        } = "Hello" + $this->{
+            "_{$key}"
+        };
+    }
+
 }
 
 class
