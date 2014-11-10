@@ -218,7 +218,7 @@ class Collector
                     continue;
                 }
                 $parent = $node->parent;
-                if ($parent && ($parent->hasMethods || $parent->type === 'interface')) {
+                if ($parent && $parent->hasMethods) {
                     unset($coverage[$num]);
                     continue;
                 }

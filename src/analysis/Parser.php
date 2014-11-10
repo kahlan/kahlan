@@ -266,8 +266,8 @@ class Parser
         $this->_states['braces'] = [$this->_states['brace']];
         $this->_states['brace'] = 1;
         $this->_states['current'] = $this->_root;
-        $this->_states['current'] = $this->_contextualize($node);
-        return $node->namespace = $node;
+        $this->_contextualize($node);
+        return $this->_states['current'] = $node->namespace = $node;
     }
 
     /**
@@ -304,7 +304,6 @@ class Parser
         $body = $this->_stream->current() . $this->_stream->next(['{']);
         $this->_states['body'] .= $body;
         $node = new BlockDef($body, 'interface');
-        $node->hasMethods = false;
         $node->name = substr($body, 0, -1);
         $this->_states['braces'][] = $this->_states['brace'];
         return $this->_states['current'] = $this->_contextualize($node);
@@ -359,7 +358,7 @@ class Parser
         $args = $this->_parseArgs();
         $node->args = $args['args'];
         $body .= $args['body'] . $this->_stream->next([';', '{']);
-        $isMethod = $parent && ($parent->hasMethods);
+        $isMethod = $parent && $parent->hasMethods;
         $node->isMethod = $isMethod;
         $node->isClosure = !$node->name;
         if ($isMethod) {
@@ -459,16 +458,9 @@ class Parser
      */
     protected function _stringNode($constant = false)
     {
-        if ($this->_states['current']->type !== 'code') {
-            $parent = $this->_codeNode();
-            if (!$parent) {
-                $parent = end($this->_states['current']->tree);
-            }
-            if ($parent && $parent->type === 'code') {
-                $this->_states['current'] = $parent;
-            }
-        } else {
-            $this->_codeNode();
+        $code = $this->_codeNode();
+        if ($code && $this->_states['current']->type !== 'code') {
+            $this->_states['current'] = $code;
         }
         $token = $this->_stream->current(true);
         if ($constant) {
@@ -528,38 +520,23 @@ class Parser
         }
 
         $num = $this->_states['num'];
-        $nb = substr_count($body, "\n");
+        $lines = explode("\n", $body);
+        $nb = count($lines) - 1;
 
-        $code = trim($body);
-
-        $ignoreStart = 0;
-        if (preg_match_all('/^(\s*\n)+/', $body, $match)) {
-            $ignoreStart = substr_count($match[0][0], "\n");
-        }
-
-        $ignoreEnd = 0;
-        if (preg_match_all('/(\n\s*)+$/', $body, $match)) {
-            $ignoreEnd = substr_count($match[0][0], "\n");
-        }
-
-        $i = $ignoreStart;
-        while ($i <= $nb - $ignoreEnd) {
-            $line = $num + $i;
-
-            if ($code !== '}') {
-                $this->_root->lines['content'][$line][] = $node;
+        foreach ($lines as $i => $line) {
+            if (!trim($line) || $line === '}') {
+                continue;
             }
-
+            $index = $num + $i;
             if ($node->lines['start'] === null) {
-                $node->lines['start'] = $line;
+                $node->lines['start'] = $index;
             }
-            $node->lines['stop'] = $line;
-            $i++;
+            $node->lines['stop'] = $index;
+            $this->_root->lines['content'][$index][] = $node;
         }
-
-        $node->parent->lines['stop'] = $num + $nb - ($ignoreEnd ? 1 : 0);
 
         $this->_states['num'] += $nb;
+        $node->parent->lines['stop'] = $this->_states['num'] - (trim($lines[$nb]) ? 0 : 1);
     }
 
     protected function _lines() {
@@ -637,7 +614,7 @@ class Parser
             foreach ($nodes as $node) {
                 $parent = $node->parent;
                 if ($node->type === 'code') {
-                    $types[] = $abbr[$parent->hasMethods || $parent->type === 'interface' ? 'attribute' : 'code'];
+                    $types[] = $abbr[$parent->hasMethods ? 'attribute' : 'code'];
                 } else {
                     $types[] = $abbr[$node->type];
                 }

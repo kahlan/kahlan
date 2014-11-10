@@ -53,7 +53,7 @@ class Pointcut
     protected function _processTree($nodes)
     {
         foreach ($nodes as $node) {
-            if ($node->hasMethods) {
+            if ($node->hasMethods && $node->type !== 'interface') {
                 $this->_processMethods($node->tree);
             } elseif (count($node->tree)) {
                 $this->_processTree($node->tree);

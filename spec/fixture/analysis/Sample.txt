@@ -46,9 +46,9 @@
 #46    [                         ] #46 > #46       |
 #47    [           fct           ] #47 > #51       |    public function inlineComment() {
 #48    [                         ] #48 > #48       |
-#49    [         c,c,doc         ] #49 > #49       |        $a = 3; //comment
+#49    [          c,doc          ] #49 > #49       |        $a = 3; //comment
 #50    [                         ] #50 > #50       |
-#51    [      fct,attr,doc       ] #51 > #51       |    } // end function
+#51    [         fct,doc         ] #51 > #51       |    } // end function
 #52    [                         ] #52 > #52       |
 #53    [           fct           ] #53 > #57       |    public function weirdSyntax() {
 #54    [                         ] #54 > #54       |
@@ -96,7 +96,7 @@
 #96    [                         ] #96 > #96       |
 #97    [         c,str,c         ] #97 > #97       |            throw new RuntimeException("Missing file name");
 #98    [                         ] #98 > #98       |
-#99    [                         ] #99 > #99       |        }
+#99    [            c            ] #99 > #99       |        }
 #100   [                         ] #100 > #100     |
 #101   [         c,str,c         ] #101 > #101     |        return file_put_contents($options['file'], static::export($options));
 #102   [           fct           ] #102 > #102     |    }
@@ -107,9 +107,9 @@
 #107   [                         ] #107 > #107     |
 #108   [            c            ] #108 > #108     |        $this->{
 #109   [           str           ] #109 > #109     |            "_{$key}"
-#110   [         c,str,c         ] #110 > #110     |        } = "Hello" + $this->{
+#110   [        c,c,str,c        ] #110 > #110     |        } = "Hello" + $this->{
 #111   [           str           ] #111 > #111     |            "_{$key}"
-#112   [            c            ] #112 > #112     |        };
+#112   [           c,c           ] #112 > #112     |        };
 #113   [           fct           ] #113 > #113     |    }
 #114   [                         ] #114 > #114     |
 #115   [          class          ] #115 > #115     |}
@@ -121,8 +121,8 @@
 #121   [                         ] #121 > #121     |
 #122   [        interface        ] #122 > #126     |interface Template1
 #123   [        interface        ] #123 > #126     |{
-#124   [        attr,fct         ] #124 > #124     |    public function setVariable($name, $var);
-#125   [        attr,fct         ] #125 > #125     |    public function getHtml($template);
+#124   [           fct           ] #124 > #124     |    public function setVariable($name, $var);
+#125   [           fct           ] #125 > #125     |    public function getHtml($template);
 #126   [        interface        ] #126 > #126     |}
 #127   [                         ] #127 > #127     |
 #128   [          trait          ] #128 > #135     |trait Template2 {
