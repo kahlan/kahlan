@@ -6,10 +6,23 @@ use RuntimeException;
 class Xdebug
 {
     /**
+     * Config array
+     *
+     * @var array
+     */
+    protected $_config = [];
+
+    /**
      * Construct.
      */
-    public function __construct()
+    public function __construct($config = [])
     {
+        $defaults = [
+            'coverage' => 0,
+            'cleanup' => true
+        ];
+        $this->_config = $config + $defaults;
+
         if (!extension_loaded('xdebug')) {
             throw new RuntimeException('Xdebug is not loaded.');
         }
@@ -24,7 +37,7 @@ class Xdebug
      */
     public function start()
     {
-        xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        xdebug_start_code_coverage($this->_config['coverage']);
     }
 
     /**
@@ -35,7 +48,7 @@ class Xdebug
     public function stop()
     {
         $data = xdebug_get_code_coverage();
-        xdebug_stop_code_coverage();
+        xdebug_stop_code_coverage($this->_config['cleanup']);
 
         $result = [];
         foreach ($data as $file => $coverage) {

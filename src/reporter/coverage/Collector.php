@@ -193,9 +193,46 @@ class Collector
     public function export($file = null)
     {
         if (!$file) {
-            return $this->_coverage;
+            $coverage = [];
+            foreach ($this->_coverage as $file => $value) {
+               $coverage[$file] = $this->_exportFile($file);
+            }
+            return $coverage;
         }
-        return isset($this->_coverage[$file]) ? $this->_coverage[$file] : [];
+        return $this->_exportFile($file);
+    }
+
+    protected function _exportFile($file) {
+        $coverage = isset($this->_coverage[$file]) ? $this->_coverage[$file] : [];
+
+        $root = $this->_parse($file);
+        foreach ($root->lines['content'] as $num => $nodes) {
+            foreach ($nodes as $node) {
+                if ($node->type !== 'code' && $node->type !== 'string') {
+                    unset($coverage[$num]);
+                    continue;
+                }
+                $parent = $node->parent;
+                if ($parent && ($parent->hasMethods || $parent->type === 'interface')) {
+                    unset($coverage[$num]);
+                    continue;
+                }
+                if (!isset($coverage[$num])) {
+                    $coverage[$num] = 0;
+                }
+                if ($parent && $parent->type === 'code') {
+                    for ($i = $parent->lines['start']; $i < $parent->lines['stop']; $i++) {
+                        if (!isset($coverage[$i])) {
+                            $coverage[$i] = $coverage[$num];
+                        } else {
+                            $coverage[$i] = $coverage[$i] === 1 ? $coverage[$i] : $coverage[$num];
+                        }
+                    }
+                }
+            }
+        }
+        ksort($coverage);
+        return $coverage;
     }
 
     /**
@@ -206,8 +243,9 @@ class Collector
     public function metrics()
     {
         $this->_metrics = new Metrics();
-        foreach ($this->_coverage as $file => $coverage) {
+        foreach ($this->_coverage as $file => $xdebug) {
             $node = $this->_parse($file);
+            $coverage = $this->_exportFile($file);
             $this->_processTree($file, $node, $node->tree, $coverage);
         }
         return $this->_metrics;
@@ -276,7 +314,7 @@ class Collector
             continue;
         }
         for ($line = $node->lines['start']; $line <= $node->lines['stop']; $line++) {
-            $this->_processLine($line, $coverage, $metrics);
+            $this->_processLine($root->lines['content'][$line - 1], $line, $coverage, $metrics);
         }
         $metrics['files'][] = $file;
         $metrics['line'] = $node->lines['start'];
@@ -295,7 +333,7 @@ class Collector
      * @param array $coverage The coverage data.
      * @param array $metrics  The output metrics array.
      */
-    protected function _processLine($line, $coverage, &$metrics)
+    protected function _processLine($nodes, $line, $coverage, &$metrics)
     {
         if (!$coverage) {
             return;

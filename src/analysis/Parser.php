@@ -78,6 +78,12 @@ class Parser
      */
     protected function _parser($content, $lines = false)
     {
+        if ($this->_states['lines']) {
+            for($i = 0; $i <= substr_count($content, "\n"); $i++) {
+                $this->_root->lines['content'][$i] = [];
+            }
+        }
+
         $this->_stream = new TokenStream(['source' => $content]);
 
         while ($token = $this->_stream->current(true)) {
@@ -539,22 +545,11 @@ class Parser
             $ignoreEnd = substr_count($match[0][0], "\n");
         }
 
-        $content = &$this->_root->lines['content'];
-
-        end($content);
-        $last = key($content);
-
-        for($i = $last + 1; $i < $num + $nb; $i++) {
-            if (!isset($content[$i])) {
-                $content[$i] = [];
-            }
-        }
-
         $i = $ignoreStart;
         while ($i <= $nb - $ignoreEnd) {
             $line = $num + $i;
 
-            $content[$line][] = $node;
+            $this->_root->lines['content'][$line][] = $node;
 
             if ($node->lines['start'] === null) {
                 $node->lines['start'] = $line;
@@ -580,13 +575,15 @@ class Parser
         $root->lines['start'] = 0;
         $root->lines['stop'] = $this->_states['num'] - 1;
 
-        foreach ($root->lines['content'] as $num => $nodes) {
+        $content = &$this->_root->lines['content'];
+
+        foreach ($content as $num => $nodes) {
             foreach ($nodes as $node) {
                 if ($num >= $node->lines['stop'] || $node->type === 'code') {
                     continue;
                 }
-                if (!in_array($node, $root->lines['content'][$node->lines['stop']], true)) {
-                    array_unshift($root->lines['content'][$node->lines['stop']], $node);
+                if (!in_array($node, $content[$node->lines['stop']], true)) {
+                    array_unshift($content[$node->lines['stop']], $node);
                 }
             }
         }

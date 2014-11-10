@@ -21,4 +21,60 @@ class CodeCoverage
 		}
 		return $shallPass;
 	}
+
+	public function multilineArrays()
+	{
+		$array = [
+			'a',
+			'b',
+			'c',
+			true || false,
+			(
+				true && (false && false)
+			)
+		];
+
+		$array =
+		[
+			'hello'
+		];
+
+		$array = array(
+			'a',
+			'b',
+			'c',
+			true || false,
+			(
+				true && (false && false)
+			)
+		);
+
+		$array = array
+		(
+			'hello'
+		);
+	}
+
+	public function multilineExpresions()
+	{
+		$bool = (
+			(true && true)
+			||
+			false
+			&&
+			(
+				true || false
+			)
+		);
+
+		$bool = (
+			(false && $bool)
+			||
+			empty($bool)
+			&&
+			(
+				isset($bool) || false
+			)
+		);
+	}
 }
