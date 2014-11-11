@@ -78,12 +78,7 @@ class Parser
      */
     protected function _parser($content, $lines = false)
     {
-        if ($this->_states['lines']) {
-            for($i = 0; $i <= substr_count($content, "\n"); $i++) {
-                $this->_root->lines['content'][$i] = [];
-            }
-        }
-
+        $this->_initLines($content);
         $this->_stream = new TokenStream(['source' => $content]);
 
         while ($token = $this->_stream->current(true)) {
@@ -173,7 +168,7 @@ class Parser
         }
         $this->_codeNode();
         $this->_flushUses();
-        $this->_lines();
+        $this->_syncLines();
         $this->_stream->rewind();
         return $this->_root;
     }
@@ -504,6 +499,23 @@ class Parser
     }
 
     /**
+     * Adds lines stores for root node.
+     *
+     * @param string $content A php file content.
+     */
+    protected function _initLines($content)
+    {
+        if (!$this->_states['lines']) {
+            return;
+        }
+        if ($this->_states['lines']) {
+            for($i = 0; $i <= substr_count($content, "\n"); $i++) {
+                $this->_root->lines['content'][$i] = [];
+            }
+        }
+    }
+
+    /**
      * Assign the node to some lines and makes them availaible at the root node.
      *
      * @param NodeDef $node The node to match.
@@ -541,7 +553,10 @@ class Parser
         $node->parent->lines['stop'] = $this->_states['num'] - (trim($lines[$nb]) ? 0 : 1);
     }
 
-    protected function _lines() {
+    /**
+     * Synchronize node assignment.
+     */
+    protected function _syncLines() {
         if (!$this->_states['lines']) {
             return;
         }
