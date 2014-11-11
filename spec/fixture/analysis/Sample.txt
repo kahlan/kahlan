@@ -3,7 +3,7 @@
 #3     [           doc           ] #3 > #4         | * Some comments
 #4     [           doc           ] #4 > #4         | */
 #5     [                         ] #5 > #5         |
-#6     [           ns            ] #6 > #153       |namespace spec\fixture\analysis;
+#6     [           ns            ] #6 > #159       |namespace spec\fixture\analysis;
 #7     [                         ] #7 > #7         |
 #8     [            u            ] #8 > #8         |use kahlan\A;
 #9     [            u            ] #9 > #9         |use kahlan\B, kahlan\C;
@@ -16,154 +16,160 @@
 #16    [            c            ] #16 > #16       |    return array($data, $removed);
 #17    [           fct           ] #17 > #17       |}
 #18    [                         ] #18 > #18       |
-#19    [          class          ] #19 > #115      |class Sample extends \kahlan\fixture\Parent {
+#19    [          class          ] #19 > #121      |class Sample extends \kahlan\fixture\Parent {
 #20    [                         ] #20 > #20       |
-#21    [           doc           ] #21 > #21       |    // Using a tab
-#22    [          attr           ] #22 > #22       |    protected    $_public = true;
-#23    [                         ] #23 > #23       |
-#24    [          attr           ] #24 > #24       |    protected $_variable = true;
-#25    [                         ] #25 > #25       |
-#26    [           fct           ] #26 > #28       |    public function bracketInString() {
-#27    [          str,c          ] #27 > #27       |        "/^({$pattern})/";
-#28    [           fct           ] #28 > #28       |    }
+#21    [          attr           ] #21 > #21       |    protected static $_classes = [
+#22    [      str,attr,str       ] #22 > #22       |        'matcher' => 'kahlan\Matcher'
+#23    [          attr           ] #23 > #23       |    ];
+#24    [                         ] #24 > #24       |
+#25    [      attr,str,attr      ] #25 > #25       |    protected $_matcher = '';
+#26    [                         ] #26 > #26       |
+#27    [           doc           ] #27 > #27       |    // Using a tab
+#28    [          attr           ] #28 > #28       |    protected    $_public = true;
 #29    [                         ] #29 > #29       |
-#30    [           fct           ] #30 > #31       |    public function method1($a, $b = array(), $c = [], $d = 0, $f = 'hello') {
-#31    [           fct           ] #31 > #31       |    }
-#32    [                         ] #32 > #32       |
-#33    [           fct           ] #33 > #41       |    public function method2(
-#34    [           fct           ] #34 > #41       |        $a,
-#35    [           fct           ] #35 > #41       |        $b = array(),
-#36    [           fct           ] #36 > #41       |        $c = [],
-#37    [           fct           ] #37 > #41       |        $d = 0,
-#38    [           fct           ] #38 > #41       |        $f = 'hello')
-#39    [           fct           ] #39 > #41       |    {
-#40    [            c            ] #40 > #40       |        return rand($a * ($d + 1));
-#41    [           fct           ] #41 > #41       |    }
-#42    [                         ] #42 > #42       |
-#43    [           fct           ] #43 > #43       |    abstract public function abstractMethod();
-#44    [                         ] #44 > #44       |
-#45    [           fct           ] #45 > #45       |    final public function finalMethod() {}
-#46    [                         ] #46 > #46       |
-#47    [           fct           ] #47 > #51       |    public function inlineComment() {
+#30    [          attr           ] #30 > #30       |    protected $_variable = true;
+#31    [                         ] #31 > #31       |
+#32    [           fct           ] #32 > #34       |    public function bracketInString() {
+#33    [          str,c          ] #33 > #33       |        "/^({$pattern})/";
+#34    [           fct           ] #34 > #34       |    }
+#35    [                         ] #35 > #35       |
+#36    [           fct           ] #36 > #37       |    public function method1($a, $b = array(), $c = [], $d = 0, $f = 'hello') {
+#37    [           fct           ] #37 > #37       |    }
+#38    [                         ] #38 > #38       |
+#39    [           fct           ] #39 > #47       |    public function method2(
+#40    [           fct           ] #40 > #47       |        $a,
+#41    [           fct           ] #41 > #47       |        $b = array(),
+#42    [           fct           ] #42 > #47       |        $c = [],
+#43    [           fct           ] #43 > #47       |        $d = 0,
+#44    [           fct           ] #44 > #47       |        $f = 'hello')
+#45    [           fct           ] #45 > #47       |    {
+#46    [            c            ] #46 > #46       |        return rand($a * ($d + 1));
+#47    [           fct           ] #47 > #47       |    }
 #48    [                         ] #48 > #48       |
-#49    [          c,doc          ] #49 > #49       |        $a = 3; //comment
+#49    [           fct           ] #49 > #49       |    abstract public function abstractMethod();
 #50    [                         ] #50 > #50       |
-#51    [         fct,doc         ] #51 > #51       |    } // end function
+#51    [           fct           ] #51 > #51       |    final public function finalMethod() {}
 #52    [                         ] #52 > #52       |
-#53    [           fct           ] #53 > #57       |    public function weirdSyntax() {
+#53    [           fct           ] #53 > #57       |    public function inlineComment() {
 #54    [                         ] #54 > #54       |
-#55    [            c            ] #55 > #55       |        foreach ($variable as $key => $value) {}
+#55    [          c,doc          ] #55 > #55       |        $a = 3; //comment
 #56    [                         ] #56 > #56       |
-#57    [          fct,c          ] #57 > #57       |    $i++;}
+#57    [         fct,doc         ] #57 > #57       |    } // end function
 #58    [                         ] #58 > #58       |
-#59    [           fct           ] #59 > #80       |    public function phpArray() {
+#59    [           fct           ] #59 > #63       |    public function weirdSyntax() {
 #60    [                         ] #60 > #60       |
-#61    [         c,str,c         ] #61 > #61       |        $array = array("hello");
+#61    [            c            ] #61 > #61       |        foreach ($variable as $key => $value) {}
 #62    [                         ] #62 > #62       |
-#63    [            c            ] #63 > #66       |        $array = array
-#64    [            c            ] #64 > #66       |        (
-#65    [           str           ] #65 > #65       |            "hello"
-#66    [            c            ] #66 > #66       |        );
-#67    [                         ] #67 > #67       |
-#68    [            c            ] #68 > #72       |        $array = array(
-#69    [          str,c          ] #69 > #69       |            "hello",
-#70    [          str,c          ] #70 > #70       |            "world",
-#71    [          str,c          ] #71 > #72       |            "world!",
+#63    [          fct,c          ] #63 > #63       |    $i++;}
+#64    [                         ] #64 > #64       |
+#65    [           fct           ] #65 > #86       |    public function phpArray() {
+#66    [                         ] #66 > #66       |
+#67    [         c,str,c         ] #67 > #67       |        $array = array("hello");
+#68    [                         ] #68 > #68       |
+#69    [            c            ] #69 > #72       |        $array = array
+#70    [            c            ] #70 > #72       |        (
+#71    [           str           ] #71 > #71       |            "hello"
 #72    [            c            ] #72 > #72       |        );
 #73    [                         ] #73 > #73       |
-#74    [            c            ] #74 > #78       |        $array = [
+#74    [            c            ] #74 > #78       |        $array = array(
 #75    [          str,c          ] #75 > #75       |            "hello",
 #76    [          str,c          ] #76 > #76       |            "world",
 #77    [          str,c          ] #77 > #78       |            "world!",
-#78    [            c            ] #78 > #78       |        ];
+#78    [            c            ] #78 > #78       |        );
 #79    [                         ] #79 > #79       |
-#80    [           fct           ] #80 > #80       |    }
-#81    [                         ] #81 > #81       |
-#82    [           fct           ] #82 > #90       |    public function multilineConditions() {
-#83    [                         ] #83 > #83       |
-#84    [            c            ] #84 > #88       |        return ($a && (
-#85    [            c            ] #85 > #88       |            $b
-#86    [            c            ] #86 > #88       |            ||
-#87    [            c            ] #87 > #88       |            $c
-#88    [            c            ] #88 > #88       |        ));
+#80    [            c            ] #80 > #84       |        $array = [
+#81    [          str,c          ] #81 > #81       |            "hello",
+#82    [          str,c          ] #82 > #82       |            "world",
+#83    [          str,c          ] #83 > #84       |            "world!",
+#84    [            c            ] #84 > #84       |        ];
+#85    [                         ] #85 > #85       |
+#86    [           fct           ] #86 > #86       |    }
+#87    [                         ] #87 > #87       |
+#88    [           fct           ] #88 > #96       |    public function multilineConditions() {
 #89    [                         ] #89 > #89       |
-#90    [           fct           ] #90 > #90       |    }
-#91    [                         ] #91 > #91       |
-#92    [           fct           ] #92 > #102      |    public function codeEndAfterSemicolonAndBraces() {
-#93    [                         ] #93 > #93       |
-#94    [         c,str,c         ] #94 > #95       |        if (!$options['file'])
-#95    [            c            ] #95 > #95       |        {
-#96    [                         ] #96 > #96       |
-#97    [         c,str,c         ] #97 > #97       |            throw new RuntimeException("Missing file name");
-#98    [                         ] #98 > #98       |
-#99    [                         ] #99 > #99       |        }
-#100   [                         ] #100 > #100     |
-#101   [         c,str,c         ] #101 > #101     |        return file_put_contents($options['file'], static::export($options));
-#102   [           fct           ] #102 > #102     |    }
-#103   [                         ] #103 > #103     |
-#104   [           fct           ] #104 > #113     |    public function funkySyntax()
-#105   [           fct           ] #105 > #113     |    {
-#106   [   c,str,c,str,c,str,c   ] #106 > #106     |        $this->{"_{$key}"} = "Hello" + $this->{"_{$key}"};
-#107   [                         ] #107 > #107     |
-#108   [            c            ] #108 > #108     |        $this->{
-#109   [           str           ] #109 > #109     |            "_{$key}"
-#110   [         c,str,c         ] #110 > #110     |        } = "Hello" + $this->{
-#111   [           str           ] #111 > #111     |            "_{$key}"
-#112   [            c            ] #112 > #112     |        };
-#113   [           fct           ] #113 > #113     |    }
-#114   [                         ] #114 > #114     |
-#115   [          class          ] #115 > #115     |}
-#116   [                         ] #116 > #116     |
-#117   [          class          ] #117 > #120     |class
-#118   [          class          ] #118 > #120     |    Sample2
-#119   [          class          ] #119 > #120     |    extends Sample2 {
-#120   [          class          ] #120 > #120     |}
-#121   [                         ] #121 > #121     |
-#122   [        interface        ] #122 > #126     |interface Template1
-#123   [        interface        ] #123 > #126     |{
-#124   [           fct           ] #124 > #124     |    public function setVariable($name, $var);
-#125   [           fct           ] #125 > #125     |    public function getHtml($template);
-#126   [        interface        ] #126 > #126     |}
+#90    [            c            ] #90 > #94       |        return ($a && (
+#91    [            c            ] #91 > #94       |            $b
+#92    [            c            ] #92 > #94       |            ||
+#93    [            c            ] #93 > #94       |            $c
+#94    [            c            ] #94 > #94       |        ));
+#95    [                         ] #95 > #95       |
+#96    [           fct           ] #96 > #96       |    }
+#97    [                         ] #97 > #97       |
+#98    [           fct           ] #98 > #108      |    public function codeEndAfterSemicolonAndBraces() {
+#99    [                         ] #99 > #99       |
+#100   [         c,str,c         ] #100 > #101     |        if (!$options['file'])
+#101   [            c            ] #101 > #101     |        {
+#102   [                         ] #102 > #102     |
+#103   [         c,str,c         ] #103 > #103     |            throw new RuntimeException("Missing file name");
+#104   [                         ] #104 > #104     |
+#105   [                         ] #105 > #105     |        }
+#106   [                         ] #106 > #106     |
+#107   [         c,str,c         ] #107 > #107     |        return file_put_contents($options['file'], static::export($options));
+#108   [           fct           ] #108 > #108     |    }
+#109   [                         ] #109 > #109     |
+#110   [           fct           ] #110 > #119     |    public function funkySyntax()
+#111   [           fct           ] #111 > #119     |    {
+#112   [   c,str,c,str,c,str,c   ] #112 > #112     |        $this->{"_{$key}"} = "Hello" + $this->{"_{$key}"};
+#113   [                         ] #113 > #113     |
+#114   [            c            ] #114 > #114     |        $this->{
+#115   [           str           ] #115 > #115     |            "_{$key}"
+#116   [         c,str,c         ] #116 > #116     |        } = "Hello" + $this->{
+#117   [           str           ] #117 > #117     |            "_{$key}"
+#118   [            c            ] #118 > #118     |        };
+#119   [           fct           ] #119 > #119     |    }
+#120   [                         ] #120 > #120     |
+#121   [          class          ] #121 > #121     |}
+#122   [                         ] #122 > #122     |
+#123   [          class          ] #123 > #126     |class
+#124   [          class          ] #124 > #126     |    Sample2
+#125   [          class          ] #125 > #126     |    extends Sample2 {
+#126   [          class          ] #126 > #126     |}
 #127   [                         ] #127 > #127     |
-#128   [          trait          ] #128 > #135     |trait Template2 {
-#129   [           fct           ] #129 > #131     |    public function setVariable($name, $var) {
-#130   [                         ] #130 > #130     |
-#131   [           fct           ] #131 > #131     |    }
-#132   [           fct           ] #132 > #134     |    public function getHtml($template) {
+#128   [        interface        ] #128 > #132     |interface Template1
+#129   [        interface        ] #129 > #132     |{
+#130   [           fct           ] #130 > #130     |    public function setVariable($name, $var);
+#131   [           fct           ] #131 > #131     |    public function getHtml($template);
+#132   [        interface        ] #132 > #132     |}
 #133   [                         ] #133 > #133     |
-#134   [           fct           ] #134 > #134     |    }
-#135   [          trait          ] #135 > #135     |}
+#134   [          trait          ] #134 > #141     |trait Template2 {
+#135   [           fct           ] #135 > #137     |    public function setVariable($name, $var) {
 #136   [                         ] #136 > #136     |
-#137   [          class          ] #137 > #138     |class Dir extends \FilterIterator{
-#138   [          class          ] #138 > #138     |}
+#137   [           fct           ] #137 > #137     |    }
+#138   [           fct           ] #138 > #140     |    public function getHtml($template) {
 #139   [                         ] #139 > #139     |
-#140   [           doc           ] #140 > #140     |//No scope
-#141   [          c,c,c          ] #141 > #141     |for($i = 0; $i <= 10; $i++) {
-#142   [            c            ] #142 > #142     |    $rand = rand();
-#143   [                         ] #143 > #143     |}
-#144   [                         ] #144 > #144     |
-#145   [          close          ] #145 > #145     |?>
-#146   [                         ] #146 > #146     |
-#147   [            p            ] #147 > #147     |<i> Hello World </i>
-#148   [                         ] #148 > #148     |
-#149   [          open           ] #149 > #149     |<?php
-#150   [           doc           ] #150 > #152     |/**
-#151   [           doc           ] #151 > #152     | * Some comments2
-#152   [           doc           ] #152 > #152     | */
-#153   [           ns            ] #153 > #153     |
-#154   [           ns            ] #154 > #163     |namespace kahlan\spec\fixture\parser;
-#155   [                         ] #155 > #155     |
-#156   [          class          ] #156 > #160     |class Sample3 extends Sample2 {
-#157   [           fct           ] #157 > #159     |    public function myMethod() {
-#158   [         c,str,c         ] #158 > #158     |        return 'Hello World';
-#159   [           fct           ] #159 > #159     |    }
-#160   [          class          ] #160 > #160     |}
+#140   [           fct           ] #140 > #140     |    }
+#141   [          trait          ] #141 > #141     |}
+#142   [                         ] #142 > #142     |
+#143   [          class          ] #143 > #144     |class Dir extends \FilterIterator{
+#144   [          class          ] #144 > #144     |}
+#145   [                         ] #145 > #145     |
+#146   [           doc           ] #146 > #146     |//No scope
+#147   [          c,c,c          ] #147 > #147     |for($i = 0; $i <= 10; $i++) {
+#148   [            c            ] #148 > #148     |    $rand = rand();
+#149   [                         ] #149 > #149     |}
+#150   [                         ] #150 > #150     |
+#151   [          close          ] #151 > #151     |?>
+#152   [                         ] #152 > #152     |
+#153   [            p            ] #153 > #153     |<i> Hello World </i>
+#154   [                         ] #154 > #154     |
+#155   [          open           ] #155 > #155     |<?php
+#156   [           doc           ] #156 > #158     |/**
+#157   [           doc           ] #157 > #158     | * Some comments2
+#158   [           doc           ] #158 > #158     | */
+#159   [           ns            ] #159 > #159     |
+#160   [           ns            ] #160 > #169     |namespace kahlan\spec\fixture\parser;
 #161   [                         ] #161 > #161     |
-#162   [          close          ] #162 > #162     |?>
-#163   [         ns,open         ] #163 > #163     |<?php
-#164   [           ns            ] #164 > #169     |namespace kahlan\spec\fixture\whatever;
-#165   [                         ] #165 > #165     |
-#166   [          class          ] #166 > #169     |class NoPhpEndTag
-#167   [          class          ] #167 > #169     |{
-#168   [                         ] #168 > #168     |
-#169   [        class,ns         ] #169 > #169     |}
+#162   [          class          ] #162 > #166     |class Sample3 extends Sample2 {
+#163   [           fct           ] #163 > #165     |    public function myMethod() {
+#164   [         c,str,c         ] #164 > #164     |        return 'Hello World';
+#165   [           fct           ] #165 > #165     |    }
+#166   [          class          ] #166 > #166     |}
+#167   [                         ] #167 > #167     |
+#168   [          close          ] #168 > #168     |?>
+#169   [         ns,open         ] #169 > #169     |<?php
+#170   [           ns            ] #170 > #175     |namespace kahlan\spec\fixture\whatever;
+#171   [                         ] #171 > #171     |
+#172   [          class          ] #172 > #175     |class NoPhpEndTag
+#173   [          class          ] #173 > #175     |{
+#174   [                         ] #174 > #174     |
+#175   [        class,ns         ] #175 > #175     |}

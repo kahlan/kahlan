@@ -442,7 +442,7 @@ class Parser
             $node = new NodeDef($this->_states['body'], $type);
         } elseif ($this->_states['open']) {
             $parent = $this->_states['current'];
-            $node = new NodeDef($this->_states['body'], 'code');
+            $node = new NodeDef($this->_states['body'], $this->_states['current']->hasMethods ? 'attribute' : 'code');
         } else {
             $node = new NodeDef($this->_states['body'], 'plain');
         }
@@ -455,7 +455,7 @@ class Parser
     protected function _stringNode($constant = false)
     {
         $code = $this->_codeNode();
-        if ($code && $this->_states['current']->type !== 'code') {
+        if ($code && $code->type !== 'attribute' && $this->_states['current']->type !== 'code') {
             $this->_states['current'] = $code;
         }
         $token = $this->_stream->current(true);
@@ -630,12 +630,7 @@ class Parser
             $result .= '#' . str_pad($line, 6, ' ');
             $types = [];
             foreach ($nodes as $node) {
-                $parent = $node->parent;
-                if ($node->type === 'code') {
-                    $types[] = $abbr[$parent->hasMethods ? 'attribute' : 'code'];
-                } else {
-                    $types[] = $abbr[$node->type];
-                }
+                $types[] = $abbr[$node->type];
                 $stop = max($stop, $node->lines['stop'] + 1);
             }
             $result .= '[' . str_pad(join(',', $types), 25, ' ', STR_PAD_BOTH) . "]";

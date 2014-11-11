@@ -18,6 +18,12 @@ function slice($data, $keys) {
 
 class Sample extends \kahlan\fixture\Parent {
 
+    protected static $_classes = [
+        'matcher' => 'kahlan\Matcher'
+    ];
+
+    protected $_matcher = '';
+
     // Using a tab
     protected    $_public = true;
 
