@@ -6,37 +6,44 @@ class Metrics
     /**
      * Reference to the parent metrics.
      *
-     * @param Metrics
+     * @var object
      */
     protected $_parent = null;
 
     /**
      * The string name reference of the metrics.
      *
-     * @param string
+     * @var string
      */
     protected $_name = '';
 
     /**
      * The type of the metrics is about.
      *
-     * @param string
+     * @var string
      */
     protected $_type = 'namespace';
 
     /**
      * The metrics data.
      *
-     * @param array
+     * @var array The metrics:
+     *            - `'loc'`      _integer_ : the number of line of code.
+     *            - `'cloc'`     _integer_ : the number of coverable line of code.
+     *            - `'ncloc'`    _integer_ : the number of non coverable line of code.
+     *            - `'covered'`  _integer_ : the number of covered line of code
+     *            - `'methods'`  _integer_ : the number of methods.
+     *            - `'cmethods'` _integer_ : the number of covered methods.
+     *            - `'files'`    _array_ : the file paths.
      */
     protected $_metrics = [
-        'loc' => 0,
-        'ncloc' => 0,
-        'covered' => 0,
-        'eloc' => 0,
-        'methods' => 0,
-        'coveredMethods' => 0,
-        'files' => []
+        'loc'            => 0,
+        'cloc'           => 0,
+        'ncloc'          => 0,
+        'covered'           => 0,
+        'methods'        => 0,
+        'cmethods'       => 0,
+        'files'          => []
     ];
 
     /**
@@ -123,8 +130,8 @@ class Metrics
 
         $this->_metrics = $metrics + $this->_metrics;
 
-        if ($this->_metrics['eloc']) {
-            $this->_metrics['percent'] = ($this->_metrics['covered'] * 100) / $this->_metrics['eloc'];
+        if ($this->_metrics['covered']) {
+            $this->_metrics['percent'] = ($this->_metrics['covered'] * 100) / $this->_metrics['cloc'];
         } else {
             $this->_metrics['percent'] = 0;
         }
@@ -218,7 +225,7 @@ class Metrics
      */
     protected function _merge($metrics = [])
     {
-        foreach (['loc', 'ncloc', 'covered', 'eloc', 'methods', 'coveredMethods'] as $name) {
+        foreach (['loc', 'ncloc', 'cloc', 'covered', 'methods', 'cmethods'] as $name) {
             if (!isset($metrics[$name])) {
                 continue;
             }

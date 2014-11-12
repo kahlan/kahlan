@@ -7,14 +7,14 @@ class Coveralls
      * Write a coverage to an ouput file.
      *
      * @param  array   $options The option where the possible values are:
-     *                 -`'coverage'` The coverage instance.
+     *                 -`'collector'` The collector instance.
      *                 -`'file'` The output file name.
      * @return boolean
      */
     public static function write($options)
     {
         $defaults = [
-            'coverage' => null,
+            'collector' => null,
             'file' => null
         ];
         $options += $defaults;
@@ -30,7 +30,7 @@ class Coveralls
      * Export a coverage to a string.
      *
      * @param  array   $options The option array where the possible values are:
-     *                 -`'coverage'` The coverage instance.
+     *                 -`'collector'` The collector instance.
      *                 -`'service_name'` The name of the service.
      *                 -`'service_job_id'` The job id of the service.
      *                 -`'repo_token'` The Coveralls repo token
@@ -40,7 +40,7 @@ class Coveralls
     public static function export($options)
     {
         $defaults = [
-            'coverage' => null,
+            'collector' => null,
             'service_name' => '',
             'service_job_id' => null,
             'repo_token' => null,
@@ -48,16 +48,16 @@ class Coveralls
         ];
         $options += $defaults;
 
-        $coverage = $options['coverage'];
+        $collector = $options['collector'];
 
         $result = $options;
-        unset($result['coverage']);
+        unset($result['collector']);
 
-        foreach ($coverage->export() as $file => $data) {
-            $nbLines = count(file($file));
+        foreach ($collector->export() as $file => $data) {
+            $nbLines = substr_count(file_get_contents($file), "\n");
 
             $lines = [];
-            for ($i = 0; $i < $nbLines; $i++) {
+            for ($i = 0; $i <= $nbLines; $i++) {
                 $lines[] = isset($data[$i]) ? $data[$i] : null;
             }
 

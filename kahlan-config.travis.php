@@ -37,12 +37,12 @@ Filter::register('kahlan.coverage', function($chain) {
 Filter::apply($this, 'coverage', 'kahlan.coverage');
 
 Filter::register('kahlan.coveralls', function($chain) {
-    $coverage = $this->reporters()->get('coverage');
-    if (!$coverage || !$this->args()->exists('coveralls')) {
+    $reporter = $this->reporters()->get('coverage');
+    if (!$reporter || !$this->args()->exists('coveralls')) {
         return $chain->next();
     }
     Coveralls::write([
-        'coverage' => $coverage,
+        'collector' => $reporter,
         'file' => $this->args()->get('coveralls'),
         'service_name' => 'travis-ci',
         'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null

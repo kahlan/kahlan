@@ -77,6 +77,7 @@ class Collector
      * @param array $options Possible options values are:
      *              - `'driver'`: the driver instance which will log the coverage data.
      *              - `'path'`  : the path(s) which contain the code source files.
+     *              - `'base'`  : the base path of the repo (default: `getcwd`).
      *              - `'prefix'`: some prefix to remove to get the real file path.
      */
     public function __construct($options = [])
@@ -91,18 +92,38 @@ class Collector
             'leavesOnly'     => false,
             'followSymlinks' => true,
             'recursive'      => true,
+            'base'           => str_replace(DIRECTORY_SEPARATOR, '/', getcwd()),
             'prefix'         => rtrim(Interceptor::instance()->cache(), DS)
         ];
         $options += $defaults;
 
         $this->_driver = $options['driver'];
         $this->_paths = (array) $options['path'];
+        $this->_base = $options['base'];
         $this->_prefix = $options['prefix'];
 
         $files = Dir::scan($options);
         foreach ($files as $file) {
             $this->_coverage[realpath($file)] = [];
         }
+    }
+
+    /**
+     * Return the used driver.
+     *
+     * @return object
+     */
+    public function driver() {
+        return $this->_driver;
+    }
+
+    /**
+     * Return the base path used to compute relative paths.
+     *
+     * @return string
+     */
+    public function base() {
+        return rtrim($this->_base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -246,8 +267,9 @@ class Collector
     {
         if (!$file) {
             $result = [];
+            $base = $this->base();
             foreach ($this->_coverage as $file => $coverage) {
-                $result[$file] = $this->_coverage($file, $coverage);
+                $result[preg_replace("~^{$base}~", '', $file)] = $this->_coverage($file, $coverage);
             }
             return $result;
         }
@@ -324,21 +346,20 @@ class Collector
         $metrics = [
             'loc' => 0,
             'ncloc' => 0,
+            'cloc' => 0,
             'covered' => 0,
-            'eloc' => 0,
             'percent' => 0,
             'methods' => 1,
-            'coveredMethods' => 0
+            'cmethods' => 0
         ];
         for ($line = $node->lines['start']; $line <= $node->lines['stop']; $line++) {
-            $this->_processLine($root->lines['content'][$line - 1], $line, $coverage, $metrics);
+            $this->_processLine($line, $coverage, $metrics);
         }
         $metrics['files'][] = $file;
         $metrics['line'] = $node->lines['start'];
         $metrics['loc'] = ($node->lines['stop'] - $node->lines['start']) + 1;
-        $metrics['eloc'] = $metrics['loc'] - $metrics['ncloc'];
         if ($metrics['covered']) {
-            $metrics['coveredMethods'] = 1;
+            $metrics['cmethods'] = 1;
         }
         return $metrics;
     }
@@ -350,16 +371,19 @@ class Collector
      * @param array $coverage The coverage data.
      * @param array $metrics  The output metrics array.
      */
-    protected function _processLine($nodes, $line, $coverage, &$metrics)
+    protected function _processLine($line, $coverage, &$metrics)
     {
         if (!$coverage) {
             return;
         }
         if (!isset($coverage[$line])) {
             $metrics['ncloc']++;
-        } elseif ($coverage[$line]) {
+            return;
+        }
+        if ($coverage[$line]) {
             $metrics['covered']++;
         }
+        $metrics['cloc']++;
     }
 
     /**

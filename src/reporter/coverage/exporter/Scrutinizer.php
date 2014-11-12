@@ -10,14 +10,14 @@ class Scrutinizer
      * Write a coverage to an ouput file.
      *
      * @param  array   $options The option where the possible values are:
-     *                 -`'coverage'` The coverage instance.
+     *                 -`'collector'` The collector instance.
      *                 -`'file'` The output file name.
      * @return boolean
      */
     public static function write($options)
     {
         $defaults = [
-            'coverage' => null,
+            'collector' => null,
             'file' => null
         ];
         $options += $defaults;
@@ -33,30 +33,33 @@ class Scrutinizer
      * Export a coverage to a string.
      *
      * @param  array   $options The option array where the possible values are:
-     *                 -`'coverage'` The coverage instance.
+     *                 -`'collector'` The collector instance.
      * @return boolean
      */
     public static function export($options)
     {
-        $defaults = ['coverage' => null];
+        $defaults = [
+            'collector' => null,
+            'time'      => time()
+        ];
         $options += $defaults;
-        $coverage = $options['coverage'];
+        $collector = $options['collector'];
 
         $xmlDocument = new DOMDocument('1.0', 'UTF-8');
         $xmlDocument->formatOutput = true;
 
         $xmlCoverage = $xmlDocument->createElement('coverage');
-        $xmlCoverage->setAttribute('generated', time());
+        $xmlCoverage->setAttribute('generated', $options['time']);
         $xmlDocument->appendChild($xmlCoverage);
 
         $xmlProject = $xmlDocument->createElement('project');
-        $xmlProject->setAttribute('timestamp', time());
+        $xmlProject->setAttribute('timestamp', $options['time']);
         $xmlCoverage->appendChild($xmlProject);
 
-        foreach ($coverage->export() as $file => $data) {
+        foreach ($collector->export() as $file => $data) {
             $xmlProject->appendChild(static::_exportFile($xmlDocument, $file, $data));
         }
-        $xmlProject->appendChild(static::_exportMetrics($xmlDocument, $coverage->metrics()));
+        $xmlProject->appendChild(static::_exportMetrics($xmlDocument, $collector->metrics()));
         return $xmlDocument->saveXML();
     }
 
@@ -93,7 +96,7 @@ class Scrutinizer
         $xmlMetrics = $xmlDocument->createElement('metrics');
         $xmlMetrics->setAttribute('loc', $data['loc']);
         $xmlMetrics->setAttribute('ncloc', $data['ncloc']);
-        $xmlMetrics->setAttribute('statements', $data['eloc']);
+        $xmlMetrics->setAttribute('statements', $data['cloc']);
         $xmlMetrics->setAttribute('coveredstatements', $data['covered']);
         return $xmlMetrics;
     }

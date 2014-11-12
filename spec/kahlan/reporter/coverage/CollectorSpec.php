@@ -8,7 +8,7 @@ use spec\fixture\reporter\coverage\CodeCoverage;
 describe("Coverage", function() {
 
     beforeEach(function() {
-        $this->path = 'spec/fixture/reporter/coverage';
+        $this->path = 'spec/fixture/reporter/coverage/CodeCoverage.php';
 
         $this->collector = new Collector([
             'driver'    => new Xdebug(),

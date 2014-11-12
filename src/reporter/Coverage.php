@@ -46,11 +46,12 @@ class Coverage extends Terminal
      * Display coverage results in the console.
      *
      * @param array $options The options for the reporter, the options are:
-     *              - `'verbosity`' : The verbosity level:
-     *                  - 1 : overall coverage value for the whole code.
-     *                  - 2 : coverage for namespaces.
-     *                  - 3 : coverage for namespaces and classes.
-     *                  - 4 : coverage for namespaces, classes, methods and functions.
+     *              - `'verbosity`' _integer|string_: The verbosity level:
+     *                  - 1      : overall coverage value for the whole code.
+     *                  - 2      : overall coverage by namespaces.
+     *                  - 3      : overall coverage by classes.
+     *                  - 4      : overall coverage by methods and functions.
+     *                  - string : coverage for a fully namespaced (class/method/namespace) string.
      */
 
     public function __construct($options = [])
@@ -58,19 +59,19 @@ class Coverage extends Terminal
         parent::__construct($options);
         $defaults = ['verbosity' => 1];
         $options += $defaults;
-        $this->_verbosity = $options['verbosity'];
-        if (is_numeric($this->_verbosity)) {
-            $this->_verbosity = (integer) $this->_verbosity;
-        } else {
-            $this->_verbosity = (string) $this->_verbosity;
+        $verbosity = $options['verbosity'];
+        $this->_verbosity = is_numeric($verbosity) ? (integer) $verbosity : (string) $verbosity;
+
+        if (is_string($this->_verbosity)) {
+            $class = preg_replace('/(::)?\w+\(\)$/', '', $this->_verbosity);
             $interceptor = static::$_classes['interceptor'];
-            if ($loader = $interceptor::instance()) {
-                $class = preg_replace('/(::)?\w+\(\)$/', '', $this->_verbosity);
-                if ($path = $loader->findPath($class)) {
-                    $options['path'] = $path;
-                }
+            $loader = $interceptor::instance();
+
+            if ($loader && $path = $loader->findPath($class)) {
+                $options['path'] = $path;
             }
         }
+
         $this->_collector = new Collector($options);
     }
 
@@ -106,7 +107,28 @@ class Coverage extends Terminal
     }
 
     /**
+     * Returns the collector.
+     *
+     * @return object
+     */
+    public function collector()
+    {
+        return $this->_collector;
+    }
+
+    /**
+     * Return the base path used to compute relative paths.
+     *
+     * @return string
+     */
+    public function base() {
+        return $this->_collector->base();
+    }
+
+    /**
      * Returns the coverage result.
+     *
+     * @return array
      */
     public function export()
     {
@@ -149,7 +171,7 @@ class Coverage extends Terminal
         $percent = number_format($stats['percent'], 2);
         $style = $this->_style($percent);
         $this->console(str_pad("Lines: {$percent}%", 15), $style);
-        $this->console(trim(str_pad("({$stats['covered']}/{$stats['eloc']})", 20) . "{$name}"));
+        $this->console(trim(str_pad("({$stats['covered']}/{$stats['cloc']})", 20) . "{$name}"));
         $this->console("\n");
         if ($verbosity === 1) {
             return;

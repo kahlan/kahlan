@@ -402,10 +402,10 @@ EOD;
     protected function _reporting()
     {
         return Filter::on($this, 'reporting', [], function($chain) {
-            $coverage = $this->reporters()->get('coverage');
-            if ($coverage && $this->args()->exists('scrutinizer')) {
+            $reporter = $this->reporters()->get('coverage');
+            if ($reporter && $this->args()->exists('scrutinizer')) {
                 Scrutinizer::write([
-                    'coverage' => $coverage,
+                    'collector' => $reporter,
                     'file' => $this->args()->get('scrutinizer')
                 ]);
             }
