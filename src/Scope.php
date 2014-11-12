@@ -381,4 +381,14 @@ abstract class Scope
         }
         $this->_root->_reporters->process($type, $data);
     }
+
+    /**
+     * Returns suite reporters container.
+     *
+     * @return object
+     */
+    public function reporters()
+    {
+        return $this->_root->_reporters;
+    }
 }

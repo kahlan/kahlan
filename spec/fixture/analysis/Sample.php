@@ -18,6 +18,11 @@ function slice($data, $keys) {
 
 class Sample extends \kahlan\fixture\Parent {
 
+    use A, B {
+        B::smallTalk insteadof A;
+        A::bigTalk insteadof B;
+    }
+
     protected static $_classes = [
         'matcher' => 'kahlan\Matcher'
     ];
@@ -72,12 +77,18 @@ class Sample extends \kahlan\fixture\Parent {
         );
 
         $array = array(
+            true,
+            false,
+            null,
             "hello",
             "world",
             "world!",
         );
 
         $array = [
+            true,
+            false,
+            null,
             "hello",
             "world",
             "world!",
@@ -90,8 +101,16 @@ class Sample extends \kahlan\fixture\Parent {
         return ($a && (
             $b
             ||
-            $c
+            $c . 'a'
         ));
+
+    }
+
+    public function multilineString() {
+
+        return "a" .
+               "multiline" .
+               "string";
 
     }
 

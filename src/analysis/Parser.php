@@ -35,10 +35,9 @@ class Parser
      *    'num'        => 0,      // Current line number.
      *    'root'       => object, // Root node.
      *    'current'    => object, // Current node.
-     *    'visibility' => ''      // Store function visibility.
+     *    'visibility' => []      // Store function visibility.
      *    'uses'       => [],     // Maintain the uses dependencies
      *    'body'       => '',     // Maintain the current parsed content
-     *    'braces'     => [],     // Maintain the nested brace leveling
      *    'brace'      => 0       // Depth level of opened braces
      * ]
      *
@@ -59,10 +58,9 @@ class Parser
             'open'       => false,
             'lines'      => 0,
             'num'        => 0,
-            'visibility' => '',
+            'visibility' => [],
             'uses'       => [],
             'body'       => '',
-            'braces'     => [],
             'brace'      => 0
         ];
         $this->_states = $config + $defaults;
@@ -102,28 +100,34 @@ class Parser
                     $this->_commentNode();
                 break;
                 case T_CONSTANT_ENCAPSED_STRING:
-                    $this->_stringNode(true);
+                    $this->_stringNode('');
+                break;
+                case T_START_HEREDOC:
+                    $name = substr($token[1], 3, -1);
+                    $this->_stringNode("\n" . $name . ';');
                 break;
                 case '"':
-                    $this->_stringNode();
-                break;
-                case '}':
-                    $this->_closeBrace();
+                    $this->_stringNode('"');
                 break;
                 case '{':
-                case ';':
                     $this->_states['body'] .= $token[0];
-                    $this->_codeNode();
-                    $current = $this->_states['current'];
-                    if ($current->type === 'code') {
-                       $this->_states['current'] = $current->parent;
-                    }
+                    $this->_states['current'] = $this->_codeNode();
+                break;
+                case '}':
+                    $this->_closeCurly();
+                break;
+                case T_BREAK:
+                    $this->_states['body'] .= $token[1] . $this->_stream->next([';']);
+                break;
+                case ';':
+                    $this->_states['body'] .= $token[1];
+                    $this->_codeNode(null, true);
                 break;
                 case T_NAMESPACE:
                     $this->_namespaceNode();
                 break;
                 case T_USE:
-                    $this->_use();
+                    $this->_useNode();
                 break;
                 case T_TRAIT:
                     $this->_traitNode();
@@ -140,87 +144,65 @@ class Parser
                 case T_PROTECTED:
                 case T_PUBLIC:
                 case T_STATIC:
-                    if ($current->hasMethods) {
-                        $this->_states['visibility'] .= $token[1];
-                    } else {
-                        $this->_states['body'] .= $token[1];
-                    }
+                    $this->_states['visibility'][$token[1]] = true;
+                    $this->_states['body'] .= $token[1];
                 break;
                 case T_FUNCTION:
                     $this->_functionNode();
                     $buffered = '';
                 break;
                 case T_VARIABLE:
-                    $this->_states['body'] .= $this->_states['visibility'];
-                    $this->_states['visibility'] = '';
+                    $this->_states['visibility'] = [];
                 default:
-                    if (!$this->_states['visibility']) {
-                        $this->_states['body'] .= $token[1];
-                    } else {
-                        $this->_states['visibility'] .= $token[1];
-                    }
+                    $this->_states['body'] .= $token[1];
                 break;
-            }
-            if ($this->_stream->current() === '{') {
-                $this->_states['brace']++;
             }
             $this->_stream->next();
         }
         $this->_codeNode();
         $this->_flushUses();
-        $this->_syncLines();
         $this->_stream->rewind();
         return $this->_root;
     }
 
     /**
-     * Manage braces.
+     * Manage curly brackets.
      */
-    protected function _closeBrace()
+    protected function _closeCurly()
     {
-        $this->_states['brace']--;
-        if (!$this->_states['braces'] || end($this->_states['braces']) < $this->_states['brace']) {
-            $token = $this->_stream->current(true);
-            $this->_states['body'] .= $token[0];
-            $this->_codeNode();
-            return;
-        }
-        array_pop($this->_states['braces']);
-
         $current = $this->_states['current'];
 
         $this->_codeNode();
 
         $current->close = '}';
+
         if ($current->type === 'function') {
             if ($current->isClosure) {
                 $current->close .= $this->_stream->next([')', ';', ',']);
+                $this->_states['num'] += substr_count($current->close, "\n");
             }
         }
 
-        if ($this->_states['lines']) {
-            $current->lines['stop'] = $this->_states['num'];
-            $this->_states['num'] += substr_count($current->close, "\n");
-            $current->parent->lines['stop'] = $this->_states['num'];
-        }
-
         $this->_states['current'] = $current->parent;
+
+        if (!$this->_states['lines']) {
+            return;
+        }
+        $current->lines['stop'] = $this->_states['num'];
+        $current->parent->lines['stop'] = $this->_states['num'];
     }
 
     /**
      * Manage use statement.
      */
-    protected function _use()
+    protected function _useNode()
     {
         $current = $this->_states['current'];
         $token = $this->_stream->current(true);
-        if ($current->hasMethods) {
-            $this->_states['body'] .= $token[1];
-            return;
-        }
         $last = $alias = $use = '';
         $as = false;
-        while ($token[0] !== ';') {
+        $stop = ';';
+        while ($token[1] !== $stop) {
             $this->_states['body'] .= $token[1];
             if (!$token = $this->_stream->next(true)) {
                 break;
@@ -238,6 +220,9 @@ class Parser
                 break;
                 case T_AS:
                     $as = true;
+                break;
+                case '{':
+                    $stop = '}';
                 break;
             }
         }
@@ -259,8 +244,6 @@ class Parser
         $node = new BlockDef($body . $name, 'namespace');
         $node->hasMethods = false;
         $node->name = trim(substr($name, 0, -1));
-        $this->_states['braces'] = [$this->_states['brace']];
-        $this->_states['brace'] = 1;
         $this->_states['current'] = $this->_root;
         $this->_contextualize($node);
         return $this->_states['current'] = $node->namespace = $node;
@@ -287,7 +270,6 @@ class Parser
         $this->_states['body'] .= $body;
         $node = new BlockDef($body, 'trait');
         $node->name = substr($body, 0, -1);
-        $this->_states['braces'][] = $this->_states['brace'];
         return $this->_states['current'] = $this->_contextualize($node);
     }
 
@@ -301,7 +283,6 @@ class Parser
         $this->_states['body'] .= $body;
         $node = new BlockDef($body, 'interface');
         $node->name = substr($body, 0, -1);
-        $this->_states['braces'][] = $this->_states['brace'];
         return $this->_states['current'] = $this->_contextualize($node);
     }
 
@@ -333,7 +314,6 @@ class Parser
         $node->extends = $extends;
 
         $this->_states['body'] .= $body;
-        $this->_states['braces'][] = $this->_states['brace'];
         return $this->_states['current'] = $this->_contextualize($node);
     }
 
@@ -342,7 +322,6 @@ class Parser
      */
     protected function _functionNode()
     {
-        $this->_codeNode();
         $node = new FunctionDef();
         $token = $this->_stream->current(true);
         $parent = $this->_states['current'];
@@ -358,18 +337,16 @@ class Parser
         $node->isMethod = $isMethod;
         $node->isClosure = !$node->name;
         if ($isMethod) {
-            $body = $this->_states['visibility'] . $body;
-            $visibility = preg_split('~\s+~', $this->_states['visibility'], null, PREG_SPLIT_NO_EMPTY);
-            $node->visibility = array_fill_keys($visibility, true);
-            $this->_states['visibility'] = '';
+            $node->visibility = $this->_states['visibility'];
+            $this->_states['visibility'] = [];
         }
         $node->body = $body;
-        $this->_states['body'] .= $body;
+        $this->_codeNode();
+        $this->_states['body'] = $body;
         $this->_contextualize($node);
 
-        // Looking for braces only if not an "abstract function"
+        // Looking for curly brackets only if not an "abstract function"
         if ($this->_stream->current() === '{') {
-            $this->_states['braces'][] = $this->_states['brace'];
             $this->_states['current'] = $node;
         }
 
@@ -433,39 +410,48 @@ class Parser
     /**
      * Build a code node.
      */
-    protected function _codeNode($type = null)
+    protected function _codeNode($type = null, $coverable = false)
     {
-        if (!$this->_states['body']) {
+        $body = $this->_states['body'];
+        if (!$body) {
             return;
         }
-        if ($type) {
-            $node = new NodeDef($this->_states['body'], $type);
-        } elseif ($this->_states['open']) {
-            $parent = $this->_states['current'];
-            $node = new NodeDef($this->_states['body'], $this->_states['current']->hasMethods ? 'attribute' : 'code');
-        } else {
-            $node = new NodeDef($this->_states['body'], 'plain');
+
+        $node = new NodeDef($body, $type ?: $this->_codeType());
+        return $this->_contextualize($node, $coverable);
+    }
+
+    /**
+     * Get code type from context
+     *
+     * @return string
+     */
+    protected function _codeType()
+    {
+        if ($this->_states['open']) {
+            return $this->_states['current']->hasMethods ? 'attribute' : 'code';
         }
-        return $this->_contextualize($node);
+        return 'plain';
     }
 
     /**
      * Build a string node.
      */
-    protected function _stringNode($constant = false)
+    protected function _stringNode($delimiter = '')
     {
-        $code = $this->_codeNode();
-        if ($code && $code->type !== 'attribute' && $this->_states['current']->type !== 'code') {
-            $this->_states['current'] = $code;
-        }
+        $this->_codeNode();
         $token = $this->_stream->current(true);
-        if ($constant) {
+        if (!$delimiter) {
             $this->_states['body'] = $token[1];
+        } elseif ($delimiter === '"') {
+            $this->_states['body'] = $token[1] . $this->_stream->next('"');
         } else {
-            $this->_states['body'] .= $token[0] . $this->_stream->next('"');
+            $this->_states['body'] = $token[1] . $this->_stream->nextSequence($delimiter);
         }
+
         $node = new NodeDef($this->_states['body'], 'string');
-        return $this->_contextualize($node);
+        $this->_contextualize($node);
+        return $node;
     }
 
     /**
@@ -483,12 +469,13 @@ class Parser
     /**
      * Contextualize a node.
      */
-    protected function _contextualize($node)
+    protected function _contextualize($node, $coverable = false)
     {
         $parent = $this->_states['current'];
         $node->namespace = $parent->namespace;
         $node->function = $parent->function;
         $node->parent = $parent;
+        $node->coverable = $parent->hasMethods ? false : $coverable;
         $parent->tree[] = $node;
         $this->_assignLines($node);
 
@@ -528,17 +515,17 @@ class Parser
 
         $body = $node->body;
 
-        if (!$body) {
-            return;
-        }
-
         $num = $this->_states['num'];
         $lines = explode("\n", $body);
         $nb = count($lines) - 1;
+        $this->_states['num'] += $nb;
+
+        if ($node->type === 'blank') {
+            return;
+        }
 
         foreach ($lines as $i => $line) {
-            $trim = trim($line);
-            if (!$trim || $trim === '}') {
+            if (!$line || trim($line) === '{') {
                 continue;
             }
             $index = $num + $i;
@@ -549,34 +536,8 @@ class Parser
             $this->_root->lines['content'][$index][] = $node;
         }
 
-        $this->_states['num'] += $nb;
+
         $node->parent->lines['stop'] = $this->_states['num'] - (trim($lines[$nb]) ? 0 : 1);
-    }
-
-    /**
-     * Synchronize node assignment.
-     */
-    protected function _syncLines() {
-        if (!$this->_states['lines']) {
-            return;
-        }
-
-        $root = $this->_root;
-        $root->lines['start'] = 0;
-        $root->lines['stop'] = $this->_states['num'] - 1;
-
-        $content = &$this->_root->lines['content'];
-
-        foreach ($content as $num => $nodes) {
-            foreach ($nodes as $node) {
-                if ($num >= $node->lines['stop'] || $node->type === 'code') {
-                    continue;
-                }
-                if (!in_array($node, $content[$node->lines['stop']], true)) {
-                    array_unshift($content[$node->lines['stop']], $node);
-                }
-            }
-        }
     }
 
     /**

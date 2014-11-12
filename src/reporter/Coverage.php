@@ -36,6 +36,13 @@ class Coverage extends Terminal
     protected $_collector = '';
 
     /**
+     * Status of the reporter.
+     *
+     * @var array
+     */
+    protected $_enabled = true;
+
+    /**
      * Display coverage results in the console.
      *
      * @param array $options The options for the reporter, the options are:
@@ -81,6 +88,9 @@ class Coverage extends Terminal
      */
     public function before()
     {
+        if (!$this->enabled()) {
+            return;
+        }
         $this->_collector->start();
     }
 
@@ -89,6 +99,9 @@ class Coverage extends Terminal
      */
     public function after()
     {
+        if (!$this->enabled()) {
+            return;
+        }
         $this->_collector->stop();
     }
 
@@ -220,4 +233,31 @@ class Coverage extends Terminal
         $this->console("\nCollected in {$time} seconds\n\n\n");
     }
 
+    /**
+     * Return the status of the reporter.
+     *
+     * @return boolean $active
+     */
+    public function enabled()
+    {
+        return $this->_enabled;
+    }
+
+    /**
+     * Enable this reporter.
+     */
+    public function enable()
+    {
+        $this->_enabled = true;
+        $this->_collector->start();
+    }
+
+    /**
+     * Disable this reporter.
+     */
+    public function disable()
+    {
+        $this->_enabled = false;
+        $this->_collector->stop();
+    }
 }

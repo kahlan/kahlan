@@ -67,7 +67,6 @@ class Collector
     /**
      * Cache all parsed files
      *
-     * @see kahlan\reporter\coverage\Collector::_parse()
      * @var array
      */
     protected $_tree = [];
@@ -171,16 +170,15 @@ class Collector
      */
     public function addFile($file, $coverage)
     {
-        $prefix = $this->_prefix;
-        $file = preg_replace("~^{$prefix}~", '', $file);
-        if (preg_match("/eval\(\)'d code$/", $file) || !isset($this->_coverage[$file])) {
+        $file = $this->realpath($file);
+        if (!$this->collectable($file)) {
             return;
         }
         $nbLines = count(file($file));
 
         foreach ($coverage as $line => $value) {
-            if ($line >= $nbLines) {
-                continue;
+            if ($line === 0 || $line >= $nbLines) {
+                continue; // Because Xdebug bugs...
             }
             if (!isset($this->_coverage[$file][$line])) {
                 $this->_coverage[$file][$line] = $value;
@@ -188,6 +186,55 @@ class Collector
                 $this->_coverage[$file][$line] += $value;
             }
         }
+    }
+
+    protected function _coverage($file, $coverage)
+    {
+        $result = [];
+        $root = $this->parse($file);
+        foreach ($root->lines['content'] as $num => $nodes) {
+            $coverable = null;
+            foreach ($nodes as $node) {
+                if ($node->coverable && $node->lines['stop'] === $num) {
+                    $coverable = $node;
+                    break;
+                }
+            }
+            if (!$coverable) {
+                continue;
+            }
+            if (isset($coverage[$num])) {
+                $result[$num] = $coverage[$num];
+            } else {
+                $result[$num] = 0;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Check if a filename is collectable.
+     *
+     * @param   string  $file A file path.
+     * @return  boolean
+     */
+    public function collectable($file) {
+        $file = $this->realpath($file);
+        if (preg_match("/eval\(\)'d code$/", $file) || !isset($this->_coverage[$file])) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns the real path in the original src directory.
+     *
+     * @param  string $file A file path or cached file path.
+     * @return string       The original file path.
+     */
+    public function realpath($file) {
+        $prefix = $this->_prefix;
+        return preg_replace("~^{$prefix}~", '', $file);
     }
 
     /**
@@ -198,47 +245,15 @@ class Collector
     public function export($file = null)
     {
         if (!$file) {
-            $coverage = [];
-            foreach ($this->_coverage as $file => $value) {
-               $coverage[$file] = $this->_exportFile($file);
+            $result = [];
+            foreach ($this->_coverage as $file => $coverage) {
+                $result[$file] = $this->_coverage($file, $coverage);
             }
-            return $coverage;
+            return $result;
         }
-        return $this->_exportFile($file);
+        return isset($this->_coverage[$file]) ? $this->_coverage($file, $this->_coverage[$file]) : [];
     }
 
-    protected function _exportFile($file) {
-        $coverage = isset($this->_coverage[$file]) ? $this->_coverage[$file] : [];
-
-        $root = $this->_parse($file);
-        foreach ($root->lines['content'] as $num => $nodes) {
-            foreach ($nodes as $node) {
-                if ($node->type !== 'code' && $node->type !== 'string') {
-                    unset($coverage[$num]);
-                    continue;
-                }
-                $parent = $node->parent;
-                if ($parent && $parent->hasMethods) {
-                    unset($coverage[$num]);
-                    continue;
-                }
-                if (!isset($coverage[$num])) {
-                    $coverage[$num] = 0;
-                }
-                if ($parent && $parent->type === 'code') {
-                    for ($i = $parent->lines['start']; $i < $parent->lines['stop']; $i++) {
-                        if (!isset($coverage[$i])) {
-                            $coverage[$i] = $coverage[$num];
-                        } else {
-                            $coverage[$i] = $coverage[$i] === 1 ? $coverage[$i] : $coverage[$num];
-                        }
-                    }
-                }
-            }
-        }
-        ksort($coverage);
-        return $coverage;
-    }
 
     /**
      * Return the collected metrics from coverage data.
@@ -249,8 +264,8 @@ class Collector
     {
         $this->_metrics = new Metrics();
         foreach ($this->_coverage as $file => $xdebug) {
-            $node = $this->_parse($file);
-            $coverage = $this->_exportFile($file);
+            $node = $this->parse($file);
+            $coverage = $this->export($file);
             $this->_processTree($file, $node, $node->tree, $coverage);
         }
         return $this->_metrics;
@@ -355,7 +370,7 @@ class Collector
      *
      * @param string $file the file path to use for building the tree structure.
      */
-    protected function _parse($file)
+    public function parse($file)
     {
         if (isset($this->_tree[$file])) {
             return $this->_tree[$file];
@@ -363,4 +378,5 @@ class Collector
         $parser = $this->_classes['parser'];
         return $this->_tree[$file] = $parser::parse(file_get_contents($file), ['lines' => true]);
     }
+
 }

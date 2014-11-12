@@ -5,6 +5,8 @@ class NodeDef
 {
     public $processable = true;
 
+    public $coverable = false;
+
     public $type = 'none';
 
     public $namespace = null;

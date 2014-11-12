@@ -38,7 +38,7 @@ class DummyClass {
                 $allowed = true;
             }
         }
-        if (DummyClassPlugin::disabled() || !$allowed) {
+        if (!DummyClassPlugin::enabled() || !$allowed) {
             return $file;
         }
         $classpath = strtr($class, '\\', DS);

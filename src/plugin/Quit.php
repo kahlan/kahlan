@@ -8,26 +8,32 @@ class Quit
     /**
      * Indicates if the `exit` or `die` statements are disabled or not.
      */
-    protected static $_disabled = false;
+    protected static $_enabled = true;
 
     /**
      * Return the status of the quit statements.
      *
      * @return boolean $active
      */
-    public static function disabled()
+    public static function enabled()
     {
-        return static::$_disabled;
+        return static::$_enabled;
     }
 
     /**
-     * Enabled/Disable the `exit`, `die` statements.
-     *
-     * @param boolean $active
+     * Enabled the `exit`, `die` statements.
      */
-    public static function disable($disable = true)
+    public static function enable()
     {
-        static::$_disabled = $disable;
+        static::$_enabled = true;
+    }
+
+    /**
+     * Disable the `exit`, `die` statements.
+     */
+    public static function disable()
+    {
+        static::$_enabled = false;
     }
 
     /**
@@ -38,7 +44,7 @@ class Quit
      */
     public static function quit($status = 0)
     {
-        if (!static::disabled()) {
+        if (static::enabled()) {
             exit($status);
         }
         throw new QuitException('Exit statement occured', $status);
@@ -49,6 +55,6 @@ class Quit
      */
     public static function clear()
     {
-        static::$_disabled = false;
+        static::$_enabled = true;
     }
 }

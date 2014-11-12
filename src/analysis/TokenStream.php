@@ -199,12 +199,43 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
         $start = $this->_current++;
         $count = $this->count();
 
-        $type = array_fill_keys((array) $type, true);
+        $list = array_fill_keys((array) $type, true);
 
         while ($this->_current < $count) {
             $content .= $this->_data[$this->_current][1];
-            if (isset($type[$this->_data[$this->_current][0]])) {
+            if (isset($list[$this->_data[$this->_current][0]])) {
                 return $content;
+            }
+            $this->_current++;
+        }
+        $this->_current = $start;
+    }
+
+    /**
+     * Moves to the next sequence of tokens.
+     *
+     * @param  mixed       $type Token type to search for.
+     * @return array|null  Returns the skipped text content (the current is not saved).
+     */
+    public function nextSequence($sequence)
+    {
+        $list = [];
+        $content = '';
+        $start = $this->_current++;
+        $count = $this->count();
+
+        foreach ((array) $sequence as $string) {
+            $list[$string[strlen($string) - 1]] = $string;
+        }
+
+        while ($this->_current < $count) {
+            $content .= $this->_data[$this->_current][1];
+            if (isset($list[$this->_data[$this->_current][0]])) {
+                $string = $list[$this->_data[$this->_current][0]];
+                $len = strlen($string);
+                if (substr_compare($content, $string, $len, $len)) {
+                    return $content;
+                }
             }
             $this->_current++;
         }

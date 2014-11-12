@@ -5,18 +5,12 @@ use kahlan\analysis\Parser;
 
 describe("Parser", function() {
 
-    beforeEach(function() {
-        $this->sample = file_get_contents('spec/fixture/analysis/Sample.php');
-        $this->sampleTxt = file_get_contents('spec/fixture/analysis/Sample.txt');
-        $this->noNamespace = file_get_contents('spec/fixture/analysis/NoNamespace.php');
-        $this->noNamespaceTxt = file_get_contents('spec/fixture/analysis/NoNamespace.txt');
-    });
-
     describe("->parse()", function() {
 
         it("parses consistently", function() {
-            $parsed = Parser::parse($this->sample);
-            $this->expect(Parser::unparse($parsed))->toBe($this->sample);
+            $sample = file_get_contents('spec/fixture/analysis/Sample.php');
+            $parsed = Parser::parse($sample);
+            $this->expect(Parser::unparse($parsed))->toBe($sample);
         });
 
     });
@@ -24,13 +18,27 @@ describe("Parser", function() {
     describe("->debug()", function() {
 
         it("attaches the correct lines", function() {
-            $parsed = Parser::debug($this->sample);
-            $this->expect($parsed)->toBe($this->sampleTxt);
+            $filename = 'spec/fixture/analysis/Sample';
+            $parsed = Parser::debug(file_get_contents($filename . '.php'));
+            $this->expect($parsed)->toBe(file_get_contents($filename . '.txt'));
         });
 
         it("parses files with no namespace", function() {
-            $parsed = Parser::debug($this->noNamespace);
-            $this->expect($parsed)->toBe($this->noNamespaceTxt);
+            $filename = 'spec/fixture/analysis/NoNamespace';
+            $parsed = Parser::debug(file_get_contents($filename . '.php'));
+            $this->expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+        });
+
+        it("parses heredoc", function() {
+            $filename = 'spec/fixture/analysis/Heredoc';
+            $parsed = Parser::debug(file_get_contents($filename . '.php'));
+            $this->expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+        });
+
+        it("parses strings", function() {
+            $filename = 'spec/fixture/analysis/String';
+            $parsed = Parser::debug(file_get_contents($filename . '.php'));
+            $this->expect($parsed)->toBe(file_get_contents($filename . '.txt'));
         });
 
     });

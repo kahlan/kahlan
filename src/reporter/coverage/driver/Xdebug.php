@@ -60,5 +60,4 @@ class Xdebug
         }
         return $result;
     }
-
 }

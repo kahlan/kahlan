@@ -8,26 +8,33 @@ class DummyClass
      *
      * @var boolean
      */
-    protected static $_disabled = false;
+    protected static $_enabled = true;
 
     /**
      * Return the status of the quit statements.
      *
      * @return boolean $active
      */
-    public static function disabled()
+    public static function enabled()
     {
-        return static::$_disabled;
+        return static::$_enabled;
     }
 
     /**
-     * Enabled/Disable the `exit`, `die` statements.
+     * Enables the dummy classes.
      *
-     * @param boolean $active
      */
-    public static function disable($disable = true)
+    public static function enable()
     {
-        static::$_disabled = $disable;
+        static::$_enabled = true;
+    }
+
+    /**
+     * Disables the dummy classes.
+     */
+    public static function disable()
+    {
+        static::$_enabled = false;
     }
 
     /**
@@ -35,6 +42,6 @@ class DummyClass
      */
     public static function clear()
     {
-        static::$_disabled = false;
+        static::$_enabled = true;
     }
 }
