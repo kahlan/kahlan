@@ -325,15 +325,18 @@ class Suite extends Scope
             return;
         }
         try {
+            $this->report('before');
             $this->_callbacks('beforeEach');
             $child->process();
             $this->_autoclear();
             $this->_callbacks('afterEach');
+            $this->report('after');
         } catch (Exception $exception) {
             $this->_exception($exception);
             try {
                 $this->_autoclear();
                 $this->_callbacks('afterEach');
+                $this->report('after');
             } catch (Exception $exception) {}
         }
         $this->report('progress');
