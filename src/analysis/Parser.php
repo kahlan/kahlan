@@ -520,10 +520,6 @@ class Parser
         $nb = count($lines) - 1;
         $this->_states['num'] += $nb;
 
-        if ($node->type === 'blank') {
-            return;
-        }
-
         foreach ($lines as $i => $line) {
             if (!$line || trim($line) === '{') {
                 continue;

@@ -330,9 +330,6 @@ class Collector
             'methods' => 1,
             'coveredMethods' => 0
         ];
-        if ($node->type !== 'function') {
-            continue;
-        }
         for ($line = $node->lines['start']; $line <= $node->lines['stop']; $line++) {
             $this->_processLine($root->lines['content'][$line - 1], $line, $coverage, $metrics);
         }
