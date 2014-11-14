@@ -297,9 +297,9 @@ class Collector
             $coverage = $this->export($file);
             $this->_processed = [
                 'loc'      => -1,
-                'ncloc'    => -1,
+                'nlloc'    => -1,
+                'lloc'     => -1,
                 'cloc'     => -1,
-                'covered'  => -1,
                 'coverage' => -1
             ];
             $this->_processTree($file, $root->tree, $coverage);
@@ -346,7 +346,8 @@ class Collector
         if ($node->type === 'function' && !$node->isClosure) {
             $prefix = $node->isMethod ? "{$path}::" : "{$path}\\";
             $path = $prefix . $node->name . '()';
-            $metrics['line'] = $node->lines['start'];
+            $metrics['line']['start'] = $node->lines['start'];
+            $metrics['line']['stop'] = $node->lines['stop'];
         }
         $this->_metrics->add($path, $metrics);
     }
@@ -363,9 +364,9 @@ class Collector
     {
         $metrics = [
             'loc'      => 0,
-            'ncloc'    => 0,
+            'nlloc'    => 0,
+            'lloc'     => 0,
             'cloc'     => 0,
-            'covered'  => 0,
             'coverage' => 0
         ];
         if (!$coverage) {
@@ -374,12 +375,12 @@ class Collector
         for ($index = $node->lines['start']; $index <= $node->lines['stop']; $index++) {
             $metrics['loc'] = $this->_lineMetric('loc', $index, $metrics['loc']);
             if (!isset($coverage[$index])) {
-                $metrics['ncloc'] = $this->_lineMetric('ncloc', $index, $metrics['ncloc']);
+                $metrics['nlloc'] = $this->_lineMetric('nlloc', $index, $metrics['nlloc']);
                 continue;
             }
-            $metrics['cloc'] = $this->_lineMetric('cloc', $index, $metrics['cloc']);
+            $metrics['lloc'] = $this->_lineMetric('lloc', $index, $metrics['lloc']);
             if ($coverage[$index]) {
-                $metrics['covered'] = $this->_lineMetric('covered', $index, $metrics['covered']);
+                $metrics['cloc'] = $this->_lineMetric('cloc', $index, $metrics['cloc']);
                 $metrics['coverage'] = $this->_lineMetric('coverage', $index, $metrics['coverage'], $coverage[$index]);
             }
         }
@@ -409,8 +410,8 @@ class Collector
             return $metrics;
         }
         $metrics['methods'] = 1;
-        if ($metrics['covered']) {
-            $metrics['coveredMethods'] = 1;
+        if ($metrics['cloc']) {
+            $metrics['cmethods'] = 1;
         }
         return $metrics;
     }

@@ -28,24 +28,25 @@ class Metrics
      * The metrics data.
      *
      * @var array The metrics:
-     *            - `'loc'`            _integer_ : the number of line of code.
-     *            - `'cloc'`           _integer_ : the number of coverable line of code.
-     *            - `'ncloc'`          _integer_ : the number of non coverable line of code.
-     *            - `'covered'`        _integer_ : the number of covered line of code
-     *            - `'methods'`        _integer_ : the number of methods.
-     *            - `'coveredMethods'` _integer_ : the number of covered methods.
-     *            - `'files'`          _array_   : the file paths.
+     *            - `'loc'`      _integer_ : the number of line of code.
+     *            - `'lloc'`     _integer_ : the number of logical line of code (i.e code statements or
+                                             those lines which end in a semicolon)
+     *            - `'nlloc'`    _integer_ : the number of non logical line of code (i.e uncoverable).
+     *            - `'cloc'`     _integer_ : the number of covered line of code
+     *            - `'methods'`  _integer_ : the number of methods.
+     *            - `'cmethods'` _integer_ : the number of covered methods.
+     *            - `'files'`    _array_   : the file paths.
      */
     protected $_metrics = [
-        'loc'            => 0,
-        'cloc'           => 0,
-        'ncloc'          => 0,
-        'covered'        => 0,
-        'coverage'       => 0,
-        'methods'        => 0,
-        'coveredMethods' => 0,
-        'files'          => [],
-        'percent'        => 0
+        'loc'      => 0,
+        'lloc'     => 0,
+        'nlloc'    => 0,
+        'cloc'     => 0,
+        'coverage' => 0,
+        'methods'  => 0,
+        'cmethods' => 0,
+        'files'    => [],
+        'percent'  => 0
     ];
 
     /**
@@ -132,8 +133,8 @@ class Metrics
 
         $this->_metrics = $metrics + $this->_metrics;
 
-        if ($this->_metrics['covered']) {
-            $this->_metrics['percent'] = ($this->_metrics['covered'] * 100) / $this->_metrics['cloc'];
+        if ($this->_metrics['cloc']) {
+            $this->_metrics['percent'] = ($this->_metrics['cloc'] * 100) / $this->_metrics['lloc'];
         } else {
             $this->_metrics['percent'] = 0;
         }
@@ -148,7 +149,7 @@ class Metrics
     public function add($name, $metrics)
     {
         if (!$name) {
-            return $this->_merge($metrics);
+            return $this->_merge($metrics, true);
         }
         list($name, $subname, $type) = $this->_parseName($name);
         if (!isset($this->_childs[$name])) {
@@ -224,21 +225,24 @@ class Metrics
      *
      * @param array Some metrics.
      */
-    protected function _merge($metrics = [])
+    protected function _merge($metrics = [], $line = false)
     {
         $defaults = [
-            'loc'            => [],
-            'ncloc'          => [],
-            'cloc'           => [],
-            'covered'        => [],
-            'files'          => [],
-            'methods'        => 0,
-            'coveredMethods' => 0
+            'loc'      => [],
+            'nlloc'    => [],
+            'lloc'     => [],
+            'cloc'     => [],
+            'files'    => [],
+            'methods'  => 0,
+            'cmethods' => 0
         ];
         $metrics += $defaults;
 
-        foreach (['loc', 'ncloc', 'cloc', 'covered', 'coverage', 'files', 'methods', 'coveredMethods'] as $name) {
+        foreach (['loc', 'nlloc', 'lloc', 'cloc', 'coverage', 'files', 'methods', 'cmethods'] as $name) {
             $metrics[$name] += $this->_metrics[$name];
+        }
+        if (!$line) {
+            unset($metrics['line']);
         }
         $this->data($metrics);
     }

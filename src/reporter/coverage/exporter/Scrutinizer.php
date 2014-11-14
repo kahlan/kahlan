@@ -95,9 +95,9 @@ class Scrutinizer
         $data = $metrics->data();
         $xmlMetrics = $xmlDocument->createElement('metrics');
         $xmlMetrics->setAttribute('loc', $data['loc']);
-        $xmlMetrics->setAttribute('ncloc', $data['ncloc']);
-        $xmlMetrics->setAttribute('statements', $data['cloc']);
-        $xmlMetrics->setAttribute('coveredstatements', $data['covered']);
+        $xmlMetrics->setAttribute('ncloc', $data['nlloc']);
+        $xmlMetrics->setAttribute('statements', $data['lloc']);
+        $xmlMetrics->setAttribute('coveredstatements', $data['cloc']);
         return $xmlMetrics;
     }
 }

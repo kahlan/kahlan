@@ -172,9 +172,7 @@ class Coverage extends Terminal
         $percent = number_format($stats['percent'], 2);
         $style = $this->_style($percent);
         $this->console(str_pad("Lines: {$percent}%", 15), $style);
-        $cloc = $stats['cloc'];
-        $covered = $stats['covered'];
-        $this->console(trim(str_pad("({$covered}/{$cloc})", 20) . "{$name}"));
+        $this->console(trim(str_pad("({$stats['cloc']}/{$stats['lloc']})", 20) . "{$name}"));
         $this->console("\n");
         if ($verbosity === 1) {
             return;
@@ -195,14 +193,14 @@ class Coverage extends Terminal
             $coverage = $this->_collector->export($file);
 
             if (isset($stats['line'])) {
-                $start = $stats['line'];
-                $stop = $start + $stats['loc'];
+                $start = $stats['line']['start'];
+                $stop = $stats['line']['stop'];
             } else {
                 $start = 0;
-                $stop = count($lines);
+                $stop = count($lines) - 1;
             }
 
-            for ($i = $start; $i < $stop; $i++) {
+            for ($i = $start; $i <= $stop; $i++) {
                 $value = isset($coverage[$i]) ? $coverage[$i] : null;
                 $line = str_pad($i + 1, 6, ' ', STR_PAD_LEFT);
                 $line .= ':' . str_pad($value, 6, ' ');
