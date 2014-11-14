@@ -46,12 +46,12 @@ class Coverage extends Terminal
      * Display coverage results in the console.
      *
      * @param array $options The options for the reporter, the options are:
-     *              - `'verbosity`' _integer|string_: The verbosity level:
-     *                  - 1      : overall coverage value for the whole code.
-     *                  - 2      : overall coverage by namespaces.
-     *                  - 3      : overall coverage by classes.
-     *                  - 4      : overall coverage by methods and functions.
-     *                  - string : coverage for a fully namespaced (class/method/namespace) string.
+     *                       - `'verbosity`' _integer|string_: The verbosity level:
+     *                         - 1      : overall coverage value for the whole code.
+     *                         - 2      : overall coverage by namespaces.
+     *                         - 3      : overall coverage by classes.
+     *                         - 4      : overall coverage by methods and functions.
+     *                         - string : coverage for a fully namespaced (class/method/namespace) string.
      */
 
     public function __construct($options = [])
@@ -151,11 +151,12 @@ class Coverage extends Terminal
      *
      * @param Metrics $metrics A metrics instance.
      * @param array   $options The options for the reporter, the options are:
-     *                - `'verbosity`' : The verbosity level:
-     *                  - 1 : overall coverage value for the whole code.
-     *                  - 2 : coverage for namespaces.
-     *                  - 3 : coverage for namespaces and classes.
-     *                  - 4 : coverage for namespaces, classes, methods and functions.
+     *                         - `'verbosity`' _integer|string_: The verbosity level:
+     *                           - 1      : overall coverage value for the whole code.
+     *                           - 2      : overall coverage by namespaces.
+     *                           - 3      : overall coverage by classes.
+     *                           - 4      : overall coverage by methods and functions.
+     *                           - string : coverage for a fully namespaced (class/method/namespace) string.
      */
     protected function _renderMetrics($metrics, $verbosity = 1)
     {
@@ -171,7 +172,9 @@ class Coverage extends Terminal
         $percent = number_format($stats['percent'], 2);
         $style = $this->_style($percent);
         $this->console(str_pad("Lines: {$percent}%", 15), $style);
-        $this->console(trim(str_pad("({$stats['covered']}/{$stats['cloc']})", 20) . "{$name}"));
+        $cloc = $stats['cloc'];
+        $covered = $stats['covered'];
+        $this->console(trim(str_pad("({$covered}/{$cloc})", 20) . "{$name}"));
         $this->console("\n");
         if ($verbosity === 1) {
             return;

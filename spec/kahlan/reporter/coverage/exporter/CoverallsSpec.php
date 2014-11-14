@@ -4,8 +4,8 @@ namespace spec\kahlan\reporter\coverage;
 use kahlan\reporter\coverage\Collector;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Coveralls;
-use spec\fixture\reporter\coverage\exporter\NoEmptyLine;
-use spec\fixture\reporter\coverage\exporter\ExtraEmptyLine;
+use spec\fixture\reporter\coverage\NoEmptyLine;
+use spec\fixture\reporter\coverage\ExtraEmptyLine;
 
 describe("Coveralls", function() {
 
@@ -13,7 +13,7 @@ describe("Coveralls", function() {
 
         it("exports the coverage of a file with no extra end line", function() {
 
-            $path = 'spec/fixture/reporter/coverage/exporter/NoEmptyLine.php';
+            $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),
@@ -57,7 +57,7 @@ describe("Coveralls", function() {
 
         it("exports the coverage of a file with an extra line at the end", function() {
 
-            $path = 'spec/fixture/reporter/coverage/exporter/ExtraEmptyLine.php';
+            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),
@@ -113,7 +113,7 @@ describe("Coveralls", function() {
 
         it("writes the coverage to a file", function() {
 
-            $path = 'spec/fixture/reporter/coverage/exporter/ExtraEmptyLine.php';
+            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),
@@ -134,7 +134,7 @@ describe("Coveralls", function() {
                 'repo_token'     => 'ABC'
             ]);
 
-            expect($success)->toBe(565);
+            expect($success)->toBe(545);
 
             $json = file_get_contents($this->output);
             $actual = json_decode($json, true);

@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\reporter\coverage\exporter;
+namespace spec\fixture\reporter\coverage;
 
 class NoEmptyLine
 {

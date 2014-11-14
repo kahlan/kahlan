@@ -72,7 +72,7 @@ class Parser
      *
      * @param  string  A file.
      * @param  boolean Indicate if the parser need to process line mathing.
-     * @return NodeDef the parsed file node.
+     * @return object  the parsed file node.
      */
     protected function _parser($content, $lines = false)
     {
@@ -162,6 +162,7 @@ class Parser
         $this->_codeNode();
         $this->_flushUses();
         $this->_stream->rewind();
+        $this->_assignCoverable();
         return $this->_root;
     }
 
@@ -303,10 +304,9 @@ class Parser
         if ($token[0] === T_EXTENDS) {
             $body .= $this->_stream->skipWhitespaces();
             $body .= $extends = $this->_stream->skipWhile([T_STRING, T_NS_SEPARATOR]);
-            if ($this->_stream->current() === '{') {
-                $body .= $this->_stream->current();
-            } else {
-                $body .= $this->_stream->current() . $this->_stream->next('{');
+            $body .= $this->_stream->current();
+            if ($this->_stream->current() !== '{') {
+                $body .= $this->_stream->next('{');
             }
         }
         $node = new BlockDef($body, 'class');
@@ -497,7 +497,10 @@ class Parser
         }
         if ($this->_states['lines']) {
             for($i = 0; $i <= substr_count($content, "\n"); $i++) {
-                $this->_root->lines['content'][$i] = [];
+                $this->_root->lines['content'][$i] = [
+                    'nodes' => [],
+                    'coverable' => false
+                ];
             }
         }
     }
@@ -505,7 +508,7 @@ class Parser
     /**
      * Assign the node to some lines and makes them availaible at the root node.
      *
-     * @param NodeDef $node The node to match.
+     * @param object  $node The node to match.
      * @param string  $body The  to match.
      */
     protected function _assignLines($node) {
@@ -514,26 +517,61 @@ class Parser
         }
 
         $body = $node->body;
-
         $num = $this->_states['num'];
         $lines = explode("\n", $body);
         $nb = count($lines) - 1;
         $this->_states['num'] += $nb;
 
         foreach ($lines as $i => $line) {
-            if (!$line || trim($line) === '{') {
-                continue;
-            }
-            $index = $num + $i;
-            if ($node->lines['start'] === null) {
-                $node->lines['start'] = $index;
-            }
-            $node->lines['stop'] = $index;
-            $this->_root->lines['content'][$index][] = $node;
+            $this->_assignLine($num + $i, $node, $line);
         }
 
-
         $node->parent->lines['stop'] = $this->_states['num'] - (trim($lines[$nb]) ? 0 : 1);
+    }
+
+    /**
+     * Assign a node to a specific line.
+     *
+     * @param object  $node The node to match.
+     * @param string  $body The  to match.
+     */
+    protected function _assignLine($index, $node, $line) {
+        if ($node->lines['start'] === null) {
+            $node->lines['start'] = $index;
+        }
+        $node->lines['stop'] = $index;
+        if (trim($line)) {
+            $this->_root->lines['content'][$index]['nodes'][] = $node;
+        }
+    }
+
+    /**
+     * Assign coverable data to lines.
+     */
+    protected function _assignCoverable() {
+        if (!$this->_states['lines']) {
+            return;
+        }
+
+        foreach ($this->_root->lines['content'] as $index => $value) {
+            $this->_root->lines['content'][$index]['coverable'] = $this->_isCoverable($index);
+        }
+    }
+
+    /**
+     * Checks if a specific line is coverable.
+     *
+     * @param  integer $index The line to check.
+     * @return boolean
+     */
+    protected function _isCoverable($index) {
+        $coverable = false;
+        foreach ($this->_root->lines['content'][$index]['nodes'] as $node) {
+            if ($node->coverable && ($node->lines['stop'] === $index)) {
+                $coverable = true;
+            }
+        }
+        return $coverable;
     }
 
     /**
@@ -541,7 +579,7 @@ class Parser
      *
      * @param  string  The php string to parse.
      * @param  boolean Indicate if the parser need to process line mathing.
-     * @return NodeDef the parsed file node.
+     * @return object  the parsed file node.
      */
     public static function parse($content, $config = [])
     {
@@ -550,47 +588,55 @@ class Parser
     }
 
     /**
-     * Unparsing a node
+     * Unparsing a node.
      *
-     * @param  NodeDef A node definition.
-     * @return string  the unparsed file.
+     * @param  mixed  A node to unparse.
+     * @return string the unparsed file.
      */
     public static function unparse($node)
     {
         return (string) $node;
     }
 
+    /**
+     * Returns a reader-friendly output for debug purpose.
+     *
+     * @param  mixed  A node or a php string to parse.
+     * @return string the unparsed file.
+     */
     public static function debug($content)
     {
-        $root = static::parse($content, ['lines' => true]);
+        $root = is_object($content) ? $content : static::parse($content, ['lines' => true]);
         $lines = preg_split("~\n~", $content);
         $result = '';
 
         $abbr = [
+            'file'      => 'file',
             'open'      => 'open',
             'close'     => 'close',
-            'namespace' => 'ns',
+            'namespace' => 'namespace',
+            'use'       => 'use',
             'class'     => 'class',
             'interface' => 'interface',
             'trait'     => 'trait',
-            'function'  => 'fct',
-            'attribute' => 'attr',
+            'function'  => 'function',
+            'attribute' => 'a',
             'code'      => 'c',
-            'comment'   => 'doc',
+            'comment'   => 'd',
             'plain'     => 'p',
-            'string'    => 'str',
-            'use'       => 'u'
+            'string'    => 's'
         ];
 
-        foreach ($root->lines['content'] as $num => $nodes) {
+        foreach ($root->lines['content'] as $num => $content) {
             $start = $stop = $line = $num + 1;
             $result .= '#' . str_pad($line, 6, ' ');
             $types = [];
-            foreach ($nodes as $node) {
+            foreach ($content['nodes'] as $node) {
                 $types[] = $abbr[$node->type];
                 $stop = max($stop, $node->lines['stop'] + 1);
             }
-            $result .= '[' . str_pad(join(',', $types), 25, ' ', STR_PAD_BOTH) . "]";
+            $result .= $content['coverable'] ? '*' : ' ';
+            $result .= '[' . str_pad(join(',', $types), 19, ' ', STR_PAD_BOTH) . "]";
             $result .= ' ' . str_pad("#{$start} > #{$stop}", 16, ' ') . "|";
             $result .= $lines[$num] . "\n";
         }

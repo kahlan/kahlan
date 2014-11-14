@@ -4,8 +4,8 @@ namespace spec\kahlan\reporter\coverage;
 use kahlan\reporter\coverage\Collector;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Scrutinizer;
-use spec\fixture\reporter\coverage\exporter\NoEmptyLine;
-use spec\fixture\reporter\coverage\exporter\ExtraEmptyLine;
+use spec\fixture\reporter\coverage\NoEmptyLine;
+use spec\fixture\reporter\coverage\ExtraEmptyLine;
 
 describe("Scrutinizer", function() {
 
@@ -13,7 +13,7 @@ describe("Scrutinizer", function() {
 
         it("exports the coverage of a file with no extra end line", function() {
 
-            $path = 'spec/fixture/reporter/coverage/exporter/NoEmptyLine.php';
+            $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),
@@ -37,13 +37,13 @@ $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="spec/fixture/reporter/coverage/exporter/NoEmptyLine.php">
+    <file name="spec/fixture/reporter/coverage/NoEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>
       <line num="13" type="stmt" count="0"/>
     </file>
-    <metrics loc="9" ncloc="5" statements="4" coveredstatements="2"/>
+    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
   </project>
 </coverage>
 
@@ -54,7 +54,7 @@ EOD;
 
         it("exports the coverage of a file with an extra line at the end", function() {
 
-            $path = 'spec/fixture/reporter/coverage/exporter/ExtraEmptyLine.php';
+            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),
@@ -78,13 +78,13 @@ $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="spec/fixture/reporter/coverage/exporter/ExtraEmptyLine.php">
+    <file name="spec/fixture/reporter/coverage/ExtraEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>
       <line num="13" type="stmt" count="0"/>
     </file>
-    <metrics loc="9" ncloc="5" statements="4" coveredstatements="2"/>
+    <metrics loc="16" ncloc="12" statements="4" coveredstatements="2"/>
   </project>
 </coverage>
 
@@ -95,7 +95,6 @@ EOD;
         });
 
     });
-
 
     describe("::write()", function() {
 
@@ -109,7 +108,7 @@ EOD;
 
         it("writes the coverage to a file", function() {
 
-            $path = 'spec/fixture/reporter/coverage/exporter/NoEmptyLine.php';
+            $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),
@@ -130,7 +129,7 @@ EOD;
                 'time'      => $time
             ]);
 
-            expect($success)->toBe(468);
+            expect($success)->toBe(461);
 
             $xml = file_get_contents($this->output);
 
@@ -138,13 +137,13 @@ $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="spec/fixture/reporter/coverage/exporter/NoEmptyLine.php">
+    <file name="spec/fixture/reporter/coverage/NoEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>
       <line num="13" type="stmt" count="0"/>
     </file>
-    <metrics loc="9" ncloc="5" statements="4" coveredstatements="2"/>
+    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
   </project>
 </coverage>
 

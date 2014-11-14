@@ -28,22 +28,24 @@ class Metrics
      * The metrics data.
      *
      * @var array The metrics:
-     *            - `'loc'`      _integer_ : the number of line of code.
-     *            - `'cloc'`     _integer_ : the number of coverable line of code.
-     *            - `'ncloc'`    _integer_ : the number of non coverable line of code.
-     *            - `'covered'`  _integer_ : the number of covered line of code
-     *            - `'methods'`  _integer_ : the number of methods.
-     *            - `'cmethods'` _integer_ : the number of covered methods.
-     *            - `'files'`    _array_ : the file paths.
+     *            - `'loc'`            _integer_ : the number of line of code.
+     *            - `'cloc'`           _integer_ : the number of coverable line of code.
+     *            - `'ncloc'`          _integer_ : the number of non coverable line of code.
+     *            - `'covered'`        _integer_ : the number of covered line of code
+     *            - `'methods'`        _integer_ : the number of methods.
+     *            - `'coveredMethods'` _integer_ : the number of covered methods.
+     *            - `'files'`          _array_   : the file paths.
      */
     protected $_metrics = [
         'loc'            => 0,
         'cloc'           => 0,
         'ncloc'          => 0,
-        'covered'           => 0,
+        'covered'        => 0,
+        'coverage'       => 0,
         'methods'        => 0,
-        'cmethods'       => 0,
-        'files'          => []
+        'coveredMethods' => 0,
+        'files'          => [],
+        'percent'        => 0
     ];
 
     /**
@@ -146,10 +148,9 @@ class Metrics
     public function add($name, $metrics)
     {
         if (!$name) {
-            return $this->data($metrics);
+            return $this->_merge($metrics);
         }
         list($name, $subname, $type) = $this->_parseName($name);
-
         if (!isset($this->_childs[$name])) {
             $parent = $this;
             $this->_childs[$name] = new Metrics(compact('name', 'type', 'parent'));
@@ -172,7 +173,7 @@ class Metrics
         list($name, $subname, $type) = $this->_parseName($name);
 
         if (!isset($this->_childs[$name])) {
-            return null;
+            return;
         }
         return $this->_childs[$name]->get($subname);
     }
@@ -204,15 +205,15 @@ class Metrics
      */
     protected function _parseName($name)
     {
-        $subname = null;
+        $subname = '';
+        $type = 'namespace';
         if (strpos($name, '\\') !== false) {
-            $type = 'namespace';
             list($name, $subname) = explode('\\', $name, 2);
         } elseif (strpos($name, '::') !== false) {
             $type = 'class';
             list($name, $subname) = explode('::', $name, 2);
         }
-        if (!$subname) {
+        if (preg_match('~\(\)$~', $name)) {
             $type = $this->_type === 'class' ? 'method' : 'function';
         }
         return [$name, $subname, $type];
@@ -225,18 +226,20 @@ class Metrics
      */
     protected function _merge($metrics = [])
     {
-        foreach (['loc', 'ncloc', 'cloc', 'covered', 'methods', 'cmethods'] as $name) {
-            if (!isset($metrics[$name])) {
-                continue;
-            }
+        $defaults = [
+            'loc'            => [],
+            'ncloc'          => [],
+            'cloc'           => [],
+            'covered'        => [],
+            'files'          => [],
+            'methods'        => 0,
+            'coveredMethods' => 0
+        ];
+        $metrics += $defaults;
+
+        foreach (['loc', 'ncloc', 'cloc', 'covered', 'coverage', 'files', 'methods', 'coveredMethods'] as $name) {
             $metrics[$name] += $this->_metrics[$name];
         }
-
-        if (isset($metrics['files'])) {
-            $metrics['files'] = array_merge($this->_metrics['files'], $metrics['files']);
-            $metrics['files'] = array_unique($metrics['files']);
-        }
-        unset($metrics['line']);
         $this->data($metrics);
     }
 }

@@ -72,6 +72,13 @@ class Collector
     protected $_tree = [];
 
     /**
+     * Temps cache of processed lines
+     *
+     * @var array
+     */
+    protected $_processed = [];
+
+    /**
      * Constructor.
      *
      * @param array $options Possible options values are:
@@ -213,9 +220,9 @@ class Collector
     {
         $result = [];
         $root = $this->parse($file);
-        foreach ($root->lines['content'] as $num => $nodes) {
+        foreach ($root->lines['content'] as $num => $content) {
             $coverable = null;
-            foreach ($nodes as $node) {
+            foreach ($content['nodes'] as $node) {
                 if ($node->coverable && $node->lines['stop'] === $num) {
                     $coverable = $node;
                     break;
@@ -286,9 +293,16 @@ class Collector
     {
         $this->_metrics = new Metrics();
         foreach ($this->_coverage as $file => $xdebug) {
-            $node = $this->parse($file);
+            $root = $this->parse($file);
             $coverage = $this->export($file);
-            $this->_processTree($file, $node, $node->tree, $coverage);
+            $this->_processed = [
+                'loc'      => -1,
+                'ncloc'    => -1,
+                'cloc'     => -1,
+                'covered'  => -1,
+                'coverage' => -1
+            ];
+            $this->_processTree($file, $root->tree, $coverage);
         }
         return $this->_metrics;
     }
@@ -297,15 +311,15 @@ class Collector
      * Helper for `Collector::metrics()`.
      *
      * @param  string  $file     The processed file.
-     * @param  NodeDef $root     The root node of the processed file.
-     * @param  NodeDef $nodes    The nodes to collect metrics on.
+     * @param  object  $root     The root node of the processed file.
+     * @param  object  $nodes    The nodes to collect metrics on.
      * @param  array   $coverage The coverage data.
      * @param  string  $path     The naming of the processed node.
      */
-    protected function _processTree($file, $root, $nodes, $coverage, $path = '')
+    protected function _processTree($file, $nodes, $coverage, $path = '')
     {
         foreach ($nodes as $node) {
-            $this->_processNode($file, $root, $node, $coverage, $path);
+            $this->_processNode($file, $node, $coverage, $path);
         }
     }
 
@@ -313,77 +327,92 @@ class Collector
      * Helper for `Collector::metrics()`.
      *
      * @param  string  $file     The processed file.
-     * @param  NodeDef $root     The root node of the processed file.
-     * @param  NodeDef $node     The node to collect metrics on.
+     * @param  object  $root     The root node of the processed file.
+     * @param  object  $node     The node to collect metrics on.
      * @param  array   $coverage The coverage data.
      * @param  string  $path     The naming of the processed node.
      */
-    protected function _processNode($file, $root, $node, $coverage, $path)
+    protected function _processNode($file, $node, $coverage, $path)
     {
-        if ($node->type === 'class' || $node->type === 'namespace') {
-            $path = "{$path}\\" . $node->name;
-            $this->_processTree($file, $root, $node->tree, $coverage, $path);
-        } elseif ($node->type === 'function' && !$node->isClosure) {
-            $metrics = $this->_processMethod($file, $root, $node, $coverage);
-            $prefix = $node->isMethod ? "{$path}::" : "{$path}\\";
-            $this->_metrics->add(ltrim($prefix . $node->name . '()', '\\'), $metrics);
-        } elseif (count($node->tree)) {
-            $this->_processTree($file, $root, $node->tree, $coverage, $path);
+        if ($node->hasMethods) {
+            $path = "{$path}" . $node->name;
+            return $this->_processTree($file, $node->tree, $coverage, $path);
+        } if ($node->type === 'namespace') {
+            $path = "{$path}" . $node->name . '\\';
+            return $this->_processTree($file, $node->tree, $coverage, $path);
         }
+        $metrics = $this->_processMetrics($file, $node, $coverage);
+
+        if ($node->type === 'function' && !$node->isClosure) {
+            $prefix = $node->isMethod ? "{$path}::" : "{$path}\\";
+            $path = $prefix . $node->name . '()';
+            $metrics['line'] = $node->lines['start'];
+        }
+        $this->_metrics->add($path, $metrics);
     }
 
     /**
      * Helper for `Collector::metrics()`.
      *
      * @param  string  $file     The processed file.
-     * @param  NodeDef $root     The root node of the processed file.
-     * @param  NodeDef $node     The node to collect metrics on.
+     * @param  object  $node     The node to collect metrics on.
      * @param  array   $coverage The coverage data.
-     * @return array   The collected metrics.
+     * @return array             The collected metrics.
      */
-    protected function _processMethod($file, $root, $node, $coverage)
+    protected function _processMetrics($file, $node, $coverage)
     {
         $metrics = [
-            'loc' => 0,
-            'ncloc' => 0,
-            'cloc' => 0,
-            'covered' => 0,
-            'percent' => 0,
-            'methods' => 1,
-            'cmethods' => 0
+            'loc'      => 0,
+            'ncloc'    => 0,
+            'cloc'     => 0,
+            'covered'  => 0,
+            'coverage' => 0
         ];
-        for ($line = $node->lines['start']; $line <= $node->lines['stop']; $line++) {
-            $this->_processLine($line, $coverage, $metrics);
+        if (!$coverage) {
+            return $metrics;
         }
-        $metrics['files'][] = $file;
-        $metrics['line'] = $node->lines['start'];
-        $metrics['loc'] = ($node->lines['stop'] - $node->lines['start']) + 1;
-        if ($metrics['covered']) {
-            $metrics['cmethods'] = 1;
+        for ($index = $node->lines['start']; $index <= $node->lines['stop']; $index++) {
+            $metrics['loc'] = $this->_lineMetric('loc', $index, $metrics['loc']);
+            if (!isset($coverage[$index])) {
+                $metrics['ncloc'] = $this->_lineMetric('ncloc', $index, $metrics['ncloc']);
+                continue;
+            }
+            $metrics['cloc'] = $this->_lineMetric('cloc', $index, $metrics['cloc']);
+            if ($coverage[$index]) {
+                $metrics['covered'] = $this->_lineMetric('covered', $index, $metrics['covered']);
+                $metrics['coverage'] = $this->_lineMetric('coverage', $index, $metrics['coverage'], $coverage[$index]);
+            }
         }
-        return $metrics;
+        $metrics['files'][$file] = $file;
+        return $this->_methodMetrics($node, $metrics);
+    }
+
+    protected function _lineMetric($type, $index, $value, $increment = 1) {
+        if ($this->_processed[$type] >= $index) {
+            return $value;
+        }
+        $this->_processed[$type] = $index;
+        $value += $increment;
+        return $value;
     }
 
     /**
      * Helper for `Collector::metrics()`.
      *
-     * @param int   $line     The line number to collect.
-     * @param array $coverage The coverage data.
-     * @param array $metrics  The output metrics array.
+     * @param  object  $node    The node to collect metrics on.
+     * @param  array   $metrics The metrics of the node.
+     * @return array            The updated metrics.
      */
-    protected function _processLine($line, $coverage, &$metrics)
+    protected function _methodMetrics($node, $metrics)
     {
-        if (!$coverage) {
-            return;
+        if ($node->type !== 'function' || $node->isClosure) {
+            return $metrics;
         }
-        if (!isset($coverage[$line])) {
-            $metrics['ncloc']++;
-            return;
+        $metrics['methods'] = 1;
+        if ($metrics['covered']) {
+            $metrics['coveredMethods'] = 1;
         }
-        if ($coverage[$line]) {
-            $metrics['covered']++;
-        }
-        $metrics['cloc']++;
+        return $metrics;
     }
 
     /**
