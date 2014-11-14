@@ -133,10 +133,10 @@ class Metrics
 
         $this->_metrics = $metrics + $this->_metrics;
 
-        if ($this->_metrics['cloc']) {
+        if ($this->_metrics['lloc']) {
             $this->_metrics['percent'] = ($this->_metrics['cloc'] * 100) / $this->_metrics['lloc'];
         } else {
-            $this->_metrics['percent'] = 0;
+            $this->_metrics['percent'] = 100;
         }
     }
 
@@ -156,6 +156,7 @@ class Metrics
             $parent = $this;
             $this->_childs[$name] = new Metrics(compact('name', 'type', 'parent'));
         }
+        ksort($this->_childs);
         $this->_merge($metrics);
         $this->_childs[$name]->add($subname, $metrics);
     }
