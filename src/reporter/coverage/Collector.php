@@ -388,6 +388,15 @@ class Collector
         return $this->_methodMetrics($node, $metrics);
     }
 
+    /**
+     * Helper for `Collector::metrics()`.
+     *
+     * @param  string  $type      The metric type.
+     * @param  integer $index     The line index.
+     * @param  integer $value     The value to update.
+     * @param  integer $increment The increment to perform if the line has not already been processed.
+     * @return integer            The metric value.
+     */
     protected function _lineMetric($type, $index, $value, $increment = 1) {
         if ($this->_processed[$type] >= $index) {
             return $value;

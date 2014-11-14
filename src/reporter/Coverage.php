@@ -182,6 +182,11 @@ class Coverage extends Terminal
         }
     }
 
+    /**
+     * Output the coverage report of a metrics instance.
+     *
+     * @param Metrics $metrics A metrics instance.
+     */
     protected function _renderCoverage($metrics)
     {
         $stats = $metrics->data();
