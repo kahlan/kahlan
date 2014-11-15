@@ -17,6 +17,8 @@ Filter::register('kahlan.coverage', function($chain) {
         'driver'    => new Xdebug(),
         'path'      => $this->args()->get('src'),
         'exclude'   => [
+            //Exclude init script
+            'src/init.php',
             //Exclude Workflow from code coverage reporting
             'src/cli/Kahlan.php',
             //Exclude coverage classes from code coverage reporting (don't know how to test the tester)
