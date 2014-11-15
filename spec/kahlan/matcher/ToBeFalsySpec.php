@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\matcher;
 
+use kahlan\matcher\ToBeFalsy;
+
 describe("toBeFalsy", function() {
 
     describe("::match()", function() {
@@ -32,6 +34,22 @@ describe("toBeFalsy", function() {
         it("passes if '' is fasly", function() {
 
             expect('')->toBeFalsy();
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => 2
+            ];
+
+            $actual = ToBeFalsy::description($report);
+
+            expect($actual)->toBe('be falsy.');
 
         });
 

@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\matcher;
 
+use kahlan\matcher\ToBeCloseTo;
+
 describe("toBeCloseTo", function() {
 
     describe("::match()", function() {
@@ -39,6 +41,34 @@ describe("toBeCloseTo", function() {
         it("fails if the difference with the round is lower than the default two decimal", function() {
 
             expect(1.23)->not->toBeCloseTo(1.2249999);
+
+        });
+
+        it("return false if actual or expected are not a numeric value", function() {
+
+            expect("string")->not->toBeCloseTo(1);
+            expect(1)->not->toBeCloseTo("string");
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'precision' => 2,
+                'actual'    => 1.23,
+                'expected'  => 1.22499991
+            ];
+
+            $actual = ToBeCloseTo::description($report);
+
+            expect($actual['description'])->toBe('be close to expected relying to a precision of 2.');
+            expect((string) $actual['params']['actual'])->toBe((string) 1.23);
+            expect((string) $actual['params']['expected'])->toBe((string) 1.22499991);
+            expect((string) $actual['params']['gap is >='])->toBe((string) 0.005);
 
         });
 

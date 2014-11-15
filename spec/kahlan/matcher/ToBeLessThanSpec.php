@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\matcher;
 
+use kahlan\matcher\ToBeLessThan;
+
 describe("toBeLessThan", function() {
 
     describe("::match()", function() {
@@ -20,6 +22,23 @@ describe("toBeLessThan", function() {
         it("passes if 2 is not < 2", function() {
 
             expect(2)->not->toBeLessThan(2);
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => 2,
+                'expected' => 1
+            ];
+
+            $actual = ToBeLessThan::description($report);
+
+            expect($actual)->toBe('be lesser than expected.');
 
         });
 

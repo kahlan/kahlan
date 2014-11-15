@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\matcher;
 
+use kahlan\matcher\ToBe;
+
 describe("toBe", function() {
 
     describe("::match()", function() {
@@ -104,6 +106,23 @@ describe("toBe", function() {
         it("passes if ['a' => 1, 'b' => 3, 'c' => 7] is not === ['a' => 1, 'c' => 7, 'b' => 3]", function() {
 
             expect(['a' => 1, 'b' => 3, 'c' => 7])->not->toBe(['a' => 1, 'c' => 7, 'b' => 3]);
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => 1,
+                'expected' => 2
+            ];
+
+            $actual = ToBe::description($report);
+
+            expect($actual)->toBe('be identical to expected (===).');
 
         });
 

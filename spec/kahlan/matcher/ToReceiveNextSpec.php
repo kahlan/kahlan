@@ -5,6 +5,7 @@ use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\analysis\Parser;
+use kahlan\matcher\ToReceiveNext;
 
 use spec\fixture\plugin\pointcut\Foo;
 

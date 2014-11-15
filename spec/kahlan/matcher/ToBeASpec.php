@@ -2,6 +2,7 @@
 namespace spec\kahlan\matcher;
 
 use stdClass;
+use kahlan\matcher\ToBeA;
 
 describe("toBeA", function() {
 
@@ -76,6 +77,25 @@ describe("toBeA", function() {
         it("passes if a resource is a resource", function() {
 
             expect(opendir(sys_get_temp_dir()))->toBeA('resource');
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => 1,
+                'expected' => 'boolean'
+            ];
+
+            $actual = ToBeA::description($report);
+
+            expect($actual['description'])->toBe('have the expected type.');
+            expect((string) $actual['params']['actual'])->toBe('integer');
+            expect((string) $actual['params']['expected'])->toBe('boolean');
 
         });
 

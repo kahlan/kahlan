@@ -3,6 +3,7 @@ namespace spec\kahlan\matcher;
 
 use Exception;
 use RuntimeException;
+use kahlan\matcher\ToThrow;
 
 describe("toThrow", function() {
 
@@ -84,6 +85,27 @@ describe("toThrow", function() {
                 throw new RuntimeException('exception message');
             };
             expect($closure)->not->toThrow(new Exception('exception message'));
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $exception = new Exception();
+
+            $report['params'] = [
+                'actual'   => function() {},
+                'expected' => $exception
+            ];
+
+            $actual = ToThrow::description($report);
+
+            expect($actual['description'])->toBe('throw a compatible exception.');
+            expect($actual['params']['actual'])->toBe(null);
+            expect($actual['params']['expected'])->toBe($exception);
 
         });
 

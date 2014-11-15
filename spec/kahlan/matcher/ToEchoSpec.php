@@ -2,6 +2,7 @@
 namespace spec\kahlan\matcher;
 
 use stdClass;
+use kahlan\matcher\ToEcho;
 
 describe("toEcho", function() {
 
@@ -16,6 +17,25 @@ describe("toEcho", function() {
         it("passes if `'Hello World'` is not echoed", function() {
 
             expect(function() { echo 'Good Bye!'; })->not->toEcho('Hello World!');
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => function() {
+                	echo 'Hello';
+                },
+                'expected' => 'Good Bye!'
+            ];
+
+            $actual = ToEcho::description($report);
+
+            expect($actual)->toBe('echo the expected string.');
 
         });
 

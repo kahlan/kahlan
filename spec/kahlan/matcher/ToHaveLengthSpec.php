@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\matcher;
 
+use kahlan\matcher\ToHaveLength;
+
 describe("toHaveLength", function() {
 
     describe("::match()", function() {
@@ -20,6 +22,26 @@ describe("toHaveLength", function() {
         it("passes if [] has a length of 0", function() {
 
             expect([])->toHaveLength(0);
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => [1, 2, 3],
+                'expected' => 5
+            ];
+
+            $actual = ToHaveLength::description($report);
+
+            expect($actual['description'])->toBe('have the expected length.');
+            expect($actual['params']['actual'])->toBe([1, 2, 3]);
+            expect($actual['params']['actual length'])->toBe(3);
+            expect($actual['params']['expected length'])->toBe(5);
 
         });
 

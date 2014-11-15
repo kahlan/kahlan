@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\matcher;
 
+use kahlan\matcher\ToEqual;
+
 describe("toEqual", function() {
 
     describe("::match()", function() {
@@ -104,6 +106,23 @@ describe("toEqual", function() {
         it("passes if [1, 3, 7] is not == [1, 7, 3]", function() {
 
             expect([1, 3, 7])->not->toEqual([1, 7, 3]);
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => 1,
+                'expected' => 2
+            ];
+
+            $actual = ToEqual::description($report);
+
+            expect($actual)->toBe('be equal to expected (==).');
 
         });
 

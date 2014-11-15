@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\matcher;
 
+use kahlan\matcher\ToMatch;
+
 describe("toMatch", function() {
 
     describe("::match()", function() {
@@ -20,6 +22,23 @@ describe("toMatch", function() {
             expect('Hello')->not->toMatch(function($actual) {
                 return $actual === 'Hello World!';
             });
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => 'Hello',
+                'expected' => '~^World$~'
+            ];
+
+            $actual = ToMatch::description($report);
+
+            expect($actual)->toBe('match expected.');
 
         });
 

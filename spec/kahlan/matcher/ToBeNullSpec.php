@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\matcher;
 
+use kahlan\matcher\ToBeNull;
+
 describe("toBeNull", function() {
 
     describe("::match()", function() {
@@ -32,6 +34,22 @@ describe("toBeNull", function() {
         it("fails if '' is null", function() {
 
             expect('')->not->toBeNull();
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message", function() {
+
+            $report['params'] = [
+                'actual'   => 2
+            ];
+
+            $actual = ToBeNull::description($report);
+
+            expect($actual)->toBe('be null.');
 
         });
 

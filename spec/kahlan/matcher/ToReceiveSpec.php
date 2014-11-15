@@ -2,10 +2,12 @@
 namespace spec\kahlan\matcher;
 
 use kahlan\Arg;
+use kahlan\plugin\Stub;
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\analysis\Parser;
+use kahlan\matcher\ToReceive;
 
 use spec\fixture\plugin\pointcut\Foo;
 use spec\fixture\plugin\pointcut\SubBar;
@@ -209,6 +211,61 @@ describe("toReceive", function() {
                 $foo::version();
 
             });
+
+        });
+
+    });
+
+    describe("::description()", function() {
+
+        it("returns the description message for not received call", function() {
+
+            $stub = Stub::create();
+            $matcher = new ToReceive($stub, 'method');
+
+            $matcher->resolve([
+                'instance' => $matcher,
+                'params'   => [
+                    'actual'   => $stub,
+                    'expected' => 'method',
+                    'logs'     => []
+                ]
+            ]);
+
+            $actual = ToReceive::description(['instance' => $matcher]);
+
+            expect($actual['description'])->toBe('receive the correct message.');
+            expect($actual['params'])->toBe([
+                'actual received' => ['__construct'],
+                'expected' => 'method'
+            ]);
+
+        });
+
+        it("returns the description message for wrong passed arguments", function() {
+
+            $stub = Stub::create();
+            $matcher = new ToReceive($stub, 'method');
+            $matcher->with('Hello World!');
+
+            $stub->method('Good Bye!');
+
+            $matcher->resolve([
+                'instance' => $matcher,
+                'params'   => [
+                    'actual'   => $stub,
+                    'expected' => 'method',
+                    'logs'     => []
+                ]
+            ]);
+
+            $actual = ToReceive::description(['instance' => $matcher]);
+
+            expect($actual['description'])->toBe('receive correct parameters.');
+            expect($actual['params'])->toBe([
+                'actual with' => ['Hello World!'],
+                'expected with' => ['Good Bye!']
+            ]);
 
         });
 
