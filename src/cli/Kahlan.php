@@ -88,17 +88,17 @@ class Kahlan {
         $this->_reporters = new Reporters();
         $this->_args = $args = new Args();
 
-        $args->option('src', ['array' => 'true', 'default' => ['src']]);
-        $args->option('spec', ['array' => 'true', 'default' => ['spec']]);
-        $args->option('reporter', ['default' => 'dot']);
-        $args->option('coverage', ['type' => 'string']);
-        $args->option('config', ['default' => 'kahlan-config.php']);
-        $args->option('ff', ['type' => 'numeric', 'default' => 0]);
-        $args->option('no-colors', ['type' => 'boolean', 'default' => false]);
-        $args->option('include', ['array' => 'true', 'default' => ['*']]);
-        $args->option('exclude', ['array' => 'true', 'default' => []]);
-        $args->option('persistent', ['type'  => 'boolean', 'default' => true]);
-        $args->option('autoclear', ['array' => 'true', 'default' => [
+        $args->argument('src', ['array' => 'true', 'default' => ['src']]);
+        $args->argument('spec', ['array' => 'true', 'default' => ['spec']]);
+        $args->argument('reporter', ['default' => 'dot']);
+        $args->argument('coverage', ['type' => 'string']);
+        $args->argument('config', ['default' => 'kahlan-config.php']);
+        $args->argument('ff', ['type' => 'numeric', 'default' => 0]);
+        $args->argument('no-colors', ['type' => 'boolean', 'default' => false]);
+        $args->argument('include', ['array' => 'true', 'default' => ['*']]);
+        $args->argument('exclude', ['array' => 'true', 'default' => []]);
+        $args->argument('persistent', ['type'  => 'boolean', 'default' => true]);
+        $args->argument('autoclear', ['array' => 'true', 'default' => [
             'kahlan\plugin\Monkey',
             'kahlan\plugin\Call',
             'kahlan\plugin\Stub',
@@ -154,15 +154,18 @@ class Kahlan {
      */
     public function loadConfig($argv = [])
     {
-        $this->_args->parse($argv);
+        $args = new Args();
+        $args->parse($argv);
 
-        if ($this->_args->get('help')) {
+        if ($args->get('help')) {
             return $this->_help();
         }
 
-        if (file_exists($this->_args->get('config'))) {
-            require $this->_args->get('config');
+        if (file_exists($args->get('config'))) {
+            require $args->get('config');
         }
+
+        $this->_args->parse($argv);
     }
 
     /**

@@ -6,14 +6,14 @@ use Exception;
 class Args {
 
     /**
-     * Options attributes
+     * Arguments attributes
      *
      * @var array
      */
-    protected $_options = [];
+    protected $_arguments = [];
 
     /**
-     * Options values
+     * Arguments values
      *
      * @var array
      */
@@ -22,62 +22,50 @@ class Args {
     /**
      * The Constructor.
      *
-     * @param array $options An array of options attributes where keys are option names
+     * @param array $arguments An array of argument's attributes where keys are argument's names
      *                       and values are an array of attributes.
      */
-    public function __construct($options = [])
+    public function __construct($arguments = [])
     {
-        foreach ($options as $name => $config) {
-            $this->option($name, $config);
+        foreach ($arguments as $name => $config) {
+            $this->argument($name, $config);
         }
     }
 
     /**
-     * Returns all options attributes.
+     * Returns all arguments attributes.
      *
      * @return array
      */
-    public function options() {
-        return $this->_options;
+    public function arguments() {
+        return $this->_arguments;
     }
 
 
     /**
-     * Get/Set an option attributes.
+     * Get/Set/Override argument's attributes.
      *
-     * @param  string $name   The name of the option.
-     * @param  array  $config The option attributes. If not passed, acts as a getter.
+     * @param  string $name   The name of the argument.
+     * @param  array  $config The argument attributes to set.
      * @return array
      */
-    public function option($name = null, $config = [])
+    public function argument($name = null, $config = [], $value = null)
     {
         $defaults = [
-            'type'    => 'string',
-            'array'   => false,
-            'default' => null
+            'type'      => 'string',
+            'array'     => false,
+            'formatter' => null,
+            'default'   => null
         ];
         if (func_num_args() === 1) {
-            if (isset($this->_options[$name])) {
-                return $this->_options[$name];
+            if (isset($this->_arguments[$name])) {
+                return $this->_arguments[$name];
             }
             return $defaults;
         }
-        $config += $defaults;
-        return $this->_options[$name] = $config;
-    }
+        $config = is_array($config) ? $config + $defaults : [$config => $value] + $this->argument($name);
 
-    /**
-     * Override/Create an option attribute.
-     *
-     * @param  string $name      The name of the option.
-     * @param  string $attribute The name attribute.
-     * @param  mixed  $value     The value of the attribute to set.
-     * @return array
-     */
-    public function attribute($name = null, $attribute = null, $value = null)
-    {
-        $config = $this->option($name);
-        return $this->_options[$name] = [$attribute => $value] + $config;
+        return $this->_arguments[$name] = $config;
     }
 
     /**
@@ -88,6 +76,7 @@ class Args {
      */
     public function parse($argv)
     {
+        $this->_values = [];
         foreach($argv as $arg) {
             if ($arg === '--') {
                 break;
@@ -103,8 +92,8 @@ class Args {
     /**
      * Helper for `parse()`
      *
-     * @param  string $arg A string option.
-     * @return array       The parsed option
+     * @param  string $arg A string argument.
+     * @return array       The parsed argument
      */
     protected function _parse($arg)
     {
@@ -120,9 +109,9 @@ class Args {
     }
 
     /**
-     * Check if an option has been setted the value of a specific option.
+     * Check if an argument has been setted the value of a specific argument.
      *
-     * @param  string  $name      The name of the option.
+     * @param  string  $name The name of the argument.
      * @return boolean
      */
     public function exists($name)
@@ -130,17 +119,17 @@ class Args {
         if (array_key_exists($name, $this->_values)) {
             return true;
         }
-        if (isset($this->_options[$name])) {
-            return isset($this->_options[$name]['default']);
+        if (isset($this->_arguments[$name])) {
+            return isset($this->_arguments[$name]['default']);
         }
         return false;
     }
 
     /**
-     * Set the value of a specific option.
+     * Set the value of a specific argument.
      *
-     * @param  string $name      The name of the option.
-     * @param  mixed  $value     The value of the option to set.
+     * @param  string $name      The name of the argument.
+     * @param  mixed  $value     The value of the argument to set.
      * @return array             The setted value.
      */
     public function set($name, $value)
@@ -149,15 +138,15 @@ class Args {
     }
 
     /**
-     * Add a value to a specific option (or set if it's not an array).
+     * Add a value to a specific argument (or set if it's not an array).
      *
-     * @param  string $name      The name of the option.
-     * @param  mixed  $value     The value of the option to set.
+     * @param  string $name      The name of the argument.
+     * @param  mixed  $value     The value of the argument to set.
      * @return array             The setted value.
      */
     public function add($name, $value)
     {
-        $config = $this->option($name);
+        $config = $this->argument($name);
         if ($config['array']) {
             $this->_values[$name][] = $value;
         } else {
@@ -167,47 +156,51 @@ class Args {
     }
 
     /**
-     * Get the value of a specific option.
+     * Get the value of a specific argument.
      *
-     * @param  string $name      The name of the option.
+     * @param  string $name      The name of the argument.
      * @return array             The value.
      */
     public function get($name = null)
     {
-        if ($name === null) {
-            $result = [];
-            foreach ($this->_options as $key => $value) {
-                if (isset($value['default'])) {
-                    $result[$key] = $this->_get($key);
-                }
-            }
-            foreach ($this->_values as $key => $value) {
+        if ($name !== null) {
+            return $this->_get($name);
+        }
+        $result = [];
+        foreach ($this->_arguments as $key => $value) {
+            if (isset($value['default'])) {
                 $result[$key] = $this->_get($key);
             }
-            return $result;
         }
-        return $this->_get($name);
+        foreach ($this->_values as $key => $value) {
+            $result[$key] = $this->_get($key);
+        }
+        return $result;
     }
 
     /**
      * Helper for `get()`.
      *
-     * @param  string $name The name of the option.
+     * @param  string $name The name of the argument.
      * @return array        The casted value.
      */
     protected function _get($name)
     {
-        $config = $this->option($name);
+        $config = $this->argument($name);
         $value = isset($this->_values[$name]) ? $this->_values[$name] : $config['default'];
-        return $this->cast($value, $config['type'], $config['array']);
+        $casted = $this->cast($value, $config['type'], $config['array']);
+        if (!array_key_exists($name, $this->_values) || !is_callable($config['formatter'])) {
+            return $casted;
+        }
+        return $config['formatter']($casted, $name, $this);
     }
 
     /**
-     * Casts a value according to the option attributes.
+     * Casts a value according to the argument attributes.
      *
      * @param  string  $value The value to cast.
      * @param  string  $type  The type of the value.
-     * @param  boolean $array If `true`, the option value is considered to be an array.
+     * @param  boolean $array If `true`, the argument value is considered to be an array.
      * @return array          The casted value.
      */
     public function cast($value, $type, $array = false)

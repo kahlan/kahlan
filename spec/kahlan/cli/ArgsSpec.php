@@ -6,16 +6,17 @@ use kahlan\cli\Args;
 
 describe("Args", function() {
 
-    describe("->option()", function() {
+    describe("->argument()", function() {
 
-        it("sets an option config", function() {
+        it("sets an argument config", function() {
 
             $args = new Args();
-            $args->option('option1', ['type' => 'boolean']);
-            expect($args->option('option1'))->toEqual([
-                'type' => 'boolean',
-                'array' => false,
-                'default' => null
+            $args->argument('argument1', ['type' => 'boolean']);
+            expect($args->argument('argument1'))->toEqual([
+                'type'      => 'boolean',
+                'array'     => false,
+                'formatter' => null,
+                'default'   => null
             ]);
 
         });
@@ -23,26 +24,31 @@ describe("Args", function() {
         it("gets the default config", function() {
 
             $args = new Args();
-            expect($args->option('option1'))->toEqual([
-                'type' => 'string',
-                'array' => false,
-                'default' => null
+            expect($args->argument('argument1'))->toEqual([
+                'type'      => 'string',
+                'array'     => false,
+                'formatter' => null,
+                'default'   => null
             ]);
 
         });
 
-    });
-
-    describe("->attribute()", function() {
-
-        it("sets/updates an attribute of an option", function() {
+        it("sets/updates an attribute of an argument", function() {
 
             $args = new Args();
-            $args->option('option1', []);
-            $args->attribute('option1', 'default', 'value1');
-            expect($args->option('option1'))->toEqual([
-                'type' => 'string',
-                'array' => false,
+            $args->argument('argument1', ['type' => 'boolean']);
+            expect($args->argument('argument1'))->toEqual([
+                'type'      => 'boolean',
+                'array'     => false,
+                'formatter' => null,
+                'default'   => null
+            ]);
+
+            $args->argument('argument1', 'default', 'value1');
+            expect($args->argument('argument1'))->toEqual([
+                'type' => 'boolean',
+                'array'     => false,
+                'formatter' => null,
                 'default' => 'value1'
             ]);
 
@@ -52,42 +58,42 @@ describe("Args", function() {
 
     describe("->parse()", function() {
 
-        it("parses command line options", function() {
+        it("parses command line arguments", function() {
 
             $args = new Args();
             $actual = $args->parse([
-                'command', '--option1', '--option3=value3', '--', '--ingored'
+                'command', '--argument1', '--argument3=value3', '--', '--ingored'
             ]);
             expect($actual)->toEqual([
-                'option1' => '',
-                'option3' => 'value3'
+                'argument1' => '',
+                'argument3' => 'value3'
             ]);
 
         });
 
-        it("parses command line options with dashed names", function() {
+        it("parses command line arguments with dashed names", function() {
 
             $args = new Args([
-                'double-dashed-option' => ['type' => 'boolean']
+                'double-dashed-argument' => ['type' => 'boolean']
             ]);
             $actual = $args->parse([
-                'command', '--dashed-option=value', '--double-dashed-option'
+                'command', '--dashed-argument=value', '--double-dashed-argument'
             ]);
             expect($actual)->toEqual([
-                'dashed-option' => 'value',
-                'double-dashed-option' => true
+                'dashed-argument' => 'value',
+                'double-dashed-argument' => true
             ]);
 
         });
 
-        it("provides an array when some multiple occurences of a same option are present", function() {
+        it("provides an array when some multiple occurences of a same argument are present", function() {
 
-            $args = new Args(['option1' => ['array' => true]]);
+            $args = new Args(['argument1' => ['array' => true]]);
             $actual = $args->parse([
-                'command', '--option1', '--option1=value1' , '--option1=value2'
+                'command', '--argument1', '--argument1=value1' , '--argument1=value2'
             ]);
             expect($actual)->toEqual([
-                'option1' => [
+                'argument1' => [
                     '',
                     'value1',
                     'value2'
@@ -99,68 +105,96 @@ describe("Args", function() {
         it("allows boolean casting", function() {
 
             $args = new Args([
-                'option1' => ['type' => 'boolean'],
-                'option2' => ['type' => 'boolean'],
-                'option3' => ['type' => 'boolean'],
-                'option4' => ['type' => 'boolean'],
-                'option5' => ['type' => 'boolean']
+                'argument1' => ['type' => 'boolean'],
+                'argument2' => ['type' => 'boolean'],
+                'argument3' => ['type' => 'boolean'],
+                'argument4' => ['type' => 'boolean'],
+                'argument5' => ['type' => 'boolean']
             ]);
             $actual = $args->parse([
-                'command', '--option1', '--option2=true' , '--option3=false', '--option4=0'
+                'command', '--argument1', '--argument2=true' , '--argument3=false', '--argument4=0'
             ]);
             expect($actual)->toEqual([
-                'option1' => true,
-                'option2' => true,
-                'option3' => false,
-                'option4' => false
+                'argument1' => true,
+                'argument2' => true,
+                'argument3' => false,
+                'argument4' => false
             ]);
 
-            expect($args->get('option5'))->toBe(false);
+            expect($args->get('argument5'))->toBe(false);
 
         });
 
         it("allows integer casting", function() {
 
             $args = new Args([
-                'option'  => ['type' => 'numeric'],
-                'option0' => ['type' => 'numeric'],
-                'option1' => ['type' => 'numeric'],
-                'option2' => ['type' => 'numeric']
+                'argument'  => ['type' => 'numeric'],
+                'argument0' => ['type' => 'numeric'],
+                'argument1' => ['type' => 'numeric'],
+                'argument2' => ['type' => 'numeric']
             ]);
             $actual = $args->parse([
-                'command', '--option', '--option0=0', '--option1=1', '--option2=2'
+                'command', '--argument', '--argument0=0', '--argument1=1', '--argument2=2'
             ]);
             expect($actual)->toEqual([
-                'option' => 1,
-                'option0' => 0,
-                'option1' => 1,
-                'option2' => 2
+                'argument' => 1,
+                'argument0' => 0,
+                'argument1' => 1,
+                'argument2' => 2
             ]);
 
         });
 
-        context("with defaults options", function() {
+        context("with defaults arguments", function() {
 
             it("allows boolean casting", function() {
 
                 $args = new Args([
-                    'option1' => ['type' => 'boolean', 'default' => true],
-                    'option2' => ['type' => 'boolean', 'default' => false],
-                    'option3' => ['type' => 'boolean', 'default' => true],
-                    'option4' => ['type' => 'boolean', 'default' => false]
+                    'argument1' => ['type' => 'boolean', 'default' => true],
+                    'argument2' => ['type' => 'boolean', 'default' => false],
+                    'argument3' => ['type' => 'boolean', 'default' => true],
+                    'argument4' => ['type' => 'boolean', 'default' => false]
                 ]);
 
                 $actual = $args->parse([
-                    'command', '--option1', '--option2'
+                    'command', '--argument1', '--argument2'
                 ]);
                 expect($actual)->toEqual([
-                    'option1' => true,
-                    'option2' => true,
-                    'option3' => true,
-                    'option4' => false
+                    'argument1' => true,
+                    'argument2' => true,
+                    'argument3' => true,
+                    'argument4' => false
                 ]);
 
             });
+
+        });
+
+    });
+
+    describe("->get()", function() {
+
+        it("formats value according to formatter function", function() {
+
+            $args = new Args(['argument1' => [
+                'type'      => 'string',
+                'default'   => 'default_value',
+                'formatter' => function($value, $name, $args) {
+                    if (!$value) {
+                        return  'empty_value';
+                    }
+                    return 'non_empty_value';
+                }
+            ]]);
+
+            $actual = $args->parse(['command']);
+            expect($args->get('argument1'))->toEqual('default_value');
+
+            $actual = $args->parse(['command', '--argument1']);
+            expect($args->get('argument1'))->toEqual('empty_value');
+
+            $actual = $args->parse(['command', '--argument1="some_value"']);
+            expect($args->get('argument1'))->toEqual('non_empty_value');
 
         });
 
@@ -172,24 +206,24 @@ describe("Args", function() {
 
             $args = new Args();
             $actual = $args->parse([
-                'command', '--option1', '--option2=true' , '--option3=false', '--option4=0'
+                'command', '--argument1', '--argument2=true' , '--argument3=false', '--argument4=0'
             ]);
-            expect($args->exists('option1'))->toBe(true);
-            expect($args->exists('option2'))->toBe(true);
-            expect($args->exists('option3'))->toBe(true);
-            expect($args->exists('option4'))->toBe(true);
-            expect($args->exists('option5'))->toBe(false);
+            expect($args->exists('argument1'))->toBe(true);
+            expect($args->exists('argument2'))->toBe(true);
+            expect($args->exists('argument3'))->toBe(true);
+            expect($args->exists('argument4'))->toBe(true);
+            expect($args->exists('argument5'))->toBe(false);
 
         });
 
         it("returns `true` if the argument as a default value", function() {
 
             $args = new Args();
-            $args->option('option1', ['type' => 'boolean']);
-            $args->option('option2', ['type' => 'boolean', 'default' => false]);
+            $args->argument('argument1', ['type' => 'boolean']);
+            $args->argument('argument2', ['type' => 'boolean', 'default' => false]);
 
-            expect($args->exists('option1'))->toBe(false);
-            expect($args->exists('option2'))->toBe(true);
+            expect($args->exists('argument1'))->toBe(false);
+            expect($args->exists('argument2'))->toBe(true);
 
         });
 
