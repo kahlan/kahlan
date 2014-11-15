@@ -11,6 +11,18 @@ describe("toMatch", function() {
 
         });
 
+        it("passes if actual match the closure", function() {
+
+            expect('Hello World!')->toMatch(function($actual) {
+                return $actual === 'Hello World!';
+            });
+
+            expect('Hello')->not->toMatch(function($actual) {
+                return $actual === 'Hello World!';
+            });
+
+        });
+
     });
 
 });

@@ -424,6 +424,26 @@ it("passes if $actual throws the $expected exception", function() {
 });
 ```
 
+**toMatch($expected)**
+
+```php
+it("passes if $actual match the $expected regexp", function() {
+
+    expect('Hello World!')->toMatch('/^H(.*?)!$/');
+
+});
+```
+
+```php
+it("passes if $actual match the $expected closure logic", function() {
+
+    expect('Hello World!')->toMatch(function($actual) {
+        return $actual === 'Hello World!';
+    });
+
+});
+```
+
 **toEcho($expected)**
 
 ```php
