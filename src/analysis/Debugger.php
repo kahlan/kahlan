@@ -145,19 +145,15 @@ class Debugger
 
     public static function normalize($backtrace)
     {
-        if ($backtrace instanceof Exception) {
-            return array_merge([[
-                'function' => '[NA]',
-                'file' => $backtrace->getFile(),
-                'line' => $backtrace->getLine(),
-                'args' => []
-            ]], $backtrace->getTrace());
-        } elseif (isset($backtrace['trace'])) {
-            $trace = $backtrace['trace'];
-            unset($backtrace['trace']);
-            return array_merge([$backtrace], $trace);
+        if (!$backtrace instanceof Exception) {
+            return $backtrace;
         }
-        return $backtrace;
+        return array_merge([[
+            'function' => '[NA]',
+            'file' => $backtrace->getFile(),
+            'line' => $backtrace->getLine(),
+            'args' => []
+        ]], $backtrace->getTrace());
     }
 
     public static function message($backtrace)
@@ -269,9 +265,9 @@ class Debugger
                 return 'E_CORE_ERROR';
             case E_CORE_WARNING:
                 return 'E_CORE_WARNING';
-            case E_CORE_ERROR:
+            case E_COMPILE_ERROR:
                 return 'E_COMPILE_ERROR';
-            case E_CORE_WARNING:
+            case E_COMPILE_WARNING:
                 return 'E_COMPILE_WARNING';
             case E_USER_ERROR:
                 return 'E_USER_ERROR';

@@ -1,5 +1,5 @@
 <?php
-namespace spec\cli;
+namespace spec\kahlan\cli;
 
 use Exception;
 use kahlan\cli\Args;

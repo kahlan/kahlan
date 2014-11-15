@@ -1,5 +1,5 @@
 <?php
-namespace spec;
+namespace spec\kahlan;
 
 use kahlan\PhpErrorException;
 use kahlan\Suite;

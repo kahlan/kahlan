@@ -1,5 +1,5 @@
 <?php
-namespace spec\plugin;
+namespace spec\kahlan\plugin;
 
 use DateTime;
 use kahlan\jit\Interceptor;
@@ -64,7 +64,7 @@ describe("Monkey", function() {
     it("patches a core function", function() {
 
         $foo = new Foo();
-        Monkey::patch('time', 'spec\plugin\mytime');
+        Monkey::patch('time', 'spec\kahlan\plugin\mytime');
         expect($foo->time())->toBe(245026800);
 
     });
@@ -82,7 +82,7 @@ describe("Monkey", function() {
         it("patches a core class", function() {
 
             $foo = new Foo();
-            Monkey::patch('DateTime', 'spec\plugin\MyDateTime');
+            Monkey::patch('DateTime', 'spec\kahlan\plugin\MyDateTime');
             expect($foo->datetime()->getTimestamp())->toBe(245026800);
 
         });
@@ -90,7 +90,7 @@ describe("Monkey", function() {
         it("patches a function", function() {
 
             $foo = new Foo();
-            Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\plugin\myrand');
+            Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\kahlan\plugin\myrand');
             expect($foo->rand(0, 100))->toBe(101);
 
         });
@@ -98,7 +98,7 @@ describe("Monkey", function() {
         it("patches a class", function() {
 
             $foo = new Foo();
-            Monkey::patch('string\String', 'spec\plugin\MyString');
+            Monkey::patch('string\String', 'spec\kahlan\plugin\MyString');
             expect($foo->dump((object)'hello'))->toBe('myhashvalue');
 
         });
@@ -106,7 +106,7 @@ describe("Monkey", function() {
         it("can unpatch a monkey patch", function() {
 
             $foo = new Foo();
-            Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\plugin\myrand');
+            Monkey::patch('spec\fixture\plugin\monkey\rand', 'spec\kahlan\plugin\myrand');
             expect($foo->rand(0, 100))->toBe(101);
 
             Monkey::clear('spec\fixture\plugin\monkey\rand');

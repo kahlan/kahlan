@@ -1,5 +1,5 @@
 <?php
-namespace spec\analysis;
+namespace spec\kahlan\analysis;
 
 use kahlan\analysis\TokenStream;
 use Exception;

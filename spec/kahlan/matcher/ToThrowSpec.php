@@ -1,5 +1,5 @@
 <?php
-namespace spec\matcher;
+namespace spec\kahlan\matcher;
 
 use Exception;
 use RuntimeException;

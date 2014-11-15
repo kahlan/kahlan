@@ -1,5 +1,5 @@
 <?php
-namespace spec\jit\patcher;
+namespace spec\kahlan\jit\patcher;
 
 use kahlan\analysis\Parser;
 use kahlan\jit\patcher\Rebase;

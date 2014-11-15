@@ -1,5 +1,5 @@
 <?php
-namespace spec\plugin;
+namespace spec\kahlan\plugin;
 
 use kahlan\Arg;
 use kahlan\jit\Interceptor;
