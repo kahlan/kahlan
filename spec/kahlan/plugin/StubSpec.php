@@ -1,6 +1,8 @@
 <?php
 namespace spec\kahlan\plugin;
 
+use InvalidArgumentException;
+
 use kahlan\Arg;
 use kahlan\jit\Interceptor;
 use kahlan\jit\Patchers;
@@ -139,7 +141,7 @@ describe("Stub", function() {
 
             });
 
-            context("with multiple return values", function(){
+            context("with multiple return values", function() {
 
                 it("stubs a method", function() {
 
@@ -151,16 +153,50 @@ describe("Stub", function() {
 
                 });
 
-                it("stubs methods with an array", function() {
+            });
+
+
+            context("with ->methods()", function() {
+
+                it("stubs methods using return values as an array", function() {
 
                     $foo = new Foo();
-                    Stub::on($foo)->method([
+                    Stub::on($foo)->methods([
                         'message' => ['Good Evening World!', 'Good Bye World!'],
                         'bar' => ['Hello Bar!']
                     ]);
                     expect($foo->message())->toBe('Good Evening World!');
                     expect($foo->message())->toBe('Good Bye World!');
                     expect($foo->bar())->toBe('Hello Bar!');
+
+                });
+
+                it("stubs methods using closure", function() {
+
+                    $foo = new Foo();
+                    Stub::on($foo)->methods([
+                        'message' => function() {
+                            return 'Good Evening World!';
+                        },
+                        'bar' => function() {
+                            return 'Hello Bar!';
+                        }
+                    ]);
+                    expect($foo->message())->toBe('Good Evening World!');
+                    expect($foo->bar())->toBe('Hello Bar!');
+
+                });
+
+                it("throw an exception with invalid definition", function() {
+
+                    $closure = function() {
+                        $foo = new Foo();
+                        Stub::on($foo)->methods([
+                            'bar' => 'Hello Bar!'
+                        ]);
+                    };
+                    $message = "Stubbed method definition for `bar` must be a closure or an array of returned value(s).";
+                    expect($closure)->toThrow(new InvalidArgumentException($message));
 
                 });
 
@@ -221,9 +257,13 @@ describe("Stub", function() {
 
                 });
 
-                it("stubs methods with an array", function() {
+            });
 
-                    Stub::on('spec\fixture\plugin\pointcut\Foo')->method([
+            context("with ->methods()", function() {
+
+                it("stubs methods using return values as an array", function() {
+
+                    Stub::on('spec\fixture\plugin\pointcut\Foo')->methods([
                         'message' => ['Good Evening World!', 'Good Bye World!'],
                         'bar' => ['Hello Bar!']
                     ]);
@@ -236,6 +276,38 @@ describe("Stub", function() {
 
                     $foo3 = new Foo();
                     expect($foo3->bar())->toBe('Hello Bar!');
+
+                });
+
+                it("stubs methods using closure", function() {
+
+                    Stub::on('spec\fixture\plugin\pointcut\Foo')->methods([
+                        'message' => function() {
+                            return 'Good Evening World!';
+                        },
+                        'bar' => function() {
+                            return 'Hello Bar!';
+                        }
+                    ]);
+
+                    $foo = new Foo();
+                    expect($foo->message())->toBe('Good Evening World!');
+
+                    $foo2 = new Foo();
+                    expect($foo2->bar())->toBe('Hello Bar!');
+
+                });
+
+                it("throw an exception with invalid definition", function() {
+
+                    $closure = function() {
+                        $foo = new Foo();
+                        Stub::on('spec\fixture\plugin\pointcut\Foo')->methods([
+                            'bar' => 'Hello Bar!'
+                        ]);
+                    };
+                    $message = "Stubbed method definition for `bar` must be a closure or an array of returned value(s).";
+                    expect($closure)->toThrow(new InvalidArgumentException($message));
 
                 });
 
@@ -309,7 +381,7 @@ describe("Stub", function() {
         it("stubs an instance with multiple stubbed methods", function() {
 
             $stub = Stub::create();
-            Stub::on($stub)->method([
+            Stub::on($stub)->methods([
                 'message' => ['Good Evening World!', 'Good Bye World!'],
                 'bar' => ['Hello Bar!']
             ]);
@@ -323,7 +395,7 @@ describe("Stub", function() {
         it("stubs static methods on a stub instance", function() {
 
             $stub = Stub::create();
-            Stub::on($stub)->method([
+            Stub::on($stub)->methods([
                 '::magicCallStatic' => ['Good Evening World!', 'Good Bye World!']
             ]);
 
@@ -420,7 +492,7 @@ describe("Stub", function() {
         it("stubs a stub class with multiple methods", function() {
 
             $classname = Stub::classname();
-            Stub::on($classname)->method([
+            Stub::on($classname)->methods([
                 'message' => ['Good Evening World!', 'Good Bye World!'],
                 'bar' => ['Hello Bar!']
             ]);
@@ -439,7 +511,7 @@ describe("Stub", function() {
         it("stubs static methods on a stub class", function() {
 
             $classname = Stub::classname();
-            Stub::on($classname)->method([
+            Stub::on($classname)->methods([
                 '::magicCallStatic' => ['Good Evening World!', 'Good Bye World!']
             ]);
 

@@ -1,6 +1,7 @@
 <?php
 namespace kahlan\plugin;
 
+use InvalidArgumentException;
 use Reflection;
 use ReflectionMethod;
 use kahlan\Suite;
@@ -52,14 +53,27 @@ class Stub
     }
 
     /**
-     * Set stubs for methods or get stubbed methods array.
+     * Get/Set stubs for methods or get stubbed methods array.
      *
 
      * @return mixed Return the array of stubbed methods.
      */
-    public function methods()
+    public function methods($name = [])
     {
-        return $this->_stubs;
+        if (!func_num_args()) {
+            return $this->_stubs;
+        }
+        foreach ($name as $method => $returns) {
+            if (is_callable($returns)) {
+                $this->method($method, $returns);
+            } elseif (is_array($returns)) {
+                $stub = $this->method($method);
+                call_user_func_array([$stub, 'andReturn'], $returns);
+            } else {
+                $error = "Stubbed method definition for `{$method}` must be a closure or an array of returned value(s).";
+                throw new InvalidArgumentException($error);
+            }
+        }
     }
 
     /**
@@ -70,14 +84,6 @@ class Stub
      */
     public function method($name, $closure = null)
     {
-        if (is_array($name)) {
-            foreach ($name as $method => $returns) {
-                $stub = $this->method($method);
-                call_user_func_array([$stub, 'andReturn'], (array) $returns);
-            }
-            return;
-        }
-
         $static = false;
         $reference = $this->_reference;
         if (preg_match('/^::.*/', $name)) {

@@ -599,14 +599,23 @@ it("stubs a static method", function() {
 
 });
 ```
+And it's also possible to use a closure directly:
 
-You can use an array based syntax for reducing verbosity:
+```php
+it("stubs a method using a closure", function() {
+
+    Stub::on($foo)->method('message', function($param) { return $param; });
+
+});
+```
+
+You can use the `methods()` method for reducing verbosity:
 
 ```php
 it("stubs many methods", function() {
 
     $instance = new MyClass();
-    Stub::on($instance)->method([
+    Stub::on($instance)->methods([
         'message' => ['Good Morning World!', 'Good Bye World!'],
         'bar' => ['Hello Bar!']
     ]);
@@ -618,15 +627,7 @@ it("stubs many methods", function() {
 });
 ```
 
-And it's also possible to use a closure directly:
-
-```php
-it("stubs a method using a closure", function() {
-
-    Stub::on($foo)->method('message', function($param) { return $param; });
-
-});
-```
+**Note:** Using the `'bar' => 'Hello Bar!'` syntax is not allowed here. Indeed direct assignation are considered as a closure definition. For example in `'bar' => function() {return 'hello'}` the closure is consireded as the method definition for the `bar()` method. On the other hand `with 'bar' => [function() {return 'hello'}]` the closure will be the return value of the `bar()` method.
 
 ### <a name="instance-stubing"></a>Instance Stubbing
 
