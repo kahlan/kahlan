@@ -179,7 +179,7 @@ class Parser
 
         if ($current->type === 'function') {
             if ($current->isClosure) {
-                $current->close .= $this->_stream->next([')', ';', ',']);
+                $current->close .= $this->_stream->next([')', ';', ',', ']']);
                 $this->_states['num'] += substr_count($current->close, "\n");
             }
         }

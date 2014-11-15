@@ -41,6 +41,12 @@ describe("Parser", function() {
             $this->expect($parsed)->toBe(file_get_contents($filename . '.txt'));
         });
 
+        it("parses closures", function() {
+            $filename = 'spec/fixture/analysis/Closure';
+            $parsed = Parser::debug(file_get_contents($filename . '.php'));
+            $this->expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+        });
+
     });
 
 });
