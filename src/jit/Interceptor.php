@@ -124,18 +124,21 @@ class Interceptor {
         if (static::$_loader) {
             throw new RuntimeException("An interceptor is already attached.");
         }
-        $defaults = ['loader' => null, 'patchers' => null];
+        $defaults = [
+            'loader'   => null,
+            'method'   => 'loadClass',
+            'patchers' => null
+        ];
         $options += $defaults;
-
         $loader = $options['loader'] ?: static::composer();
         if (!$loader) {
             throw new RuntimeException("The loader option need to be a valid autoloader.");
         }
-        static::$_original = $loader;
-        if (!spl_autoload_unregister(static::$_original)) {
+        if (!spl_autoload_unregister($loader)) {
             throw new RuntimeException("The loader option need to be a valid registered autoloader.");
         }
-        static::loader([new static($options), 'loadClass']);
+        static::$_original = $loader;
+        static::loader([new static($options), $options['method']]);
     }
 
     /**
@@ -175,11 +178,14 @@ class Interceptor {
     {
         $files = (array) $files;
         if (!$instance = static::instance()) {
-            return;
+            return false;
         }
+
+        $success = true;
         foreach ($files as $file) {
-            return $instance->loadFile();
+            $instance->loadFile($file);
         }
+        return true;
     }
 
     /**
@@ -362,7 +368,7 @@ class Interceptor {
      *
      * @return array
      */
-    public static function getClassMap()
+    public function getClassMap()
     {
         $getClassMap = $this->_getClassMap;
         return static::originalInstance()->$getClassMap($class);
@@ -392,8 +398,8 @@ class Interceptor {
 
     public function getPaths() {
         $ds = DIRECTORY_SEPARATOR;
-        $paths = $this->getPrefixesPsr4();
-        foreach ($this->getPrefixes() as $namespace => $dirs) {
+        $paths = static::getPrefixesPsr4();
+        foreach (static::getPrefixes() as $namespace => $dirs) {
             foreach ($dirs as $key => $dir) {
                 $paths[$namespace][$key] = $dir . $ds . trim(strtr($namespace, '\\', $ds), $ds);
             }
@@ -410,7 +416,7 @@ class Interceptor {
     {
         $loader = static::originalInstance();
 
-        $paths = $this->getPaths();
+        $paths = static::getPaths();
         $logicalPath = trim(strtr($namespace, '\\', DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
         foreach ($paths as $prefix => $dirs) {
