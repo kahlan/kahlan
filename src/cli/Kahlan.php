@@ -7,6 +7,7 @@ use dir\Dir;
 use filter\Filter;
 use filter\behavior\Filterable;
 use kahlan\Suite;
+use kahlan\Matcher;
 use kahlan\cli\Cli;
 use kahlan\cli\Args;
 use kahlan\jit\Interceptor;
@@ -226,6 +227,31 @@ EOD;
     }
 
     /**
+     * Regiter built-in matchers.
+     */
+    public static function registerMatchers() {
+        Matcher::register('toBe', 'kahlan\matcher\ToBe');
+        Matcher::register('toBeA', 'kahlan\matcher\ToBeA');
+        Matcher::register('toBeAn', 'kahlan\matcher\ToBeA');
+        Matcher::register('toBeAnInstanceOf', 'kahlan\matcher\ToBeAnInstanceOf');
+        Matcher::register('toBeCloseTo', 'kahlan\matcher\ToBeCloseTo');
+        Matcher::register('toBeEmpty', 'kahlan\matcher\ToBeFalsy');
+        Matcher::register('toBeFalsy', 'kahlan\matcher\ToBeFalsy');
+        Matcher::register('toBeGreaterThan', 'kahlan\matcher\ToBeGreaterThan');
+        Matcher::register('toBeLessThan', 'kahlan\matcher\ToBeLessThan');
+        Matcher::register('toBeNull', 'kahlan\matcher\ToBeNull');
+        Matcher::register('toBeTruthy', 'kahlan\matcher\ToBeTruthy');
+        Matcher::register('toContain', 'kahlan\matcher\ToContain');
+        Matcher::register('toEcho', 'kahlan\matcher\ToEcho');
+        Matcher::register('toEqual', 'kahlan\matcher\ToEqual');
+        Matcher::register('toHaveLength', 'kahlan\matcher\ToHaveLength');
+        Matcher::register('toMatch', 'kahlan\matcher\ToMatch');
+        Matcher::register('toReceive', 'kahlan\matcher\ToReceive');
+        Matcher::register('toReceiveNext', 'kahlan\matcher\ToReceiveNext');
+        Matcher::register('toThrow', 'kahlan\matcher\ToThrow');
+    }
+
+    /**
      * Run the workflow.
      */
     public function run()
@@ -243,7 +269,7 @@ EOD;
 
             $this->_reporters();
 
-            $this->_before();
+            $this->_matchers();
 
             $this->_run();
 
@@ -378,11 +404,13 @@ EOD;
     }
 
     /**
-     * Set up the default `'before'` filter.
+     * Set up the default `'matchers'` filter.
      */
-    protected function _before()
+    protected function _matchers()
     {
-        return Filter::on($this, 'before', [], function($chain) {});
+        return Filter::on($this, 'matchers', [], function($chain) {
+            static::registerMatchers();
+        });
     }
 
     /**

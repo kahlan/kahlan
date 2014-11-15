@@ -1098,7 +1098,7 @@ The filterable entry points are the following:
   * `'reporters`'        # Adds reporters
     * `'console'`        # Creates the console reporter
     * `'coverage'`       # Creates the coverage reporter
-  * `'before`'           # Useful for registering some pre process tasks
+  * `'matchers`'         # Useful for registering some further matchers
   * `'run`'              # Runs the test suite
   * `'reporting`'        # Runs some additionnal reporting tasks
   * `'stop`'             # Trigger the stop of the process
