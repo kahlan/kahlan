@@ -22,17 +22,17 @@
 
 One of PHP's assumption is that once you define a function/constant/class it stays defined forever. If this assumption is not really problematic when you are building an application, things get a bit more complicated when you want to unit test your application easily.
 
-**So what are the existing test platform for PHP ?**
-* [PHPUnit](https://phpunit.de) which reaches [23.80% of code coverage after > 10 years of experience](assets/phpunit_4.4_code_coverage.png) in tests by the way
+**The main test frameworks for PHP are:**
+* [PHPUnit](https://phpunit.de) which reaches [23.80% of code coverage after > 10 years of experience in tests](assets/phpunit_4.4_code_coverage.png) by the way
 * [phpspec](http://phpspec.net)
 * [atoum](http://docs.atoum.org)
 * [SimpleTest](http://www.simpletest.org)
 * [Enhance-PHP](https://github.com/Enhance-PHP/Enhance-PHP)
 * etc.
 
-If all these "old school frameworks" are mature enough, they don't allow to test hard coded references easily. And the fact that they don't use the `describe-it` syntax either doesn't allow a clean organization of tests to simplify their maintenance (and avoiding [this kind of organization](https://github.com/sebastianbergmann/phpunit/tree/master/tests/Regression) for example). Moreover the `describe-it` syntax makes tests more reader-friendly (i.e even better than the[atoum fluent syntax organization](https://github.com/atoum/atoum/blob/master/tests/units/classes/asserters/dateInterval.php)
+If all these "old school frameworks" are mature enough, they don't allow to test hard coded references easily. And the fact that they don't use the `describe-it` syntax either doesn't allow a clean organization of tests to simplify their maintenance (and avoiding [this kind of organization](https://github.com/sebastianbergmann/phpunit/tree/master/tests/Regression) for example). Moreover the `describe-it` syntax makes tests more reader-friendly (i.e even better than the [atoum fluent syntax organization](https://github.com/atoum/atoum/blob/master/tests/units/classes/asserters/dateInterval.php)
 
-**So what about new frameworks for PHP ?**
+**So what about new test frameworks for PHP ?**
 
 * [Peridot](https://github.com/peridot-php/peridot)
 * [pho](https://github.com/danielstjules/pho)
@@ -43,7 +43,7 @@ If all these "old school frameworks" are mature enough, they don't allow to test
 * [preview](https://github.com/v2e4lisp/preview)
 * etc.
 
-In these list above, if [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough it only provides the basics (i.e the `describe-it` syntax) and all others seems to be some proof of concept only of the `describe-it` syntax at the time I'm writing this documentation.
+In the list above, if [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough it only provides the basics (i.e the `describe-it` syntax). All other frameworks seems to be some simple proof of concept of the `describe-it` syntax at the time I'm writing this documentation.
 
 So Kahlan was created out of frustration with all existing testing frameworks in PHP. Instead of introducing some new philosophical concepts, tools, java practices, craps, Kahlan just provide an environment which allow you to **easily test your code even with hard coded references**.
 
@@ -55,7 +55,7 @@ Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attem
 
 * Small API
 * Small code base (~5k loc)
-* Complete Code Coverage metrics support (xdebug required)
+* Fast Code Coverage metrics (xdebug required)
 * Set stubs on your class methods directly (i.e allow dynamic mocking).
 * Allow to Monkey Patch your code (ie. allows replacement of core functions/classes on the fly).
 * Check called methods on your class/instances.
@@ -566,6 +566,9 @@ Once created you only need to [register it](#config-file) using the following sy
 kahlan\Matcher::register('toBeZero', 'my\namespace\ToBeZero');
 ```
 
+**Note:** custom matcher should be reserved to frequently used matching. For other cases, just use the `toMatch` matcher using the matcher closure as parameter.
+
+
 ## <a name="stubs"></a>5 - Stubs
 
 To enable **Method Stubbing** add the following `use` statement in the top of your specs:
@@ -1070,10 +1073,10 @@ use kahlan\reporter\coverage\exporter\Coveralls;
 // It overrides some default option values.
 // Note that the values passed in command line will overwrite the ones below.
 $args = $this->args();
-$args->option('ff', 'default', 1);
-$args->option('coverage', 'default', 3);
-$args->option('coverage-scrutinizer', 'default', 'scrutinizer.xml');
-$args->option('coverage-coveralls', 'default', 'coveralls.json');
+$args->argument('ff', 'default', 1);
+$args->argument('coverage', 'default', 3);
+$args->argument('coverage-scrutinizer', 'default', 'scrutinizer.xml');
+$args->argument('coverage-coveralls', 'default', 'coveralls.json');
 
 // The logic to inlude into the workflow.
 Filter::register('kahlan.coveralls', function($chain) {
@@ -1136,7 +1139,7 @@ Notice that this approach will make your code to be runned a bit slower than you
 For example, the following configuration will only limit the patching to a bunch of namespaces/classes:
 
 ```php
-$this->args()->set('interceptor-include', [
+$this->args()->set('include', [
     'myapp',
     'lithium',
     'li3_zendserver\data\Job',
@@ -1146,14 +1149,14 @@ $this->args()->set('interceptor-include', [
 
 Conversely you can also exclude some external dependencies to speed up performances if you don't intend to Monkey Patch/Stub some namespaces/classes:
 ```php
-$this->args()->set('interceptor-exclude', [
+$this->args()->set('exclude', [
     'Symfony',
     'Doctrine'
 ]);
 ```
 
-Finally you can also disable all the code patchers if you prefer to deal with DI only and not interested by Kahlan's features:
+Finally you can also disable all the patching everywhere if you prefer to deal with DI only and are not interested by Kahlan's features:
 ```php
-$this->args()->set('interceptor-include', []);
+$this->args()->set('include', []);
 ```
 **Note:** You will still able to stub instances & classes created with `Stub::create()`/`Stub::classname()` anyway.
