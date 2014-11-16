@@ -156,6 +156,7 @@ class Kahlan {
     public function loadConfig($argv = [])
     {
         $args = new Args();
+        $args->argument('config', ['default' => 'kahlan-config.php']);
         $args->parse($argv);
 
         if ($args->get('help')) {
