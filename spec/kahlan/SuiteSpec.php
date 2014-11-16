@@ -1,6 +1,10 @@
 <?php
 namespace spec\kahlan;
 
+use stdClass;
+use Exception;
+use InvalidArgumentException;
+
 use kahlan\PhpErrorException;
 use kahlan\Suite;
 use kahlan\Matcher;
@@ -11,51 +15,115 @@ describe("Suite", function() {
         $this->suite = new Suite(['matcher' => new Matcher()]);
     });
 
-    describe("->before()", function() {
+    context("when inspecting flow", function() {
 
-        $this->nb = 0;
+        describe("->before()", function() {
 
-        before(function() {
-            $this->nb++;
-        });
+            $this->nb = 0;
 
-        it("passes if `before` has been executed", function() use (&$nb) {
+            before(function() {
+                $this->nb++;
+            });
 
-            expect($this->nb)->toBe(1);
+            it("passes if `before` has been executed", function() use (&$nb) {
 
-        });
+                expect($this->nb)->toBe(1);
 
-        it("passes if `before` has not been executed twice", function() use (&$nb) {
+            });
 
-            expect($this->nb)->toBe(1);
+            it("passes if `before` has not been executed twice", function() use (&$nb) {
 
-        });
+                expect($this->nb)->toBe(1);
 
-    });
-
-    describe("->beforeEach()", function() {
-
-        $this->nb = 0;
-
-        beforeEach(function() {
-            $this->nb++;
-        });
-
-        it("passes if `beforeEach` has been executed", function() {
-
-            expect($this->nb)->toBe(1);
+            });
 
         });
 
-        it("passes if `beforeEach` has been executed twice", function() {
+        describe("->beforeEach()", function() {
 
-            expect($this->nb)->toBe(2);
+            $this->nb = 0;
 
-        });
+            beforeEach(function() {
+                $this->nb++;
+            });
 
-        context("with sub scope", function() {
+            it("passes if `beforeEach` has been executed", function() {
+
+                expect($this->nb)->toBe(1);
+
+            });
+
+            it("passes if `beforeEach` has been executed twice", function() {
+
+                expect($this->nb)->toBe(2);
+
+            });
+
+            context("with sub scope", function() {
+
+                it("passes if `beforeEach` has been executed once more", function() {
+
+                    expect($this->nb)->toBe(3);
+
+                });
+
+            });
 
             it("passes if `beforeEach` has been executed once more", function() {
+
+                expect($this->nb)->toBe(4);
+
+            });
+
+        });
+
+        describe("->after()", function() {
+
+            $this->nb = 0;
+
+            after(function() {
+                $this->nb++;
+            });
+
+            it("passes if `after` has not been executed", function() {
+
+                expect($this->nb)->toBe(0);
+
+            });
+
+        });
+
+        describe("->afterEach()", function() {
+
+            $this->nb = 0;
+
+            afterEach(function() {
+                $this->nb++;
+            });
+
+            it("passes if `afterEach` has not been executed", function() {
+
+                expect($this->nb)->toBe(0);
+
+            });
+
+            it("passes if `afterEach` has been executed", function() {
+
+                expect($this->nb)->toBe(1);
+
+            });
+
+            context("with sub scope", function() {
+
+                it("passes if `afterEach` has been executed once more", function() {
+
+                    expect($this->nb)->toBe(2);
+
+                });
+
+            });
+
+            it("passes if `afterEach` has been executed once more", function() {
 
                 expect($this->nb)->toBe(3);
 
@@ -63,9 +131,77 @@ describe("Suite", function() {
 
         });
 
-        it("passes if `beforeEach` has been executed once more", function() {
+    });
 
-            expect($this->nb)->toBe(4);
+    describe("->describe()", function() {
+
+        it("creates a sub suite of specs inside the root suite", function() {
+
+            $suite = $this->suite->describe("->method()", function() {});
+
+            expect($suite->message())->toBe('->method()');
+            expect($suite->parent())->toBe($this->suite);
+
+            $suites = $this->suite->childs();
+            expect($suite)->toBe(end($suites));
+
+        });
+
+    });
+
+    describe("->context()", function() {
+
+        it("creates a contextualized suite of specs inside the root suite", function() {
+
+            $suite = $this->suite->context("->method()", function() {});
+
+            expect($suite->message())->toBe('->method()');
+            expect($suite->parent())->toBe($this->suite);
+
+            $suites = $this->suite->childs();
+            expect($suite)->toBe(end($suites));
+
+        });
+
+    });
+
+    describe("->it()", function() {
+
+        it("creates a spec", function() {
+
+            $this->suite->it("does some things", function() {});
+
+            $specs = $this->suite->childs();
+            $it = end($specs);
+
+            expect($it->message())->toBe('it does some things');
+            expect($it->parent())->toBe($this->suite);
+
+        });
+
+        it("creates a spec with a random message if not set", function() {
+
+            $this->suite->it(function() {});
+
+            $specs = $this->suite->childs();
+            $it = end($specs);
+
+            expect($it->message())->toMatch('~^it spec #[0-9]+$~');
+
+        });
+
+    });
+
+    describe("->before()", function() {
+
+        it("creates a before callback", function() {
+
+            $callbacks = $this->suite->callbacks('before');
+            expect($callbacks)->toHaveLength(0);
+
+            $this->suite->before(function() {});
+            $callbacks = $this->suite->callbacks('before');
+            expect($callbacks)->toHaveLength(1);
 
         });
 
@@ -73,15 +209,29 @@ describe("Suite", function() {
 
     describe("->after()", function() {
 
-        $this->nb = 0;
+        it("creates a before callback", function() {
 
-        after(function() {
-            $this->nb++;
+            $callbacks = $this->suite->callbacks('after');
+            expect($callbacks)->toHaveLength(0);
+
+            $this->suite->after(function() {});
+            $callbacks = $this->suite->callbacks('after');
+            expect($callbacks)->toHaveLength(1);
+
         });
 
-        it("passes if `after` has not been executed", function() {
+    });
 
-            expect($this->nb)->toBe(0);
+    describe("->beforeEach()", function() {
+
+        it("creates a beforeEach callback", function() {
+
+            $callbacks = $this->suite->callbacks('beforeEach');
+            expect($callbacks)->toHaveLength(0);
+
+            $this->suite->beforeEach(function() {});
+            $callbacks = $this->suite->callbacks('beforeEach');
+            expect($callbacks)->toHaveLength(1);
 
         });
 
@@ -89,37 +239,14 @@ describe("Suite", function() {
 
     describe("->afterEach()", function() {
 
-        $this->nb = 0;
+        it("creates a before callback", function() {
 
-        afterEach(function() {
-            $this->nb++;
-        });
+            $callbacks = $this->suite->callbacks('afterEach');
+            expect($callbacks)->toHaveLength(0);
 
-        it("passes if `afterEach` has not been executed", function() {
-
-            expect($this->nb)->toBe(0);
-
-        });
-
-        it("passes if `afterEach` has been executed", function() {
-
-            expect($this->nb)->toBe(1);
-
-        });
-
-        context("with sub scope", function() {
-
-            it("passes if `afterEach` has been executed once more", function() {
-
-                expect($this->nb)->toBe(2);
-
-            });
-
-        });
-
-        it("passes if `afterEach` has been executed once more", function() {
-
-            expect($this->nb)->toBe(3);
+            $this->suite->afterEach(function() {});
+            $callbacks = $this->suite->callbacks('afterEach');
+            expect($callbacks)->toHaveLength(1);
 
         });
 
@@ -252,6 +379,123 @@ describe("Suite", function() {
 
     });
 
+    describe("::hash()", function() {
+
+        it("creates an hash from objects", function() {
+
+            $instance = new stdClass();
+
+            $hash1 = Suite::hash($instance);
+            $hash2 = Suite::hash($instance);
+            $hash3 = Suite::hash(new stdClass());
+
+            expect($hash1)->toBe($hash2);
+            expect($hash1)->not->toBe($hash3);
+
+        });
+
+        it("creates an hash from class names", function() {
+
+            $class = 'hello\world\class';
+            $hash = Suite::hash($class);
+            expect($hash)->toBe($class);
+
+        });
+
+        it("Throws an exception if values are not string or objects", function() {
+
+            $closure = function() {
+                $hash = Suite::hash([]);
+            };
+
+            expect($closure)->toThrow(new InvalidArgumentException("Error, the passed argument is not hashable."));
+
+        });
+
+    });
+
+    describe("::register()", function() {
+
+        it("registers an hash", function() {
+
+            $instance = new stdClass();
+
+            $hash = Suite::hash($instance);
+            Suite::register($hash);
+
+            expect(Suite::registered($hash))->toBe(true);
+
+        });
+
+    });
+
+    describe("::register()", function() {
+
+        it("return `false` if the hash is not registered", function() {
+
+            $instance = new stdClass();
+
+            $hash = Suite::hash($instance);
+
+            expect(Suite::registered($hash))->toBe(false);
+
+        });
+
+    });
+
+    describe("::clear()", function() {
+
+        it("clears registered hashes", function() {
+
+            $instance = new stdClass();
+
+            $hash = Suite::hash($instance);
+            Suite::register($hash);
+
+            expect(Suite::registered($hash))->toBe(true);
+
+            Suite::clear();
+
+            expect(Suite::registered($hash))->toBe(false);
+
+        });
+
+    });
+
+    describe("->_process()", function() {
+
+        it("calls `after` callbacks if an exception occurs during callbacks", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->inAfterEach = 0;
+
+                $this->beforeEach(function() {
+                    throw new Exception('Breaking the flow should execute afterEach anyway.');
+                });
+
+                $this->it("does nothing", function() {
+                });
+
+                $this->afterEach(function() {
+                    $this->inAfterEach++;
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($describe->inAfterEach)->toBe(1);
+
+            $results = $this->suite->results();
+            expect($results['exception'])->toHaveLength(1);
+
+            $exception = end($results['exception']);
+            $actual = $exception['exception']->getMessage();
+            expect($actual)->toBe('Breaking the flow should execute afterEach anyway.');
+        });
+
+    });
 
     describe("->_errorHandler()", function() {
 

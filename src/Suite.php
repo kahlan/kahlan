@@ -158,7 +158,7 @@ class Suite extends Scope
      *
      * @param  string|Closure $message Description message or a test closure.
      * @param  Closure|null   $closure A test case closure or `null`.
-     * @param  string         $scope The scope.
+     * @param  string         $scope   The scope.
      * @return $this
      */
     public function it($message, $closure = null, $scope = 'normal')
@@ -166,7 +166,7 @@ class Suite extends Scope
         static $inc = 1;
         if ($closure === null) {
             $closure = $message;
-            $message = "Test #" . $inc++;
+            $message = "spec #" . $inc++;
         }
         $parent = $this;
         $root = $this->_root;
@@ -487,7 +487,28 @@ class Suite extends Scope
     }
 
     /**
-     * Getter which return the runned tests result array.
+     * Gets childs.
+     *
+     * @return array The array of childs instances.
+     */
+    public function childs()
+    {
+        return $this->_childs;
+    }
+
+    /**
+     * Gets callbacks.
+     *
+     * @param  string $type The type of callbacks to get.
+     * @return array        The array callbacks instances.
+     */
+    public function callbacks($type)
+    {
+        return isset($this->_callbacks[$type]) ? $this->_callbacks[$type] : [];
+    }
+
+    /**
+     * Gets specs excecution results.
      *
      * @return array
      */
@@ -497,7 +518,7 @@ class Suite extends Scope
     }
 
     /**
-     * Getter which return the references of runned exclusives tests.
+     * Gets references of runned exclusives specs.
      *
      * @return array
      */
@@ -539,17 +560,6 @@ class Suite extends Scope
     }
 
     /**
-     * Reset the class
-     */
-    public function reset()
-    {
-        $this->_childs = [];
-        $this->_autoclear = [];
-        $this->_reporters = null;
-        $this->_exclusives = [];
-    }
-
-    /**
      * Generate a hash from an instance or a string.
      *
      * @param  mixed $reference An instance or a fully namespaced class name.
@@ -564,7 +574,7 @@ class Suite extends Scope
         if (is_string($reference)) {
             return $reference;
         }
-        throw new InvalidArgumentException("Invalid `$reference` parameter.");
+        throw new InvalidArgumentException("Error, the passed argument is not hashable.");
     }
 
     /**

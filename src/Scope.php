@@ -167,6 +167,16 @@ abstract class Scope
     }
 
     /**
+     * Return the parent instance.
+     *
+     * @return array
+     */
+    public function parent()
+    {
+        return $this->_parent;
+    }
+
+    /**
      * Return the spec's message.
      *
      * @return array
