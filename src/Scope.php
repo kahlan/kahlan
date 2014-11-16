@@ -101,7 +101,24 @@ abstract class Scope
      * @var array
      */
     protected $_results = [
-        'pass' => [], 'fail' => [], 'exception' => [], 'skip' => [], 'incomplete' => []
+        'passed' => [],
+        'failed' => [],
+        'skipped' => [],
+        'exceptions' => [],
+        'incomplete' => []
+    ];
+
+    /**
+     * The matching beetween events name & result types.
+     *
+     * @var array
+     */
+    protected $_resultTypes = [
+        'pass' => 'passed',
+        'fail' => 'failed',
+        'skip' => 'skipped',
+        'exception' => 'exceptions',
+        'incomplete' => 'incomplete'
     ];
 
     /**
@@ -301,7 +318,8 @@ abstract class Scope
     {
         $data['type'] = $type;
         $data += ['messages' => $this->messages()];
-        $this->_root->_results[$type][] = $data;
+        $resultType = $this->_resultTypes[$type];
+        $this->_root->_results[$resultType][] = $data;
         $this->report($type, $data);
     }
 

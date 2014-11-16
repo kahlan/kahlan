@@ -408,7 +408,7 @@ class Suite extends Scope
 
         $report = [];
         $report['specs'] = $this->_results;
-        $report['exclusive'] = $this->_exclusives;
+        $report['exclusives'] = $this->_exclusives;
         $this->report('end', $report);
 
         return $this->passed();
@@ -421,7 +421,7 @@ class Suite extends Scope
     {
         $report = [];
         $report['specs'] = $this->_results;
-        $report['exclusive'] = $this->_exclusives;
+        $report['exclusives'] = $this->_exclusives;
         $this->report('stop', $report);
     }
 
@@ -480,7 +480,7 @@ class Suite extends Scope
      */
     public function passed()
     {
-        if (empty($this->_results['fail']) && empty($this->_results['exception']) && empty($this->_results['incomplete'])) {
+        if (empty($this->_results['failed']) && empty($this->_results['exceptions']) && empty($this->_results['incomplete'])) {
             return true;
         }
         return false;

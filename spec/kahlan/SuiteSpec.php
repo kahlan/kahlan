@@ -488,9 +488,9 @@ describe("Suite", function() {
             expect($describe->inAfterEach)->toBe(1);
 
             $results = $this->suite->results();
-            expect($results['exception'])->toHaveLength(1);
+            expect($results['exceptions'])->toHaveLength(1);
 
-            $exception = end($results['exception']);
+            $exception = end($results['exceptions']);
             $actual = $exception['exception']->getMessage();
             expect($actual)->toBe('Breaking the flow should execute afterEach anyway.');
         });

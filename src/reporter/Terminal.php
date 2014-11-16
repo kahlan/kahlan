@@ -89,9 +89,6 @@ class Terminal extends Reporter
             case 'exception':
                 $this->_reportException($report);
             break;
-            case 'exclusive':
-                $this->_reportExclusive($report);
-            break;
         }
     }
 
@@ -208,10 +205,14 @@ class Terminal extends Reporter
     {
         $results = $report['specs'];
 
-        $passed = count($results['pass']) + count($results['skip']);
+        $passed = count($results['passed']) + count($results['skipped']);
         $failed = 0;
-        foreach (['exception', 'incomplete', 'fail'] as $value) {
-            ${$value} = count($results[$value]);
+        foreach ([
+            'exceptions' => 'exception',
+            'incomplete' => 'incomplete',
+            'failed' => 'fail'
+        ] as $key => $value) {
+            ${$value} = count($results[$key]);
             $failed += ${$value};
         }
         $total = $passed + $failed;
@@ -254,7 +255,7 @@ class Terminal extends Reporter
      */
     protected function _exclusive($report)
     {
-        if (!$backtrace = $report['exclusive']) {
+        if (!$backtrace = $report['exclusives']) {
             return;
         }
         $this->console("Exclusive Mode Detected in the following files:\n", "yellow");
