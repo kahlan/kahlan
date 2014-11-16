@@ -17,7 +17,7 @@ describe("toReceiveNext", function() {
          * Save current & reinitialize the Interceptor class.
          */
         before(function() {
-            $this->previous = Interceptor::loader();
+            $this->previous = Interceptor::instance();
             Interceptor::unpatch();
 
             $patchers = new Patchers();
@@ -29,7 +29,7 @@ describe("toReceiveNext", function() {
          * Restore Interceptor class.
          */
         after(function() {
-            Interceptor::loader($this->previous);
+            Interceptor::load($this->previous);
         });
 
         it("expects called methods to be called in a defined order", function() {

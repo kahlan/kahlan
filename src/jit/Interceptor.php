@@ -14,6 +14,13 @@ class Interceptor {
     protected $_cache = '';
 
     /**
+     * Method name for loading a class.
+     *
+     * @var string
+     */
+    protected $_loadClass = 'loadClass';
+
+    /**
      * Method name to the delegated the parent for finding files.
      *
      * @var string
@@ -70,18 +77,18 @@ class Interceptor {
     protected $_exclude = [];
 
     /**
-     * Original loader reference.
+     * The patched loader reference.
      *
      * @var array
      */
-    protected static $_original = null;
+    protected $_originalLoader = null;
 
     /**
      * Overrided loader reference.
      *
      * @var array
      */
-    protected static $_loader = null;
+    protected static $_interceptor = null;
 
     /**
      * Constructs
@@ -91,10 +98,12 @@ class Interceptor {
     public function __construct($options = [])
     {
         $defaults = [
+            'originalLoader'  => null,
             'patchers'        => null,
             'exclude'         => [],
             'include'         => ['*'],
             'persistent'      => true,
+            'loadClass'       => 'loadClass',
             'findFile'        => 'findFile',
             'getClassMap'     => 'getClassMap',
             'getPrefixes'     => 'getPrefixes',
@@ -102,6 +111,7 @@ class Interceptor {
             'cache'           => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
         ];
         $options += $defaults;
+        $this->_originalLoader = $options['originalLoader'];
         $this->_patchers = $options['patchers'];
         $this->_findFile = $options['findFile'];
         $this->_getClassMap = $options['getClassMap'];
@@ -121,24 +131,20 @@ class Interceptor {
      */
     public static function patch($options = [])
     {
-        if (static::$_loader) {
+        if (static::$_interceptor) {
             throw new RuntimeException("An interceptor is already attached.");
         }
-        $defaults = [
-            'loader'   => null,
-            'method'   => 'loadClass',
-            'patchers' => null
-        ];
+        $defaults = ['loader' => null];
         $options += $defaults;
-        $loader = $options['loader'] ?: static::composer();
+        $loader = $options['originalLoader'] = $options['loader'] ?: static::composer();
         if (!$loader) {
             throw new RuntimeException("The loader option need to be a valid autoloader.");
         }
         if (!spl_autoload_unregister($loader)) {
             throw new RuntimeException("The loader option need to be a valid registered autoloader.");
         }
-        static::$_original = $loader;
-        static::loader([new static($options), $options['method']]);
+        $interceptor = new static($options);
+        return static::load($interceptor);
     }
 
     /**
@@ -164,68 +170,26 @@ class Interceptor {
      */
     public static function instance()
     {
-        if (isset(static::$_loader[0]) && static::$_loader[0] instanceof static) {
-            return static::$_loader[0];
-        }
+        return static::$_interceptor;
     }
 
     /**
-     * Manualy load files.
+     * Loads an interceptor autoloader.
      *
-     * @param array An array of files to load.
+     * @param  array   $loader The autoloader to use.
+     * @return boolean         Returns `true` on success, `false` otherwise.
      */
-    public static function loadFiles($files)
+    public static function load($interceptor = null)
     {
-        $files = (array) $files;
-        if (!$instance = static::instance()) {
-            return false;
+        if (static::$_interceptor) {
+            static::unpatch();
         }
 
-        $success = true;
-        foreach ($files as $file) {
-            $instance->loadFile($file);
-        }
-        return true;
-    }
+        $original = $interceptor->originalLoader();
+        $success = spl_autoload_register($interceptor->loader());
+        spl_autoload_unregister($original);
 
-    /**
-     * Returns the original autoloader reference.
-     *
-     * @return array
-     */
-    public static function original()
-    {
-        return static::$_original;
-    }
-
-    /**
-     * Returns the original autoloader.
-     *
-     * @return array
-     */
-    public static function originalInstance()
-    {
-        return is_array(static::$_original) ? static::$_original[0] : static::$_original;
-    }
-
-    /**
-     * Gets/Sets the current loader.
-     *
-     * @param  array $loader A autoloader reference.
-     * @return mixed Returns `true` on success, `false` otherwise or the loader value if get.
-     */
-    public static function loader($loader = null)
-    {
-        if ($loader === null) {
-            return static::$_loader;
-        }
-        $current = static::$_loader;
-        static::$_loader = $loader;
-
-        $success = spl_autoload_register(static::$_loader);
-        if ($current) {
-            spl_autoload_unregister($current);
-        }
+        static::$_interceptor = $interceptor;
         return $success;
     }
 
@@ -234,15 +198,48 @@ class Interceptor {
      */
     public static function unpatch()
     {
-        if (!static::$_loader) {
+        if (!static::$_interceptor) {
             return false;
         }
 
-        spl_autoload_register(static::$_original);
-        $success = spl_autoload_unregister(static::$_loader);
+        $interceptor = static::$_interceptor;
+        $original = $interceptor->originalLoader();
 
-        static::$_loader = null;
+        spl_autoload_register($original);
+        $success = spl_autoload_unregister($interceptor->loader());
+
+        static::$_interceptor = null;
         return $success;
+    }
+
+    /**
+     * Returns the interceptor autoload function.
+     *
+     * @return array
+     */
+    public function loader()
+    {
+        return [$this, $this->_loadClass];
+    }
+
+    /**
+     * Returns the patched autoload function.
+     *
+     * @return array
+     */
+    public function originalLoader()
+    {
+        return $this->_originalLoader;
+    }
+
+    /**
+     * Returns the patched autoloader instance.
+     *
+     * @return array
+     */
+    public function originalInstance()
+    {
+        return $this->_originalLoader[0];
     }
 
     /**
@@ -319,7 +316,26 @@ class Interceptor {
             }
             return true;
         }
+        return false;
     }
+
+    /**
+     * Manualy load files.
+     *
+     * @param array An array of files to load.
+     */
+    public function loadFiles($files)
+    {
+        $files = (array) $files;
+
+        $success = true;
+        foreach ($files as $file) {
+
+            $this->loadFile($file);
+        }
+        return true;
+    }
+
 
     /**
      * Cache helper.
@@ -330,7 +346,7 @@ class Interceptor {
      */
     public function cache($file = null, $content = null)
     {
-        if ($file === null && $content === null) {
+        if (!func_num_args()) {
             return $this->_cache;
         }
         $path = $this->_cache . DS . ltrim($file, DS);
@@ -371,7 +387,7 @@ class Interceptor {
     public function getClassMap()
     {
         $getClassMap = $this->_getClassMap;
-        return static::originalInstance()->$getClassMap($class);
+        return static::originalInstance()->$getClassMap();
     }
 
     /**

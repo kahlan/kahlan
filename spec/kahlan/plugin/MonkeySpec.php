@@ -46,7 +46,7 @@ describe("Monkey", function() {
      * Save current & reinitialize the Interceptor class.
      */
     before(function() {
-        $this->previous = Interceptor::loader();
+        $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
         $patchers = new Patchers();
@@ -58,7 +58,7 @@ describe("Monkey", function() {
      * Restore Interceptor class.
      */
     after(function() {
-        Interceptor::loader($this->previous);
+        Interceptor::load($this->previous);
     });
 
     it("patches a core function", function() {

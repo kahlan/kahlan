@@ -20,7 +20,7 @@ describe("DummyClass", function() {
              * Save current & reinitialize the Interceptor class.
              */
             before(function() {
-                $this->previous = Interceptor::loader();
+                $this->previous = Interceptor::instance();
                 Interceptor::unpatch();
 
                 $patchers = new Patchers();
@@ -32,7 +32,7 @@ describe("DummyClass", function() {
              * Restore Interceptor class.
              */
             after(function() {
-                Interceptor::loader($this->previous);
+                Interceptor::load($this->previous);
             });
 
             it("throws an IncompleteException when creating an unexisting class", function() {
@@ -82,7 +82,7 @@ describe("DummyClass", function() {
              * Save current & reinitialize the Interceptor class.
              */
             before(function() {
-                $this->previous = Interceptor::loader();
+                $this->previous = Interceptor::instance();
                 Interceptor::unpatch();
 
                 $patchers = new Patchers();
@@ -94,7 +94,7 @@ describe("DummyClass", function() {
              * Restore Interceptor class.
              */
             after(function() {
-                Interceptor::loader($this->previous);
+                Interceptor::load($this->previous);
             });
 
             it("throws an IncompleteException when creating an unexisting class", function() {

@@ -16,7 +16,7 @@ describe("Quit", function() {
      * Save current & reinitialize the Interceptor class.
      */
     before(function() {
-        $this->previous = Interceptor::loader();
+        $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
         $patchers = new Patchers();
@@ -28,7 +28,7 @@ describe("Quit", function() {
      * Restore Interceptor class.
      */
     after(function() {
-        Interceptor::loader($this->previous);
+        Interceptor::load($this->previous);
     });
 
     describe("::disable()", function() {
