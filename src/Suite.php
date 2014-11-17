@@ -17,6 +17,13 @@ class Suite extends Scope
     protected static $_registered = [];
 
     /**
+     * The return status value (`0` for success).
+     *
+     * @var integer
+     */
+    protected $_status = null;
+
+    /**
      * Matcher instance for the test suite
      *
      * @var array
@@ -461,11 +468,18 @@ class Suite extends Scope
     /**
      * Returns an exit status code according passed results.
      *
-     * @return boolean Returns `0` if no error occurred, `-1` otherwise.
+     * @param  integer $status If set force a specific status to be retruned.
+     * @return boolean         Returns `0` if no error occurred, `-1` otherwise.
      */
-    public function status()
+    public function status($status = null)
     {
-        $results = $this->_results;
+        if ($status !== null) {
+            $this->_status = $status;
+        }
+
+        if ($this->_status !== null) {
+            return $this->_status;
+        }
 
         if ($this->exclusive()) {
             return -1;

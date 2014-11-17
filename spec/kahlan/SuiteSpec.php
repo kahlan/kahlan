@@ -462,6 +462,52 @@ describe("Suite", function() {
 
     });
 
+    describe("->status()", function() {
+
+        it("returns `0` if a specs suite passes", function() {
+
+            $describe = $this->suite->describe("", function() {
+                $this->it("passes", function() {
+                    $this->expect(true)->toBe(true);
+                });
+            });
+
+            $this->suite->run();
+            expect($this->suite->status())->toBe(0);
+
+        });
+
+        it("returns `-1` if a specs suite fails", function() {
+
+            $describe = $this->suite->describe("", function() {
+                $this->it("fails", function() {
+                    $this->expect(true)->toBe(false);
+                });
+            });
+
+            $this->suite->run();
+            expect($this->suite->status())->toBe(-1);
+
+        });
+
+        it("forces a specified return status", function() {
+
+            $describe = $this->suite->describe("", function() {
+                $this->it("passes", function() {
+                    $this->expect(true)->toBe(true);
+                });
+            });
+
+            $this->suite->run();
+            expect($this->suite->status())->toBe(0);
+
+            $this->suite->status(-1);
+            expect($this->suite->status())->toBe(-1);
+
+        });
+
+    });
+
     describe("->_process()", function() {
 
         it("calls `after` callbacks if an exception occurs during callbacks", function() {
