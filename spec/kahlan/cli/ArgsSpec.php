@@ -13,10 +13,10 @@ describe("Args", function() {
             $args = new Args();
             $args->argument('argument1', ['type' => 'boolean']);
             expect($args->argument('argument1'))->toEqual([
-                'type'      => 'boolean',
-                'array'     => false,
-                'formatter' => null,
-                'default'   => null
+                'type'    => 'boolean',
+                'array'   => false,
+                'value'   => null,
+                'default' => null
             ]);
 
         });
@@ -25,10 +25,10 @@ describe("Args", function() {
 
             $args = new Args();
             expect($args->argument('argument1'))->toEqual([
-                'type'      => 'string',
-                'array'     => false,
-                'formatter' => null,
-                'default'   => null
+                'type'    => 'string',
+                'array'   => false,
+                'value'   => null,
+                'default' => null
             ]);
 
         });
@@ -38,17 +38,17 @@ describe("Args", function() {
             $args = new Args();
             $args->argument('argument1', ['type' => 'boolean']);
             expect($args->argument('argument1'))->toEqual([
-                'type'      => 'boolean',
-                'array'     => false,
-                'formatter' => null,
-                'default'   => null
+                'type'    => 'boolean',
+                'array'   => false,
+                'value'   => null,
+                'default' => null
             ]);
 
             $args->argument('argument1', 'default', 'value1');
             expect($args->argument('argument1'))->toEqual([
-                'type' => 'boolean',
-                'array'     => false,
-                'formatter' => null,
+                'type'    => 'boolean',
+                'array'   => false,
+                'value'   => null,
                 'default' => 'value1'
             ]);
 
@@ -174,12 +174,30 @@ describe("Args", function() {
 
     describe("->get()", function() {
 
-        it("formats value according to formatter function", function() {
+        it("ignores argument value if the value option is set", function() {
 
             $args = new Args(['argument1' => [
-                'type'      => 'string',
-                'default'   => 'default_value',
-                'formatter' => function($value, $name, $args) {
+                'type'    => 'string',
+                'value'   => 'config_value'
+            ]]);
+
+            $actual = $args->parse(['command']);
+            expect($args->get('argument1'))->toEqual('config_value');
+
+            $actual = $args->parse(['command', '--argument1']);
+            expect($args->get('argument1'))->toEqual('config_value');
+
+            $actual = $args->parse(['command', '--argument1="some_value"']);
+            expect($args->get('argument1'))->toEqual('config_value');
+
+        });
+
+        it("formats value according to value function", function() {
+
+            $args = new Args(['argument1' => [
+                'type'    => 'string',
+                'default' => 'default_value',
+                'value'   => function($value, $name, $args) {
                     if (!$value) {
                         return  'empty_value';
                     }

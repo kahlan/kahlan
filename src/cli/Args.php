@@ -52,10 +52,10 @@ class Args {
     public function argument($name = null, $config = [], $value = null)
     {
         $defaults = [
-            'type'      => 'string',
-            'array'     => false,
-            'formatter' => null,
-            'default'   => null
+            'type'    => 'string',
+            'array'   => false,
+            'value'   => null,
+            'default' => null
         ];
         if (func_num_args() === 1) {
             if (isset($this->_arguments[$name])) {
@@ -189,10 +189,13 @@ class Args {
         $config = $this->argument($name);
         $value = isset($this->_values[$name]) ? $this->_values[$name] : $config['default'];
         $casted = $this->cast($value, $config['type'], $config['array']);
-        if (!array_key_exists($name, $this->_values) || !is_callable($config['formatter'])) {
+        if (!isset($config['value'])) {
             return $casted;
         }
-        return $config['formatter']($casted, $name, $this);
+        if (is_callable($config['value'])) {
+            return array_key_exists($name, $this->_values) ? $config['value']($casted, $name, $this) : $casted;
+        }
+        return $config['value'];
     }
 
     /**
