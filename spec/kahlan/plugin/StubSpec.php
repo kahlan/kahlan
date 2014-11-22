@@ -371,7 +371,6 @@ describe("Stub", function() {
 
             $stub = Stub::create(['implements' => ['ArrayAccess', 'Iterator']]);
             $interfaces = class_implements($stub);
-            expect($interfaces)->toHaveLength(3);
             expect(isset($interfaces['ArrayAccess']))->toBe(true);
             expect(isset($interfaces['Iterator']))->toBe(true);
             expect(isset($interfaces['Traversable']))->toBe(true);

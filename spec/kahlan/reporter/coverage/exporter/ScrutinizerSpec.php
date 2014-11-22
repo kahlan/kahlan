@@ -9,6 +9,12 @@ use spec\fixture\reporter\coverage\ExtraEmptyLine;
 
 describe("Scrutinizer", function() {
 
+    beforeEach(function() {
+        if (!extension_loaded('xdebug')) {
+            skipIf(true);
+        }
+    });
+
     describe("::export()", function() {
 
         it("exports the coverage of a file with no extra end line", function() {

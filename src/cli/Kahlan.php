@@ -22,6 +22,7 @@ use kahlan\reporter\Dot;
 use kahlan\reporter\Bar;
 use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
+use kahlan\reporter\coverage\driver\HHVM;
 use kahlan\reporter\coverage\exporter\Scrutinizer;
 
 class Kahlan {

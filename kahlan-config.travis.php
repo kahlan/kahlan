@@ -1,16 +1,19 @@
 <?php
 use filter\Filter;
 use kahlan\reporter\Coverage;
+use kahlan\reporter\coverage\driver\HHVM;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
 $args = $this->args();
-$args->argument('ff', 'default', 1);
 $args->argument('coverage', 'default', 3);
 $args->argument('scrutinizer', 'default', 'scrutinizer.xml');
 $args->argument('coveralls', 'default', 'coveralls.json');
 
 Filter::register('kahlan.coverage', function($chain) {
+    if (defined('HHVM_VERSION')) {
+        return;
+    }
     $reporters = $this->reporters();
     $coverage = new Coverage([
         'verbosity' => $this->args()->get('coverage'),
@@ -54,4 +57,17 @@ Filter::register('kahlan.coveralls', function($chain) {
 
 Filter::apply($this, 'reporting', 'kahlan.coveralls');
 
+
+Filter::register('kahlan.stop', function($chain) {
+
+    if (!defined('HHVM_VERSION')) {
+        `wget https://scrutinizer-ci.com/ocular.phar`;
+        `php ocular.phar code-coverage:upload --format=php-clover "scrutinizer.xml"`;
+        `curl -F "json_file=@coveralls.json" https://coveralls.io/api/v1/jobs`;
+    }
+    return $chain->next();
+
+});
+
+Filter::apply($this, 'stop', 'kahlan.stop');
 ?>

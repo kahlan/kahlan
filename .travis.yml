@@ -18,8 +18,3 @@ before_script:
   - composer self-update && composer install
 
 script: bin/kahlan --config=kahlan-config.travis.php
-
-after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover "scrutinizer.xml"
-  - curl -F "json_file=@coveralls.json" https://coveralls.io/api/v1/jobs

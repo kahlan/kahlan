@@ -42,8 +42,8 @@ describe("Interceptor", function() {
         });
 
         it("throws an exception if the autoloader is invalid", function() {
-            Interceptor::unpatch();
             $closure = function() {
+                Interceptor::unpatch();
                 Interceptor::patch(['loader' => [$this->autoloader, 'loadClass']]);
             };
             expect($closure)->toThrow(new RuntimeException("The loader option need to be a valid registered autoloader."));

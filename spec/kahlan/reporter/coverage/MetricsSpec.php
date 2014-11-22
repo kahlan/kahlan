@@ -9,6 +9,12 @@ use spec\fixture\reporter\coverage\ExtraEmptyLine;
 describe("Metrics", function() {
 
     beforeEach(function() {
+        if (!extension_loaded('xdebug')) {
+            skipIf(true);
+        }
+    });
+
+    beforeEach(function() {
         $this->path = [
             'spec/fixture/reporter/coverage/ExtraEmptyLine.php',
             'spec/fixture/reporter/coverage/NoEmptyLine.php'

@@ -8,6 +8,12 @@ use spec\fixture\reporter\coverage\CodeCoverage;
 describe("Coverage", function() {
 
     beforeEach(function() {
+        if (!extension_loaded('xdebug')) {
+            skipIf(true);
+        }
+    });
+
+    beforeEach(function() {
         $this->path = 'spec/fixture/reporter/coverage/CodeCoverage.php';
 
         $this->collector = new Collector([
