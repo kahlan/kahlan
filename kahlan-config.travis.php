@@ -58,9 +58,9 @@ Filter::register('kahlan.coveralls', function($chain) {
 Filter::apply($this, 'reporting', 'kahlan.coveralls');
 
 
-Filter::register('kahlan.stop', function($chain) {
+Filter::register('kahlan.quit', function($chain, $success) {
 
-    if (!defined('HHVM_VERSION')) {
+    if (!defined('HHVM_VERSION') && $success) {
         `wget https://scrutinizer-ci.com/ocular.phar`;
         `php ocular.phar code-coverage:upload --format=php-clover "scrutinizer.xml"`;
         `curl -F "json_file=@coveralls.json" https://coveralls.io/api/v1/jobs`;
@@ -69,5 +69,5 @@ Filter::register('kahlan.stop', function($chain) {
 
 });
 
-Filter::apply($this, 'stop', 'kahlan.stop');
+Filter::apply($this, 'quit', 'kahlan.quit');
 ?>

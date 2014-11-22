@@ -1125,7 +1125,8 @@ The filterable entry points are the following:
   * `'matchers`'         # Useful for registering some further matchers
   * `'run`'              # Runs the test suite
   * `'reporting`'        # Runs some additionnal reporting tasks
-  * `'stop`'             # Trigger the stop of the process
+  * `'stop`'             # Trigger the stop event to reporters
+  * `'quit`'             # For some addionnal post processing before quitting
 
 
 [You can see more details about how the workflow works here](https://github.com/crysalead/kahlan/blob/master/src/cli/Kahlan.php) (start reading with the `run()` method).

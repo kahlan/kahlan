@@ -278,6 +278,8 @@ EOD;
             $this->_reporting();
 
             $this->_stop();
+
+            $this->_quit();
         });
     }
 
@@ -394,6 +396,11 @@ EOD;
     protected function _coverage()
     {
         return Filter::on($this, 'coverage', [], function($chain) {
+            if ($this->args()->get('coverage') && !extension_loaded('xdebug')) {
+                $console = $this->reporters()->get('console');
+                $console->console("\nWARNING: Xdebug is not installed, code coverage has been disabled.\n", "n;yellow");
+                return;
+            }
             $reporters = $this->reporters();
             $coverage = new Coverage([
                 'verbosity' => $this->args()->get('coverage'),
@@ -452,6 +459,16 @@ EOD;
     {
         return Filter::on($this, 'stop', [], function($chain) {
             $this->suite()->stop();
+        });
+    }
+
+
+    /**
+     * Set up the default `'quit'` filter.
+     */
+    protected function _quit()
+    {
+        return Filter::on($this, 'quit', [$this->suite()->passed()], function($chain, $success) {
         });
     }
 
