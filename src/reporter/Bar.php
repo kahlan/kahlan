@@ -86,7 +86,7 @@ class Bar extends Terminal
     public function fail($report)
     {
         $this->_color = $this->_colors['failure'];
-        $this->console("\n");
+        $this->write("\n");
         $this->_report($report);
     }
 
@@ -96,7 +96,7 @@ class Bar extends Terminal
     public function exception($report)
     {
         $this->_color = $this->_colors['failure'];
-        $this->console("\n");
+        $this->write("\n");
         $this->_report($report);
     }
 
@@ -106,7 +106,7 @@ class Bar extends Terminal
     public function incomplete($report)
     {
         $this->_color = $this->_colors['incomplete'];
-        $this->console("\n");
+        $this->write("\n");
         $this->_report($report);
     }
 
@@ -134,7 +134,7 @@ class Bar extends Terminal
         $string = String::insert($this->_format, compact('p', 'b', 'i'));
 
         $string .= ($this->_current === $this->_total ? "\n" : '');
-        $this->console("\r" . $string, 'n;' . $this->_color);
+        $this->write("\r" . $string, 'n;' . $this->_color);
     }
 
     /**
@@ -142,7 +142,7 @@ class Bar extends Terminal
      */
     public function end($results = [])
     {
-        $this->console("\n");
+        $this->write("\n");
         $this->_summary($results);
         $this->_exclusive($results);
     }

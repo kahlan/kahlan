@@ -869,7 +869,7 @@ To use a reporter which looks like more a progress bar use the following option:
 
 However you can easily roll you own if these reporters don't fit your needs.
 
-For example if you want a console based reporter create a PHP class which extends `kahlan\reporter\Terminal`. The `Terminal` class offers some useful methods like `console()` for doing some echos on the terminal. But if you wanted to create some kind of JSON reporter extending from `kahlan\reporter\Reporter` would be enough.
+For example if you want a console based reporter create a PHP class which extends `kahlan\reporter\Terminal`. The `Terminal` class offers some useful methods like `write()` for doing some echos on the terminal. But if you wanted to create some kind of JSON reporter extending from `kahlan\reporter\Reporter` would be enough.
 
 Example of a custom console reporter:
 ```php
@@ -915,7 +915,7 @@ class MyReporter extends \kahlan\reporter\Terminal
      */
     public function pass($report)
     {
-        $this->console('✓', "green");
+        $this->write('✓', "green");
     }
 
     /**
@@ -923,8 +923,8 @@ class MyReporter extends \kahlan\reporter\Terminal
      */
     public function fail($report)
     {
-        $this->console('☠', "red");
-        $this->console("\n");
+        $this->write('☠', "red");
+        $this->write("\n");
         $this->_report($report);
     }
 
@@ -933,8 +933,8 @@ class MyReporter extends \kahlan\reporter\Terminal
      */
     public function exception($report)
     {
-        $this->console('☠', "magenta");
-        $this->console("\n");
+        $this->write('☠', "magenta");
+        $this->write("\n");
         $this->_report($report);
     }
 
@@ -943,7 +943,7 @@ class MyReporter extends \kahlan\reporter\Terminal
      */
     public function skip($report)
     {
-        $this->console('-', "cyan");
+        $this->write('-', "cyan");
     }
 
     /**
@@ -951,7 +951,7 @@ class MyReporter extends \kahlan\reporter\Terminal
      */
     public function end($results)
     {
-        $this->console("\n");
+        $this->write("\n");
         $this->_summary($results);
         $this->_exclusive($results);
     }

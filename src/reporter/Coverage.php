@@ -171,9 +171,9 @@ class Coverage extends Terminal
         $stats = $metrics->data();
         $percent = number_format($stats['percent'], 2);
         $style = $this->_style($percent);
-        $this->console(str_pad("Lines: {$percent}%", 15), $style);
-        $this->console(trim(str_pad("({$stats['cloc']}/{$stats['lloc']})", 20) . "{$name}"));
-        $this->console("\n");
+        $this->write(str_pad("Lines: {$percent}%", 15), $style);
+        $this->write(trim(str_pad("({$stats['cloc']}/{$stats['lloc']})", 20) . "{$name}"));
+        $this->write("\n");
         if ($verbosity === 1) {
             return;
         }
@@ -191,7 +191,7 @@ class Coverage extends Terminal
     {
         $stats = $metrics->data();
         foreach ($stats['files'] as $file) {
-            $this->console("File: {$file}" . "\n\n");
+            $this->write("File: {$file}" . "\n\n");
 
             $lines = file($file);
 
@@ -211,14 +211,14 @@ class Coverage extends Terminal
                 $line .= ':' . str_pad($value, 6, ' ');
                 $line .= $lines[$i];
                 if ($value) {
-                    $this->console($line, 'n;green');
+                    $this->write($line, 'n;green');
                 } elseif ($value === 0) {
-                    $this->console($line, 'n;red');
+                    $this->write($line, 'n;red');
                 } else {
-                    $this->console($line);
+                    $this->write($line);
                 }
             }
-            $this->console("\n\n");
+            $this->write("\n\n");
         }
     }
 
@@ -248,17 +248,17 @@ class Coverage extends Terminal
      */
     public function stop($results = [])
     {
-        $this->console("\nCoverage Summary\n----------------\n\n");
+        $this->write("\nCoverage Summary\n----------------\n\n");
         if (is_numeric($this->_verbosity)) {
             $this->_renderMetrics($this->metrics(), $this->_verbosity);
         } else {
             $metrics = $this->metrics()->get($this->_verbosity);
             $this->_renderMetrics($metrics);
-            $this->console("\n");
+            $this->write("\n");
             $this->_renderCoverage($metrics);
         }
         $time = number_format($this->_time, 3);
-        $this->console("\nCollected in {$time} seconds\n\n\n");
+        $this->write("\nCollected in {$time} seconds\n\n\n");
     }
 
     /**

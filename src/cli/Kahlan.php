@@ -398,7 +398,7 @@ EOD;
         return Filter::on($this, 'coverage', [], function($chain) {
             if ($this->args()->get('coverage') && !extension_loaded('xdebug')) {
                 $console = $this->reporters()->get('console');
-                $console->console("\nWARNING: Xdebug is not installed, code coverage has been disabled.\n", "n;yellow");
+                $console->write("\nWARNING: Xdebug is not installed, code coverage has been disabled.\n", "n;yellow");
                 return;
             }
             $reporters = $this->reporters();

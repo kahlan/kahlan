@@ -52,7 +52,7 @@ class Terminal extends Reporter
      *                     - `'color'`
      *
      */
-    public function console($string, $options = null)
+    public function write($string, $options = null)
     {
         $string = $this->_colors ? Cli::color($string, $options) : $string;
         fwrite($this->_output, $string);
@@ -66,10 +66,10 @@ class Terminal extends Reporter
     public function begin($params)
     {
         parent::begin($params);
-        $this->console("\n");
-        $this->console("Kahlan - PHP Testing Framework\n" , 'green');
-        $this->console("\nWorking Directory: ", 'blue');
-        $this->console(getcwd() . "\n\n");
+        $this->write("\n");
+        $this->write("Kahlan - PHP Testing Framework\n" , 'green');
+        $this->write("\nWorking Directory: ", 'blue');
+        $this->write(getcwd() . "\n\n");
     }
 
     /**
@@ -99,15 +99,15 @@ class Terminal extends Reporter
      */
     protected function _reportFailure($report)
     {
-        $this->console("[Failure] ", "n;red");
+        $this->write("[Failure] ", "n;red");
         $this->_messages($report['messages']);
         $this->_reportDescription($report);
-        $this->console("Trace:", "n;yellow");
-        $this->console("\n");
-        $this->console(Debugger::trace([
+        $this->write("Trace:", "n;yellow");
+        $this->write("\n");
+        $this->write(Debugger::trace([
             'trace' => $report['exception'], 'depth' => 1
         ]));
-        $this->console("\n\n");
+        $this->write("\n\n");
     }
 
     /**
@@ -126,19 +126,19 @@ class Terminal extends Reporter
             $params = $report['params'];
         }
         foreach ($params as $key => $value) {
-            $this->console("{$key}: ", 'n;yellow');
+            $this->write("{$key}: ", 'n;yellow');
             $type = gettype($value);
 			$toString = function($instance) {
                 return 'an instance of `' . get_class($instance) . '`';
             };
-            $this->console("({$type}) " . String::toString($value, ['object' => ['method' => $toString]]) . "\n");
+            $this->write("({$type}) " . String::toString($value, ['object' => ['method' => $toString]]) . "\n");
         }
-        $this->console("Description:", "n;magenta");
-        $this->console(" {$report['matcher']} expected actual to ");
+        $this->write("Description:", "n;magenta");
+        $this->write(" {$report['matcher']} expected actual to ");
         if ($not) {
-            $this->console("NOT ", 'n;magenta');
+            $this->write("NOT ", 'n;magenta');
         }
-        $this->console("{$description}\n");
+        $this->write("{$description}\n");
     }
 
     /**
@@ -148,16 +148,16 @@ class Terminal extends Reporter
      */
     protected function _reportIncomplete($report)
     {
-        $this->console("[Incomplete test] ", "n;yellow");
+        $this->write("[Incomplete test] ", "n;yellow");
         $this->_messages($report['messages']);
-        $this->console("Description:", "n;magenta");
-        $this->console(" " . Debugger::message($report['exception']) ."\n");
-        $this->console("Trace:", "n;yellow");
-        $this->console("\n");
-        $this->console(Debugger::trace([
+        $this->write("Description:", "n;magenta");
+        $this->write(" " . Debugger::message($report['exception']) ."\n");
+        $this->write("Trace:", "n;yellow");
+        $this->write("\n");
+        $this->write(Debugger::trace([
             'trace' => $report['exception'], 'start' => 1, 'depth' => 1
         ]));
-        $this->console("\n\n");
+        $this->write("\n\n");
     }
 
     /**
@@ -167,14 +167,14 @@ class Terminal extends Reporter
      */
     protected function _reportException($report)
     {
-        $this->console("[Uncatched Exception] ", "n;magenta");
+        $this->write("[Uncatched Exception] ", "n;magenta");
         $this->_messages($report['messages']);
-        $this->console("Description:", "n;magenta");
-        $this->console(" " . String::toString($report['exception']) ."\n");
-        $this->console("Trace:", "n;yellow");
-        $this->console("\n");
-        $this->console(Debugger::trace(['trace' => $report['exception']]));
-        $this->console("\n\n");
+        $this->write("Description:", "n;magenta");
+        $this->write(" " . String::toString($report['exception']) ."\n");
+        $this->write("Trace:", "n;yellow");
+        $this->write("\n");
+        $this->write(Debugger::trace(['trace' => $report['exception']]));
+        $this->write("\n\n");
     }
 
     /**
@@ -186,14 +186,14 @@ class Terminal extends Reporter
     {
         $tab = 0;
         foreach ($messages as $message) {
-            $this->console(str_repeat("    ", $tab));
+            $this->write(str_repeat("    ", $tab));
             preg_match('/^((?:it|when)?\s*(?:not)?)(.*)$/', $message, $matches);
-            $this->console($matches[1], "n;magenta");
-            $this->console($matches[2]);
-            $this->console("\n");
+            $this->write($matches[1], "n;magenta");
+            $this->write($matches[2]);
+            $this->write("\n");
             $tab++;
         }
-        $this->console("\n");
+        $this->write("\n");
     }
 
     /**
@@ -217,35 +217,35 @@ class Terminal extends Reporter
         }
         $total = $passed + $failed;
 
-        $this->console('Executed ' . $passed . " of {$total} ");
+        $this->write('Executed ' . $passed . " of {$total} ");
 
         if ($failed) {
-            $this->console("FAIL ", "red");
-            $this->console("(");
+            $this->write("FAIL ", "red");
+            $this->write("(");
             $comma = false;
             if ($fail) {
-                $this->console("FAILURE: " . $fail , "red");
+                $this->write("FAILURE: " . $fail , "red");
                 $comma = true;
             }
             if ($incomplete) {
                 if ($comma) {
-                    $this->console(", ");
+                    $this->write(", ");
                 }
-                $this->console("INCOMPLETE: " . $incomplete , "yellow");
+                $this->write("INCOMPLETE: " . $incomplete , "yellow");
                 $comma = true;
             }
             if ($exception) {
                 if ($comma) {
-                    $this->console(", ");
+                    $this->write(", ");
                 }
-                $this->console("EXCEPTION: " . $exception , "magenta");
+                $this->write("EXCEPTION: " . $exception , "magenta");
             }
-            $this->console(")");
+            $this->write(")");
         } else {
-            $this->console("PASS", "green");
+            $this->write("PASS", "green");
         }
         $time = number_format(microtime(true) - $this->_start, 3);
-        $this->console(" in {$time} seconds\n\n\n");
+        $this->write(" in {$time} seconds\n\n\n");
     }
 
     /**
@@ -258,12 +258,12 @@ class Terminal extends Reporter
         if (!$backtrace = $report['exclusives']) {
             return;
         }
-        $this->console("Exclusive Mode Detected in the following files:\n", "yellow");
+        $this->write("Exclusive Mode Detected in the following files:\n", "yellow");
         foreach ($backtrace as $trace) {
 
-            $this->console(Debugger::trace(['trace' => $trace, 'start' => 1, 'depth' => 1]) . "\n");
+            $this->write(Debugger::trace(['trace' => $trace, 'start' => 1, 'depth' => 1]) . "\n");
         }
-        $this->console("exit(-1)\n", "red");
+        $this->write("exit(-1)\n", "red");
     }
 
     /**

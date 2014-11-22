@@ -15,7 +15,7 @@ class Dot extends Terminal
      */
     public function pass($report)
     {
-        $this->_console('.');
+        $this->_write('.');
     }
 
     /**
@@ -23,7 +23,7 @@ class Dot extends Terminal
      */
     public function fail($report)
     {
-        $this->_console('F', "red");
+        $this->_write('F', "red");
     }
 
     /**
@@ -31,7 +31,7 @@ class Dot extends Terminal
      */
     public function exception($report)
     {
-        $this->_console('E', "magenta");
+        $this->_write('E', "magenta");
     }
 
     /**
@@ -39,7 +39,7 @@ class Dot extends Terminal
      */
     public function skip($report)
     {
-        $this->_console('S', "cyan");
+        $this->_write('S', "cyan");
     }
 
     /**
@@ -47,7 +47,7 @@ class Dot extends Terminal
      */
     public function incomplete($report)
     {
-        $this->_console('I', "yellow");
+        $this->_write('I', "yellow");
     }
 
     /**
@@ -56,10 +56,10 @@ class Dot extends Terminal
     public function end($results = [])
     {
         do {
-            $this->_console(' ');
+            $this->_write(' ');
         } while ($this->_counter % 80 !== 0);
 
-        $this->console("\n\n");
+        $this->write("\n\n");
 
         foreach ($results['specs'] as $type => $reports) {
             foreach ($reports as $report) {
@@ -71,12 +71,12 @@ class Dot extends Terminal
         $this->_exclusive($results);
     }
 
-    protected function _console($string, $options = null)
+    protected function _write($string, $options = null)
     {
-        $this->console($string, $options);
+        $this->write($string, $options);
         $this->_counter++;
         if ($this->_counter % 80 === 0) {
-            $this->console(' ' . floor(($this->_current * 100) / $this->_total) . "%\n");
+            $this->write(' ' . floor(($this->_current * 100) / $this->_total) . "%\n");
         }
     }
 }
