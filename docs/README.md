@@ -1117,7 +1117,7 @@ The filterable entry points are the following:
 * `'workflow`'           # The one to rule them all
   * `'namespaces`'       # Adds some namespaces not managed by composer (like `spec`)
   * `'patchers`'         # Adds patchers
-  * `'interceptor`'      # Setups the autoloader interceptor
+  * `'autoloader`'       # Operations on the autoloader
   * `'loadSpecs`'        # Loads specs
   * `'reporters`'        # Adds reporters
     * `'console'`        # Creates the console reporter

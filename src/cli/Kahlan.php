@@ -265,7 +265,7 @@ EOD;
 
             $this->_patchers();
 
-            $this->_interceptor();
+            $this->_autoloader();
 
             $this->_load();
 
@@ -324,9 +324,9 @@ EOD;
     }
 
     /**
-     * Set up the default `'interceptor'` filter.
+     * Set up the default `'autoloader'` filter.
      */
-    protected function _interceptor()
+    protected function _autoloader()
     {
         return Filter::on($this, 'autoloader', [], function($chain) {
             Interceptor::patch([
