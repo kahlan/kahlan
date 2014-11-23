@@ -99,10 +99,15 @@ class Collector
             'leavesOnly'     => false,
             'followSymlinks' => true,
             'recursive'      => true,
-            'base'           => str_replace(DIRECTORY_SEPARATOR, '/', getcwd()),
-            'prefix'         => rtrim(Interceptor::instance()->cache(), DS)
+            'base'           => str_replace(DIRECTORY_SEPARATOR, '/', getcwd())
         ];
         $options += $defaults;
+
+        if (Interceptor::instance()) {
+            $options += ['prefix' => rtrim(Interceptor::instance()->cache(), DS)];
+        } else {
+            $options += ['prefix' => ''];
+        }
 
         $this->_driver = $options['driver'];
         $this->_paths = (array) $options['path'];
