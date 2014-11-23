@@ -17,9 +17,17 @@ class Stub
      * @var array
      */
     protected static $_classes = [
-        'interceptor' => 'kahlan\jit\Interceptor',
-        'call' => 'kahlan\plugin\Call'
+        'parser'   => 'kahlan\analysis\Parser',
+        'pointcut' => 'kahlan\jit\patcher\Pointcut',
+        'call'     => 'kahlan\plugin\Call'
     ];
+
+    /**
+     * The pointcut patcher instance
+     *
+     * @var object
+     */
+    protected static $_pointcut = null;
 
     /**
      * Registered stubbed instance/class methods
@@ -183,13 +191,17 @@ class Stub
     {
         $defaults = ['class' => 'spec\plugin\stub\Stub' . static::$_index++];
         $options += $defaults;
-        $interceptor = static::$_classes['interceptor'];
+
+        if (!static::$_pointcut) {
+            $pointcut = static::$_classes['pointcut'];
+            static::$_pointcut = new $pointcut();
+        }
 
         if (!class_exists($options['class'], false)) {
+            $parser = static::$_classes['parser'];
             $code = static::generate($options);
-            if ($patchers = $interceptor::instance()->patchers()) {
-                $code = $patchers->process($code);
-            }
+            $nodes = $parser::parse($code);
+            $code = $parser::unparse(static::$_pointcut->process($nodes));
             eval('?>' . $code);
         }
         $call = static::$_classes['call'];

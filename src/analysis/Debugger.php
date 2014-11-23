@@ -136,7 +136,8 @@ class Debugger
         }
 
         $interceptor = static::$_classes['interceptor'];
-        if ($patchers = $interceptor::instance()->patchers()) {
+        $autoloader = $interceptor::instance();
+        if (($autoloader instanceof $interceptor) && $patchers = $autoloader->patchers()) {
             $back = $patchers->processBacktrace($options, $back);
         }
         $count = count($back);
