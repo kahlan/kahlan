@@ -1,10 +1,10 @@
 <?php
 namespace spec\kahlan\matcher;
 
-use kahlan\jit\Interceptor;
-use kahlan\jit\Patchers;
+use jit\Interceptor;
+use jit\Patchers;
+use jit\Parser;
 use kahlan\jit\patcher\Pointcut;
-use kahlan\analysis\Parser;
 use kahlan\matcher\ToReceiveNext;
 
 use spec\fixture\plugin\pointcut\Foo;
@@ -22,7 +22,8 @@ describe("toReceiveNext", function() {
 
             $patchers = new Patchers();
             $patchers->add('pointcut', new Pointcut());
-            Interceptor::patch(compact('patchers'));
+            $cache = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
+            Interceptor::patch(compact('patchers', 'cache'));
         });
 
         /**

@@ -1,7 +1,7 @@
 <?php
 namespace spec\kahlan\jit\patcher;
 
-use kahlan\analysis\Parser;
+use jit\Parser;
 use kahlan\jit\patcher\Pointcut;
 
 describe("Pointcut", function() {

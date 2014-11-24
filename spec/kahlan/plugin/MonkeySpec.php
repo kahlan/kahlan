@@ -2,10 +2,10 @@
 namespace spec\kahlan\plugin;
 
 use DateTime;
-use kahlan\jit\Interceptor;
-use kahlan\jit\Patchers;
+use jit\Interceptor;
+use jit\Patchers;
+use jit\Parser;
 use kahlan\plugin\Monkey;
-use kahlan\analysis\Parser;
 use kahlan\jit\patcher\Monkey as MonkeyPatcher;
 
 use spec\fixture\plugin\monkey\Foo;
@@ -51,7 +51,8 @@ describe("Monkey", function() {
 
         $patchers = new Patchers();
         $patchers->add('monkey', new MonkeyPatcher());
-        Interceptor::patch(compact('patchers'));
+        $cache = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
+        Interceptor::patch(compact('patchers', 'cache'));
     });
 
     /**

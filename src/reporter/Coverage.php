@@ -11,7 +11,7 @@ class Coverage extends Terminal
      * @var array
      */
     protected static $_classes = [
-        'interceptor' => 'kahlan\jit\Interceptor'
+        'interceptor' => 'jit\Interceptor'
     ];
 
     /**

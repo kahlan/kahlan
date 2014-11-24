@@ -1,9 +1,9 @@
 <?php
 namespace spec\kahlan\jit\patcher;
 
+use jit\Patchers;
+use jit\Interceptor;
 use kahlan\IncompleteException;
-use kahlan\jit\Patchers;
-use kahlan\jit\Interceptor;
 use kahlan\jit\patcher\DummyClass as DummyClassPatcher;
 use kahlan\plugin\DummyClass;
 
@@ -25,7 +25,8 @@ describe("DummyClass", function() {
 
                 $patchers = new Patchers();
                 $patchers->add('substitute', new DummyClassPatcher());
-                Interceptor::patch(compact('patchers'));
+                $cache = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
+                Interceptor::patch(compact('patchers', 'cache'));
             });
 
             /**
@@ -87,7 +88,8 @@ describe("DummyClass", function() {
 
                 $patchers = new Patchers();
                 $patchers->add('substitute', new DummyClassPatcher(['namespaces' => ['spec\\']]));
-                Interceptor::patch(compact('patchers'));
+                $cache = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
+                Interceptor::patch(compact('patchers', 'cache'));
             });
 
             /**

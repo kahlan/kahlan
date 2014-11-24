@@ -17,7 +17,7 @@ class Stub
      * @var array
      */
     protected static $_classes = [
-        'parser'   => 'kahlan\analysis\Parser',
+        'parser'   => 'jit\Parser',
         'pointcut' => 'kahlan\jit\patcher\Pointcut',
         'call'     => 'kahlan\plugin\Call'
     ];

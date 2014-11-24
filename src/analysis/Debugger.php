@@ -17,7 +17,7 @@ class Debugger
      * @var array
      */
     protected static $_classes = [
-        'interceptor' => 'kahlan\jit\Interceptor'
+        'interceptor' => 'jit\Interceptor'
     ];
 
     /**

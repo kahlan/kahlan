@@ -1,11 +1,11 @@
 <?php
 namespace spec\kahlan\plugin;
 
+use jit\Interceptor;
+use jit\Patchers;
+use jit\Parser;
 use kahlan\QuitException;
-use kahlan\jit\Interceptor;
-use kahlan\jit\Patchers;
 use kahlan\plugin\Quit;
-use kahlan\analysis\Parser;
 use kahlan\jit\patcher\Quit as QuitPatcher;
 
 use spec\fixture\plugin\quit\Foo;
@@ -21,7 +21,8 @@ describe("Quit", function() {
 
         $patchers = new Patchers();
         $patchers->add('quit', new QuitPatcher());
-        Interceptor::patch(compact('patchers'));
+        $cache = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
+        Interceptor::patch(compact('patchers', 'cache'));
     });
 
     /**

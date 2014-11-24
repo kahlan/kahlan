@@ -9,7 +9,7 @@ class Monkey
      * @var array
      */
     protected $_classes = [
-        'node' => 'kahlan\analysis\code\NodeDef',
+        'node' => 'jit\node\NodeDef',
     ];
 
     /**

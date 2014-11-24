@@ -4,14 +4,14 @@ namespace kahlan\cli;
 use Exception;
 use box\Box;
 use dir\Dir;
+use jit\Interceptor;
+use jit\Patchers;
 use filter\Filter;
 use filter\behavior\Filterable;
 use kahlan\Suite;
 use kahlan\Matcher;
 use kahlan\cli\Cli;
 use kahlan\cli\Args;
-use kahlan\jit\Interceptor;
-use kahlan\jit\Patchers;
 use kahlan\jit\patcher\DummyClass;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\jit\patcher\Monkey;
@@ -330,11 +330,12 @@ EOD;
     {
         return Filter::on($this, 'autoloader', [], function($chain) {
             Interceptor::patch([
-                'loader' => [$this->_autoloader, 'loadClass'],
-                'patchers' => $this->patchers(),
-                'include' => $this->args()->get('include'),
-                'exclude' => $this->args()->get('exclude'),
-                'persistent' => $this->args()->get('persistent')
+                'loader'     => [$this->_autoloader, 'loadClass'],
+                'patchers'   => $this->patchers(),
+                'include'    => $this->args()->get('include'),
+                'exclude'    => array_merge($this->args()->get('exclude'), ['kahlan\\']),
+                'persistent' => $this->args()->get('persistent'),
+                'cache'      => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
             ]);
         });
     }
