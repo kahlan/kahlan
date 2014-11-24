@@ -7,13 +7,7 @@ class AnyException extends \Exception
 
     public function __construct($message = null, $code = 0, $previous = null) {
         $this->message = $message;
+        $this->code = $code;
     }
 
-    public function match($exception) {
-        $code = $this->getCode();
-        $sameCode = $code ? $code === $exception->getCode() : true;
-        $sameMessage = $this->getMessage() === $exception->getMessage();
-        $sameMessage = $sameMessage || $this->getMessage() === null;
-        return $sameCode && $sameMessage;
-    }
 }

@@ -37,6 +37,20 @@ describe("toThrow", function() {
 
         });
 
+        it("doesn't catches any kind of exception with a specific code", function() {
+
+            $closure = function() {
+                throw new Exception('exception message');
+            };
+            expect($closure)->not->toThrow(null, 400);
+
+            $closure = function() {
+                throw new Exception('exception message', 500);
+            };
+            expect($closure)->not->toThrow(null, 400);
+
+        });
+
         it("catches a detailed exception", function() {
 
             $closure = function() {
@@ -62,6 +76,35 @@ describe("toThrow", function() {
                 throw new RuntimeException('exception message');
             };
             expect($closure)->toThrow('exception message');
+
+        });
+
+        it("catches an exception message using a regular expression", function() {
+
+            $closure = function() {
+                throw new RuntimeException('exception stuff message');
+            };
+            expect($closure)->toThrow('/exception (.*?) message/');
+
+            $closure = function() {
+                throw new RuntimeException('exception stuff message');
+            };
+            expect($closure)->toThrow('~exception (.*?) message~');
+
+            $closure = function() {
+                throw new RuntimeException('exception stuff message');
+            };
+            expect($closure)->toThrow('#exception (.*?) message#');
+
+            $closure = function() {
+                throw new RuntimeException('exception stuff message');
+            };
+            expect($closure)->toThrow('@exception (.*?) message@');
+
+            $closure = function() {
+                throw new RuntimeException('exception stuff message');
+            };
+            expect($closure)->not->toThrow('@exception (.*?) message#');
 
         });
 
@@ -98,7 +141,8 @@ describe("toThrow", function() {
 
             $report['params'] = [
                 'actual'   => function() {},
-                'expected' => $exception
+                'expected' => $exception,
+                'code'     => 0
             ];
 
             $actual = ToThrow::description($report);
