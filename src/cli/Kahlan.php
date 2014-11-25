@@ -158,6 +158,7 @@ class Kahlan {
     {
         $args = new Args();
         $args->argument('config', ['default' => 'kahlan-config.php']);
+        $args->argument('help', ['type'  => 'boolean']);
         $args->parse($argv);
 
         if ($args->get('help')) {
