@@ -347,8 +347,7 @@ EOD;
     protected function _load()
     {
         return Filter::on($this, 'load', [], function($chain) {
-            $files = Dir::scan([
-                'path' => $this->args()->get('spec'),
+            $files = Dir::scan($this->args()->get('spec'), [
                 'include' => '*Spec.php',
                 'type' => 'file'
             ]);

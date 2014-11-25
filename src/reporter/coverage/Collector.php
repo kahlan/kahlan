@@ -114,7 +114,7 @@ class Collector
         $this->_base = $options['base'];
         $this->_prefix = $options['prefix'];
 
-        $files = Dir::scan($options);
+        $files = Dir::scan($this->_paths, $options);
         foreach ($files as $file) {
             $this->_coverage[realpath($file)] = [];
         }
