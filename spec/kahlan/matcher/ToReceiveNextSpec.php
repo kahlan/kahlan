@@ -22,8 +22,8 @@ describe("toReceiveNext", function() {
 
             $patchers = new Patchers();
             $patchers->add('pointcut', new Pointcut());
-            $cache = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
-            Interceptor::patch(compact('patchers', 'cache'));
+            $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
+            Interceptor::patch(compact('patchers', 'cachePath'));
         });
 
         /**

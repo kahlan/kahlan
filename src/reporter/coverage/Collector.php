@@ -104,7 +104,7 @@ class Collector
         $options += $defaults;
 
         if (Interceptor::instance()) {
-            $options += ['prefix' => rtrim(Interceptor::instance()->cache(), DS)];
+            $options += ['prefix' => rtrim(Interceptor::instance()->cachePath(), DS)];
         } else {
             $options += ['prefix' => ''];
         }
