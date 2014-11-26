@@ -345,16 +345,16 @@ class Collector
         } if ($node->type === 'namespace') {
             $path = "{$path}" . $node->name . '\\';
             return $this->_processTree($file, $node->tree, $coverage, $path);
-        }
-        $metrics = $this->_processMetrics($file, $node, $coverage);
-
-        if ($node->type === 'function' && !$node->isClosure) {
+        } if ($node->type === 'function') {
             $prefix = $node->isMethod ? "{$path}::" : "{$path}\\";
             $path = $prefix . $node->name . '()';
-            $metrics['line']['start'] = $node->lines['start'];
-            $metrics['line']['stop'] = $node->lines['stop'];
+            $type = $node->type;
+        } else {
+            $type = $node->parent ? $node->parent->type : 'namespace';
         }
-        $this->_metrics->add($path, $metrics);
+
+        $metrics = $this->_processMetrics($file, $node, $coverage);
+        $this->_metrics->add($path, $type, $metrics);
     }
 
     /**
@@ -427,6 +427,10 @@ class Collector
         if ($metrics['cloc']) {
             $metrics['cmethods'] = 1;
         }
+
+        $metrics['line']['start'] = $node->lines['start'];
+        $metrics['line']['stop'] = $node->lines['stop'];
+
         return $metrics;
     }
 

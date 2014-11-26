@@ -60,9 +60,9 @@ class Metrics
      * Constructor
      *
       * @param array $options Possible options values are:
-     *              - `'name'`: the string name reference of the metrics.
-     *              - `'type'`  : the type of the metrics is about.
-     *              - `'parent'`: reference to the parent metrics.
+     *                        - `'name'`: the string name reference of the metrics.
+     *                        - `'type'`  : the type of the metrics is about.
+     *                        - `'parent'`: reference to the parent metrics.
      */
     public function __construct($options = [])
     {
@@ -91,9 +91,9 @@ class Metrics
     }
 
     /**
-     * Retruns the parent reference.
+     * Retruns the parent instance.
      *
-     * @return Metrics The parent reference
+     * @return object The parent instance
      */
     public function parent()
     {
@@ -121,9 +121,10 @@ class Metrics
     }
 
     /**
-     * Retruns the metrics stats.
+     * Gets/Sets the metrics stats.
      *
-     * @return array  The metrics data.
+     * @param  array $metrics The metrics data to set if defined.
+     * @return array          The metrics data.
      */
     public function data($metrics = [])
     {
@@ -143,29 +144,35 @@ class Metrics
     /**
      * Add some metrics to the current metrics.
      *
-     * @param string  The name reference of the metrics.
-     * @param Metrics The metrics instance.
+     * @param string $name The name reference of the metrics.
+     * @param string $type The type of metrics to add.
+     *                     Possible values are: `'namespace'`, `'class' or 'function'.
+     * @param array        The metrics array to add.
      */
-    public function add($name, $metrics)
+    public function add($name, $type, $metrics)
     {
         if (!$name) {
             return $this->_merge($metrics, true);
         }
-        list($name, $subname, $type) = $this->_parseName($name);
+        list($name, $subname, $nameType) = $this->_parseName($name, $type);
         if (!isset($this->_childs[$name])) {
             $parent = $this;
-            $this->_childs[$name] = new Metrics(compact('name', 'type', 'parent'));
+            $this->_childs[$name] = new Metrics([
+                'name'   => $name,
+                'parent' => $parent,
+                'type'   => $nameType
+            ]);
         }
         ksort($this->_childs);
         $this->_merge($metrics);
-        $this->_childs[$name]->add($subname, $metrics);
+        $this->_childs[$name]->add($subname, $type, $metrics);
     }
 
     /**
      * Get the metrics from a name.
      *
-     * @param  string The name reference of the metrics.
-     * @return object The metrics instance.
+     * @param  string $name The name reference of the metrics.
+     * @return object       The metrics instance.
      */
     public function get($name = null)
     {
@@ -183,8 +190,8 @@ class Metrics
     /**
      * Get the childs of the current metrics.
      *
-     * @param  string The name reference of the metrics.
-     * @return array  The metrics childs.
+     * @param  string $name The name reference of the metrics.
+     * @return array        The metrics childs.
      */
     public function childs($name = null)
     {
@@ -202,20 +209,20 @@ class Metrics
     /**
      * Retruns meta info of a metrics from a name reference..
      *
-     * @param  string The name reference of the metrics.
-     * @return array  The meta info of a metrics.
+     * @param  string $name The name reference of the metrics.
+     * @param  string $type The type to use by default if not auto detected.
+     * @return array        The parsed name.
      */
-    protected function _parseName($name)
+    protected function _parseName($name, $type = null)
     {
         $subname = '';
-        $type = 'namespace';
         if (strpos($name, '\\') !== false) {
+            $type = 'namespace';
             list($name, $subname) = explode('\\', $name, 2);
         } elseif (strpos($name, '::') !== false) {
             $type = 'class';
             list($name, $subname) = explode('::', $name, 2);
-        }
-        if (preg_match('~\(\)$~', $name)) {
+        } elseif (preg_match('~\(\)$~', $name)) {
             $type = $this->_type === 'class' ? 'method' : 'function';
         }
         return [$name, $subname, $type];
@@ -224,7 +231,8 @@ class Metrics
     /**
      * Merge some given metrics to the existing metrics .
      *
-     * @param array Some metrics.
+     * @param array   $metrics Metrics data to merge.
+     * @param boolean $line    Set to `true` for function only
      */
     protected function _merge($metrics = [], $line = false)
     {
