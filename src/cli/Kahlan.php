@@ -312,7 +312,9 @@ EOD;
     protected function _patchers()
     {
         return Filter::on($this, 'patchers', [], function($chain) {
-            $interceptor = Interceptor::instance();
+            if (!$interceptor = Interceptor::instance()) {
+                return;
+            }
             $patchers = $interceptor->patchers();
             $patchers->add('substitute', new DummyClass(['namespaces' => ['spec\\']]));
             $patchers->add('pointcut', new Pointcut());
