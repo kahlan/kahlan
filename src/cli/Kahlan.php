@@ -51,13 +51,6 @@ class Kahlan {
     protected $_autoloader = null;
 
     /**
-     * The patcher container.
-     *
-     * @var object
-     */
-    protected $_patchers = null;
-
-    /**
      * The reporter container.
      *
      * @var object
@@ -86,7 +79,6 @@ class Kahlan {
         $this->_autoloader = $options['autoloader'];
         $this->_suite = $options['suite'];
 
-        $this->_patchers = new Patchers();
         $this->_reporters = new Reporters();
         $this->_args = $args = new Args();
 
@@ -127,16 +119,6 @@ class Kahlan {
     public function suite()
     {
         return $this->_suite;
-    }
-
-    /**
-     * Returns the patcher container.
-     *
-     * @return object
-     */
-    public function patchers()
-    {
-        return $this->_patchers;
     }
 
     /**
@@ -264,9 +246,9 @@ EOD;
 
             $this->_namespaces();
 
-            $this->_patchers();
-
             $this->_autoloader();
+
+            $this->_patchers();
 
             $this->_load();
 
@@ -309,22 +291,6 @@ EOD;
     }
 
     /**
-     * Set up the default `'patcher'` filter.
-     */
-    protected function _patchers()
-    {
-        return Filter::on($this, 'patchers', [], function($chain) {
-            $patchers = $this->patchers();
-            $patchers->add('substitute', new DummyClass(['namespaces' => ['spec\\']]));
-            $patchers->add('pointcut', new Pointcut());
-            $patchers->add('monkey', new Monkey());
-            $patchers->add('rebase', new Rebase());
-            $patchers->add('quit', new Quit());
-            return $patchers;
-        });
-    }
-
-    /**
      * Set up the default `'autoloader'` filter.
      */
     protected function _autoloader()
@@ -332,12 +298,27 @@ EOD;
         return Filter::on($this, 'autoloader', [], function($chain) {
             Interceptor::patch([
                 'loader'     => [$this->_autoloader, 'loadClass'],
-                'patchers'   => $this->patchers(),
                 'include'    => $this->args()->get('include'),
                 'exclude'    => array_merge($this->args()->get('exclude'), ['kahlan\\']),
                 'persistent' => $this->args()->get('persistent'),
                 'cachePath'  => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
             ]);
+        });
+    }
+
+    /**
+     * Set up the default `'patcher'` filter.
+     */
+    protected function _patchers()
+    {
+        return Filter::on($this, 'patchers', [], function($chain) {
+            $interceptor = Interceptor::instance();
+            $patchers = $interceptor->patchers();
+            $patchers->add('substitute', new DummyClass(['namespaces' => ['spec\\']]));
+            $patchers->add('pointcut', new Pointcut());
+            $patchers->add('monkey', new Monkey());
+            $patchers->add('rebase', new Rebase());
+            $patchers->add('quit', new Quit());
         });
     }
 

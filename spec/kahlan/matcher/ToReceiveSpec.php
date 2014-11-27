@@ -2,7 +2,6 @@
 namespace spec\kahlan\matcher;
 
 use jit\Interceptor;
-use jit\Patchers;
 use jit\Parser;
 use kahlan\Arg;
 use kahlan\plugin\Stub;
@@ -23,10 +22,10 @@ describe("toReceive", function() {
             $this->previous = Interceptor::instance();
             Interceptor::unpatch();
 
-            $patchers = new Patchers();
-            $patchers->add('pointcut', new Pointcut());
             $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
-            Interceptor::patch(compact('patchers', 'cachePath'));
+            $exclude = ['kahlan\\'];
+            $interceptor = Interceptor::patch(compact('exclude', 'cachePath'));
+            $interceptor->patchers()->add('pointcut', new Pointcut());
         });
 
         /**
