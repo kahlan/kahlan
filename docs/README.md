@@ -596,6 +596,20 @@ it("stubs a method", function() {
 });
 ```
 
+You can stub subsequent calls to different return values:
+
+```php
+it("stubs a method with multiple return values", function() {
+
+    $instance = new MyClass();
+    Stub::on($instance)->method('sequential')->andReturn(1, 3, 2);
+    expect($instance->myMethod())->toBe(1);
+    expect($instance->myMethod())->toBe(3);
+    expect($instance->myMethod())->toBe(2);
+
+});
+```
+
 You can also stub `static` methods using `::`:
 
 ```php
