@@ -429,13 +429,22 @@ describe("Stub", function() {
 
             $prop = $stub->prop;
             $stub->prop = $prop;
-            isset($stub->prop);
-            unset($stub->prop);
+            expect(isset($stub->prop))->toBe(true);
+            expect(isset($stub->data))->toBe(false);
+            unset($stub->data);
             $serialized = serialize($stub);
             unserialize($serialized);
             $string = (string) $stub;
             $stub();
             $stub2 = clone $stub;
+
+        });
+
+        it("defaults stub can be used as container", function() {
+
+            $stub = Stub::create();
+            $stub->data = 'hello';
+            expect($stub->data)->toBe('hello');
 
         });
 
