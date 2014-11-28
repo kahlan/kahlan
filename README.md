@@ -28,6 +28,32 @@ Example of detailed code coverage on a specific scope:
 
 # Installation
 
+## via Composer
+
+Here is a sample composer.json to install Kahlan:
+
+```json
+{
+    "name": "example/kahlan",
+    "description": "Demonstration of installing Kahlan through Composer",
+    "require": {
+    },
+    "require-dev": {
+        "crysalead/kahlan": "dev-master"
+    },
+    "license": "MIT",
+    "minimum-stability": "dev"
+}
+```
+
+Then install via:
+
+```bash
+composer install --dev
+```
+
+## via Git clone
+
 ```
 git clone git@github.com:crysalead/kahlan.git
 cd kahlan
