@@ -94,8 +94,8 @@ class ToReceive
 
         if ($log = $call::find($this->_actual, $this->_message, $startIndex)) {
             $this->_report['description'] = 'receive correct parameters.';
-            $this->_report['params']['actual with'] = $with;
-            $this->_report['params']['expected with'] = $log['params'];
+            $this->_report['params']['actual with'] = $log['params'];
+            $this->_report['params']['expected with'] = $with;
             return;
         }
 

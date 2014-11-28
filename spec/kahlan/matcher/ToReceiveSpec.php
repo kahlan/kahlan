@@ -263,8 +263,8 @@ describe("toReceive", function() {
 
             expect($actual['description'])->toBe('receive correct parameters.');
             expect($actual['params'])->toBe([
-                'actual with' => ['Hello World!'],
-                'expected with' => ['Good Bye!']
+                'actual with' => ['Good Bye!'],
+                'expected with' => ['Hello World!']
             ]);
 
         });
