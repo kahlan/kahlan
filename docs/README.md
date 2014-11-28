@@ -1,7 +1,7 @@
 # Kahlan
 — for Freedom, Truth, and Justice —
 
-* [1 - Why This One ?](#why-this-one)
+* [1 - Why This One?](#why-this-one)
 * [2 - Getting Started](#getting-started)
 * [3 - Overview](#overview)
 * [4 - Matchers](#matchers)
@@ -10,27 +10,30 @@
   * [Argument matchers](#argument)
   * [Custom matchers](#custom)
 * [5 - Stubs](#stubs)
-  * [Method Stubing](#method-stubing)
-  * [Instance Stubing](#instance-stubing)
-  * [Class Stubing](#class-stubing)
+  * [Method Stubbing](#method-stubbing)
+  * [Instance Stubbing](#instance-stubbing)
+  * [Class Stubbing](#class-stubbing)
+  * [Custom Stubs](#class-stubs)
 * [6 - Monkey Patching](#monkey-patching)
   * [Monkey Patch Quit Statements](#monkey-patch-quit-statements)
 * [7 - Reporters](#reporters)
-* [8 - Pro Tips](#pro-tips)
+* [8 - Pro Tips](#pro-tips) - including CLI arguments
 
-## <a name="why-this-one"></a>1 - Why This One ?
+## <a name="why-this-one"></a>1 - Why This One?
 
-One of PHP's assumption is that once you define a function/constant/class it stays defined forever. If this assumption is not really problematic when you are building an application, things get a bit more complicated when you want to unit test your application easily.
+One of PHP's assumptions is that once you define a function/constant/class it stays defined forever. Although this assumption is not really problematic when you are building an application, things get a bit more complicated if you want your application to be easily testable...
 
 **The main test frameworks for PHP are:**
-* [PHPUnit](https://phpunit.de) which reaches [23.80% of code coverage after > 10 years of experience in tests](assets/phpunit_4.4_code_coverage.png) by the way
+* [PHPUnit](https://phpunit.de) _(which reaches just [23.80% of code coverage after > 10 years of experience in tests](assets/phpunit_4.4_code_coverage.png) by the way)_
 * [phpspec](http://phpspec.net)
 * [atoum](http://docs.atoum.org)
 * [SimpleTest](http://www.simpletest.org)
 * [Enhance-PHP](https://github.com/Enhance-PHP/Enhance-PHP)
 * etc.
 
-If all these "old school frameworks" are mature enough, they don't allow to test hard coded references easily. And the fact that they don't use the `describe-it` syntax either doesn't allow a clean organization of tests to simplify their maintenance (and avoiding [this kind of organization](https://github.com/sebastianbergmann/phpunit/tree/master/tests/Regression) for example). Moreover the `describe-it` syntax makes tests more reader-friendly (i.e even better than the [atoum fluent syntax organization](https://github.com/atoum/atoum/blob/master/tests/units/classes/asserters/dateInterval.php)
+Whilst these "old school frameworks" are considered fairly mature, they don't allow easy testing of hard coded references.
+
+Furthermore, they don't use the `describe-it` syntax either; `describe-it` allows a clean organization of tests to simplify their maintenance (avoiding [this kind of organization](https://github.com/sebastianbergmann/phpunit/tree/master/tests/Regression), for example!). Moreover, the `describe-it` syntax makes tests more reader-friendly (even better than the [atoum fluent syntax organization](https://github.com/atoum/atoum/blob/master/tests/units/classes/asserters/dateInterval.php)
 
 **So what about new test frameworks for PHP ?**
 
@@ -43,27 +46,27 @@ If all these "old school frameworks" are mature enough, they don't allow to test
 * [preview](https://github.com/v2e4lisp/preview)
 * etc.
 
-In the list above, if [Peridot](https://github.com/peridot-php/peridot) seems to be mature enough it only provides the basics (i.e the `describe-it` syntax). All other frameworks seems to be some simple proof of concept of the `describe-it` syntax at the time I'm writing this documentation.
+In the list above, although superficially [Peridot](https://github.com/peridot-php/peridot) seems to be mature, really it only provides the basics (i.e the `describe-it` syntax). All other frameworks seems to be some simple proof of concept of the `describe-it` syntax at the time I'm writing this documentation (November 2014).
 
-So Kahlan was created out of frustration with all existing testing frameworks in PHP. Instead of introducing some new philosophical concepts, tools, java practices, craps, Kahlan just provide an environment which allow you to **easily test your code even with hard coded references**.
+So, Kahlan was created out of frustration with all existing testing frameworks in PHP. Instead of introducing some new philosophical concepts, tools, java practices or other nonsense, Kahlan focuses on simply providing an environment which allows you to **easily test your code, even with hard coded references**.
 
-To achieve this goal **Kahlan allow to stub or monkey patch your code** like in Ruby or JavaScript without any required PECL-extentions. That way you won't need to put some [DI everywhere just for being able to write a test](http://david.heinemeierhansson.com/2012/dependency-injection-is-not-a-virtue.html).
+To achieve this goal, **Kahlan allows you to stub or monkey patch your code**, just like in Ruby or JavaScript, without any required PECL-extentions. This way, you don't need to put [DI everywhere just to be able to write tests](http://david.heinemeierhansson.com/2012/dependency-injection-is-not-a-virtue.html)!
 
-Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attempted to bring this kind of metaprogramming flexibility for PHPUnit but Kahlan aimed to gather all this facilities in a full-featured framework using a `describe-it` syntax, a lightweight approach and a simple API.
+Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attempted to bring this kind of metaprogramming flexibility for PHPUnit, but Kahlan aims to gather all of these facilities into a full-featured framework boasting a `describe-it` syntax, a lightweight approach and a simple API.
 
 ### Main Features
 
 * Small API
-* Small code base (~5k loc)
-* Fast Code Coverage metrics (xdebug required)
-* Set stubs on your class methods directly (i.e allow dynamic mocking).
-* Allow to Monkey Patch your code (ie. allows replacement of core functions/classes on the fly).
-* Check called methods on your class/instances.
+* Small code base (~5 kloc)
+* Fast Code Coverage metrics ([xdebug](http://xdebug.org) required)
+* Set stubs on your class methods directly (i.e allows dynamic mocking)
+* Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
+* Check called methods on your class/instances
 * Built-in Reporters/Exporters (Terminal, Coveralls, Scrutinizers)
-* An extensible & customizable workflow
+* Extensible, customizable workflow
 
 **PS:**
-All this features works with the [Composer](https://getcomposer.org/) autoloader out of the box, but if you want to make it works with your own autoloader you will need to create your own `Interceptor` class for it (however it's prettry trivial).
+All of these features work with the [Composer](https://getcomposer.org/) autoloader out of the box, but if you want to make it work with your own autoloader, you will need to create your own `Interceptor` class for it (which thankfully is pretty trivial! ;-) ).
 
 ## <a name="getting-started"></a>2 - Getting started
 
@@ -73,14 +76,14 @@ To make a long story short let's take [the following repository](https://github.
 
 It's a simple string class in PHP which give you a better understanding on how to structure a project to be easily testable with Kahlan.
 
-Below the detailed tree structure of this project:
+Here is the tree structure of this project:
 
 ```
 ├── bin
 ├── .gitignore
-├── .scrutinizer.yml           # Optionnal, it's for using https://scrutinizer-ci.com
-├── .travis.yml                # Optionnal, it's for using https://travis-ci.org
-├── composer.json              # Need at least the Khalan dependency
+├── .scrutinizer.yml           # Optional, it's for using https://scrutinizer-ci.com
+├── .travis.yml                # Optional, it's for using https://travis-ci.org
+├── composer.json              # Need at least the Kahlan dependency
 ├── LICENSE.txt
 ├── README.md
 ├── spec                       # The directory which contain specs
@@ -92,26 +95,27 @@ Below the detailed tree structure of this project:
 
 To start playing with it you'll need to:
 
-```
+```bash
 git clone git@github.com:crysalead/string.git
 cd string
 composer install
 ```
 
-And then run specs with:
-```
+And then run the tests (referred to as 'specs') with:
+
+```bash
 ./bin/kahlan --coverage=4
 ```
 
-**Note:** the `--coverage=4` option is of course optionnal.
+**Note:** the `--coverage=4` option is optional.
 
-You are now able to build you own project by following the above structure.
+You are now able to build your own project with a suite of Kahlan specs by following the above structure.
 
 ## <a name="overview"></a>3 - Overview
 
 ### Describe Your Specs
 
-Because test's organization is one of the key point of keeping clean and maintainable tests, Kahlan allow to group tests syntaxically using a closure syntax.
+Because test organization is one of the key point of keeping clean and maintainable tests, Kahlan allow to group tests syntactically using a closure syntax.
 
 ```php
 describe("ToBe", function() {
@@ -129,13 +133,13 @@ describe("ToBe", function() {
 });
 ```
 
-* `describe`: generally contains all specs for a method. Using the class method's name is probably the better option for a clean description.
-* `context`: is used to group tests realated to a specific use case. Using "when" or "with" followed by the description of the use case is generally a good practice.
+* `describe`: generally contains all specs for a method. Using the class method's name is probably the best option for a clean description.
+* `context`: is used to group tests related to a specific use case. Using "when" or "with" followed by the description of the use case is generally a good practice.
 * `it`: contains the code to test. Keep its description short and clear.
 
 ### Setup and Teardown
 
-As the name implies the `beforeEach` function is called once before **each** spec contained in a `describe`.
+As the name implies, the `beforeEach` function is called once before **each** spec contained in a `describe`.
 
 ```php
 describe("Setup and Teardown", function() {
@@ -163,14 +167,14 @@ describe("Setup and Teardown", function() {
 
 Setup and Teardown functions can be used at any `describe` or `context` level:
 
-* `before`: Runned once inside a `describe` or `context` before all contained specs.
-* `beforeEach`: Runned before each specs of the same level.
-* `afterEach`: Runned after each specs of the same level.
-* `after`: Runned once inside a `describe` or `context` after all contained specs.
+* `before`: Run once inside a `describe` or `context` before all contained specs.
+* `beforeEach`: Run before each spec of the same level.
+* `afterEach`: Run after each spec of the same level.
+* `after`: Run once inside a `describe` or `context` after all contained specs.
 
 ### Expectations
 
-Expectations are built using the `expect` function which takes a value, called the **actual**, as parameter and chained with a matcher function taking the **expected** value and some optionnal extra arguments as parameter.
+Expectations are built using the `expect` function which takes a value, called the **actual**, as parameter and chained with a matcher function taking the **expected** value and some optional extra arguments as parameters.
 
 ```php
 describe("Positive Expectation", function() {
@@ -188,7 +192,7 @@ You can find [all built-in matchers here](#matchers).
 
 ### Negative Expectations
 
-Any matcher can be evaluated negatively by chaining `expect` with `not` before calling the matcher.
+Any matcher can be evaluated negatively by chaining `expect` with `not` before calling the matcher:
 
 ```php
 describe("Negative Expectation", function() {
@@ -252,7 +256,7 @@ describe("Scope inheritance & closure", function() {
 
 #### Scope isolation
 
-**Note:** A variable setted with `$this` inside a `describe/context` or a `it` will **not** be available in a parent scope.
+**Note:** A variable assigned with `$this` inside either a `describe/context` or an `it` will **not** be available to a parent scope.
 
 ```php
 describe("Scope isolation", function() {
@@ -412,9 +416,10 @@ it("passes if $actual < $expected", function() {
 **toThrow($expected)**
 
 ```php
-it("passes if $actual throws the $expected exception", function() {
+it("passes if $closure throws the $expected exception", function() {
 
     $closure = function() {
+        // place the code that you expect to throw an exception in a closure, like so
         throw new RuntimeException('exception message');
     };
     expect($closure)->toThrow();
@@ -427,7 +432,7 @@ it("passes if $actual throws the $expected exception", function() {
 **toMatch($expected)**
 
 ```php
-it("passes if $actual match the $expected regexp", function() {
+it("passes if $actual matches the $expected regexp", function() {
 
     expect('Hello World!')->toMatch('/^H(.*?)!$/');
 
@@ -435,7 +440,7 @@ it("passes if $actual match the $expected regexp", function() {
 ```
 
 ```php
-it("passes if $actual match the $expected closure logic", function() {
+it("passes if $actual matches the $expected closure logic", function() {
 
     expect('Hello World!')->toMatch(function($actual) {
         return $actual === 'Hello World!';
@@ -447,7 +452,7 @@ it("passes if $actual match the $expected closure logic", function() {
 **toEcho($expected)**
 
 ```php
-it("passes if $actual throws the $expected exception", function() {
+it("passes if $closure echoes the expected output", function() {
 
     $closure = function() {
         echo "Hello World!";
@@ -538,7 +543,7 @@ it("expects params match the toContain argument matcher", function() {
 
 ### <a name="custom"></a>Custom matchers
 
-With Kahlan you can easily create you own matchers. Long story short, a matcher is a simple class with a least a two static methods: `match()` & `description()`.
+With Kahlan you can easily create you own matchers. Long story short, a matcher is a simple class with a least a two static methods: `match()` and `description()`.
 
 Example of a `toBeZero()` matcher:
 
@@ -577,7 +582,7 @@ To enable **Method Stubbing** add the following `use` statement in the top of yo
 use kahlan\plugin\Stub;
 ```
 
-### <a name="method-stubing"></a>Method Stubbing
+### <a name="method-stubbing"></a>Method Stubbing
 
 `Subs::on()` can stub any existing methods on any class.
 
@@ -602,6 +607,7 @@ it("stubs a static method", function() {
 
 });
 ```
+
 And it's also possible to use a closure directly:
 
 ```php
@@ -630,11 +636,11 @@ it("stubs many methods", function() {
 });
 ```
 
-**Note:** Using the `'bar' => 'Hello Bar!'` syntax is not allowed here. Indeed direct assignation are considered as a closure definition. For example in `'bar' => function() {return 'hello'}` the closure is consireded as the method definition for the `bar()` method. On the other hand `with 'bar' => [function() {return 'hello'}]` the closure will be the return value of the `bar()` method.
+**Note:** Using the `'bar' => 'Hello Bar!'` syntax is not allowed here. Indeed, direct assignation is considered as a closure definition. For example, in `'bar' => function() {return 'hello'}` the closure is considered as the method definition for the `bar()` method. On the other hand, with `'bar' => [function() {return 'hello'}]`, the closure will be the return value of the `bar()` method.
 
-### <a name="instance-stubing"></a>Instance Stubbing
+### <a name="instance-stubbing"></a>Instance Stubbing
 
-When you are testing an application, sometimes you need a simple & polyvalent instance for receiving a couple of calls. `Stub::create()` can create such polyvalent instance:
+When you are testing an application, sometimes you need a simple, polyvalent instance for receiving a couple of calls. `Stub::create()` can create such polyvalent instance:
 
 ```php
 it("generates a polyvalent instance", function() {
@@ -661,9 +667,9 @@ it("stubs a static method", function() {
 });
 ```
 
-### <a name="class-stubing"></a>Class Stubbing
+### <a name="class-stubbing"></a>Class Stubbing
 
-You can also create some class names (i.e a string) using `Stub::classname()`:
+You can also create class names (i.e a string) using `Stub::classname()`:
 
 ```php
 it("generates a polyvalent class", function() {
@@ -677,11 +683,12 @@ it("generates a polyvalent class", function() {
 });
 ```
 
-### Custom Stubs
+### <a name="custom-stubbing"></a>Custom Stubs
 
-There's also a couple of options for creating some stubs which inherit a class, implement interfaces or use traits.
+There are also a couple of options for creating some stubs which inherit a class, implement interfaces or use traits.
 
 An example using `'extends'`:
+
 ```php
 it("stubs an instance with a parent class", function() {
 
@@ -693,9 +700,9 @@ it("stubs an instance with a parent class", function() {
 ```
 **Tip:** If you extends from an abstract class, all missing methods will be automatically added to your stub.
 
-**Note:** If the `'extends'` option is used, all magic methods **won't be included** to avoid any conflict between your tested classes and the magic method behaviors.
+**Note:** If the `'extends'` option is used, magic methods **won't be included**, so as to to avoid any conflict between your tested classes and the magic method behaviors.
 
-However if you still want to include them with the `'extends'` option you can manually set the `'magicMethods'` option to `true`:
+However, if you still want to include magic methods with the `'extends'` option, you can manually set the `'magicMethods'` option to `true`:
 
 ```php
 it("stubs an instance with a parent class and keeps magic methods", function() {
@@ -754,17 +761,17 @@ it("stubs an instance using a trait", function() {
 
 ## <a name="monkey-patching"></a>6 - Monkey Patching
 
-To enable **Monkey Patching** add the following `use` statement in the top of your specs:
+To enable **Monkey Patching**, add the following `use` statement in the top of your specs:
 
 ```php
 use kahlan\plugin\Monkey;
 ```
 
-Monkey Patching allows replacement of core functions & classes which can't be stubbed like `time()`, `DateTime` or `MongoId` for example.
+Monkey Patching allows replacement of core functions and classes that can't be stubbed, for example `[time()](http://php.net/manual/en/function.time.php)`, `[DateTime](http://php.net/manual/en/class.datetime.php)` or `[MongoId](http://php.net/manual/en/class.mongoid.php)` for example.
 
-With Kahlan you can patch anything you want using `Monkey::patch()`.
+With Kahlan, you can patch anything you want using `Monkey::patch()`!
 
-For example I have the following class which needs to be patched:
+For example, I have the following class which needs to be patched:
 
 ```php
 namespace kahlan\monkey;
@@ -809,7 +816,7 @@ describe("Monkey patching", function() {
 });
 ```
 
-Unbelivable right ? Moreover you can also replace the `time()` function by a simple closure:
+Unbelievable, right? Moreover, you can also replace the `time()` function by a simple closure:
 
 ```php
 it("patches a core function with a closure", function() {
@@ -823,11 +830,11 @@ it("patches a core function with a closure", function() {
 
 Using the same syntax, you can also patch any core classes by just monkey patching a fully-namespaced class name to another fully-namespaced class name.
 
-You can find [another example on how to use Monkey Patching here](https://github.com/warrenseymour/kahlan-lightning-talk).
+You can find [another example of how to use Monkey Patching here](https://github.com/warrenseymour/kahlan-lightning-talk).
 
 ### <a name="monkey-patch-quit-statements"></a>Monkey Patch Quit Statements
 
-When a unit test exercises code that contains an `exit()` or a `die()` statement, the execution of the whole test suite is aborted. With Kahlan, you can make all quit statements (i.e. like `exit()` or `die()`) to throw a `QuitException` instead of quitting the test suite for real.
+When a unit test exercises code that contains an `exit()` or a `die()` statement, the execution of the whole test suite is aborted. With Kahlan, you can make all quit statements (i.e. like `exit()` or `die()`) throw a `QuitException` instead of quitting the test suite for real.
 
 To enable **Monkey Patching on Quit Statements** add the following `use` statements in the top of your tests:
 
@@ -846,17 +853,17 @@ it("throws an exception when an exit statement occurs if not allowed", function(
         $foo->runCodeWithSomeQuitStatementInside(-1);
     };
 
-    expect($closure)->toThrow(new QuitException('Exit statement occured', -1));
+    expect($closure)->toThrow(new QuitException('Exit statement occurred', -1));
 });
 ```
 
-**Note:** This only work **for classes loaded by Composer**. If you try to create a stub with a `exit()` statement inside a closure it won't get intercepted by patchers and the application will quit for real. Indeed, **code in `*Spec.php` files are not intercepted & patched**.
+**Note:** This only work **for classes loaded by Composer**. If you try to create a stub with a `exit()` statement inside a closure it won't get intercepted by patchers and the application will quit for real. Indeed, **code in `*Spec.php` files are not intercepted and patched**.
 
 ## <a name="reporters"></a>7 - Reporters
 
-Kahlan provide a flexible reporter system which can be extended easily.
+Kahlan provides a flexible reporter system which can be extended easily.
 
-There's two build-in reporters and the default is the dotted one:
+There are two build-in reporters and the default is the dotted one:
 
 ```php
 ./bin/kahlan --reporter=dot # Default value
@@ -867,9 +874,9 @@ To use a reporter which looks like more a progress bar use the following option:
 ./bin/kahlan --reporter=bar
 ```
 
-However you can easily roll you own if these reporters don't fit your needs.
+You can easily roll you own if these reporters don't fit your needs.
 
-For example if you want a console based reporter create a PHP class which extends `kahlan\reporter\Terminal`. The `Terminal` class offers some useful methods like `write()` for doing some echos on the terminal. But if you wanted to create some kind of JSON reporter extending from `kahlan\reporter\Reporter` would be enough.
+For example, if you want a console based reporter, create a PHP class which extends `kahlan\reporter\Terminal`. The `Terminal` class offers some useful methods like `write()` for doing some echos on the terminal. But if you wanted to create some kind of JSON reporter extending from `kahlan\reporter\Reporter` would be enough.
 
 Example of a custom console reporter:
 ```php
@@ -959,7 +966,7 @@ class MyReporter extends \kahlan\reporter\Terminal
 ?>
 ```
 
-**Note:** `_report()` & `_summary()` are also two inherited methods. Their roles are to format errors & display a summary of passed tests respectively. So feel free to dig into the source code if you want some more specific output for that.
+**Note:** `_report()` and `_summary()` are also two inherited methods. Their roles are to format errors and to display a summary of passed tests respectively. Feel free to dig into the source code if you want some more specific output for that.
 
 The next step is to register your new reporter so you'll need to create you own custom [config file](#config-file)).
 
@@ -980,9 +987,9 @@ Filter::apply($this, 'console', 'kahlan.myconsole');
 ?>
 ```
 
-`$this->_start` is the timestamp in micro seconds of when the process has been started. If passed to reporter, it'll be able to display some accurate execution time.
+`$this->_start` is the timestamp in micro seconds of when the process has been started. If passed to reporter, it'll be able to display an accurate execution time.
 
-**Note:** `'myconsole'` is an arbitrary name, can be anything.
+**Note:** `'myconsole'` is an arbitrary name, it can be anything.
 
 Let's run it:
 ```php
@@ -990,13 +997,13 @@ Let's run it:
 ```
 ![custom_reporter](assets/custom_reporter.png)
 
-A bit ugly but the check marks and the skulls are present.
+A bit ugly, but the check marks and the skulls are present.
 
 ## <a name="pro-tips"></a>8 - Pro Tips
 
-### Use the `--ff` option
+### Use the `--ff` option (fast fail)
 
-`--ff` is the fast fail option. If used, the test suite will be stopped as soon as a failing test occurs. You can also specify a number of "allowed" fails before stoping the process. For example:
+`--ff` is the fast fail option. If used, the test suite will be stopped as soon as a failing test occurs. You can also specify a number of "allowed" fails before stopping the process. For example:
 
 ```
 ./bin/kahlan --ff=3
@@ -1006,7 +1013,7 @@ will stop the process as soon as 3 specs `it` failed.
 
 ### Use `--coverage` option
 
-Kahlan has some built-in code coverage exporter (e.g. Coveralls & Scrutinizer exporters) but it can also be used to generates some detailed code coverage report directy inside the console.
+Kahlan has some built-in code coverage exporter (e.g. Coveralls & Scrutinizer exporters) but it can also be used to generates some detailed code coverage report directly inside the console.
 
 **`--coverage=<integer>`** will generates some code coverage summary depending on the passed integer.
 
@@ -1078,7 +1085,7 @@ $args->argument('coverage', 'default', 3);
 $args->argument('coverage-scrutinizer', 'default', 'scrutinizer.xml');
 $args->argument('coverage-coveralls', 'default', 'coveralls.json');
 
-// The logic to inlude into the workflow.
+// The logic to include into the workflow.
 Filter::register('kahlan.coveralls', function($chain) {
 
     // Get the reporter called `'coverage'` from the list of reporters
@@ -1106,7 +1113,7 @@ Filter::apply($this, 'reporting', 'kahlan.coveralls');
 ?>
 ```
 
-Above `'kahlan.coveralls'` is just a custom name and could be whatever as long as `Filter::register()` && `Filter::apply()` are consistent on the namings.
+Above `'kahlan.coveralls'` is just a custom name and could be whatever as long as `Filter::register()` and `Filter::apply()` are consistent on the namings.
 
 `$this` refer to the Kahlan instance so `$this->reporters()->get('coverage')` will give you the instance of the coverage reporter. This coverage reporter will contain all raw data which is passed to the `Coveralls` exporter to be formatter.
 
@@ -1124,18 +1131,18 @@ The filterable entry points are the following:
     * `'coverage'`       # Creates the coverage reporter
   * `'matchers`'         # Useful for registering some further matchers
   * `'run`'              # Runs the test suite
-  * `'reporting`'        # Runs some additionnal reporting tasks
+  * `'reporting`'        # Runs some additional reporting tasks
   * `'stop`'             # Trigger the stop event to reporters
-  * `'quit`'             # For some addionnal post processing before quitting
+  * `'quit`'             # For some additional post processing before quitting
 
 
 [You can see more details about how the workflow works here](https://github.com/crysalead/kahlan/blob/master/src/cli/Kahlan.php) (start reading with the `run()` method).
 
 ### Optimizations
 
-Kahlan acts like a wrapper. It intercepts loaded classes Just It Time (i.e during the autoloading step) and rewrites the source code on the fly to make it easily testable with PHP. That's why Monkey Patching or redefining a class's method can be done inside the testing environment without any PECL extensions like runkit, aop, etc.
+Kahlan acts like a wrapper. It intercepts loaded classes Just It Time (i.e. during the autoloading step) and rewrites the source code on the fly to make it easily testable with PHP. That's why Monkey Patching or redefining a class's method can be done inside the testing environment without any PECL extensions like runkit, aop, etc.
 
-Notice that this approach will make your code to be runned a bit slower than your orginal code. However you can optimize Kahlan's interceptor to only patch the namespaces you want:
+Notice that this approach will make your code run a bit slower than your original code. However you can optimize Kahlan's interceptor to only patch the namespaces you want:
 
 For example, the following configuration will only limit the patching to a bunch of namespaces/classes:
 
@@ -1160,4 +1167,4 @@ Finally you can also disable all the patching everywhere if you prefer to deal w
 ```php
 $this->args()->set('include', []);
 ```
-**Note:** You will still able to stub instances & classes created with `Stub::create()`/`Stub::classname()` anyway.
+**Note:** You will still able to stub instances and classes created with `Stub::create()`/`Stub::classname()` anyway.
