@@ -99,23 +99,36 @@ describe("Stub", function() {
 
             });
 
-            it("stubs a magic method multiple times", function() {
+            it("overrides previously applied stubs", function() {
 
                 $foo = new Foo();
-                Stub::on($foo)->method('magic')->with('hello')->andReturn('world');
-                Stub::on($foo)->method('magic')->with('world')->andReturn('hello');
-                expect($foo->magic('hello'))->toBe('world');
-                expect($foo->magic('world'))->toBe('hello');
+                Stub::on($foo)->method('magicHello')->andReturn('Hello World!');
+                Stub::on($foo)->method('magicHello')->andReturn('Good Bye!');
+                expect($foo->magicHello())->toBe('Good Bye!');
 
             });
 
-            it("stubs a static magic method multiple times", function() {
+            context("with several applied stubs on a same method", function() {
 
-                $foo = new Foo();
-                Stub::on($foo)->method('::magic')->with('hello')->andReturn('world');
-                Stub::on($foo)->method('::magic')->with('world')->andReturn('hello');
-                expect($foo::magic('hello'))->toBe('world');
-                expect($foo::magic('world'))->toBe('hello');
+                it("stubs a magic method multiple times", function() {
+
+                    $foo = new Foo();
+                    Stub::on($foo)->method('magic')->with('hello')->andReturn('world');
+                    Stub::on($foo)->method('magic')->with('world')->andReturn('hello');
+                    expect($foo->magic('hello'))->toBe('world');
+                    expect($foo->magic('world'))->toBe('hello');
+
+                });
+
+                it("stubs a static magic method multiple times", function() {
+
+                    $foo = new Foo();
+                    Stub::on($foo)->method('::magic')->with('hello')->andReturn('world');
+                    Stub::on($foo)->method('::magic')->with('world')->andReturn('hello');
+                    expect($foo::magic('hello'))->toBe('world');
+                    expect($foo::magic('world'))->toBe('hello');
+
+                });
 
             });
 
@@ -264,7 +277,6 @@ describe("Stub", function() {
 
             it("stubs a magic method multiple times", function() {
 
-                $foo = new Foo();
                 Stub::on('spec\fixture\plugin\pointcut\Foo')->method('::magic')->with('hello')->andReturn('world');
                 Stub::on('spec\fixture\plugin\pointcut\Foo')->method('::magic')->with('world')->andReturn('hello');
                 expect(Foo::magic('hello'))->toBe('world');

@@ -109,7 +109,12 @@ class Stub
         } else {
             Suite::register($reference);
         }
-        return $instance->_stubs[$name][] = new Method(compact('name', 'static', 'closure'));
+        if (!isset($instance->_stubs[$name])) {
+            $instance->_stubs[$name] = [];
+        }
+        $method = new Method(compact('name', 'static', 'closure'));
+        array_unshift($instance->_stubs[$name], $method);
+        return $method;
     }
 
     /**
