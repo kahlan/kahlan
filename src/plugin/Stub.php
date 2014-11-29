@@ -101,14 +101,15 @@ class Stub
         }
         $hash = Suite::hash($reference);
         if (!isset(static::$_registered[$hash])) {
-            static::$_registered[$hash] = $this;
+            static::$_registered[$hash] = new static($reference);
         }
+        $instance = static::$_registered[$hash];
         if (is_object($reference)) {
             Suite::register(get_class($reference));
         } else {
             Suite::register($reference);
         }
-        return $this->_stubs[$name] = new Method(compact('name', 'static', 'closure'));
+        return $instance->_stubs[$name][] = new Method(compact('name', 'static', 'closure'));
     }
 
     /**
@@ -122,7 +123,7 @@ class Stub
         if (isset(static::$_registered[$hash])) {
             return static::$_registered[$hash];
         }
-        return new static($reference);
+        return static::$_registered[$hash] = new static($reference);
     }
 
     /**
@@ -141,19 +142,24 @@ class Stub
         $refs = [];
         foreach ($references as $reference) {
             $hash = Suite::hash($reference);
-            if (isset(static::$_registered[$hash])) {
-                $stubs = static::$_registered[$hash]->methods();
-                $static = false;
-                if (preg_match('/^::.*/', $method)) {
-                    $static = true;
-                    $method = substr($method, 2);
-                }
-                if (isset($stubs[$method])) {
-                    $stub = $stubs[$method];
-                    $call['name'] = $method;
-                    $call['static'] = $static;
-                    $call['params'] = $params;
-                    return $stub->match($call) ? $stub : false;
+            if (!isset(static::$_registered[$hash])) {
+                continue;
+            }
+            $stubs = static::$_registered[$hash]->methods();
+            $static = false;
+            if (preg_match('/^::.*/', $method)) {
+                $static = true;
+                $method = substr($method, 2);
+            }
+            if (!isset($stubs[$method])) {
+                continue;
+            }
+            foreach ($stubs[$method] as $stub) {
+                $call['name'] = $method;
+                $call['static'] = $static;
+                $call['params'] = $params;
+                if ($stub->match($call)) {
+                    return $stub;
                 }
             }
         }

@@ -23,9 +23,6 @@ class Pointcut
 
         list($class, $name) = explode('::', $method);
 
-        $call = static::$_classes['call'];
-        $stub = static::$_classes['stub'];
-
         $lsb = is_object($self) ? get_class($self) : $self;
 
         if (!Suite::registered($lsb) && !Suite::registered($class)) {
@@ -37,12 +34,20 @@ class Pointcut
             $params = array_shift($params);
         }
 
+        return static::_stubbedMethod($lsb, $self, $class, $name, $params);
+    }
+
+    protected static function _stubbedMethod($lsb, $self, $class, $name, $params)
+    {
         if (is_object($self)) {
             $list = $lsb === $class ? [$self, $lsb] : [$self, $lsb, $class];
         } else {
             $list = $lsb === $class ? [$lsb] : [$lsb, $class];
             $name = '::' . $name;
         }
+
+        $call = static::$_classes['call'];
+        $stub = static::$_classes['stub'];
 
         $call::log($list, compact('name', 'params'));
 

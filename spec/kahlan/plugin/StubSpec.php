@@ -99,6 +99,26 @@ describe("Stub", function() {
 
             });
 
+            it("stubs a magic method multiple times", function() {
+
+                $foo = new Foo();
+                Stub::on($foo)->method('magic')->with('hello')->andReturn('world');
+                Stub::on($foo)->method('magic')->with('world')->andReturn('hello');
+                expect($foo->magic('hello'))->toBe('world');
+                expect($foo->magic('world'))->toBe('hello');
+
+            });
+
+            it("stubs a static magic method multiple times", function() {
+
+                $foo = new Foo();
+                Stub::on($foo)->method('::magic')->with('hello')->andReturn('world');
+                Stub::on($foo)->method('::magic')->with('world')->andReturn('hello');
+                expect($foo::magic('hello'))->toBe('world');
+                expect($foo::magic('world'))->toBe('hello');
+
+            });
+
             context("using the with() parameter", function() {
 
                 it("stubs on matched parameter", function() {
@@ -239,6 +259,16 @@ describe("Stub", function() {
 
                 Stub::on('spec\fixture\plugin\pointcut\Foo')->method('::messageStatic', function($param) { return $param; });
                 expect(Foo::messageStatic('Good Bye!'))->toBe('Good Bye!');
+
+            });
+
+            it("stubs a magic method multiple times", function() {
+
+                $foo = new Foo();
+                Stub::on('spec\fixture\plugin\pointcut\Foo')->method('::magic')->with('hello')->andReturn('world');
+                Stub::on('spec\fixture\plugin\pointcut\Foo')->method('::magic')->with('world')->andReturn('hello');
+                expect(Foo::magic('hello'))->toBe('world');
+                expect(Foo::magic('world'))->toBe('hello');
 
             });
 
