@@ -81,6 +81,7 @@ class Metrics
         switch ($this->_type) {
             case 'namespace':
             case 'function':
+            case 'trait':
             case 'class':
                 $this->_name = $pname ? $pname . '\\' . $options['name'] : $options['name'];
             break;
@@ -223,7 +224,7 @@ class Metrics
             $type = 'class';
             list($name, $subname) = explode('::', $name, 2);
         } elseif (preg_match('~\(\)$~', $name)) {
-            $type = $this->_type === 'class' ? 'method' : 'function';
+            $type = ($this->_type === 'class' || $this->_type === 'trait') ? 'method' : 'function';
         }
         return [$name, $subname, $type];
     }
