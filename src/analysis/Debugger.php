@@ -12,15 +12,6 @@ use string\String;
 class Debugger
 {
     /**
-     * Class dependencies.
-     *
-     * @var array
-     */
-    protected static $_classes = [
-        'interceptor' => 'jit\Interceptor'
-    ];
-
-    /**
      * Store the autoloader
      */
     public static $_loader = null;
@@ -135,11 +126,6 @@ class Debugger
             $back[] = $trace;
         }
 
-        $interceptor = static::$_classes['interceptor'];
-        $autoloader = $interceptor::instance();
-        if (($autoloader instanceof $interceptor) && $patchers = $autoloader->patchers()) {
-            $back = $patchers->processBacktrace($options, $back);
-        }
         $count = count($back);
         return array_splice($back, $options['start'], $options['depth'] ?: $count);
     }

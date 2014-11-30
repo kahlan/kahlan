@@ -100,17 +100,4 @@ class Pointcut
         return "\$__{$prefix}_ARGS__ = func_get_args(); \$__{$prefix}_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__{$prefix}__ = \kahlan\plugin\Pointcut::before(__METHOD__, \$__{$prefix}_SELF__, \$__{$prefix}_ARGS__)) { \$r = \$__{$prefix}__(\$__{$prefix}_SELF__, \$__{$prefix}_ARGS__); return \$r; }";
     }
 
-    /**
-     * The JIT backtrace patcher (make backtrace ignore inserted closure).
-     *
-     * @see kahlan\analysis\Debugger::normalize()
-     *
-     * @param  array $options   Format for outputting stack trace.
-     * @param  array $backtrace The backtrace array.
-     * @return array The patched backtrace.
-     */
-    public static function processBacktrace($options, $backtrace)
-    {
-        return $backtrace;
-    }
 }

@@ -49,17 +49,4 @@ class Quit {
         }
     }
 
-    /**
-     * The JIT backtrace patcher (make backtrace ignore inserted closure).
-     *
-     * @see kahlan\analysis\Debugger::normalize()
-     *
-     * @param  array $options   Format for outputting stack trace.
-     * @param  array $backtrace The backtrace array.
-     * @return array The patched backtrace.
-     */
-    public function processBacktrace($options, $backtrace)
-    {
-        return $backtrace;
-    }
 }

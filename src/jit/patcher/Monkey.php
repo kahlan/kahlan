@@ -174,17 +174,4 @@ class Monkey
         return $matches[1] . $matches[2] . $variable . $matches[4] . $matches[5];
     }
 
-    /**
-     * The JIT backtrace patcher (make backtrace ignore inserted closure).
-     *
-     * @see kahlan\analysis\Debugger::normalize()
-     *
-     * @param  array $options   Format for outputting stack trace.
-     * @param  array $backtrace The backtrace array.
-     * @return array The patched backtrace.
-     */
-    public function processBacktrace($options, $backtrace)
-    {
-        return $backtrace;
-    }
 }
