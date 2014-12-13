@@ -153,7 +153,8 @@ class Metrics
     public function add($name, $type, $metrics)
     {
         if (!$name) {
-            return $this->_merge($metrics, true);
+            $this->_merge($metrics, true);
+            return;
         }
         list($name, $subname, $nameType) = $this->_parseName($name, $type);
         if (!isset($this->_childs[$name])) {

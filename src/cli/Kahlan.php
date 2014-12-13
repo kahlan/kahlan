@@ -23,7 +23,7 @@ use kahlan\reporter\Bar;
 use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\driver\HHVM;
-use kahlan\reporter\coverage\exporter\Scrutinizer;
+use kahlan\reporter\coverage\exporter\Clover;
 
 class Kahlan {
 
@@ -182,8 +182,8 @@ Code Coverage Options:
   --coverage=<integer|string>         Generate code coverage report. The value specify the level of
                                       detail for the code coverage report (0-4). If a namespace, class or
                                       method definition is provided, if will generate a detailled code
-                                      coverage of this specific scope (default `0`).
-  --scrutinizer=<file>                Export code coverage report into a Scrutinizer compatible format.
+                                      coverage of this specific scope (default `''`).
+  --clover=<file>                     Export code coverage report into a Clover XML format.
 
 Test Execution Options:
 
@@ -244,6 +244,8 @@ EOD;
         $this->_start = microtime(true);
         return Filter::on($this, 'workflow', [], function($chain) {
 
+            $this->_bootstrap();
+
             $this->_namespaces();
 
             $this->_autoloader();
@@ -269,6 +271,18 @@ EOD;
     public function status()
     {
         return $this->suite()->status();
+    }
+
+    /**
+     * Set up the default `'bootstrap'` filter.
+     */
+    protected function _bootstrap()
+    {
+        return Filter::on($this, 'boostrap', [], function($chain) {
+            if ($this->args()->exists('clover') && !$this->args()->get('coverage')) {
+                $this->args()->set('coverage', 1);
+            }
+        });
     }
 
     /**
@@ -347,9 +361,7 @@ EOD;
     {
         return Filter::on($this, 'reporters', [], function($chain) {
             $this->_console();
-            if ($this->args()->exists('coverage')) {
-                $this->_coverage();
-            }
+            $this->_coverage();
         });
     }
 
@@ -380,6 +392,9 @@ EOD;
     protected function _coverage()
     {
         return Filter::on($this, 'coverage', [], function($chain) {
+            if (!$this->args()->get('coverage')) {
+                return;
+            }
             if ($this->args()->get('coverage') && !extension_loaded('xdebug')) {
                 $console = $this->reporters()->get('console');
                 $console->write("\nWARNING: Xdebug is not installed, code coverage has been disabled.\n", "n;yellow");
@@ -426,13 +441,13 @@ EOD;
     protected function _reporting()
     {
         return Filter::on($this, 'reporting', [], function($chain) {
-            $reporter = $this->reporters()->get('coverage');
-            if ($reporter && $this->args()->exists('scrutinizer')) {
-                Scrutinizer::write([
-                    'collector' => $reporter,
-                    'file' => $this->args()->get('scrutinizer')
-                ]);
+            if (!$this->args()->exists('clover')) {
+                return;
             }
+            Clover::write([
+                'collector' => $this->reporters()->get('coverage'),
+                'file' => $this->args()->get('clover')
+            ]);
         });
     }
 

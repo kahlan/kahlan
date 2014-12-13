@@ -3,11 +3,11 @@ namespace spec\kahlan\reporter\coverage;
 
 use kahlan\reporter\coverage\Collector;
 use kahlan\reporter\coverage\driver\Xdebug;
-use kahlan\reporter\coverage\exporter\Scrutinizer;
+use kahlan\reporter\coverage\exporter\Clover;
 use spec\fixture\reporter\coverage\NoEmptyLine;
 use spec\fixture\reporter\coverage\ExtraEmptyLine;
 
-describe("Scrutinizer", function() {
+describe("Clover", function() {
 
     beforeEach(function() {
         if (!extension_loaded('xdebug')) {
@@ -34,7 +34,7 @@ describe("Scrutinizer", function() {
 
             $time = time();
 
-            $xml = Scrutinizer::export([
+            $xml = Clover::export([
                 'collector' => $collector,
                 'time'      => $time
             ]);
@@ -75,7 +75,7 @@ EOD;
 
             $time = time();
 
-            $xml = Scrutinizer::export([
+            $xml = Clover::export([
                 'collector' => $collector,
                 'time'      => $time
             ]);
@@ -129,7 +129,7 @@ EOD;
 
             $time = time();
 
-            $success = Scrutinizer::write([
+            $success = Clover::write([
                 'collector' => $collector,
                 'file'      => $this->output,
                 'time'      => $time

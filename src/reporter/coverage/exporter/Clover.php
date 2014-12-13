@@ -4,7 +4,7 @@ namespace kahlan\reporter\coverage\exporter;
 use DOMDocument;
 use RuntimeException;
 
-class Scrutinizer
+class Clover
 {
     /**
      * Write a coverage to an ouput file.
