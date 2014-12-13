@@ -22,8 +22,8 @@ describe("Clover", function() {
             $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
 
             $collector = new Collector([
-                'driver'    => new Xdebug(),
-                'path'      => $path
+                'driver' => new Xdebug(),
+                'path'   => $path
             ]);
 
             $code = new NoEmptyLine();
@@ -36,14 +36,15 @@ describe("Clover", function() {
 
             $xml = Clover::export([
                 'collector' => $collector,
-                'time'      => $time
+                'time'      => $time,
+                'base_path' => '/home/crysalead/kahlan'
             ]);
 
 $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="spec/fixture/reporter/coverage/NoEmptyLine.php">
+    <file name="/home/crysalead/kahlan/spec/fixture/reporter/coverage/NoEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>
@@ -63,8 +64,8 @@ EOD;
             $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
 
             $collector = new Collector([
-                'driver'    => new Xdebug(),
-                'path'      => $path
+                'driver' => new Xdebug(),
+                'path'   => $path
             ]);
 
             $code = new ExtraEmptyLine();
@@ -77,14 +78,15 @@ EOD;
 
             $xml = Clover::export([
                 'collector' => $collector,
-                'time'      => $time
+                'time'      => $time,
+                'base_path' => '/home/crysalead/kahlan'
             ]);
 
 $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="spec/fixture/reporter/coverage/ExtraEmptyLine.php">
+    <file name="/home/crysalead/kahlan/spec/fixture/reporter/coverage/ExtraEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>
@@ -117,8 +119,8 @@ EOD;
             $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
 
             $collector = new Collector([
-                'driver'    => new Xdebug(),
-                'path'      => $path
+                'driver' => new Xdebug(),
+                'path'   => $path
             ]);
 
             $code = new NoEmptyLine();
@@ -132,10 +134,11 @@ EOD;
             $success = Clover::write([
                 'collector' => $collector,
                 'file'      => $this->output,
-                'time'      => $time
+                'time'      => $time,
+                'base_path' => '/home/crysalead/kahlan'
             ]);
 
-            expect($success)->toBe(461);
+            expect($success)->toBe(484);
 
             $xml = file_get_contents($this->output);
 
@@ -143,7 +146,7 @@ $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="spec/fixture/reporter/coverage/NoEmptyLine.php">
+    <file name="/home/crysalead/kahlan/spec/fixture/reporter/coverage/NoEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>

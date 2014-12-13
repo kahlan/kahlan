@@ -39,7 +39,8 @@ class Clover
     {
         $defaults = [
             'collector' => null,
-            'time'      => time()
+            'time'      => time(),
+            'base_path' => getcwd()
         ];
         $options += $defaults;
         $collector = $options['collector'];
@@ -55,8 +56,10 @@ class Clover
         $xmlProject->setAttribute('timestamp', $options['time']);
         $xmlCoverage->appendChild($xmlProject);
 
+        $base = $options['base_path'] ? rtrim($options['base_path'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR : '';
+
         foreach ($collector->export() as $file => $data) {
-            $xmlProject->appendChild(static::_exportFile($xmlDocument, $file, $data));
+            $xmlProject->appendChild(static::_exportFile($xmlDocument, $base . $file, $data));
         }
         $xmlProject->appendChild(static::_exportMetrics($xmlDocument, $collector->metrics()));
         return $xmlDocument->saveXML();
