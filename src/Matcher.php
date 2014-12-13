@@ -168,7 +168,11 @@ class Matcher
         $pass = $not ? !$boolean : $boolean;
         $type = $pass ? 'pass' : 'fail';
         if (!$pass) {
-            $data += ['exception' => Debugger::backtrace(['start' => 3])];
+            $data += [
+                'exception' => Debugger::backtrace([
+                    'start' => defined('HHVM_VERSION') ? 2 : 3
+                ])
+            ];
         }
         $this->_parent->$type($data + compact('not', 'actual'));
         return $boolean;
