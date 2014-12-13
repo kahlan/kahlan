@@ -8,8 +8,6 @@ use kahlan\reporter\coverage\exporter\CodeClimate;
 
 $args = $this->args();
 $args->argument('coverage', 'default', 3);
-$args->argument('coveralls', 'default', 'coveralls.json');
-$args->argument('codeclimate', 'default', 'codeclimate.json');
 
 Filter::register('kahlan.coverage', function($chain) {
     if (defined('HHVM_VERSION')) {
@@ -42,24 +40,24 @@ Filter::register('kahlan.coverage', function($chain) {
 
 Filter::apply($this, 'coverage', 'kahlan.coverage');
 
-Filter::register('kahlan.coveralls', function($chain) {
+Filter::register('kahlan.coverage-exporter', function($chain) {
     $reporter = $this->reporters()->get('coverage');
-    if (!$reporter || !$this->args()->exists('coveralls')) {
-        return $chain->next();
+    if (!$reporter) {
+        return;
     }
     Coveralls::write([
         'collector'      => $reporter,
-        'file'           => $this->args()->get('coveralls'),
+        'file'           => 'coveralls.json',
         'service_name'   => 'travis-ci',
         'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
     ]);
     CodeClimate::write([
-        'collector' => $reporter,
-        'file'      => $this->args()->get('codeclimate'),
+        'collector'  => $reporter,
+        'file'       => 'codeclimate.json',
         'repo_token' => '44d9595530151e99ebc6d2b63f0cea5b30aaaecf86767a2ac6717aa0c2be77f3'
     ]);
     return $chain->next();
 });
 
-Filter::apply($this, 'reporting', 'kahlan.coveralls');
+Filter::apply($this, 'reporting', 'kahlan.coverage-exporter');
 ?>

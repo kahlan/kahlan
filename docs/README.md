@@ -62,7 +62,7 @@ Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attem
 * Set stubs on your class methods directly (i.e allows dynamic mocking)
 * Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
 * Check called methods on your class/instances
-* Built-in Reporters/Exporters (Terminal, Clover, Coveralls)
+* Built-in Reporters/Exporters (Terminal, Coveralls, Code Climate, Scrutinizer, Clover)
 * Extensible, customizable workflow
 
 **PS:**
