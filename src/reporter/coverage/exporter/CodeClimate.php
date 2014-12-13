@@ -52,7 +52,7 @@ class CodeClimate
             'environment' => [
                 'pwd' => getcwd()
             ],
-            'ci'          => [],
+            'ci_service'  => [],
             'run_at'      => time()
         ];
         $options += $defaults;
@@ -67,7 +67,7 @@ class CodeClimate
                 'branch'       => trim(`git rev-parse --abbrev-ref HEAD`),
                 'committed_at' => `git log -1 --pretty=format:'%ct'`
             ],
-            'ci'           => $options['ci'],
+            'ci_service'   => $options['ci_service'],
             'source_files' => static::_sourceFiles($options['collector'])
         ]);
     }
@@ -92,7 +92,7 @@ class CodeClimate
 
             $result[] = [
                 'name'     => $file,
-                'coverage' => $lines,
+                'coverage' => json_encode($lines),
                 'blob_id'  => sha1('blob ' . strlen($content) . "\0" . $content)
             ];
         }

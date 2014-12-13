@@ -25,7 +25,7 @@ describe("CodeClimate", function() {
             $json = CodeClimate::export([
                 'collector'      => $collector,
                 'repo_token'     => 'ABC',
-                'ci'             => [
+                'ci_service'             => [
                     'name'             => 'kahlan-ci',
                     'build_identifier' => '123'
                 ]
@@ -34,7 +34,7 @@ describe("CodeClimate", function() {
             $actual = json_decode($json, true);
 
             unset($actual['run_at']);
-            expect($actual['ci'])->toBe([
+            expect($actual['ci_service'])->toBe([
                 'name'             => 'kahlan-ci',
                 'build_identifier' => '123'
             ]);
@@ -65,14 +65,17 @@ describe("CodeClimate", function() {
 
             $coverage = $actual['source_files'][0];
             expect($coverage['name'])->toBe($path);
-            expect($coverage['coverage'])->toHaveLength(15);
-            expect(array_filter($coverage['coverage']))->toHaveLength(2);
 
-            expect(array_filter($coverage['coverage'], function($value){
+            $coverage = json_decode($coverage['coverage']);
+            expect($coverage)->toHaveLength(15);
+
+            expect(array_filter($coverage))->toHaveLength(2);
+
+            expect(array_filter($coverage, function($value){
                 return $value === 0;
             }))->toHaveLength(2);
 
-            expect(array_filter($coverage['coverage'], function($value){
+            expect(array_filter($coverage, function($value){
                 return $value === null;
             }))->toHaveLength(11);
 
@@ -106,13 +109,15 @@ describe("CodeClimate", function() {
 
             $coverage = $actual['source_files'][0];
             expect($coverage['name'])->toBe($path);
-            expect($coverage['coverage'])->toHaveLength(16);
 
-            expect(array_filter($coverage['coverage'], function($value){
+            $coverage = json_decode($coverage['coverage']);
+            expect($coverage)->toHaveLength(16);
+
+            expect(array_filter($coverage, function($value){
                 return $value === 0;
             }))->toHaveLength(2);
 
-            expect(array_filter($coverage['coverage'], function($value){
+            expect(array_filter($coverage, function($value){
                 return $value === null;
             }))->toHaveLength(12);
 
@@ -154,14 +159,15 @@ describe("CodeClimate", function() {
                 'repo_token'     => 'ABC'
             ]);
 
-            expect($success)->toBe(460);
+            expect($success)->toBe(470);
 
             $json = file_get_contents($this->output);
             $actual = json_decode($json, true);
 
             $coverage = $actual['source_files'][0];
             expect($coverage['name'])->toBe($path);
-            expect($coverage['coverage'])->toHaveLength(16);
+            $coverage = json_decode($coverage['coverage']);
+            expect($coverage)->toHaveLength(16);
 
         });
 
