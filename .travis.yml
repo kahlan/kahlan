@@ -17,4 +17,10 @@ before_script:
   - git checkout master
   - composer self-update && composer install
 
-script: bin/kahlan --config=kahlan-config.travis.php
+script: bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml
+
+after_success:
+  - if [ $(phpenv version-name) = '5.6' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [ $(phpenv version-name) = '5.6' ]; then php ocular.phar code-coverage:upload --format=php-clover "clover.xml"; fi
+  - if [ $(phpenv version-name) = '5.6' ]; then curl -F 'json_file=@coveralls.json' https://coveralls.io/api/v1/jobs; fi
+  - "if [ $(phpenv version-name) = '5.6' ]; then curl -X POST -d @codeclimate.json -H 'Content-Type: application/json' -H 'User-Agent: Code Climate (PHP Test Reporter v0.1.2)' https://codeclimate.com/test_reports; fi"

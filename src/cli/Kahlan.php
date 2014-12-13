@@ -441,11 +441,12 @@ EOD;
     protected function _reporting()
     {
         return Filter::on($this, 'reporting', [], function($chain) {
-            if (!$this->args()->exists('clover')) {
+            $reporter = $this->reporters()->get('coverage');
+            if (!$reporter || !$this->args()->exists('clover')) {
                 return;
             }
             Clover::write([
-                'collector' => $this->reporters()->get('coverage'),
+                'collector' => $reporter,
                 'file' => $this->args()->get('clover')
             ]);
         });

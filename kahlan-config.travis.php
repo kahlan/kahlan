@@ -4,11 +4,12 @@ use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\HHVM;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Coveralls;
+use kahlan\reporter\coverage\exporter\CodeClimate;
 
 $args = $this->args();
 $args->argument('coverage', 'default', 3);
-$args->argument('scrutinizer', 'default', 'scrutinizer.xml');
 $args->argument('coveralls', 'default', 'coveralls.json');
+$args->argument('codeclimate', 'default', 'codeclimate.json');
 
 Filter::register('kahlan.coverage', function($chain) {
     if (defined('HHVM_VERSION')) {
@@ -47,27 +48,18 @@ Filter::register('kahlan.coveralls', function($chain) {
         return $chain->next();
     }
     Coveralls::write([
-        'collector' => $reporter,
-        'file' => $this->args()->get('coveralls'),
-        'service_name' => 'travis-ci',
+        'collector'      => $reporter,
+        'file'           => $this->args()->get('coveralls'),
+        'service_name'   => 'travis-ci',
         'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
+    ]);
+    CodeClimate::write([
+        'collector' => $reporter,
+        'file'      => $this->args()->get('codeclimate'),
+        'repo_token' => '44d9595530151e99ebc6d2b63f0cea5b30aaaecf86767a2ac6717aa0c2be77f3'
     ]);
     return $chain->next();
 });
 
 Filter::apply($this, 'reporting', 'kahlan.coveralls');
-
-
-Filter::register('kahlan.quit', function($chain, $success) {
-
-    if (!defined('HHVM_VERSION') && $success) {
-        `wget https://scrutinizer-ci.com/ocular.phar`;
-        `php ocular.phar code-coverage:upload --format=php-clover "scrutinizer.xml"`;
-        `curl -F "json_file=@coveralls.json" https://coveralls.io/api/v1/jobs`;
-    }
-    return $chain->next();
-
-});
-
-Filter::apply($this, 'quit', 'kahlan.quit');
 ?>

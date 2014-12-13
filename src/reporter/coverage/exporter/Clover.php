@@ -10,14 +10,12 @@ class Clover
      * Write a coverage to an ouput file.
      *
      * @param  array   $options The option where the possible values are:
-     *                 -`'collector'` The collector instance.
-     *                 -`'file'` The output file name.
+     *                 -`'file'` _string_: The output file name.
      * @return boolean
      */
     public static function write($options)
     {
         $defaults = [
-            'collector' => null,
             'file' => null
         ];
         $options += $defaults;
@@ -33,8 +31,9 @@ class Clover
      * Export a coverage to a string.
      *
      * @param  array   $options The option array where the possible values are:
-     *                 -`'collector'` The collector instance.
-     * @return boolean
+     *                 -`'collector'` _object_ : The collector instance.
+     *                 -`'time'`      _integer_: The name of the service.
+     * @return string
      */
     public static function export($options)
     {

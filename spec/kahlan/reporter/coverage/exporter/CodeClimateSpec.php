@@ -3,11 +3,11 @@ namespace spec\kahlan\reporter\coverage;
 
 use kahlan\reporter\coverage\Collector;
 use kahlan\reporter\coverage\driver\Xdebug;
-use kahlan\reporter\coverage\exporter\Coveralls;
+use kahlan\reporter\coverage\exporter\CodeClimate;
 use spec\fixture\reporter\coverage\NoEmptyLine;
 use spec\fixture\reporter\coverage\ExtraEmptyLine;
 
-describe("Coveralls", function() {
+describe("CodeClimate", function() {
 
     beforeEach(function() {
         if (!extension_loaded('xdebug')) {
@@ -16,6 +16,30 @@ describe("Coveralls", function() {
     });
 
     describe("::export()", function() {
+
+        it("exports custom parameters", function() {
+            $collector = new Collector([
+                'driver'    => new Xdebug()
+            ]);
+
+            $json = CodeClimate::export([
+                'collector'      => $collector,
+                'repo_token'     => 'ABC',
+                'ci'             => [
+                    'name'             => 'kahlan-ci',
+                    'build_identifier' => '123'
+                ]
+            ]);
+
+            $actual = json_decode($json, true);
+
+            unset($actual['run_at']);
+            expect($actual['ci'])->toBe([
+                'name'             => 'kahlan-ci',
+                'build_identifier' => '123'
+            ]);
+            expect($actual['repo_token'])->toBe('ABC');
+        });
 
         it("exports the coverage of a file with no extra end line", function() {
 
@@ -32,22 +56,15 @@ describe("Coveralls", function() {
             $code->shallNotPass();
             $collector->stop();
 
-            $json = Coveralls::export([
+            $json = CodeClimate::export([
                 'collector'      => $collector,
-                'service_name'   => 'kahlan-ci',
-                'service_job_id' => '123',
                 'repo_token'     => 'ABC'
             ]);
 
             $actual = json_decode($json, true);
-            unset($actual['run_at']);
-            expect($actual['service_name'])->toBe('kahlan-ci');
-            expect($actual['service_job_id'])->toBe('123');
-            expect($actual['repo_token'])->toBe('ABC');
 
             $coverage = $actual['source_files'][0];
             expect($coverage['name'])->toBe($path);
-            expect($coverage['source'])->toBe(file_get_contents($path));
             expect($coverage['coverage'])->toHaveLength(15);
             expect(array_filter($coverage['coverage']))->toHaveLength(2);
 
@@ -76,22 +93,19 @@ describe("Coveralls", function() {
             $code->shallNotPass();
             $collector->stop();
 
-            $json = Coveralls::export([
+            $json = CodeClimate::export([
                 'collector'      => $collector,
-                'service_name'   => 'kahlan-ci',
-                'service_job_id' => '123',
-                'repo_token'     => 'ABC'
+                'repo_token'     => 'ABC',
+                'ci'             => [
+                    'name'             => 'kahlan-ci',
+                    'build_identifier' => '123'
+                ]
             ]);
 
             $actual = json_decode($json, true);
-            unset($actual['run_at']);
-            expect($actual['service_name'])->toBe('kahlan-ci');
-            expect($actual['service_job_id'])->toBe('123');
-            expect($actual['repo_token'])->toBe('ABC');
 
             $coverage = $actual['source_files'][0];
             expect($coverage['name'])->toBe($path);
-            expect($coverage['source'])->toBe(file_get_contents($path));
             expect($coverage['coverage'])->toHaveLength(16);
 
             expect(array_filter($coverage['coverage'], function($value){
@@ -131,26 +145,22 @@ describe("Coveralls", function() {
             $code->shallNotPass();
             $collector->stop();
 
-            $success = Coveralls::write([
+            $success = CodeClimate::write([
                 'collector'      => $collector,
                 'file'           => $this->output,
-                'service_name'   => 'kahlan-ci',
-                'service_job_id' => '123',
+                'environment'    => [
+                    'pwd'        => '/home/crysalead/kahlan'
+                ],
                 'repo_token'     => 'ABC'
             ]);
 
-            expect($success)->toBe(545);
+            expect($success)->toBe(460);
 
             $json = file_get_contents($this->output);
             $actual = json_decode($json, true);
-            unset($actual['run_at']);
-            expect($actual['service_name'])->toBe('kahlan-ci');
-            expect($actual['service_job_id'])->toBe('123');
-            expect($actual['repo_token'])->toBe('ABC');
 
             $coverage = $actual['source_files'][0];
             expect($coverage['name'])->toBe($path);
-            expect($coverage['source'])->toBe(file_get_contents($path));
             expect($coverage['coverage'])->toHaveLength(16);
 
         });
