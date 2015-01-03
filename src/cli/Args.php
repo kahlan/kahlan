@@ -103,7 +103,7 @@ class Args {
             $value = substr($arg, $pos + 1);
         } else {
             $name = $arg;
-            $value = '';
+            $value = true;
         }
         return [$name, $value];
     }
@@ -218,7 +218,9 @@ class Args {
         if ($type === 'boolean') {
             $value = ($value === 'false' || $value === '0' || $value === false || $value === null) ? false : true;
         } elseif ($type === 'numeric') {
-            $value = $value !== '' ? $value + 0 : 1;
+            $value = $value !== null ? $value + 0 : 1;
+        } elseif ($type === 'string') {
+            $value = $value !== true ? (string) $value : null;
         }
         if ($array) {
             return $value ? (array) $value : [];

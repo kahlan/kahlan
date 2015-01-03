@@ -279,7 +279,7 @@ EOD;
     protected function _bootstrap()
     {
         return Filter::on($this, 'boostrap', [], function($chain) {
-            if ($this->args()->exists('clover') && !$this->args()->get('coverage')) {
+            if ($this->args()->exists('clover') && !$this->args()->exists('coverage')) {
                 $this->args()->set('coverage', 1);
             }
         });
@@ -392,17 +392,17 @@ EOD;
     protected function _coverage()
     {
         return Filter::on($this, 'coverage', [], function($chain) {
-            if (!$this->args()->get('coverage')) {
+            if (!$this->args()->exists('coverage')) {
                 return;
             }
-            if ($this->args()->get('coverage') && !extension_loaded('xdebug')) {
+            if (!extension_loaded('xdebug')) {
                 $console = $this->reporters()->get('console');
                 $console->write("\nWARNING: Xdebug is not installed, code coverage has been disabled.\n", "n;yellow");
                 return;
             }
             $reporters = $this->reporters();
             $coverage = new Coverage([
-                'verbosity' => $this->args()->get('coverage'),
+                'verbosity' => $this->args()->get('coverage') === null ? 1 : $this->args()->get('coverage'),
                 'driver' => new Xdebug(),
                 'path' => $this->args()->get('src'),
                 'colors' => !$this->args()->get('no-colors')
