@@ -102,7 +102,7 @@ describe("Args", function() {
 
         });
 
-        it("allows boolean casting", function() {
+        it("casts booleans", function() {
 
             $args = new Args([
                 'argument1' => ['type' => 'boolean'],
@@ -125,7 +125,7 @@ describe("Args", function() {
 
         });
 
-        it("allows integer casting", function() {
+        it("casts integers", function() {
 
             $args = new Args([
                 'argument'  => ['type' => 'numeric'],
@@ -142,6 +142,28 @@ describe("Args", function() {
                 'argument1' => 1,
                 'argument2' => 2
             ]);
+
+        });
+
+        it("casts string", function() {
+
+            $args = new Args([
+                'argument1' => ['type' => 'string'],
+                'argument2' => ['type' => 'string'],
+                'argument3' => ['type' => 'string'],
+                'argument4' => ['type' => 'string'],
+                'argument5' => ['type' => 'string']
+            ]);
+            $actual = $args->parse([
+                'command', '--argument1', '--argument2=' , '--argument3=value'
+            ]);
+            expect($actual)->toEqual([
+                'argument1' => null,
+                'argument2' => '',
+                'argument3' => 'value'
+            ]);
+
+            expect($args->get('argument5'))->toBe(null);
 
         });
 

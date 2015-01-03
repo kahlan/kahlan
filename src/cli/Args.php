@@ -220,7 +220,7 @@ class Args {
         } elseif ($type === 'numeric') {
             $value = $value !== null ? $value + 0 : 1;
         } elseif ($type === 'string') {
-            $value = $value !== true ? (string) $value : null;
+            $value = ($value !== true && $value !== null) ? (string) $value : null;
         }
         if ($array) {
             return $value ? (array) $value : [];
