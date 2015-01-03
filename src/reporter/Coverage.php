@@ -253,9 +253,13 @@ class Coverage extends Terminal
             $this->_renderMetrics($this->metrics(), $this->_verbosity);
         } else {
             $metrics = $this->metrics()->get($this->_verbosity);
-            $this->_renderMetrics($metrics);
-            $this->write("\n");
-            $this->_renderCoverage($metrics);
+            if ($metrics) {
+                $this->_renderMetrics($metrics);
+                $this->write("\n");
+                $this->_renderCoverage($metrics);
+            } else {
+                $this->write("\nUnexisting namespace: `{$this->_verbosity}`, coverage can't be generated.\n\n", "n;yellow");
+            }
         }
         $time = number_format($this->_time, 3);
         $this->write("\nCollected in {$time} seconds\n\n\n");
