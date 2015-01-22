@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\plugin\stub;
+namespace kahlan\spec\fixture\plugin\stub;
 
 abstract class Doz
 {

@@ -1,9 +1,9 @@
 <?php
-namespace spec\fixture\plugin\pointcut;
+namespace kahlan\spec\fixture\plugin\pointcut;
 
 class SubBar extends Bar
 {
-    use \spec\fixture\plugin\pointcut\SubTrait;
+    use \kahlan\spec\fixture\plugin\pointcut\SubTrait;
 
     public function overrided()
     {

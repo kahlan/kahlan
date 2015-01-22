@@ -1,12 +1,12 @@
 <?php
-namespace spec\fixture\jit\patcher\pointcut;
+namespace kahlan\spec\fixture\jit\patcher\pointcut;
 
 use kahlan\MongoId;
 
 class Simple extends \kahlan\fixture\Parent
 {
     protected $_classes = [
-        'bar' => 'spec\fixture\plugin\pointcut\Bar'
+        'bar' => 'kahlan\spec\fixture\plugin\pointcut\Bar'
     ];
 
     protected $_status = 'none';

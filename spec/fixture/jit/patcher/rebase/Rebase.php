@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\jit\patcher\reabase;
+namespace kahlan\spec\fixture\jit\patcher\reabase;
 
 class Example
 {

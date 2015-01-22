@@ -1,10 +1,10 @@
 <?php
-namespace spec\fixture\plugin\pointcut;
+namespace kahlan\spec\fixture\plugin\pointcut;
 
 class Foo
 {
     protected $_classes = [
-        'bar' => 'spec\fixture\plugin\pointcut\Bar'
+        'bar' => 'kahlan\spec\fixture\plugin\pointcut\Bar'
     ];
 
     protected $_inited = false;

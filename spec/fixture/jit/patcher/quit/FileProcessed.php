@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\jit\patcher\quit;
+namespace kahlan\spec\fixture\jit\patcher\quit;
 
 class Example
 {

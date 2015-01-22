@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\plugin\pointcut;
+namespace kahlan\spec\fixture\plugin\pointcut;
 
 class Bar
 {

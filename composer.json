@@ -19,7 +19,8 @@
     },
     "autoload": {
         "psr-4": {
-            "kahlan\\": "src/"
+            "kahlan\\": "src/",
+            "kahlan\\spec\\": "spec/"
         },
         "files": ["src/init.php"]
     },

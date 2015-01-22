@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\reporter\coverage;
+namespace kahlan\spec\fixture\reporter\coverage;
 
 class CodeCoverage
 {
