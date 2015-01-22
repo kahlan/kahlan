@@ -252,22 +252,22 @@ describe("Suite", function() {
 
     });
 
-    describe("->xdescribe()", function() {
+    describe("->ddescribe()", function() {
 
         it("executes only the exclusive `it`", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'xit' => 0];
+                $this->exectuted = ['it' => 0, 'iit' => 0];
 
-                $this->xdescribe("->xdescribe()", function() {
+                $this->ddescribe("->ddescribe()", function() {
 
-                    $this->it("xdescribe it", function() {
-                        $this->exectuted['xit']++;
+                    $this->it("ddescribe it", function() {
+                        $this->exectuted['iit']++;
                     });
 
-                    $this->it("xdescribe it", function() {
-                        $this->exectuted['xit']++;
+                    $this->it("ddescribe it", function() {
+                        $this->exectuted['iit']++;
                     });
 
                 });
@@ -288,7 +288,7 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'xit' => 2]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
@@ -297,22 +297,22 @@ describe("Suite", function() {
 
     });
 
-    describe("->xcontext()", function() {
+    describe("->ccontext()", function() {
 
         it("executes only the exclusive `it`", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'xit' => 0];
+                $this->exectuted = ['it' => 0, 'iit' => 0];
 
-                $this->xcontext("xcontext", function() {
+                $this->ccontext("ccontext", function() {
 
-                    $this->it("xcontext it", function() {
-                        $this->exectuted['xit']++;
+                    $this->it("ccontext it", function() {
+                        $this->exectuted['iit']++;
                     });
 
-                    $this->it("xcontext it", function() {
-                        $this->exectuted['xit']++;
+                    $this->it("ccontext it", function() {
+                        $this->exectuted['iit']++;
                     });
 
                 });
@@ -333,7 +333,7 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'xit' => 2]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
@@ -342,35 +342,35 @@ describe("Suite", function() {
 
     });
 
-    describe("->xit()", function() {
+    describe("->iit()", function() {
 
         it("executes only the exclusive `it`", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'xit' => 0];
+                $this->exectuted = ['it' => 0, 'iit' => 0];
 
                 $this->it("an it", function() {
                     $this->exectuted['it']++;
                 });
 
-                $this->xit("an xit", function() {
-                    $this->exectuted['xit']++;
+                $this->iit("an iit", function() {
+                    $this->exectuted['iit']++;
                 });
 
                 $this->it("an it", function() {
                     $this->exectuted['it']++;
                 });
 
-                $this->xit("an xit", function() {
-                    $this->exectuted['xit']++;
+                $this->iit("an iit", function() {
+                    $this->exectuted['iit']++;
                 });
 
             });
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'xit' => 2]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
