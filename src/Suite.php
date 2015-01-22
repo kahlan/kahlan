@@ -184,7 +184,7 @@ class Suite extends Scope
     }
 
     /**
-     * Add a group/class related spec.
+     * Comments out a group/class related spec.
      *
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
@@ -192,11 +192,10 @@ class Suite extends Scope
      */
     public function xdescribe($message, $closure)
     {
-        return $this->describe($message, $closure, 'exclusive');
     }
 
     /**
-     * Add a context related spec.
+     * Comments out a context related spec.
      *
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
@@ -204,17 +203,51 @@ class Suite extends Scope
      */
     public function xcontext($message, $closure)
     {
-        return $this->context($message, $closure, 'exclusive');
     }
 
     /**
-     * Add a spec.
+     * Comments out a spec.
      *
      * @param  string|Closure $message Description message or a test closure.
      * @param  Closure|null   $closure A test case closure or `null`.
      * @return $this
      */
     public function xit($message, $closure = null)
+    {
+    }
+
+    /**
+     * Adds an exclusive group/class related spec.
+     *
+     * @param  string  $message Description message.
+     * @param  Closure $closure A test case closure.
+     * @return $this
+     */
+    public function ddescribe($message, $closure)
+    {
+        return $this->describe($message, $closure, 'exclusive');
+    }
+
+    /**
+     * Adds an exclusive context related spec.
+     *
+     * @param  string  $message Description message.
+     * @param  Closure $closure A test case closure.
+     * @return $this
+     */
+    public function ccontext($message, $closure)
+    {
+        return $this->context($message, $closure, 'exclusive');
+    }
+
+    /**
+     * Adds an exclusive spec.
+     *
+     * @param  string|Closure $message Description message or a test closure.
+     * @param  Closure|null   $closure A test case closure or `null`.
+     * @return $this
+     */
+    public function iit($message, $closure = null)
     {
         return $this->it($message, $closure, 'exclusive');
     }

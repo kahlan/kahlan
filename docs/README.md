@@ -1054,9 +1054,9 @@ Will give you the detailed code coverage of the `Xdebug::stop()` method.
 **Note:**
 All available namespaces, classed or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
 
-### Use the exclusive prefix `x`
+### Use the exclusive mode
 
-When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec with an `x` like in the following example:
+When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec by doubling the first letter like in the following example:
 
 ```php
 describe("test exclusive mode", function() {
@@ -1067,16 +1067,18 @@ describe("test exclusive mode", function() {
     it("will be ignored", function() {
     });
 
-    xit("will be runned", function() {
+    iit("will be runned", function() {
     });
 });
 ```
 
-If you want to run a subset instead of a single test you can use `xdescribe` or `xcontext` instead.
+If you want to run a subset instead of a single test you can use `ddescribe` or `ccontext` instead.
 
 **Tip:** combined with `--coverage=<string>` this is a powerful combo to see exactly what part of the code is covered for a subset of specs only.
 
-**Warning:** Jasmine uses `x` for ignoring a test. In Kahlan if you want to ignore a test just comment it out.
+### Comment out a spec
+
+To comment out a spec, you can use the `x` prefix i.e. `xdescribe`, `xcontext` or `xit`.
 
 ## <a name="config-file"></a>The Kahlan config file
 

@@ -41,16 +41,25 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
         return Suite::current()->it($message, $closure, $scope);
     }
 
-    function xdescribe($message, $closure) {
+    function ddescribe($message, $closure) {
         return describe($message, $closure, 'exclusive');
     }
 
-    function xcontext($message, $closure) {
+    function ccontext($message, $closure) {
         return context($message, $closure, 'exclusive');
     }
 
-    function xit($message, $closure = null) {
+    function iit($message, $closure = null) {
         return it($message, $closure, 'exclusive');
+    }
+
+    function xdescribe($message, $closure) {
+    }
+
+    function xcontext($message, $closure) {
+    }
+
+    function xit($message, $closure = null) {
     }
 
     function expect($actual) {
