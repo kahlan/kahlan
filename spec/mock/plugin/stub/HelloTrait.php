@@ -1,5 +1,5 @@
 <?php
-namespace spec\mock\plugin\stub;
+namespace kahlan\spec\mock\plugin\stub;
 
 trait HelloTrait
 {

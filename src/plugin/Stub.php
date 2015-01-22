@@ -200,7 +200,7 @@ class Stub
      */
     public static function classname($options = [])
     {
-        $defaults = ['class' => 'spec\plugin\stub\Stub' . static::$_index++];
+        $defaults = ['class' => 'kahlan\spec\plugin\stub\Stub' . static::$_index++];
         $options += $defaults;
 
         if (!static::$_pointcut) {

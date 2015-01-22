@@ -1,5 +1,5 @@
 <?php
-namespace spec\fixture\plugin\quit;
+namespace kahlan\spec\fixture\plugin\quit;
 
 class Foo
 {
