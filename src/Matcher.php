@@ -40,7 +40,7 @@ class Matcher
      *
      * @var boolean
      */
-    protected $_defered = [];
+    protected $_deferred = [];
 
     /**
      * Registers a matcher.
@@ -59,9 +59,12 @@ class Matcher
      * @param  string $name The name of the matcher.
      * @return array        The registered matchers or a fully-namespaced class name if $name is not null.
      */
-    public static function get($name)
+    public static function get($name = null)
     {
-        return isset(static::$_matchers[$name]) ? static::$_matchers[$name] : null;
+        if ($name) {
+            return isset(static::$_matchers[$name]) ? static::$_matchers[$name] : null;
+        }
+        return static::$_matchers;
     }
 
     /**
@@ -114,33 +117,36 @@ class Matcher
      */
     public function __call($matcher, $params)
     {
-        if (isset(static::$_matchers[$matcher])) {
-            $class = static::$_matchers[$matcher];
-            array_unshift($params, $this->_actual);
-            $result = call_user_func_array($class . '::match', $params);
-            $params = Inspector::parameters($class, 'match', $params);
-            if (!is_object($result)) {
-                $success = $result;
-                $success = $this->_not ? !$success : $success;
-                $description = $success ? '' : $class::description(compact('class', 'matcher', 'params'));
-                $this->_result($result, compact('class', 'matcher', 'params', 'description'));
-                return $this;
-            }
-            $this->_defered[] = compact('class', 'matcher', 'params') + [
-                'instance' => $result, 'not' => $this->_not
-            ];
-            return $result;
+        if (!isset(static::$_matchers[$matcher])) {
+            throw new Exception("Error, undefined matcher `{$matcher}`.");
         }
-        throw new Exception("Error Undefined Matcher `{$matcher}`");
+        $class = static::$_matchers[$matcher];
+        array_unshift($params, $this->_actual);
+        $result = call_user_func_array($class . '::match', $params);
+        $params = Inspector::parameters($class, 'match', $params);
+        if (!is_object($result)) {
+            $data = compact('class', 'matcher', 'params');
+            $success = $result;
+            $success = $this->_not ? !$success : $success;
+            if (!$success) {
+                $data['description'] = $class::description($data);
+            }
+            $this->_result($result, $data);
+            return $this;
+        }
+        $this->_deferred[] = compact('class', 'matcher', 'params') + [
+            'instance' => $result, 'not' => $this->_not
+        ];
+        return $result;
     }
 
     /**
-     * Resolve defered matchers.
+     * Resolve deferred matchers.
      */
     public function resolve()
     {
-        foreach($this->_defered as $defered) {
-            extract($defered);
+        foreach($this->_deferred as $deferred) {
+            extract($deferred);
             $this->_not = $not;
             $data = compact('class', 'matcher', 'params', 'instance');
             $boolean = $instance->resolve($data);
@@ -150,7 +156,7 @@ class Matcher
             }
             $this->_result($boolean, $data);
         }
-        $this->_defered = [];
+        $this->_deferred = [];
         $this->_not = false;
     }
 
