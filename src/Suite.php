@@ -345,7 +345,8 @@ class Suite extends Scope
      *
      * @return boolean;
      */
-    public function failfast() {
+    public function failfast()
+    {
         return $this->_root->_ff && $this->_root->_failure >= $this->_root->_ff;
     }
 
@@ -629,7 +630,8 @@ class Suite extends Scope
      *
      * @param  mixed  $hash A hash to register.
      */
-    public static function register($hash) {
+    public static function register($hash)
+    {
         static::$_registered[$hash] = true;
     }
 
@@ -638,7 +640,8 @@ class Suite extends Scope
      *
      * @param  string  $hash The hash to look up. If `null` return all registered hashes.
      */
-    public static function registered($hash = null) {
+    public static function registered($hash = null)
+    {
         if(!$hash) {
             return static::$_registered;
         }
