@@ -1,6 +1,8 @@
 <?php
 namespace kahlan;
 
+use Exception;
+
 /**
  * Reporter manager
  */
@@ -21,7 +23,7 @@ class Reporters
     public function add($name, $reporter)
     {
         if (!is_object($reporter)) {
-            return false;
+            throw new Exception("Error, reporter must be an object.");
         }
         $this->_reporters[$name] = $reporter;
     }

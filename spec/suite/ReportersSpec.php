@@ -1,6 +1,7 @@
 <?php
 namespace kahlan\spec\suite;
 
+use Exception;
 use kahlan\Reporters;
 use kahlan\plugin\Stub;
 
@@ -19,6 +20,16 @@ describe("Reporters", function() {
 
             $actual = $this->reporters->get('my_reporter');
             expect($actual)->toBe($stub);
+
+        });
+
+        it("throws an exception with a scalar value", function() {
+
+            $closure = function() {
+                $this->reporters->add('my_reporter', 'Hello World!');
+            };
+
+            expect($closure)->toThrow(new Exception('Error, reporter must be an object.'));
 
         });
 
