@@ -35,6 +35,14 @@ class Arg
      */
     protected $_not = false;
 
+    /**
+     * Constructor
+     *
+     * @param array $options The argument matcher options. Possible values are:
+     *                       - `'not'`     _boolean_: indicate if the matcher is a negative matcher.
+     *                       - `'matcher'` _string_ : the fully namespaced matcher class name.
+     *                       - `'params'`  _string_ : the expected parameters.
+     */
     public function __construct($options = [])
     {
         $defaults = ['not' => false, 'matcher' => '', 'params' => []];
@@ -64,7 +72,7 @@ class Arg
         if ($matcher = $matchers::get($matcher)) {
             return new static(compact('matcher', 'not', 'params'));
         }
-        throw new Exception("Error Undefined Argument Matcher `{$name}`");
+        throw new Exception("Error, undefined matcher `{$name}`.");
     }
 
     /**
