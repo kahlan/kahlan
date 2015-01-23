@@ -508,9 +508,9 @@ describe("Suite", function() {
 
     });
 
-    describe("->_process()", function() {
+    describe("->run()", function() {
 
-        it("calls `after` callbacks if an exception occurs during callbacks", function() {
+        it("calls `afterX` callbacks if an exception occurs during callbacks", function() {
 
             $describe = $this->suite->describe("", function() {
 

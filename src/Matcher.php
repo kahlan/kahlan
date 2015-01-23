@@ -36,14 +36,14 @@ class Matcher
     protected $_not = false;
 
     /**
-     * Defered expectation.
+     * Deferred expectation.
      *
      * @var boolean
      */
     protected $_defered = [];
 
     /**
-     * Register a matcher.
+     * Registers a matcher.
      *
      * @param string $name The name of the matcher.
      * @param string $class A fully-namespaced class name.
@@ -54,10 +54,10 @@ class Matcher
     }
 
     /**
-     * Get a registered matcher.
+     * Returns registered matchers.
      *
      * @param  string $name The name of the matcher.
-     * @return mixed  A fully-namespaced class name or `null` if the matcher doesn't exists.
+     * @return array        The registered matchers or a fully-namespaced class name if $name is not null.
      */
     public static function get($name)
     {
@@ -65,7 +65,7 @@ class Matcher
     }
 
     /**
-     * Check if a matcher is registered.
+     * Checks if a matcher is registered.
      *
      * @param  string  $name The name of the matcher.
      * @return boolean returns `true` if the matcher exists, `false` otherwise.
@@ -76,7 +76,7 @@ class Matcher
     }
 
     /**
-     * Unregister a matcher.
+     * Unregisters a matcher.
      *
      * @param mixed $name The name of the matcher. If name is `true` unregister all
      *        the matchers.
