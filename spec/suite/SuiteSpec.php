@@ -5,9 +5,12 @@ use stdClass;
 use Exception;
 use InvalidArgumentException;
 
+use kahlan\IncompleteException;
 use kahlan\PhpErrorException;
 use kahlan\Suite;
 use kahlan\Matcher;
+use kahlan\Arg;
+use kahlan\plugin\Stub;
 
 describe("Suite", function() {
 
@@ -379,6 +382,77 @@ describe("Suite", function() {
 
     });
 
+    describe("->exclusives()", function() {
+
+        it("returns the references of runned exclusive specs", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0, 'iit' => 0];
+
+                $this->it("an it", function() {
+                    $this->exectuted['it']++;
+                });
+
+                $this->iit("an iit", function() {
+                    $this->exectuted['iit']++;
+                });
+
+                $this->it("an it", function() {
+                    $this->exectuted['it']++;
+                });
+
+                $this->iit("an iit", function() {
+                    $this->exectuted['iit']++;
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($this->suite->exclusives())->toHaveLength(2);
+
+        });
+
+    });
+
+    describe("skipIf", function() {
+
+        it("skips specs", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0];
+
+                before(function() {
+                    skipIf(true);
+                });
+
+                $this->it("an it", function() {
+                    $this->exectuted['it']++;
+                });
+
+                $this->it("an it", function() {
+                    $this->exectuted['it']++;
+                });
+
+            });
+
+            $reporters = Stub::create();
+
+            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAn('array'));
+
+            $this->suite->run(['reporters' => $reporters]);
+
+            expect($describe->exectuted)->toEqual(['it' => 0]);
+            expect($this->suite->exclusive())->toBe(false);
+            expect($this->suite->status())->toBe(0);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+    });
+
     describe("::hash()", function() {
 
         it("creates an hash from objects", function() {
@@ -536,9 +610,127 @@ describe("Suite", function() {
             $results = $this->suite->results();
             expect($results['exceptions'])->toHaveLength(1);
 
-            $exception = end($results['exceptions']);
+            $exception = reset($results['exceptions']);
             $actual = $exception['exception']->getMessage();
             expect($actual)->toBe('Breaking the flow should execute afterEach anyway.');
+
+        });
+
+        it("logs `IncompleteException` when thrown", function() {
+
+            $incomplete = new IncompleteException();
+
+            $describe = $this->suite->describe("", function() use ($incomplete) {
+
+                $this->it("throws an `IncompleteException`", function() use ($incomplete) {
+                    throw $incomplete;
+                });
+
+            });
+
+            $this->suite->run();
+
+            $results = $this->suite->results();
+            expect($results['incomplete'])->toHaveLength(1);
+
+            $result = reset($results['incomplete']);
+            expect($result['exception'])->toBe($incomplete);
+            expect($result['type'])->toBe('incomplete');
+            expect($result['messages'])->toBe(['', '', 'it throws an `IncompleteException`']);
+
+        });
+
+        it("throws and exception if attempts to call the `run()` function inside a scope", function() {
+
+            $closure = function() {
+                $describe = $this->suite->describe("", function() {
+                    $this->run();
+                });
+                $this->suite->run();
+            };
+
+            expect($closure)->toThrow(new Exception('Method not allowed in this context.'));
+
+        });
+
+        it("throws and exception if attempts to call the `process()` function inside a scope", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->it("attempts to call the `process()` function", function() {
+                    $this->process();
+                });
+
+            });
+
+            $this->suite->run();
+            $results = $this->suite->results();
+            expect($results['exceptions'])->toHaveLength(1);
+
+            $exception = reset($results['exceptions']);
+            $actual = $exception['exception']->getMessage();
+            expect($actual)->toBe('Method not allowed in this context.');
+
+        });
+
+        it("fails fast", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->it("fails1", function() {
+                    $this->expect(true)->toBe(false);
+                });
+
+                $this->it("fails2", function() {
+                    $this->expect(true)->toBe(false);
+                });
+
+                $this->it("fails3", function() {
+                    $this->expect(true)->toBe(false);
+                });
+
+            });
+
+            $this->suite->run(['ff' => 1]);
+
+            $results = $this->suite->results();
+            $failed = $results['failed'];
+
+            expect($failed)->toHaveLength(1);
+            expect($this->suite->exclusive())->toBe(false);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
+
+        });
+
+        it("fails after two failures", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->it("fails1", function() {
+                    $this->expect(true)->toBe(false);
+                });
+
+                $this->it("fails2", function() {
+                    $this->expect(true)->toBe(false);
+                });
+
+                $this->it("fails3", function() {
+                    $this->expect(true)->toBe(false);
+                });
+
+            });
+
+            $this->suite->run(['ff' => 2]);
+
+            $results = $this->suite->results();
+            $failed = $results['failed'];
+
+            expect($failed)->toHaveLength(2);
+            expect($this->suite->exclusive())->toBe(false);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
+
         });
 
     });
@@ -560,6 +752,42 @@ describe("Suite", function() {
                 $a = array_merge();
             };
             expect($closure)->toThrow(new PhpErrorException("`E_WARNING` array_merge() expects at least 1 parameter, 0 given"));
+
+        });
+
+    });
+
+    describe("->reporters()", function() {
+
+        it("returns the reporters", function() {
+
+            $describe = $this->suite->describe("", function() {});
+
+            $reporters = Stub::create();
+            $this->suite->run(['reporters' => $reporters]);
+
+            expect($this->suite->reporters())->toBe($reporters);
+
+        });
+
+    });
+
+    describe("->stop()", function() {
+
+        it("sends the stop event", function() {
+
+            $describe = $this->suite->describe("", function() {});
+
+            $reporters = Stub::create();
+
+            expect($reporters)->toReceive('process')->with('stop', Arg::toMatch(function($actual) {
+                return isset($actual['specs']) && isset($actual['exclusives']);
+            }));
+
+            $this->suite->run(['reporters' => $reporters]);
+            $this->suite->stop();
+
+            expect($this->suite->reporters())->toBe($reporters);
 
         });
 

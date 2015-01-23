@@ -5,7 +5,7 @@ use Exception;
 use kahlan\SkipException;
 use kahlan\analysis\Debugger;
 
-abstract class Scope
+class Scope
 {
     /**
      * Instances stack.
@@ -129,6 +129,49 @@ abstract class Scope
     protected $_exclusive = false;
 
     /**
+     * Count the number of failure or exception.
+     *
+     * @see ::failfast()
+     * @var integer
+     */
+    protected $_failure = 0;
+
+    /**
+     * The reporters container.
+     *
+     * @var object
+     */
+    protected $_reporters = null;
+
+    /**
+     * Boolean lock which avoid `process()` to be called in tests
+     */
+    protected $_locked = false;
+
+    /**
+     * Constructor.
+     *
+     * @param array $options The Suite config array. Options are:
+     *                       -`'message'` _string_ : the description message.
+     *                       -`'parent'`  _object_ : the parent scope.
+     *                       -`'root'`    _object_ : the root scope.
+     */
+    public function __construct($options = [])
+    {
+        $defaults = [
+            'message' => '',
+            'parent'  => null,
+            'root'    => null
+        ];
+        $options += $defaults;
+        extract($options);
+
+        $this->_message = $message;
+        $this->_parent = $parent;
+        $this->_root = $parent ? $parent->_root : $this;
+    }
+
+    /**
      * Getter.
      *
      * @param  string $key The name of the variable.
@@ -142,7 +185,7 @@ abstract class Scope
         if ($this->_parent !== null) {
             return $this->_parent->__get($key);
         }
-        throw new Exception("Undefined variable `{$key}`");
+        throw new Exception("Undefined variable `{$key}`.");
     }
 
     /**
@@ -171,16 +214,12 @@ abstract class Scope
     public function __call($name, $params)
     {
         $property = null;
-        try {
-            $property = $this->__get($name);
-        } catch (Exception $e) {
-            throw new Exception("Undefined callable variable `{$name}`");
-        }
+        $property = $this->__get($name);
 
         if (is_callable($property)) {
             return call_user_func_array($property, $params);
         }
-        throw new Exception("Uncallable variable `{$name}`");
+        throw new Exception("Uncallable variable `{$name}`.");
     }
 
     /**
@@ -350,7 +389,7 @@ abstract class Scope
     protected function _bind($closure, $name)
     {
         if (!is_callable($closure)) {
-            throw new Exception("Error invalid closure.");
+            throw new Exception("Error, invalid closure.");
         }
         return $closure->bindTo($this);
     }
@@ -387,6 +426,29 @@ abstract class Scope
     }
 
     /**
+     * Gets specs excecution results.
+     *
+     * @return array
+     */
+    public function results()
+    {
+        return $this->_results;
+    }
+
+    /**
+     * Checks if all test passed.
+     *
+     * @return boolean Returns `true` if no error occurred, `false` otherwise.
+     */
+    public function passed()
+    {
+        if (empty($this->_results['failed']) && empty($this->_results['exceptions']) && empty($this->_results['incomplete'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Get the active scope instance.
      *
      * @return object The object instance or `null` if there's no active instance.
@@ -419,4 +481,5 @@ abstract class Scope
     {
         return $this->_root->_reporters;
     }
+
 }
