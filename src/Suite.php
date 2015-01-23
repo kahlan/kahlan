@@ -50,20 +50,6 @@ class Suite extends Scope
     ];
 
     /**
-     * Boolean lock which avoid `process()` to be called in tests
-     *
-     * @see khakan\Suite::process()
-     */
-    protected $_locked = false;
-
-    /**
-     * The reporters container.
-     *
-     * @var object
-     */
-    protected $_reporters = null;
-
-    /**
      * Array of fully-namespaced class name to clear on each `it()`.
      *
      * @var array
@@ -87,46 +73,33 @@ class Suite extends Scope
     protected $_ff = 0;
 
     /**
-     * Count the number of failure or exception.
-     *
-     * @see ::failfast()
-     * @var integer
-     */
-    protected $_failure = 0;
-
-    /**
      * Constructor.
      *
      * @param array $options The Suite config array. Options are:
-     *              -`'message'` : the description message.
-     *              -`'closure'` : the closure of the test.
-     *              -`'parent'` : the parent suite instance.
-     *              -`'name'` : the type of the suite.
-     *              -`'scope'` : supported scope are `'normal'` & `'exclusive'`.
+     *                       -`'closure'` _Closure_: the closure of the test.
+     *                       -`'name'`    _string_ : the type of the suite.
+     *                       -`'scope'`   _string_ : supported scope are `'normal'` & `'exclusive'`.
+     *                       -`'matcher'` _object_ : the matcher instance.
      */
     public function __construct($options = [])
     {
         $defaults = [
-            'message' => '',
             'closure' => null,
-            'parent' => null,
             'name' => 'describe',
             'scope' => 'normal',
             'matcher' => null
         ];
         $options += $defaults;
+        parent::__construct($options);
+
         extract($options);
 
-        if (!$parent) {
+        if ($this->_root === $this) {
             $this->_matcher = $matcher;
-            $this->_root = $this;
             return;
         }
-        $this->_root = $parent->_root;
         $closure = $this->_bind($closure, $name);
-        $this->_message = $message;
         $this->_closure = $closure;
-        $this->_parent = $parent;
         $this->_emitExclusive($scope);
     }
 
@@ -309,11 +282,6 @@ class Suite extends Scope
      */
     protected function _run($options = [])
     {
-        if ($this->_locked) {
-            throw new Exception('Method not allowed in this context.');
-        }
-
-        $this->_locked = true;
         static::$_instances[] = $this;
         $this->_errorHandler(true, $options);
 
@@ -337,7 +305,6 @@ class Suite extends Scope
 
         $this->_errorHandler(false);
         array_pop(static::$_instances);
-        $this->_locked = false;
     }
 
     /**
@@ -436,6 +403,12 @@ class Suite extends Scope
         $defaults = ['reporters' => null, 'autoclear' => [], 'ff' => 0];
         $options += $defaults;
 
+        if ($this->_locked) {
+            throw new Exception('Method not allowed in this context.');
+        }
+
+        $this->_locked = true;
+
         $build = $this->_build();
 
         $this->_reporters = $options['reporters'];
@@ -451,6 +424,8 @@ class Suite extends Scope
         $report['specs'] = $this->_results;
         $report['exclusives'] = $this->_exclusives;
         $this->report('end', $report);
+
+        $this->_locked = false;
 
         return $this->passed();
     }
@@ -522,19 +497,6 @@ class Suite extends Scope
     }
 
     /**
-     * Checks if all test passed.
-     *
-     * @return boolean Returns `true` if no error occurred, `false` otherwise.
-     */
-    public function passed()
-    {
-        if (empty($this->_results['failed']) && empty($this->_results['exceptions']) && empty($this->_results['incomplete'])) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Gets childs.
      *
      * @return array The array of childs instances.
@@ -553,16 +515,6 @@ class Suite extends Scope
     public function callbacks($type)
     {
         return isset($this->_callbacks[$type]) ? $this->_callbacks[$type] : [];
-    }
-
-    /**
-     * Gets specs excecution results.
-     *
-     * @return array
-     */
-    public function results()
-    {
-        return $this->_results;
     }
 
     /**
