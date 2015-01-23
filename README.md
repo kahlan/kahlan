@@ -11,6 +11,10 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 
 **Killer feature:** Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.
 
+# Video
+
+ * <a href="http://vimeo.com/116949820" target="_blank">Warren Seymour presentation at Unified Diff (2015)</a>
+
 # Documentation
 
 See the whole [documentation here](docs/README.md).
