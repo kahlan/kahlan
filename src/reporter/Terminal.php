@@ -167,7 +167,7 @@ class Terminal extends Reporter
      */
     protected function _reportException($report)
     {
-        $this->write("[Uncatched Exception] ", "n;magenta");
+        $this->write("[Uncaught Exception] ", "n;magenta");
         $this->_messages($report['messages']);
         $this->write("Description:", "n;magenta");
         $this->write(" " . String::toString($report['exception']) ."\n");
