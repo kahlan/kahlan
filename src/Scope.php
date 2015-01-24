@@ -410,14 +410,9 @@ class Scope
 
     /**
      * Apply exclusivity up to the root.
-     *
-     * @param string The scope value
      */
-    protected function _emitExclusive($scope = 'exclusive')
+    protected function _emitExclusive()
     {
-        if ($scope !== 'exclusive') {
-            return;
-        }
         $this->_root->_exclusives[] = Debugger::backtrace(['start' => 4]);
         $instances = $this->_parents(true);
         foreach ($instances as $instance) {

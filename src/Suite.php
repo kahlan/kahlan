@@ -38,6 +38,13 @@ class Suite extends Scope
     protected $_childs = [];
 
     /**
+     * Suite statistics.
+     *
+     * @var array
+     */
+    protected $_stats = null;
+
+    /**
      * The each callbacks.
      *
      * @var array
@@ -57,9 +64,8 @@ class Suite extends Scope
     protected $_autoclear = [];
 
     /**
-     * Saved backtrace for the exclusive mode.
+     * Saved backtrace of exclusive specs.
      *
-     * @see kahlan\Scope::_emitExclusive()
      * @var array
      */
     protected $_exclusives = [];
@@ -100,7 +106,9 @@ class Suite extends Scope
         }
         $closure = $this->_bind($closure, $name);
         $this->_closure = $closure;
-        $this->_emitExclusive($scope);
+        if ($scope === 'exclusive') {
+            $this->_emitExclusive();
+        }
     }
 
     /**
@@ -409,21 +417,16 @@ class Suite extends Scope
 
         $this->_locked = true;
 
-        $build = $this->_build();
-
         $this->_reporters = $options['reporters'];
         $this->_autoclear = (array) $options['autoclear'];
         $this->_ff = $options['ff'];
 
-        $total = $this->exclusive() ? $build['exclusive'] : $build['specs'];
-        $this->report('begin', ['total' => $total]);
-
+        $this->report('begin', ['total' => $this->enabled()]);
         $this->_run();
-
-        $report = [];
-        $report['specs'] = $this->_results;
-        $report['exclusives'] = $this->_exclusives;
-        $this->report('end', $report);
+        $this->report('end', [
+            'specs'      => $this->_results,
+            'exclusives' => $this->_exclusives
+        ]);
 
         $this->_locked = false;
 
@@ -431,14 +434,36 @@ class Suite extends Scope
     }
 
     /**
+     * Run all specs.
+     *
+     * @param  array $options Run options.
+     * @return array The result array.
+     */
+    public function total()
+    {
+        if ($this->_stats === null) {
+            $this->stats();
+        }
+        return $this->_stats['exclusive'] + $this->_stats['normal'];
+    }
+
+    public function enabled()
+    {
+        if ($this->_stats === null) {
+            $this->stats();
+        }
+        return $this->exclusive() ? $this->_stats['exclusive'] : $this->_stats['normal'];
+    }
+
+    /**
      * Trigger the `stop` event.
      */
     public function stop()
     {
-        $report = [];
-        $report['specs'] = $this->_results;
-        $report['exclusives'] = $this->_exclusives;
-        $this->report('stop', $report);
+        $this->report('stop', [
+            'specs'      => $this->_results,
+            'exclusives' => $this->_exclusives
+        ]);
     }
 
     /**
@@ -446,32 +471,31 @@ class Suite extends Scope
      *
      * @return array Process options.
      */
-    protected function _build()
+    protected function stats()
     {
         static::$_instances[] = $this;
-        $closure = $this->_closure;
-        if (is_callable($closure)) {
+        if($closure = $this->_closure) {
             $closure($this);
         }
-        $specs = 0;
+
+        $normal = 0;
         $exclusive = 0;
-        foreach($this->_childs as $child) {
+        foreach($this->childs() as $child) {
             if ($child instanceof Suite) {
-                $result = $child->_build();
-                if ($result['exclusive']) {
-                    $exclusive += $result['exclusive'];
-                } elseif ($child->exclusive()) {
-                    $exclusive += $result['specs'];
+                $result = $child->stats();
+                if ($child->exclusive() && !$result['exclusive']) {
+                    $exclusive += $result['normal'];
                     $child->_broadcastExclusive();
                 } else {
-                    $specs += $result['specs'];
+                    $exclusive += $result['exclusive'];
+                    $normal += $result['normal'];
                 }
             } else {
-                $child->exclusive() ? $exclusive++ : $specs++;
+                $child->exclusive() ? $exclusive++ : $normal++;
             }
         }
         array_pop(static::$_instances);
-        return compact('specs', 'exclusive');
+        return $this->_stats = compact('normal', 'exclusive');
     }
 
     /**
@@ -541,20 +565,14 @@ class Suite extends Scope
     }
 
     /**
-     * Apply exclusivity downward to the lead.
-     *
-     * @param string The scope value
+     * Apply exclusivity downward to the leaf.
      */
-    protected function _broadcastExclusive($scope = 'exclusive')
+    protected function _broadcastExclusive()
     {
-        if ($scope !== 'exclusive') {
-            return;
-        }
-        $instances = $this->_parents(true);
         foreach ($this->_childs as $child) {
             $child->exclusive(true);
             if ($child instanceof Suite) {
-                $child->_broadcastExclusive($scope);
+                $child->_broadcastExclusive();
             }
         }
     }

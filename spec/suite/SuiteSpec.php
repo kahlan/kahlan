@@ -255,9 +255,46 @@ describe("Suite", function() {
 
     });
 
+    describe("->total()/->enabled()", function() {
+
+        it("return the total/enabled number of specs", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0, 'iit' => 0];
+
+                $this->describe("ddescribe", function() {
+
+                    $this->it("it", function() {
+                        $this->exectuted['it']++;
+                    });
+
+                    $this->describe("describe", function() {
+
+                        $this->iit("iit", function() {
+                            $this->exectuted['iit']++;
+                        });
+
+                        $this->it("it", function() {
+                            $this->exectuted['it']++;
+                        });
+
+                    });
+
+                });
+
+            });
+
+            expect($this->suite->total())->toBe(3);
+            expect($this->suite->enabled())->toBe(1);
+
+        });
+
+    });
+
     describe("->ddescribe()", function() {
 
-        it("executes only the exclusive `it`", function() {
+        it("executes only the `it` in exclusive mode", function() {
 
             $describe = $this->suite->describe("", function() {
 
@@ -265,23 +302,11 @@ describe("Suite", function() {
 
                 $this->ddescribe("->ddescribe()", function() {
 
-                    $this->it("ddescribe it", function() {
+                    $this->iit("assumes iit due to the parent", function() {
                         $this->exectuted['iit']++;
                     });
 
-                    $this->it("ddescribe it", function() {
-                        $this->exectuted['iit']++;
-                    });
-
-                });
-
-                $this->describe("->describe()", function() {
-
-                    $this->it("describe it", function() {
-                        $this->exectuted['it']++;
-                    });
-
-                    $this->it("describe it", function() {
+                    $this->it("assumes iit due to the parent", function() {
                         $this->exectuted['it']++;
                     });
 
@@ -291,7 +316,83 @@ describe("Suite", function() {
 
             $this->suite->run();
 
+            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 1]);
+            expect($this->suite->total())->toBe(2);
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+        it("executes all `it` in exclusive mode if no one is exclusive", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0, 'iit' => 0];
+
+                $this->ddescribe("->ddescribe()", function() {
+
+                    $this->it("assumes iit due to the parent", function() {
+                        $this->exectuted['iit']++;
+                    });
+
+                    $this->it("assumes iit due to the parent", function() {
+                        $this->exectuted['iit']++;
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
             expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
+            expect($this->suite->total())->toBe(2);
+            expect($this->suite->enabled())->toBe(2);
+            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+        it("executes all `it` in exclusive mode if no one is exclusive in a nested way", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0, 'iit' => 0];
+
+                $this->ddescribe("->ddescribe()", function() {
+
+                    $this->it("assumes iit due to the parent", function() {
+                        $this->exectuted['iit']++;
+                    });
+
+                    $this->it("assumes iit due to the parent", function() {
+                        $this->exectuted['iit']++;
+                    });
+
+                    $this->describe("->describe()", function() {
+
+                        $this->it("assumes iit due to the parent", function() {
+                            $this->exectuted['iit']++;
+                        });
+
+                        $this->it("assumes iit due to the parent", function() {
+                            $this->exectuted['iit']++;
+                        });
+
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 4]);
+            expect($this->suite->total())->toBe(4);
+            expect($this->suite->enabled())->toBe(4);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
@@ -302,31 +403,19 @@ describe("Suite", function() {
 
     describe("->ccontext()", function() {
 
-        it("executes only the exclusive `it`", function() {
+        it("executes only the `it` in exclusive mode", function() {
 
-            $describe = $this->suite->describe("", function() {
+            $context = $this->suite->context("", function() {
 
                 $this->exectuted = ['it' => 0, 'iit' => 0];
 
-                $this->ccontext("ccontext", function() {
+                $this->ccontext("->ccontext()", function() {
 
-                    $this->it("ccontext it", function() {
+                    $this->iit("assumes iit due to the parent", function() {
                         $this->exectuted['iit']++;
                     });
 
-                    $this->it("ccontext it", function() {
-                        $this->exectuted['iit']++;
-                    });
-
-                });
-
-                $this->context("context", function() {
-
-                    $this->it("context it", function() {
-                        $this->exectuted['it']++;
-                    });
-
-                    $this->it("context it", function() {
+                    $this->it("assumes iit due to the parent", function() {
                         $this->exectuted['it']++;
                     });
 
@@ -336,7 +425,83 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
+            expect($context->exectuted)->toEqual(['it' => 0, 'iit' => 1]);
+            expect($this->suite->total())->toBe(2);
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+        it("executes all `it` in exclusive mode if no one is exclusive", function() {
+
+            $context = $this->suite->context("", function() {
+
+                $this->exectuted = ['it' => 0, 'iit' => 0];
+
+                $this->ccontext("->ccontext()", function() {
+
+                    $this->it("assumes iit due to the parent", function() {
+                        $this->exectuted['iit']++;
+                    });
+
+                    $this->it("assumes iit due to the parent", function() {
+                        $this->exectuted['iit']++;
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($context->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
+            expect($this->suite->total())->toBe(2);
+            expect($this->suite->enabled())->toBe(2);
+            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+        it("executes all `it` in exclusive mode if no one is exclusive in a nested way", function() {
+
+            $context = $this->suite->context("", function() {
+
+                $this->exectuted = ['it' => 0, 'iit' => 0];
+
+                $this->ccontext("->ccontext()", function() {
+
+                    $this->it("assumes iit due to the parent", function() {
+                        $this->exectuted['iit']++;
+                    });
+
+                    $this->it("assumes iit due to the parent", function() {
+                        $this->exectuted['iit']++;
+                    });
+
+                    $this->context("->context()", function() {
+
+                        $this->it("assumes iit due to the parent", function() {
+                            $this->exectuted['iit']++;
+                        });
+
+                        $this->it("assumes iit due to the parent", function() {
+                            $this->exectuted['iit']++;
+                        });
+
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($context->exectuted)->toEqual(['it' => 0, 'iit' => 4]);
+            expect($this->suite->total())->toBe(4);
+            expect($this->suite->enabled())->toBe(4);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
@@ -374,6 +539,83 @@ describe("Suite", function() {
             $this->suite->run();
 
             expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
+            expect($this->suite->total())->toBe(4);
+            expect($this->suite->enabled())->toBe(2);
+            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+        it("propagates the exclusivity up to parents", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0, 'iit' => 0];
+
+
+                $this->ddescribe("ddescribe", function() {
+
+                    $this->describe("describe", function() {
+
+                        $this->it("it", function() {
+                            $this->exectuted['it']++;
+                        });
+
+                        $this->iit("iit", function() {
+                            $this->exectuted['iit']++;
+                        });
+
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 1]);
+            expect($this->suite->total())->toBe(2);
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+        it("propagates the exclusivity up to parents", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0, 'iit' => 0];
+
+                $this->describe("ddescribe", function() {
+
+                    $this->it("it", function() {
+                        $this->exectuted['it']++;
+                    });
+
+                    $this->describe("describe", function() {
+
+                        $this->iit("iit", function() {
+                            $this->exectuted['iit']++;
+                        });
+
+                        $this->it("it", function() {
+                            $this->exectuted['it']++;
+                        });
+
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 1]);
+            expect($this->suite->total())->toBe(3);
+            expect($this->suite->enabled())->toBe(1);
             expect($this->suite->exclusive())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);

@@ -35,8 +35,10 @@ class Spec extends Scope
 
         $closure = $this->_bind($closure, 'it');
         $this->_closure = $closure;
-        $this->_emitExclusive($scope);
         $this->_matcher = $options['matcher'];
+        if ($scope === 'exclusive') {
+            $this->_emitExclusive();
+        }
     }
 
     /**
