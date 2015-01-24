@@ -159,9 +159,9 @@ describe("CodeClimate", function() {
                 'repo_token'     => 'ABC'
             ]);
 
-            expect($success)->toBe(470);
-
             $json = file_get_contents($this->output);
+            expect($success)->toBe(strlen($json));
+
             $actual = json_decode($json, true);
 
             $coverage = $actual['source_files'][0];

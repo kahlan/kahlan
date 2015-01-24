@@ -14,8 +14,7 @@ matrix:
   fast_finish: true
 
 before_script:
-  - git checkout master
-  - composer self-update && composer install
+  - composer self-update && composer install --no-dev
 #  - if [[ $TRAVIS_PHP_VERSION =~ ^hhvm ]]; then mkdir -p $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/; fi
 #  - if [[ $TRAVIS_PHP_VERSION =~ ^hhvm ]]; then echo 'hhvm.xdebug-not-done.enable=1' >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/travis.ini; fi
 

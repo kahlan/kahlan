@@ -1,6 +1,8 @@
 # Kahlan
 
 [![Build Status](https://travis-ci.org/crysalead/kahlan.svg?branch=master)](https://travis-ci.org/crysalead/kahlan)
+[![Latest Stable Version](https://poser.pugx.org/crysalead/kahlan/v/stable.svg)](https://packagist.org/packages/crysalead/kahlan)
+[![Total Downloads](https://poser.pugx.org/crysalead/kahlan/downloads.svg)](https://packagist.org/packages/crysalead/kahlan)
 [![Code Climate Coverage Status](https://codeclimate.com/repos/546c8563695680587e0912b9/badges/dad3ec8f63b693d81969/coverage.svg)](https://codeclimate.com/repos/546c8563695680587e0912b9/feed)
 [![Coveralls Coverage Status](https://coveralls.io/repos/crysalead/kahlan/badge.png?branch=master)](https://coveralls.io/r/crysalead/kahlan?branch=master)
 [![Scrutinizer Coverage Status](https://scrutinizer-ci.com/g/crysalead/kahlan/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/crysalead/kahlan/?branch=master)
