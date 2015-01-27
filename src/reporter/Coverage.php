@@ -254,7 +254,7 @@ class Coverage extends Terminal
      */
     public function stop($results = [])
     {
-        $this->write("\nCoverage Summary\n----------------\n\n");
+        $this->write("Coverage Summary\n----------------\n\n");
         if (is_numeric($this->_verbosity)) {
             $this->_renderMetrics($this->metrics(), $this->_verbosity);
         } else {

@@ -11,6 +11,17 @@ class Dot extends Terminal
     protected $_counter = 0;
 
     /**
+     * Callback called before any specs processing.
+     *
+     * @param array $params The suite params array.
+     */
+    public function begin($params)
+    {
+        parent::begin($params);
+        $this->write("\n");
+    }
+
+    /**
      * Callback called on successful expect.
      *
      * @param array $report The report array.

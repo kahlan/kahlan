@@ -99,7 +99,7 @@ class Verbose extends Terminal
      */
     public function end($results = [])
     {
-        $this->write("\n\n");
+        $this->write("\n");
         $this->_summary($results);
         $this->_exclusive($results);
     }

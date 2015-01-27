@@ -71,6 +71,11 @@ class Bar extends Terminal
         $this->_color = $this->_preferences['success'];
     }
 
+    /**
+     * Callback called before any specs processing.
+     *
+     * @param array $params The suite params array.
+     */
     public function begin($params)
     {
         parent::begin($params);
@@ -158,7 +163,7 @@ class Bar extends Terminal
      */
     public function end($results = [])
     {
-        $this->write("\n");
+        $this->write("\n\n");
         $this->_summary($results);
         $this->_exclusive($results);
     }
