@@ -12,40 +12,50 @@ class Dot extends Terminal
 
     /**
      * Callback called on successful expect.
+     *
+     * @param array $report The report array.
      */
-    public function pass($report)
+    public function pass($report = [])
     {
         $this->_write('.');
     }
 
     /**
      * Callback called on failure.
+     *
+     * @param array $report The report array.
      */
-    public function fail($report)
+    public function fail($report = [])
     {
         $this->_write('F', 'red');
     }
 
     /**
      * Callback called when an exception occur.
+     *
+     * @param array $report The report array.
      */
-    public function exception($report)
+    public function exception($report = [])
     {
         $this->_write('E', 'magenta');
     }
 
     /**
      * Callback called on a skipped spec.
+     *
+     * @param array $report The report array.
      */
-    public function skip($report)
+    public function skip($report = [])
     {
         $this->_write('S', 'cyan');
     }
 
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
+     *
+     * @param array $report The report array.
      */
-    public function incomplete($report)
+    public function incomplete($report = [])
     {
         $this->_write('I', 'yellow');
     }
