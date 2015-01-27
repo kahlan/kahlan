@@ -54,7 +54,7 @@ Filter::register('kahlan.coverage-exporter', function($chain) {
     CodeClimate::write([
         'collector'  => $reporter,
         'file'       => 'codeclimate.json',
-        'repo_token' => '44d9595530151e99ebc6d2b63f0cea5b30aaaecf86767a2ac6717aa0c2be77f3'
+        'repo_token' => 'a4b5637db5629f60a5d3fc1a070b2339479ff8989c6491dfc6a19cada5e4ffaa'
     ]);
     return $chain->next();
 });
