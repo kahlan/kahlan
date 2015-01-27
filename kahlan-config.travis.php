@@ -29,6 +29,7 @@ Filter::register('kahlan.coverage', function($chain) {
             //Exclude text based reporter classes from code coverage reporting (a bit useless)
             'src/reporter/Dot.php',
             'src/reporter/Bar.php',
+            'src/reporter/Verbose.php',
             'src/reporter/Terminal.php',
             'src/reporter/Reporter.php',
             'src/reporter/Coverage.php',
