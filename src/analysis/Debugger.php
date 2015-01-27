@@ -17,14 +17,6 @@ class Debugger
     public static $_loader = null;
 
     /**
-     * Used for temporary closure caching.
-     *
-     * @see lithium\analysis\Debugger::_closureDef()
-     * @var array
-     */
-    protected static $_closureCache = [];
-
-    /**
      * Config method
      *
      * @param array $options Options config array.
@@ -37,14 +29,14 @@ class Debugger
     }
 
     /**
-     * Get a backtrace string based on the supplied options.
+     * Gets a backtrace string based on the supplied options.
      *
      * @param  array $options Format for outputting stack trace. Available options are:
-      *         - `'start'`: The depth to start with.
-     *         - `'depth'`: The maximum depth of the trace.
-     *         - `'message'`: Either `null` for default message or a string.
-     *         - `'trace'`: A trace to use instead of generating one.
-     * @return string The Backtrace formatted according to `'format'` option.
+     *                        - `'start'`: The depth to start with.
+     *                        - `'depth'`: The maximum depth of the trace.
+     *                        - `'message'`: Either `null` for default message or a string.
+     *                        - `'trace'`: A trace to use instead of generating one.
+     * @return array          The formatted backtrace.
      */
     public static function trace($options = [])
     {
@@ -61,7 +53,7 @@ class Debugger
     }
 
     /**
-     * Get a string representation of a trace.
+     * Gets a string representation of a trace.
      *
      * @param  array  $trace A trace array.
      * @return string The string representation of a trace.
@@ -91,11 +83,11 @@ class Debugger
      * Return a backtrace array based on the supplied options.
      *
      * @param array $options Format for outputting stack trace. Available options are:
-      *        - `'start'`: The depth to start with.
-     *        - `'depth'`: The maximum depth of the trace.
-     *        - `'message'`: Either `null` for default message or a string.
-     *        - `'trace'`: A trace to use instead of generating one.
-     * @return array The backtrace array
+     *                       - `'start'`: The depth to start with.
+     *                       - `'depth'`: The maximum depth of the trace.
+     *                       - `'message'`: Either `null` for default message or a string.
+     *                       - `'trace'`: A trace to use instead of generating one.
+     * @return array         The backtrace array
      */
     public static function backtrace($options = [])
     {
