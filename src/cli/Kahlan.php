@@ -374,13 +374,11 @@ EOD;
             $reporters = $this->reporters();
             $start = $this->_start;
             $colors = !$this->args()->get('no-colors');
-            if ($this->args()->get('reporter') === 'dot') {
-                $reporter = new Dot(compact('start', 'colors'));
-            }
-            if ($this->args()->get('reporter') === 'bar') {
-                $reporter = new Bar(compact('start', 'colors'));
-            }
-            if ($reporter) {
+
+            $reporter = $this->args()->get('reporter');
+            $class = 'kahlan\reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $reporter)));
+
+            if ($reporter = new $class(compact('start', 'colors'))) {
                 $reporters->add('console', $reporter);
             }
         });

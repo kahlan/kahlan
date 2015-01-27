@@ -155,7 +155,7 @@ describe("Matcher", function() {
                     'expected' => false
                 ]);
                 expect($failure['messages'])->toBe(['it runs a spec']);
-                expect($failure['exception'])->toBeA('array');
+                expect($failure['backtrace'])->toBeA('array');
             });
 
             it("logs a fail with a deferred matcher", function() {
@@ -190,7 +190,7 @@ describe("Matcher", function() {
                 ]);
                 expect($failure['messages'])->toBe(['it runs a spec']);
                 expect($failure['instance'])->toBe($result);
-                expect($failure['exception'])->toBeA('array');
+                expect($failure['backtrace'])->toBeA('array');
 
             });
 

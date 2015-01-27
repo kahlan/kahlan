@@ -5,13 +5,13 @@ class Dot extends Terminal
 {
     /**
      * Store the current number of dots.
-     *
+     *é
      * @var integer
      */
     protected $_counter = 0;
 
     /**
-     * Callback called on successful spec.
+     * Callback called on successful expect.
      */
     public function pass($report)
     {
@@ -23,7 +23,7 @@ class Dot extends Terminal
      */
     public function fail($report)
     {
-        $this->_write('F', "red");
+        $this->_write('F', 'red');
     }
 
     /**
@@ -31,7 +31,7 @@ class Dot extends Terminal
      */
     public function exception($report)
     {
-        $this->_write('E', "magenta");
+        $this->_write('E', 'magenta');
     }
 
     /**
@@ -39,7 +39,7 @@ class Dot extends Terminal
      */
     public function skip($report)
     {
-        $this->_write('S', "cyan");
+        $this->_write('S', 'cyan');
     }
 
     /**
@@ -47,7 +47,7 @@ class Dot extends Terminal
      */
     public function incomplete($report)
     {
-        $this->_write('I', "yellow");
+        $this->_write('I', 'yellow');
     }
 
     /**
@@ -59,14 +59,15 @@ class Dot extends Terminal
             $this->_write(' ');
         } while ($this->_counter % 80 !== 0);
 
-        $this->write("\n\n");
-
         foreach ($results['specs'] as $type => $reports) {
             foreach ($reports as $report) {
-                $this->_report($report);
+                if ($report['type'] !== 'skip') {
+                    $this->_report($report);
+                }
             }
         }
 
+        $this->write("\n\n");
         $this->_summary($results);
         $this->_exclusive($results);
     }

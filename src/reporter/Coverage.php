@@ -45,21 +45,21 @@ class Coverage extends Terminal
     /**
      * Display coverage results in the console.
      *
-     * @param array $options The options for the reporter, the options are:
-     *                       - `'verbosity`' _integer|string_: The verbosity level:
-     *                         - 1      : overall coverage value for the whole code.
-     *                         - 2      : overall coverage by namespaces.
-     *                         - 3      : overall coverage by classes.
-     *                         - 4      : overall coverage by methods and functions.
-     *                         - string : coverage for a fully namespaced (class/method/namespace) string.
+     * @param array $config The config for the reporter, the options are:
+     *                      - `'verbosity`' _integer|string_: The verbosity level:
+     *                        - 1      : overall coverage value for the whole code.
+     *                        - 2      : overall coverage by namespaces.
+     *                        - 3      : overall coverage by classes.
+     *                        - 4      : overall coverage by methods and functions.
+     *                        - string : coverage for a fully namespaced (class/method/namespace) string.
      */
 
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
-        parent::__construct($options);
+        parent::__construct($config);
         $defaults = ['verbosity' => 1];
-        $options += $defaults;
-        $verbosity = $options['verbosity'];
+        $config += $defaults;
+        $verbosity = $config['verbosity'];
         $this->_verbosity = is_numeric($verbosity) ? (integer) $verbosity : (string) $verbosity;
 
         if (is_string($this->_verbosity)) {
@@ -68,11 +68,11 @@ class Coverage extends Terminal
             $loader = $interceptor::instance();
 
             if ($loader && $path = $loader->findPath($class)) {
-                $options['path'] = $path;
+                $config['path'] = $path;
             }
         }
 
-        $this->_collector = new Collector($options);
+        $this->_collector = new Collector($config);
     }
 
     /**
@@ -87,8 +87,9 @@ class Coverage extends Terminal
     /**
      * Callback called before a spec.
      */
-    public function before()
+    public function before($report)
     {
+        parent::before($report);
         if (!$this->enabled()) {
             return;
         }
@@ -98,8 +99,9 @@ class Coverage extends Terminal
     /**
      * Callback called after a spec.
      */
-    public function after()
+    public function after($report)
     {
+        parent::after($report);
         if (!$this->enabled()) {
             return;
         }

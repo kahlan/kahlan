@@ -152,8 +152,8 @@ class Matcher
             $boolean = $instance->resolve($data);
             if ($not ? $boolean : !$boolean) {
                 $data['description'] = $class::description($data);
-                $data['exception'] = $instance->backtrace();
             }
+            $data['backtrace'] = $instance->backtrace();
             $this->_result($boolean, $data);
         }
         $this->_deferred = [];
@@ -173,13 +173,9 @@ class Matcher
         $not = $this->_not;
         $pass = $not ? !$boolean : $boolean;
         $type = $pass ? 'pass' : 'fail';
-        if (!$pass) {
-            $data += [
-                'exception' => Debugger::backtrace([
-                    'start' => defined('HHVM_VERSION') ? 2 : 3
-                ])
-            ];
-        }
+        $data['backtrace'] = Debugger::backtrace([
+            'start' => defined('HHVM_VERSION') ? 2 : 3
+        ]);
         $this->_parent->$type($data + compact('not', 'actual'));
         return $boolean;
     }

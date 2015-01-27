@@ -340,22 +340,36 @@ class Suite extends Scope
             $child->_run();
             return;
         }
+
+        $messages = $this->messages();
+        $backtrace = $this->_backtrace;
+
         try {
-            $this->report('before');
+            $this->report('before', [
+                'messages'  => $messages,
+                'backtrace' => $backtrace
+            ]);
+
             $this->_callbacks('beforeEach');
             $child->process();
             $this->_autoclear();
             $this->_callbacks('afterEach');
-            $this->report('after');
+
+            $this->report('after', [
+                'messages'  => $messages,
+                'backtrace' => $backtrace
+            ]);
         } catch (Exception $exception) {
             $this->_exception($exception);
             try {
                 $this->_autoclear();
                 $this->_callbacks('afterEach');
-                $this->report('after');
+                $this->report('after', [
+                    'messages'  => $messages,
+                    'backtrace' => $backtrace
+                ]);
             } catch (Exception $exception) {}
         }
-        $this->report('progress');
     }
 
     /**

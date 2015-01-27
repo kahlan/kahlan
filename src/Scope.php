@@ -15,6 +15,13 @@ class Scope
     protected static $_instances = [];
 
     /**
+     * The scope backtrace.
+     *
+     * @var object
+     */
+    protected $_backtrace = null;
+
+    /**
      * List of reserved keywords which can't be used as scope variable.
      *
      * @var array
@@ -169,6 +176,9 @@ class Scope
         $this->_message = $message;
         $this->_parent = $parent;
         $this->_root = $parent ? $parent->_root : $this;
+        $this->_backtrace = Debugger::backtrace([
+            'start' => defined('HHVM_VERSION') ? 3 : 4
+        ]);
     }
 
     /**
@@ -265,14 +275,18 @@ class Scope
      */
     public function skipIf($condition)
     {
-        if ($condition) {
-            if ($this instanceof Suite) {
-                foreach ($this->_childs as $child) {
-                    $this->report('progress');
-                }
-            }
-            throw new SkipException();
+        if (!$condition) {
+            return;
         }
+        if ($this instanceof Suite) {
+            foreach ($this->_childs as $child) {
+                $messages = $this->messages();
+                $backtrace = $this->_backtrace;
+                $this->report('before', ['messages'  => $messages, 'backtrace' => $backtrace]);
+                $this->report('after', ['messages'  => $messages, 'backtrace' => $backtrace]);
+            }
+        }
+        throw new SkipException();
     }
 
     /**

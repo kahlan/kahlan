@@ -11,7 +11,7 @@ class Bar extends Terminal
      *
      * var array
      */
-    protected $_colors = [];
+    protected $_preferences = [];
 
     /**
      * Format of the progress bar.
@@ -44,14 +44,14 @@ class Bar extends Terminal
     /**
      * Constructor
      *
-     * @param array $options The options array.
+     * @param array $config The config array.
      */
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
-        parent::__construct($options);
+        parent::__construct($config);
         $defaults = [
             'size' => 50,
-            'colors' => [
+            'preferences' => [
                 'failure' => 'red',
                 'success' => 'green',
                 'incomplete' => 'yellow'
@@ -62,21 +62,27 @@ class Bar extends Terminal
             ],
             'format' => '[{:b}{:i}] {:p}%'
         ];
-        $options = Set::merge($defaults, $options);
+        $config = Set::merge($defaults, $config);
 
-        foreach ($options as $key => $value) {
+        foreach ($config as $key => $value) {
             $_key = "_{$key}";
             $this->$_key = $value;
         }
-        $this->_color = $this->_colors['success'];
+        $this->_color = $this->_preferences['success'];
+    }
+
+    public function begin($params)
+    {
+        parent::begin($params);
+        $this->write("\n");
     }
 
     /**
-     * Callback called when a new spec file is processed.
+     * Callback called when entering a new spec.
      */
-    public function progress()
+    public function before($report)
     {
-        parent::progress();
+        parent::before($report);
         $this->_progressBar();
     }
 
@@ -85,9 +91,10 @@ class Bar extends Terminal
      */
     public function fail($report)
     {
-        $this->_color = $this->_colors['failure'];
+        $this->_color = $this->_preferences['failure'];
         $this->write("\n");
         $this->_report($report);
+        $this->write("\n");
     }
 
     /**
@@ -95,9 +102,10 @@ class Bar extends Terminal
      */
     public function exception($report)
     {
-        $this->_color = $this->_colors['failure'];
+        $this->_color = $this->_preferences['failure'];
         $this->write("\n");
         $this->_report($report);
+        $this->write("\n");
     }
 
     /**
@@ -105,9 +113,10 @@ class Bar extends Terminal
      */
     public function incomplete($report)
     {
-        $this->_color = $this->_colors['incomplete'];
+        $this->_color = $this->_preferences['incomplete'];
         $this->write("\n");
         $this->_report($report);
+        $this->write("\n");
     }
 
     /**
@@ -133,8 +142,7 @@ class Bar extends Terminal
 
         $string = String::insert($this->_format, compact('p', 'b', 'i'));
 
-        $string .= ($this->_current === $this->_total ? "\n" : '');
-        $this->write("\r" . $string, 'n;' . $this->_color);
+        $this->write("\r" . $string, $this->_color);
     }
 
     /**

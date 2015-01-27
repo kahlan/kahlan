@@ -27,13 +27,13 @@ class Reporter
     /**
      * Reporter constructor
      *
-     * @param array $options (Unused).
+     * @param array $config (Unused).
      */
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
         $defaults = ['start' => microtime(true)];
-        $options += $defaults;
-        $this->_start = $options['start'];
+        $config += $defaults;
+        $this->_start = $config['start'];
     }
 
     /**
@@ -50,27 +50,20 @@ class Reporter
     /**
      * Callback called before a spec.
      */
-    public function before()
-    {
-    }
-
-    /**
-     * Callback called after a spec.
-     */
-    public function after()
-    {
-    }
-
-    /**
-     * Callback called when a new spec file is processed.
-     */
-    public function progress()
+    public function before($report)
     {
         $this->_current++;
     }
 
     /**
-     * Callback called on successful spec.
+     * Callback called after a spec.
+     */
+    public function after($report)
+    {
+    }
+
+    /**
+     * Callback called on successful expect.
      */
     public function pass($report)
     {
