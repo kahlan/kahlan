@@ -4,7 +4,7 @@
 [![Latest Stable Version](https://poser.pugx.org/crysalead/kahlan/v/stable.svg)](https://packagist.org/packages/crysalead/kahlan)
 [![Total Downloads](https://poser.pugx.org/crysalead/kahlan/downloads.svg)](https://packagist.org/packages/crysalead/kahlan)
 [![Code Climate Coverage Status](https://codeclimate.com/github/crysalead/kahlan/badges/coverage.svg)](https://codeclimate.com/github/crysalead/kahlan)
-[![Coveralls Coverage Status](https://coveralls.io/repos/crysalead/kahlan/badge.png?branch=master)](https://coveralls.io/r/crysalead/kahlan?branch=master)
+[![Coveralls Coverage Status](https://coveralls.io/repos/crysalead/kahlan/badge.svg?branch=master)](https://coveralls.io/r/crysalead/kahlan?branch=master)
 [![Scrutinizer Coverage Status](https://scrutinizer-ci.com/g/crysalead/kahlan/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/crysalead/kahlan/?branch=master)
 
 Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses a `describe-it` syntax and moves testing in PHP one step forward.
