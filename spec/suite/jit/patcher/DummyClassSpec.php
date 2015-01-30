@@ -5,8 +5,26 @@ use jit\Interceptor;
 use kahlan\IncompleteException;
 use kahlan\jit\patcher\DummyClass as DummyClassPatcher;
 use kahlan\plugin\DummyClass;
+use kahlan\plugin\Stub;
 
 describe("DummyClass", function() {
+
+    it("should construct and find namespaces", function() {
+
+        $dummy = new DummyClassPatcher([
+            'namespaces' => [
+                '\kahlan\spec\mock\plugin\stub',
+            ]
+        ]);
+        expect($dummy)->toBeAnInstanceOf('\kahlan\jit\patcher\DummyClass');
+
+
+        $loader = Stub::create();
+        $find = $dummy->findFile($loader, '\kahlan\spec\mock\plugin\stub', null);
+
+        expect($find)->toBeAnInstanceOf('\kahlan\spec\plugin\stub\Stub0');
+    });
+
 
     describe("->create()", function() {
 
