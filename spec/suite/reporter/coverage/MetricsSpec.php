@@ -40,6 +40,7 @@ describe("Metrics", function() {
 
             $metrics = $this->collector->metrics();
 
+
             $actual = $metrics->data();
 
             $files = $actual['files'];
@@ -92,6 +93,32 @@ describe("Metrics", function() {
             expect(isset($files[$path]))->toBe(true);
         });
 
+        it("returns type of metrics", function() {
+
+            $code = new ExtraEmptyLine();
+
+            $this->collector->start();
+            $code->shallNotPass();
+            $this->collector->stop();
+
+            $metrics = $this->collector->metrics();
+            expect($metrics->type())->toBe('namespace');
+
+        });
+
+        it("returns a parent of metrics", function() {
+
+            $code = new ExtraEmptyLine();
+
+            $this->collector->start();
+            $code->shallNotPass();
+            $this->collector->stop();
+
+            $metrics = $this->collector->metrics();
+            expect($metrics->parent())->toBe(null);
+
+        });
+
         it("returns function metrics", function() {
 
             $code = new ExtraEmptyLine();
@@ -124,6 +151,59 @@ describe("Metrics", function() {
 
             $path = realpath('spec/fixture/reporter/coverage/ExtraEmptyLine.php');
             expect(isset($files[$path]))->toBe(true);
+        });
+
+        it("return empty on unknown metric", function() {
+
+            $code = new ExtraEmptyLine();
+
+            $this->collector->start();
+            $code->shallNotPass();
+            $this->collector->stop();
+
+            $metrics = $this->collector->metrics();
+            $actual = $metrics->get('some\unknown\name\space');
+            expect($actual)->toBe(null);
+
+        });
+
+        describe("->childs()", function() {
+
+            beforeEach(function() {
+
+                $code = new ExtraEmptyLine();
+
+                $this->collector->start();
+                $code->shallNotPass();
+                $this->collector->stop();
+
+                $this->metrics = $this->collector->metrics();
+
+            });
+
+            it("should return all childs", function() {
+
+                $childs = $this->metrics->childs();
+                expect(is_array($childs))->toBe(true);
+                expect(isset($childs['kahlan']))->toBe(true);
+
+            });
+
+            it("should return specified child", function() {
+
+                $childs = $this->metrics->childs('kahlan');
+                expect(is_array($childs))->toBe(true);
+                expect(isset($childs['spec']))->toBe(true);
+
+            });
+
+            it("should return null on unknown child", function() {
+
+                $childs = $this->metrics->childs('unknown_child');
+                expect($childs)->toBe(null);
+
+            });
+
         });
 
     });
