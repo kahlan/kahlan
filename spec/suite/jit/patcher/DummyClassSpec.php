@@ -20,10 +20,12 @@ describe("DummyClass", function() {
 
 
         $loader = Stub::create();
+        DummyClass::enable();
         $find = $dummy->findFile($loader, '\kahlan\spec\mock\plugin\stub', null);
 
         expect($find)->toBeAnInstanceOf('\kahlan\spec\plugin\stub\Stub0');
     });
+
 
 
     describe("->create()", function() {
