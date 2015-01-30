@@ -5,7 +5,7 @@ use Exception;
 use kahlan\analysis\Debugger;
 use kahlan\plugin\Stub;
 
-ddescribe("Debugger", function() {
+describe("Debugger", function() {
 
 	describe("->config()", function() {
 
