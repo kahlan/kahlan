@@ -106,6 +106,10 @@ describe("Scope", function() {
 
     describe("skipIf", function() {
 
+        it("should return none if provided false/null", function() {
+          expect(skipIf(false))->toBe(null);
+        });
+
         $executed = 0;
 
         context("when used in a scope", function() use (&$executed) {
