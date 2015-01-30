@@ -1,4 +1,5 @@
 <?php
+namespace kahlan\spec\suite;
 use kahlan\cli\Cli;
 
 describe("Cli", function() {
