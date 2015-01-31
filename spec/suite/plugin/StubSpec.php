@@ -67,6 +67,15 @@ describe("Stub", function() {
 
             });
 
+            it("throw when stub a method using closure and using andReturn()", function() {
+
+                expect(function() {
+                    $foo = new Foo();
+                    Stub::on($foo)->method('message', function($param) { return $param; })->andReturn(true);
+                })->toThrow(new \Exception("Closure already set."));
+
+            });
+
             it("stubs a magic method", function() {
 
                 $foo = new Foo();

@@ -1,6 +1,8 @@
 <?php
 namespace kahlan\plugin\stub;
 
+use Exception;
+
 class Method extends \kahlan\plugin\call\Message
 {
     /**
