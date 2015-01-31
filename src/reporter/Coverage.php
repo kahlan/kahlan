@@ -86,8 +86,10 @@ class Coverage extends Terminal
 
     /**
      * Callback called before a spec.
+     *
+     * @param array $report The report array.
      */
-    public function before($report)
+    public function before($report = [])
     {
         parent::before($report);
         if (!$this->enabled()) {
@@ -98,8 +100,10 @@ class Coverage extends Terminal
 
     /**
      * Callback called after a spec.
+     *
+     * @param array $report The report array.
      */
-    public function after($report)
+    public function after($report = [])
     {
         parent::after($report);
         if (!$this->enabled()) {
@@ -250,7 +254,7 @@ class Coverage extends Terminal
      */
     public function stop($results = [])
     {
-        $this->write("\nCoverage Summary\n----------------\n\n");
+        $this->write("Coverage Summary\n----------------\n\n");
         if (is_numeric($this->_verbosity)) {
             $this->_renderMetrics($this->metrics(), $this->_verbosity);
         } else {

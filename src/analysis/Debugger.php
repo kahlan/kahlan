@@ -16,21 +16,6 @@ class Debugger
      */
     public static $_loader = null;
 
-    public static $_classes = [];
-
-
-    /**
-     * Config method
-     *
-     * @param array $options Options config array.
-     */
-    public function config($options = [])
-    {
-        $defaults = ['classes' => []];
-        $options += $defaults;
-        static::$_classes += $options['classes'];
-    }
-
     /**
      * Gets a backtrace string based on the supplied options.
      *
@@ -96,13 +81,18 @@ class Debugger
     public static function backtrace($options = [])
     {
         $defaults = [
-            'trace' => [],
-            'start' => 0,
-            'depth' => 0
+            'trace'  => [],
+            'start'  => 0,
+            'depth'  => 0,
+            'object' => false,
+            'args'   => false
         ];
         $options += $defaults;
 
-        $backtrace = static::normalize($options['trace'] ?: debug_backtrace());
+        $mask = $options['args'] ? 0 : DEBUG_BACKTRACE_IGNORE_ARGS;
+        $mask = $options['object'] ? $mask | DEBUG_BACKTRACE_PROVIDE_OBJECT : $mask;
+
+        $backtrace = static::normalize($options['trace'] ?: debug_backtrace($mask));
 
         $traceDefaults = [
             'line' => '?',

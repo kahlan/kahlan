@@ -35,7 +35,13 @@ describe("toEcho", function() {
 
             $actual = ToEcho::description($report);
 
-            expect($actual)->toBe('echo the expected string.');
+            expect($actual)->toBe([
+                'description' => 'echo the expected string.',
+                'params'      => [
+                    "actual"   => "Hello",
+                    "expected" => "Good Bye!"
+                ]
+            ]);
 
         });
 
