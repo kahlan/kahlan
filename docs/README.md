@@ -782,7 +782,7 @@ To enable **Monkey Patching**, add the following `use` statement in the top of y
 use kahlan\plugin\Monkey;
 ```
 
-Monkey Patching allows replacement of core functions and classes that can't be stubbed, for example `[time()](http://php.net/manual/en/function.time.php)`, `[DateTime](http://php.net/manual/en/class.datetime.php)` or `[MongoId](http://php.net/manual/en/class.mongoid.php)` for example.
+Monkey Patching allows replacement of core functions and classes that can't be stubbed, for example [time()](http://php.net/manual/en/function.time.php), [DateTime](http://php.net/manual/en/class.datetime.php) or [MongoId](http://php.net/manual/en/class.mongoid.php) for example.
 
 With Kahlan, you can patch anything you want using `Monkey::patch()`!
 
