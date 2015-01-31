@@ -108,6 +108,14 @@ describe("toThrow", function() {
 
         });
 
+        it("doesn't catch not an exception", function() {
+            $closure = function() {
+                return true;
+            };
+
+            expect($closure)->not->toThrow(new \Exception());
+        });
+
         it("doesn't catch whatever exception if a detailed one is expected", function() {
 
             $closure = function() {
