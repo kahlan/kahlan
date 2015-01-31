@@ -66,12 +66,11 @@ describe("Debugger", function() {
 
 		it("return backtrace if it's not an exception instance", function() {
 
-			$backtrace = [
-				'message' => 'World Destruction Error!',
-				'code'    => 404
-			];
-
-			$message = Debugger::message($backtrace);
+			$exception = new \Exception("World Destruction Error!", 404);
+			$message = Debugger::message([
+				'message' => $exception->getMessage(),
+				'code' => $exception->getCode(),
+			]);
 			expect($message)->toBe("`<INVALID>` Code(404): World Destruction Error!");
 
 		});
