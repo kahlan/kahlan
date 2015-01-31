@@ -100,8 +100,7 @@ describe("Scope", function() {
 
         });
 
-        context("when nested",
-                function() {
+        context("when nested", function() {
 
             beforeEach(function() {
                 $this->bar = 1;
