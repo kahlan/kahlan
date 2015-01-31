@@ -1056,6 +1056,43 @@ describe("My Spec", function() {
 });
 ```
 
+### Control-flow
+
+Spec control flow is similar to `Jasmine`. In other words functions executed on a scope level using the following order `before`, `beforeEach`, `after` and `afterEach`.
+
+```php
+describe(function() {
+    before(function() {
+       //b1
+    });
+    describe(function() {
+        before(function() {
+           //b2
+        });
+        beforeEach(function() {
+           //be1
+        });
+        it("runs a spec", function() {
+           //it1
+        });
+        it("runs a spec", function() {
+           //it2
+        });
+        afterEach(function() {
+           //ae1
+        });
+        after(function() {
+           //a2
+        });
+    });
+    after(function() {
+       //a1
+    });
+});
+```
+
+That code will give a following execution flow: `b1 - b2 - be1 - it1 - ae1 - be1 - it2 - ae1 - a2 - a1`
+
 ### Use the exclusive mode
 
 When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec by doubling the first letter like in the following example:
