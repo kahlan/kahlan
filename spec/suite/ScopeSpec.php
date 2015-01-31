@@ -92,8 +92,7 @@ describe("Scope", function() {
 
         });
 
-        context("when nested",
-                function() {
+        context("when nested", function() {
 
             beforeEach(function() {
                 $this->bar = 1;
@@ -109,8 +108,10 @@ describe("Scope", function() {
 
     describe("skipIf", function() {
 
-        it("should return none if provided false/null", function() {
-          expect(skipIf(false))->toBe(null);
+        it("returns none if provided false/null", function() {
+
+            expect(skipIf(false))->toBe(null);
+
         });
 
         $executed = 0;

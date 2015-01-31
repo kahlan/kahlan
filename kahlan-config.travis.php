@@ -63,4 +63,3 @@ Filter::register('kahlan.coverage-exporter', function($chain) {
 });
 
 Filter::apply($this, 'reporting', 'kahlan.coverage-exporter');
-?>

@@ -16,21 +16,6 @@ class Debugger
      */
     public static $_loader = null;
 
-    public static $_classes = [];
-
-
-    /**
-     * Config method
-     *
-     * @param array $options Options config array.
-     */
-    public function config($options = [])
-    {
-        $defaults = ['classes' => []];
-        $options += $defaults;
-        static::$_classes += $options['classes'];
-    }
-
     /**
      * Gets a backtrace string based on the supplied options.
      *
