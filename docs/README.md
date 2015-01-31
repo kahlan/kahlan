@@ -1032,6 +1032,30 @@ Will give you the detailed code coverage of the `Xdebug::stop()` method.
 **Note:**
 All available namespaces, classed or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
 
+### Injecting variables in root scope
+
+To inject some variables to all scopes (e.g. database connection, helpers, etc.) and make it available in all you specs, one solution is to configure you `kahlan-config.php` file like the following:
+
+```php
+Filter::register('registering.globals', function($chain) {=
+    $root = $this->suite(); // The top most suite.
+    $root->global = 'MyVariable';
+    return $chain->next();
+});
+
+Filter::apply($this, 'run', 'registering.globals');
+```
+
+Then you can get it in any scopes like in the following:
+
+```php
+describe("My Spec", function() {
+    it("echoes the global", function() {
+        echo $this->global;
+    });
+});
+```
+
 ### Use the exclusive mode
 
 When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec by doubling the first letter like in the following example:
