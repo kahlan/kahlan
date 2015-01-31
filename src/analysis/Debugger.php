@@ -92,13 +92,18 @@ class Debugger
     public static function backtrace($options = [])
     {
         $defaults = [
-            'trace' => [],
-            'start' => 0,
-            'depth' => 0
+            'trace'  => [],
+            'start'  => 0,
+            'depth'  => 0,
+            'object' => false,
+            'args'   => false
         ];
         $options += $defaults;
 
-        $backtrace = static::normalize($options['trace'] ?: debug_backtrace());
+        $mask = $options['args'] ? 0 : DEBUG_BACKTRACE_IGNORE_ARGS;
+        $mask = $options['object'] ? $mask | DEBUG_BACKTRACE_PROVIDE_OBJECT : $mask;
+
+        $backtrace = static::normalize($options['trace'] ?: debug_backtrace($mask));
 
         $traceDefaults = [
             'line' => '?',

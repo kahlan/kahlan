@@ -84,6 +84,7 @@ class Kahlan {
 
         $args->argument('src', ['array' => 'true', 'default' => ['src']]);
         $args->argument('spec', ['array' => 'true', 'default' => ['spec']]);
+        $args->argument('pattern', ['default' => '*Spec.php']);
         $args->argument('reporter', ['default' => 'dot']);
         $args->argument('coverage', ['type' => 'string']);
         $args->argument('config', ['default' => 'kahlan-config.php']);
@@ -171,6 +172,7 @@ Configuration Options:
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
   --spec=<path>                       Paths of specifications directories (default: `['spec']`).
+  --pattern=<pattern>                 A shell wildcard pattern (default: `'*Spec.php'`).
 
 Reporter Options:
 
@@ -345,7 +347,7 @@ EOD;
     {
         return Filter::on($this, 'load', [], function($chain) {
             $files = Dir::scan($this->args()->get('spec'), [
-                'include' => '*Spec.php',
+                'include' => $this->args()->get('pattern'),
                 'type' => 'file'
             ]);
             foreach($files as $file) {
@@ -372,15 +374,15 @@ EOD;
     {
         return Filter::on($this, 'console', [], function($chain) {
             $reporters = $this->reporters();
-            $start = $this->_start;
-            $colors = !$this->args()->get('no-colors');
 
             $reporter = $this->args()->get('reporter');
             $class = 'kahlan\reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $reporter)));
 
-            if ($reporter = new $class(compact('start', 'colors'))) {
-                $reporters->add('console', $reporter);
-            }
+            $reporter = new $class([
+                'start'   => $this->_start,
+                'colors'  => !$this->args()->get('no-colors')
+            ]);
+            $reporters->add('console', $reporter);
         });
     }
 
@@ -426,9 +428,10 @@ EOD;
     {
         return Filter::on($this, 'run', [], function($chain) {
             $this->suite()->run([
-                'reporters' => $this->reporters(),
-                'autoclear' => $this->args()->get('autoclear'),
-                'ff'        => $this->args()->get('ff')
+                'reporters'      => $this->reporters(),
+                'autoclear'      => $this->args()->get('autoclear'),
+                'ff'             => $this->args()->get('ff'),
+                'backtraceFocus' => $this->args()->get('pattern'),
             ]);
         });
     }
