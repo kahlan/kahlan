@@ -8,14 +8,14 @@ use kahlan\analysis\Debugger;
 class Terminal extends Reporter
 {
     /**
-     * Use colors in console mode
+     * Indicates if colors will be used.
      *
      * @var boolean
      */
     protected $_colors = true;
 
     /**
-     * Output stream, STDOUT
+     * Output stream, STDOUT.
      *
      * @var stream
      */
@@ -30,12 +30,12 @@ class Terminal extends Reporter
     {
         parent::__construct($config);
         $defaults = [
-            'colors' => true,
-            'output' => fopen('php://output', 'r')
+            'colors'  => true,
+            'output'  => fopen('php://output', 'r')
         ];
         $config += $defaults;
-        $this->_output = $config['output'];
         $this->_colors = $config['colors'];
+        $this->_output = $config['output'];
     }
 
     /**
@@ -104,15 +104,16 @@ class Terminal extends Reporter
     {
         $this->write("\n");
         $this->write('[Skipped] ', 'cyan');
-        $report['backtrace'] = Debugger::backtrace([
-            'trace' => $report['exception'], 'start' => 2, 'depth' => 1
-        ]);
+        $this->write($this->_file($report) . "\n");
 
-        $indent = $this->_messages($report);
+        $indent = $this->_messages($report['messages']);
+        $trace = reset($report['backtrace']);
+        $line = $trace['line'];
         $this->write(str_repeat('    ', $indent));
         $this->write(' specification');
         $this->write(' skipped', 'cyan');
-        $this->write("\n");
+        $this->write(' - ');
+        $this->write("line {$line}\n", 'yellow');
     }
 
     /**
@@ -124,23 +125,24 @@ class Terminal extends Reporter
     {
         $this->write("\n");
         $this->write('[Failure] ', 'red');
+        $this->write($this->_file($report) . "\n");
 
-        $indent = $this->_messages($report);
+        $indent = $this->_messages($report['messages']);
         $trace = reset($report['backtrace']);
         $line = $trace['line'];
         $this->write(str_repeat('    ', $indent));
-        $this->write($report['matcher'], 'red');
-        $this->write(' expectation');
+        $this->write('expect->');
+        $this->write($report['matcher'], 'magenta');
+        $this->write('()');
         $this->write(' failed', 'red');
-        $this->write(" (line {$line})");
+        $this->write(' - ');
+        $this->write("line {$line}", 'yellow');
 
         $this->write("\n\n");
         $this->_reportDescription($report);
         $this->write('Trace:', 'yellow');
         $this->write("\n");
-        $this->write(Debugger::trace([
-            'trace' => $report['backtrace'], 'depth' => 1
-        ]));
+        $this->write(Debugger::trace(['trace' => $report['backtrace'], 'depth' => 1]));
         $this->write("\n");
     }
 
@@ -184,26 +186,24 @@ class Terminal extends Reporter
     {
         $this->write("\n");
         $this->write('[Incomplete] ', 'yellow');
-        $report['backtrace'] = Debugger::backtrace([
-            'trace' => $report['exception'], 'start' => 1, 'depth' => 1
-        ]);
+        $this->write($this->_file($report) . "\n");
 
-        $indent = $this->_messages($report);
+        $indent = $this->_messages($report['messages']);
         $trace = reset($report['backtrace']);
         $line = $trace['line'];
         $this->write(str_repeat('    ', $indent));
         $this->write(' an unexisting');
         $this->write(' class', 'yellow');
-        $this->write(" has been used (line {$line})");
+        $this->write(" has been used");
+        $this->write(' - ');
+        $this->write("line {$line}", 'yellow');
 
         $this->write("\n\n");
         $this->write('Description:', 'magenta');
         $this->write(' ' . Debugger::message($report['exception']) ."\n");
         $this->write('Trace:', 'yellow');
         $this->write("\n");
-        $this->write(Debugger::trace([
-            'trace' => $report['backtrace']
-        ]));
+        $this->write(Debugger::trace(['trace' => $report['backtrace']]));
         $this->write("\n");
     }
 
@@ -216,17 +216,17 @@ class Terminal extends Reporter
     {
         $this->write("\n");
         $this->write('[Exception] ', 'magenta');
-        $report['backtrace'] = Debugger::backtrace([
-            'trace' => $report['exception']
-        ]);
+        $this->write($this->_file($report) . "\n");
 
-        $indent = $this->_messages($report);
+        $indent = $this->_messages($report['messages']);
         $trace = reset($report['backtrace']);
         $line = $trace['line'];
         $this->write(str_repeat('    ', $indent));
         $this->write(' an uncaught');
         $this->write(' exception', 'magenta');
-        $this->write(" has been thrown (line {$line})");
+        $this->write(" has been thrown");
+        $this->write(' - ');
+        $this->write("line {$line}", 'yellow');
 
         $this->write("\n\n");
         $this->write('Description:', 'magenta');
@@ -243,15 +243,10 @@ class Terminal extends Reporter
      * @param  array   $messages An array of description message.
      * @return integer           The final message indentation.
      */
-    protected function _messages($report)
+    protected function _messages($messages)
     {
         $indent = 0;
-        $messages = array_values(array_filter($report['messages']));
-        if ($messages && isset($report['backtrace'])) {
-            $backtrace = reset($report['backtrace']);
-            $path = preg_replace('~' . getcwd() . '~', '', $backtrace['file']);
-            $messages[0] .= " (at {$path})";
-        }
+        $messages = array_values(array_filter($messages));
         foreach ($messages as $message) {
             $this->write(str_repeat('    ', $indent));
             preg_match('/^((?:it|when)?\s*(?:not)?)(.*)$/', $message, $matches);
@@ -262,6 +257,22 @@ class Terminal extends Reporter
         }
         return $indent;
     }
+
+    /**
+     * Extracts the file path reference of a report.
+     *
+     * @param  array       $report A report array.
+     * @return string|null         The file path reference or `null` if no backtrace is available.
+     */
+    protected function _file($report) {
+        if (!isset($report['backtrace'])) {
+            return;
+        }
+        $backtrace = reset($report['backtrace']);
+        $path = preg_replace('~' . getcwd() . '~', '', $backtrace['file']);
+        return $path;
+    }
+
 
     /**
      * Print a summary of specs execution to STDOUT
@@ -322,13 +333,12 @@ class Terminal extends Reporter
      */
     protected function _exclusive($report)
     {
-        if (!$backtrace = $report['exclusives']) {
+        if (!$backtraces = $report['exclusives']) {
             return;
         }
         $this->write("Exclusive Mode Detected in the following files:\n", 'yellow');
-        foreach ($backtrace as $trace) {
-
-            $this->write(Debugger::trace(['trace' => $trace, 'start' => 1, 'depth' => 1]) . "\n");
+        foreach ($backtraces as $backtrace) {
+            $this->write(Debugger::trace(['trace' => $backtrace, 'depth' => 1]) . "\n");
         }
         $this->write("exit(-1)\n", 'red');
     }

@@ -41,7 +41,7 @@ describe("Matcher", function() {
 
     });
 
-    describe("__call()", function() {
+    describe("->__call()", function() {
 
         context("when the matcher passes", function() {
 
@@ -66,6 +66,7 @@ describe("Matcher", function() {
                     'expected' => true
                 ]);
                 expect($pass['messages'])->toBe(['it runs a spec']);
+
             });
 
             it("logs a pass with a deferred matcher", function() {
@@ -155,7 +156,7 @@ describe("Matcher", function() {
                     'expected' => false
                 ]);
                 expect($failure['messages'])->toBe(['it runs a spec']);
-                expect($failure['backtrace'])->toBeA('array');
+                expect($failure['backtrace'])->toBeAn('array');
             });
 
             it("logs a fail with a deferred matcher", function() {

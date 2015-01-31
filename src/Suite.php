@@ -91,8 +91,8 @@ class Suite extends Scope
     {
         $defaults = [
             'closure' => null,
-            'name' => 'describe',
-            'scope' => 'normal',
+            'name'    => 'describe',
+            'scope'   => 'normal',
             'matcher' => null
         ];
         $options += $defaults;
@@ -422,7 +422,12 @@ class Suite extends Scope
      */
     public function run($options = [])
     {
-        $defaults = ['reporters' => null, 'autoclear' => [], 'ff' => 0];
+        $defaults = [
+            'reporters'      => null,
+            'autoclear'      => [],
+            'ff'             => 0,
+            'backtraceFocus' => '*Spec.php'
+        ];
         $options += $defaults;
 
         if ($this->_locked) {
@@ -434,6 +439,7 @@ class Suite extends Scope
         $this->_reporters = $options['reporters'];
         $this->_autoclear = (array) $options['autoclear'];
         $this->_ff = $options['ff'];
+        $this->_backtraceFocus = $options['backtraceFocus'];
 
         $this->report('begin', ['total' => $this->enabled()]);
         $this->_run();
