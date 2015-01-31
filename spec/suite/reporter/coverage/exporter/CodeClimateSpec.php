@@ -18,14 +18,18 @@ describe("CodeClimate", function() {
     describe("::export()", function() {
 
         it("exports custom parameters", function() {
+
             $collector = new Collector([
                 'driver'    => new Xdebug()
             ]);
 
             $json = CodeClimate::export([
-                'collector'      => $collector,
-                'repo_token'     => 'ABC',
-                'ci_service'             => [
+                'collector'    => $collector,
+                'repo_token'   => 'ABC',
+                'head'         => '1234',
+                'branch'       => 'mybranch',
+                'committed_at' => '1419462000',
+                'ci_service'   => [
                     'name'             => 'kahlan-ci',
                     'build_identifier' => '123'
                 ]
@@ -33,12 +37,18 @@ describe("CodeClimate", function() {
 
             $actual = json_decode($json, true);
 
-            unset($actual['run_at']);
+            expect($actual['repo_token'])->toBe('ABC');
+
+            expect($actual['git'])->toBe([
+                'head'         => '1234',
+                'branch'       => 'mybranch',
+                'committed_at' => '1419462000'
+            ]);
+
             expect($actual['ci_service'])->toBe([
                 'name'             => 'kahlan-ci',
                 'build_identifier' => '123'
             ]);
-            expect($actual['repo_token'])->toBe('ABC');
         });
 
         it("exports the coverage of a file with no extra end line", function() {
@@ -46,8 +56,8 @@ describe("CodeClimate", function() {
             $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
 
             $collector = new Collector([
-                'driver'    => new Xdebug(),
-                'path'      => $path
+                'driver' => new Xdebug(),
+                'path'   => $path
             ]);
 
             $code = new NoEmptyLine();
@@ -57,8 +67,8 @@ describe("CodeClimate", function() {
             $collector->stop();
 
             $json = CodeClimate::export([
-                'collector'      => $collector,
-                'repo_token'     => 'ABC'
+                'collector'  => $collector,
+                'repo_token' => 'ABC'
             ]);
 
             $actual = json_decode($json, true);
@@ -86,8 +96,8 @@ describe("CodeClimate", function() {
             $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
 
             $collector = new Collector([
-                'driver'    => new Xdebug(),
-                'path'      => $path
+                'driver' => new Xdebug(),
+                'path'   => $path
             ]);
 
             $code = new ExtraEmptyLine();
@@ -97,9 +107,9 @@ describe("CodeClimate", function() {
             $collector->stop();
 
             $json = CodeClimate::export([
-                'collector'      => $collector,
-                'repo_token'     => 'ABC',
-                'ci'             => [
+                'collector'  => $collector,
+                'repo_token' => 'ABC',
+                'ci'         => [
                     'name'             => 'kahlan-ci',
                     'build_identifier' => '123'
                 ]
@@ -140,8 +150,8 @@ describe("CodeClimate", function() {
             $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
 
             $collector = new Collector([
-                'driver'    => new Xdebug(),
-                'path'      => $path
+                'driver' => new Xdebug(),
+                'path'   => $path
             ]);
 
             $code = new ExtraEmptyLine();
@@ -151,12 +161,12 @@ describe("CodeClimate", function() {
             $collector->stop();
 
             $success = CodeClimate::write([
-                'collector'      => $collector,
-                'file'           => $this->output,
-                'environment'    => [
-                    'pwd'        => '/home/crysalead/kahlan'
+                'collector'   => $collector,
+                'file'        => $this->output,
+                'environment' => [
+                    'pwd'     => '/home/crysalead/kahlan'
                 ],
-                'repo_token'     => 'ABC'
+                'repo_token'  => 'ABC'
             ]);
 
             $json = file_get_contents($this->output);

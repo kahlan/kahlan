@@ -29,25 +29,31 @@ class CodeClimate
     /**
      * Export a coverage to a string.
      *
-     * @param  array   $options The option array where the possible values are:
-     *                 -`'collector'`      _object_ : The collector instance.
-     *                 -`'repo_token'`     _string_ : The Coveralls repo token.
-     *                 -`'environment'`    _array_  : The Environment. Possible values are:
-     *                   -`'pwd'`          _string_ : The repo absolute path.
-     *                 -`'ci'`             _array_  : The CI service. Possible values are:
-     *                   - `'name`             _string_ : CI service name
-     *                   - `'build_identifier` _string_ : build identifier
-     *                   - `'build_url`        _string_ : build url
-     *                   - `'branch`           _string_ : branch name
-     *                   - `'commit_sha`       _string_ : commit SHA
-     *                   - `'pull_request`     _string_ : pull request id
-     *                 -`'run_at'`         _integer_: The date of a timestamp.
+     * @param  array  $options The option array where the possible values are:
+     *                         -`'collector'`      _object_ : The collector instance.
+     *                         -`'repo_token'`     _string_ : The Coveralls repo token.
+     *                         -`'head'`           _string_ : The HEAD hash.
+     *                         -`'branch'`         _string_ : The branch name.
+     *                         -`'committed_at'`   _integer_: The committed timestamp.
+     *                         -`'environment'`    _array_  : The Environment. Possible values are:
+     *                           -`'pwd'`          _string_ : The repo absolute path.
+     *                         -`'ci_service'`     _string_ : The CI service name
+     *                           - `'name`             _string_ : CI service name
+     *                           - `'build_identifier` _string_ : build identifier
+     *                           - `'build_url`        _string_ : build url
+     *                           - `'branch`           _string_ : branch name
+     *                           - `'commit_sha`       _string_ : commit SHA
+     *                           - `'pull_request`     _string_ : pull request id
+     *                         -`'run_at'`         _integer_: The runned timestamp.
      * @return string
      */
     public static function export($options)
     {
         $defaults = [
             'collector'   => null,
+            'head' => null,
+            'branch' => null,
+            'committed_at' => null,
             'repo_token'  => null,
             'environment' => [
                 'pwd' => getcwd()
@@ -63,9 +69,9 @@ class CodeClimate
             'repo_token'   => $options['repo_token'],
             'environment'  => $options['environment'] + ['package_version' => '0.1.2'],
             'git'          => [
-                'head'         => `git log -1 --pretty=format:'%H'`,
-                'branch'       => trim(`git rev-parse --abbrev-ref HEAD`),
-                'committed_at' => `git log -1 --pretty=format:'%ct'`
+                'head'         => $options['head'] ?: `git log -1 --pretty=format:'%H'`,
+                'branch'       => $options['branch'] ?: trim(`git rev-parse --abbrev-ref HEAD`),
+                'committed_at' => $options['committed_at'] ?: `git log -1 --pretty=format:'%ct'`
             ],
             'ci_service'   => $options['ci_service'],
             'source_files' => static::_sourceFiles($options['collector'])

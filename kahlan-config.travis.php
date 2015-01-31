@@ -57,6 +57,7 @@ Filter::register('kahlan.coverage-exporter', function($chain) {
     CodeClimate::write([
         'collector'  => $reporter,
         'file'       => 'codeclimate.json',
+        'branch'     => getenv('TRAVIS_BRANCH') ?: null,
         'repo_token' => 'a4b5637db5629f60a5d3fc1a070b2339479ff8989c6491dfc6a19cada5e4ffaa'
     ]);
     return $chain->next();
