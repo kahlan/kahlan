@@ -32,7 +32,6 @@ class Debugger
         $options += $defaults;
         $back = [];
         $backtrace = static::backtrace($options);
-        $error = reset($backtrace);
 
         foreach ($backtrace as $trace) {
             $back[] =  static::_traceToString($trace);
@@ -61,9 +60,11 @@ class Debugger
             $trace['file'] = $loader->findFile($trace['class']);
         }
 
-        if (strpos($trace['function'], '{closure}') !== false) {
-            $trace['function'] = "{closure}";
-        }
+        // This code will never fire, because of backtrace closure checking
+        // Please check this!
+        // if (strpos($trace['function'], '{closure}') !== false) {
+        //     $trace['function'] = "{closure}";
+        // }
         return $trace['function'] .' - ' . $trace['file'] . ', line ' . $trace['line'];
     }
 
