@@ -67,6 +67,56 @@ describe("Stub", function() {
 
             });
 
+            it("throw when stub a method using closure and using andReturn()", function() {
+
+                expect(function() {
+                    $foo = new Foo();
+                    Stub::on($foo)->method('message', function($param) { return $param; })->andReturn(true);
+                })->toThrow(new \Exception("Closure already set."));
+
+            });
+
+            describe("Method->run()", function() {
+
+                it("should set closure", function() {
+
+                    $foo = new Foo();
+                    $stub = Stub::on($foo)->method('message');
+                    $stub->run(function($param) {
+                        return $param;
+                    });
+
+                    expect($foo->message('Aloha!'))->toBe('Aloha!');
+
+                });
+
+                it("should throw when return is already set", function() {
+
+                    expect(function() {
+                        $foo = new Foo();
+                        $stub = Stub::on($foo)->method('message');
+                        $stub->andReturn('Ahoy!');
+
+                        $stub->run(function($param) {
+                            return $param;
+                        });
+                    })->toThrow(new \Exception('Some return values are already set.'));
+
+                });
+
+                it("should throw when trying to pass non callable", function() {
+
+                    expect(function() {
+                        $foo = new Foo();
+                        $stub = Stub::on($foo)->method('message');
+
+                        $stub->run('String');
+                    })->toThrow(new \Exception('The passed parameter is not callable.'));
+
+                });
+
+            });
+
             it("stubs a magic method", function() {
 
                 $foo = new Foo();

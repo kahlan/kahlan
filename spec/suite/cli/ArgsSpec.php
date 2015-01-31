@@ -19,6 +19,16 @@ describe("Args", function() {
                 'default' => null
             ]);
 
+            $arguments = $args->arguments();
+            expect($arguments)->toBeA('array');
+            expect(isset($arguments['argument1']))->toBe(true);
+            expect($arguments['argument1'])->toEqual([
+                'type'    => 'boolean',
+                'array'   => false,
+                'value'   => null,
+                'default' => null
+            ]);
+
         });
 
         it("gets the default config", function() {
@@ -264,6 +274,55 @@ describe("Args", function() {
 
             expect($args->exists('argument1'))->toBe(false);
             expect($args->exists('argument2'))->toBe(true);
+
+        });
+
+    });
+
+    describe("->cast()", function() {
+
+        it("should cast array", function() {
+
+            $args = new Args();
+            $cast = $args->cast(["some", "string", "and", 10], "string");
+            expect($cast)->toBeA('array');
+            foreach($cast as $c) {
+                expect($c)->toBeA('string');
+            }
+
+        });
+
+        it("should cast boolean", function() {
+
+            $args = new Args();
+            $cast = $args->cast(["true", "false", "some_string", null, 10], "boolean");
+            expect($cast)->toBeA('array');
+            expect(count($cast))->toBe(5);
+            list($bTrue, $bFalse, $string, $null, $number) = $cast;
+            expect($bTrue)->toBeA('boolean')->toBe(true);
+            expect($bFalse)->toBeA('boolean')->toBe(false);
+            expect($string)->toBeA('boolean')->toBe(true);
+            expect($null)->toBeA('boolean')->toBe(false);
+            expect($number)->toBeA('boolean')->toBe(true);
+
+        });
+
+        it("should cast numeric", function() {
+
+            $args = new Args();
+            $cast = $args->cast([true, "false", "some_string", null, 10], "numeric");
+            expect($cast)->toBeA('array');
+            expect(count($cast))->toBe(5);
+            expect(implode($cast))->toBe("100110");
+
+        });
+
+        it("should cast value into array", function() {
+
+            $args = new Args();
+            $cast = $args->cast("string", "string", true);
+            expect($cast)->toBeA("array");
+            expect($cast)->toContain("string");
 
         });
 

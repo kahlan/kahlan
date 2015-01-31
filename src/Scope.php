@@ -201,6 +201,11 @@ class Scope
         if ($this->_parent !== null) {
             return $this->_parent->__get($key);
         }
+        if (in_array($key, static::$_reserved)) {
+            if ($key == 'expect') {
+                throw new Exception("You can't use expect() inside of describe()");
+            }
+        }
         throw new Exception("Undefined variable `{$key}`.");
     }
 

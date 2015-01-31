@@ -1032,6 +1032,69 @@ Will give you the detailed code coverage of the `Xdebug::stop()` method.
 **Note:**
 All available namespaces, classed or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
 
+### Injecting in scopes
+
+Sometimes you want to inject some variable to all scopes, in e.g. you have a helper that you want yo use in all you specs. This can be easily done by configuration file:
+
+```php
+Filter::register('registering.globals', function($chain) {
+    $root = $this->suite();
+    $root->global = 'hello';
+    return $chain->next();
+});
+
+Filter::apply($this, 'run', 'registering.globals');
+```
+
+And in your specs you can use it way like this:
+
+```php
+describe("My Spec", function() {
+    it("echoes the global", function() {
+        echo $this->global;
+    });
+});
+```
+
+It will be available like `$this->global` in `describe`, `context` and `it`.
+
+### Control-flow
+
+Spec control flow is very similar to `Jasmine`. In other words functions like `after`, `afterEach`, `before` and `beforeEach` is executed depending on their position in spec.
+
+```php
+describe(function() {
+    before(function() {
+       //B1
+    });
+    describe(function() {
+        before(function() {
+           //B2
+        });
+        beforeEach(function() {
+           //b1
+        });
+        it("runs a spec", function() {
+           //i1
+        });
+        it("runs a spec", function() {
+           //i2
+        });
+        afterEach(function() {
+           //a1
+        });
+        after(function() {
+           //A2
+        });
+    });
+    after(function() {
+       //A1
+    });
+});
+```
+
+That code will give a following execution flow: `B1 - B2 - b1 - i1 - a1 - b1 - i2 - a1 - A2 - A1`
+
 ### Use the exclusive mode
 
 When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec by doubling the first letter like in the following example:
