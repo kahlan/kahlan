@@ -23,7 +23,8 @@ describe("DummyClass", function() {
         DummyClass::enable();
         $find = $dummy->findFile($loader, '\kahlan\spec\mock\plugin\stub', null);
 
-        expect($find)->toBeAnInstanceOf('\kahlan\spec\plugin\stub\Stub0');
+        expect(strpos(get_class($find), 'kahlan\spec\plugin\stub\Stub'))->toBe(0);
+
     });
 
 
