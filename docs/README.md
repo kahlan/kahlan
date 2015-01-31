@@ -1032,6 +1032,32 @@ Will give you the detailed code coverage of the `Xdebug::stop()` method.
 **Note:**
 All available namespaces, classed or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
 
+### Injecting in scopes
+
+Sometimes you want to inject some variable to all scopes, in e.g. you have a helper that you want yo use in all you specs. This can be easily done by configuration file:
+
+```php
+Filter::register('registering.globals', function($chain) {
+    $root = $this->suite();
+    $root->global = 'hello';
+    return $chain->next();
+});
+
+Filter::apply($this, 'run', 'registering.globals');
+```
+
+And in your specs you can use it way like this:
+
+```php
+describe("My Spec", function() {
+    it("echoes the global", function() {
+        echo $this->global;
+    });
+});
+```
+
+It will be available like `$this->global` in `describe`, `context` and `it`.
+
 ### Use the exclusive mode
 
 When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec by doubling the first letter like in the following example:
