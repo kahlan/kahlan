@@ -31,7 +31,6 @@ Filter::register('kahlan.coverage', function($chain) {
             //Exclude text based reporter classes from code coverage reporting (a bit useless)
             'src/reporter/Dot.php',
             'src/reporter/Bar.php',
-            'src/reporter/Verbose.php',
             'src/reporter/Terminal.php',
             'src/reporter/Reporter.php',
             'src/reporter/Coverage.php',
@@ -58,9 +57,10 @@ Filter::register('kahlan.coverage-exporter', function($chain) {
     CodeClimate::write([
         'collector'  => $reporter,
         'file'       => 'codeclimate.json',
-        'repo_token' => 'a4b5637db5629f60a5d3fc1a070b2339479ff8989c6491dfc6a19cada5e4ffaa'
+        'repo_token' => '44d9595530151e99ebc6d2b63f0cea5b30aaaecf86767a2ac6717aa0c2be77f3'
     ]);
     return $chain->next();
 });
 
 Filter::apply($this, 'reporting', 'kahlan.coverage-exporter');
+?>

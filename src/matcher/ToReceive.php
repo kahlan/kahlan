@@ -36,7 +36,7 @@ class ToReceive
         $call = $this->_classes['call'];
         $this->_call = new $call($actual);
         $this->_message = $this->_call->method($expected);
-        $this->_backtrace = Debugger::backtrace();
+        $this->_backtrace = Debugger::backtrace(['start' => 4]);
     }
 
     public function __call($method, $params)

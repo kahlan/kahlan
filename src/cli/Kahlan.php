@@ -84,7 +84,6 @@ class Kahlan {
 
         $args->argument('src', ['array' => 'true', 'default' => ['src']]);
         $args->argument('spec', ['array' => 'true', 'default' => ['spec']]);
-        $args->argument('pattern', ['default' => '*Spec.php']);
         $args->argument('reporter', ['default' => 'dot']);
         $args->argument('coverage', ['type' => 'string']);
         $args->argument('config', ['default' => 'kahlan-config.php']);
@@ -103,16 +102,6 @@ class Kahlan {
     }
 
     /**
-     * Returns the attached autoloader instance.
-     *
-     * @return object
-     */
-    public function autoloader()
-    {
-        return $this->_autoloader;
-    }
-
-    /**
      * Returns arguments instance.
      *
      * @return object
@@ -123,7 +112,7 @@ class Kahlan {
     }
 
     /**
-     * Returns the suite instance.
+     * Returns the suite.
      *
      * @return object
      */
@@ -182,7 +171,6 @@ Configuration Options:
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
   --spec=<path>                       Paths of specifications directories (default: `['spec']`).
-  --pattern=<pattern>                 A shell wildcard pattern (default: `'*Spec.php'`).
 
 Reporter Options:
 
@@ -220,7 +208,7 @@ Note: The `[]` notation in default values mean that the related option can accep
 To add additionnal values, just repeat the same option many times in the command line.
 
 EOD;
-        \kahlan\plugin\Quit::quit();
+    exit();
     }
 
     /**
@@ -258,9 +246,9 @@ EOD;
 
             $this->_bootstrap();
 
-            $this->_interceptor();
-
             $this->_namespaces();
+
+            $this->_autoloader();
 
             $this->_patchers();
 
@@ -290,26 +278,10 @@ EOD;
      */
     protected function _bootstrap()
     {
-        return Filter::on($this, 'bootstrap', [], function($chain) {
+        return Filter::on($this, 'boostrap', [], function($chain) {
             if ($this->args()->exists('clover') && !$this->args()->exists('coverage')) {
                 $this->args()->set('coverage', 1);
             }
-        });
-    }
-
-    /**
-     * Set up the default `'interceptor'` filter.
-     */
-    protected function _interceptor()
-    {
-        return Filter::on($this, 'interceptor', [], function($chain) {
-            Interceptor::patch([
-                'loader'     => [$this->autoloader(), 'loadClass'],
-                'include'    => $this->args()->get('include'),
-                'exclude'    => array_merge($this->args()->get('exclude'), ['kahlan\\']),
-                'persistent' => $this->args()->get('persistent'),
-                'cachePath'  => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
-            ]);
         });
     }
 
@@ -319,12 +291,32 @@ EOD;
     protected function _namespaces()
     {
         return Filter::on($this, 'namespaces', [], function($chain) {
+            if (!$this->_autoloader || !method_exists($this->_autoloader, 'add')) {
+                echo Cli::color("The defined autoloader doesn't support `add()` calls\n", 'yellow');
+                return;
+            }
             $paths = $this->args()->get('spec');
             foreach ($paths as $path) {
                 $path = realpath($path);
                 $namespace = basename($path) . '\\';
-                $this->autoloader()->add($namespace, dirname($path));
+                $this->_autoloader->add($namespace, dirname($path));
             }
+        });
+    }
+
+    /**
+     * Set up the default `'autoloader'` filter.
+     */
+    protected function _autoloader()
+    {
+        return Filter::on($this, 'autoloader', [], function($chain) {
+            Interceptor::patch([
+                'loader'     => [$this->_autoloader, 'loadClass'],
+                'include'    => $this->args()->get('include'),
+                'exclude'    => array_merge($this->args()->get('exclude'), ['kahlan\\']),
+                'persistent' => $this->args()->get('persistent'),
+                'cachePath'  => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
+            ]);
         });
     }
 
@@ -353,7 +345,7 @@ EOD;
     {
         return Filter::on($this, 'load', [], function($chain) {
             $files = Dir::scan($this->args()->get('spec'), [
-                'include' => $this->args()->get('pattern'),
+                'include' => '*Spec.php',
                 'type' => 'file'
             ]);
             foreach($files as $file) {
@@ -380,18 +372,15 @@ EOD;
     {
         return Filter::on($this, 'console', [], function($chain) {
             $reporters = $this->reporters();
+            $start = $this->_start;
+            $colors = !$this->args()->get('no-colors');
 
             $reporter = $this->args()->get('reporter');
-            if ($reporter === 'none') {
-                return;
-            }
             $class = 'kahlan\reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $reporter)));
 
-            $reporter = new $class([
-                'start'   => $this->_start,
-                'colors'  => !$this->args()->get('no-colors')
-            ]);
-            $reporters->add('console', $reporter);
+            if ($reporter = new $class(compact('start', 'colors'))) {
+                $reporters->add('console', $reporter);
+            }
         });
     }
 
@@ -406,7 +395,7 @@ EOD;
             }
             if (!extension_loaded('xdebug')) {
                 $console = $this->reporters()->get('console');
-                $console->write("\nWARNING: Xdebug is not installed, code coverage has been disabled.\n", 'yellow');
+                $console->write("\nWARNING: Xdebug is not installed, code coverage has been disabled.\n", "n;yellow");
                 return;
             }
             $reporters = $this->reporters();
@@ -437,10 +426,9 @@ EOD;
     {
         return Filter::on($this, 'run', [], function($chain) {
             $this->suite()->run([
-                'reporters'      => $this->reporters(),
-                'autoclear'      => $this->args()->get('autoclear'),
-                'ff'             => $this->args()->get('ff'),
-                'backtraceFocus' => $this->args()->get('pattern'),
+                'reporters' => $this->reporters(),
+                'autoclear' => $this->args()->get('autoclear'),
+                'ff'        => $this->args()->get('ff')
             ]);
         });
     }

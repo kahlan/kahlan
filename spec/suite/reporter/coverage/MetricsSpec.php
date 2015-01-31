@@ -181,7 +181,7 @@ describe("Metrics", function() {
 
             });
 
-            it("returns root's childs", function() {
+            it("should return all childs", function() {
 
                 $childs = $this->metrics->childs();
                 expect(is_array($childs))->toBe(true);
@@ -189,32 +189,15 @@ describe("Metrics", function() {
 
             });
 
-            it("returns specified child", function() {
+            it("should return specified child", function() {
 
                 $childs = $this->metrics->childs('kahlan');
                 expect(is_array($childs))->toBe(true);
                 expect(isset($childs['spec']))->toBe(true);
 
-                $childs = $this->metrics->childs('kahlan\spec');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['fixture']))->toBe(true);
-
-                $childs = $this->metrics->childs('kahlan\spec\fixture');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['reporter']))->toBe(true);
-
-                $childs = $this->metrics->childs('kahlan\spec\fixture\reporter');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['coverage']))->toBe(true);
-
-                $childs = $this->metrics->childs('kahlan\spec\fixture\reporter\coverage');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['ExtraEmptyLine']))->toBe(true);
-                expect(isset($childs['NoEmptyLine']))->toBe(true);
-
             });
 
-            it("returns `null` on unknown child", function() {
+            it("should return null on unknown child", function() {
 
                 $childs = $this->metrics->childs('unknown_child');
                 expect($childs)->toBe(null);

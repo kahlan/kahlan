@@ -8,14 +8,6 @@ use kahlan\analysis\Debugger;
 class Scope
 {
     /**
-     * A shell wildcard pattern used to removes useless traces to focus on the one
-     * related to a spec file.
-     *
-     * @var boolean
-     */
-    protected $_backtraceFocus = null;
-
-    /**
      * Instances stack.
      *
      * @var array
@@ -184,7 +176,9 @@ class Scope
         $this->_message = $message;
         $this->_parent = $parent;
         $this->_root = $parent ? $parent->_root : $this;
-        $this->_backtrace = $this->_backtraceFocus(Debugger::backtrace(), 1);
+        $this->_backtrace = Debugger::backtrace([
+            'start' => defined('HHVM_VERSION') ? 3 : 4
+        ]);
     }
 
     /**
@@ -343,17 +337,6 @@ class Scope
     }
 
     /**
-     * Log a skipped test.
-     *
-     * @param array $data The result data.
-     */
-    public function skip($data = [])
-    {
-        $data['backtrace'] = Debugger::backtrace(['trace' => $data['exception']]);
-        $this->log('skip', $data);
-    }
-
-    /**
      * Log an uncached exception test.
      *
      * @param array $data The result data.
@@ -361,8 +344,17 @@ class Scope
     public function exception($data = [])
     {
         $this->_root->_failure++;
-        $data['backtrace'] = Debugger::backtrace(['trace' => $data['exception']]);
         $this->log('exception', $data);
+    }
+
+    /**
+     * Log a skipped test.
+     *
+     * @param array $data The result data.
+     */
+    public function skip($data = [])
+    {
+        $this->log('skip', $data);
     }
 
     /**
@@ -372,7 +364,6 @@ class Scope
      */
     public function incomplete($data = [])
     {
-        $data['backtrace'] = Debugger::backtrace(['trace' => $data['exception']]);
         $this->log('incomplete', $data);
     }
 
@@ -384,41 +375,10 @@ class Scope
     public function log($type, $data = [])
     {
         $data['type'] = $type;
-        $data += ['messages'  => $this->messages()];
-        if (!isset($data['backtrace'])) {
-            $data['backtrace'] = Debugger::backtrace();
-        }
-        $depth = ($type === 'pass' || $type === 'fail' | $type === 'skip') ? 1 : null;
-        $data['backtrace'] = $this->_backtraceFocus($data['backtrace'], $depth);
+        $data += ['messages' => $this->messages()];
         $resultType = $this->_resultTypes[$type];
         $this->_root->_results[$resultType][] = $data;
         $this->report($type, $data);
-    }
-
-    /**
-     * Removes all useless traces up to the trace which match a spec file pattern.
-     *
-     * @param  array $backtrace A backtrace.
-     * @param  array $depth     Number of traces to keep.
-     * @return array            A cleaned backtrace limited to $length trace.
-     */
-    protected function _backtraceFocus($backtrace, $depth = null) {
-        if (!$this->_root->_backtraceFocus) {
-            return $backtrace;
-        }
-
-        $i = 0;
-        $found = false;
-        $pattern = strtr(preg_quote($this->_root->_backtraceFocus, '~'), ['\*' => '.*', '\?' => '.']);
-
-        while ($i < 10 && isset($backtrace[$i])) {
-            if (preg_match('~^' . $pattern . '$~', $backtrace[$i]['file'])) {
-                $found = true;
-                break;
-            }
-            $i++;
-        }
-        return array_slice($found ? array_slice($backtrace, $i) : $backtrace, 0, $depth);
     }
 
     /**

@@ -56,10 +56,9 @@ Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attem
 
 ### Main Features
 
-* Simple API
-* Small code base (~10 times smaller than PHPUnit)
+* Small API
+* Small code base (~5 kloc)
 * Fast Code Coverage metrics ([xdebug](http://xdebug.org) required)
-* Handy stubbing system (no more [mockery](https://github.com/padraic/mockery) or [prophecy](https://github.com/phpspec/prophecy) no longer needed)
 * Set stubs on your class methods directly (i.e allows dynamic mocking)
 * Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
 * Check called methods on your class/instances
@@ -878,7 +877,7 @@ it("throws an exception when an exit statement occurs if not allowed", function(
 
 Kahlan provides a flexible reporter system which can be extended easily.
 
-There are three build-in reporters and the default is the dotted one:
+There are two build-in reporters and the default is the dotted one:
 
 ```php
 ./bin/kahlan --reporter=dot # Default value
@@ -887,7 +886,6 @@ There are three build-in reporters and the default is the dotted one:
 To use a reporter which looks like more a progress bar use the following option:
 ```php
 ./bin/kahlan --reporter=bar
-./bin/kahlan --reporter=verbose
 ```
 
 You can easily roll you own if these reporters don't fit your needs.
@@ -902,21 +900,49 @@ namespace my\namespace;
 class MyReporter extends \kahlan\reporter\Terminal
 {
     /**
-     * Callback called on successful expectation.
+     * Callback called before any specs processing.
      *
-     * @param array $report The report array.
+     * @param array $params The suite params array.
      */
-    public function pass($report = [])
+    public function begin($params)
+    {
+        parent::begin($params);
+    }
+
+    /**
+     * Callback called before a spec.
+     */
+    public function before()
+    {
+    }
+
+    /**
+     * Callback called after a spec.
+     */
+    public function after()
+    {
+    }
+
+    /**
+     * Callback called when a new spec file is processed.
+     */
+    public function progress()
+    {
+        $this->_current++;
+    }
+
+    /**
+     * Callback called on successful spec.
+     */
+    public function pass($report)
     {
         $this->write('✓', "green");
     }
 
     /**
      * Callback called on failure.
-     *
-     * @param array $report The report array.
      */
-    public function fail($report = [])
+    public function fail($report)
     {
         $this->write('☠', "red");
         $this->write("\n");
@@ -925,10 +951,8 @@ class MyReporter extends \kahlan\reporter\Terminal
 
     /**
      * Callback called when an exception occur.
-     *
-     * @param array $report The report array.
      */
-    public function exception($report = [])
+    public function exception($report)
     {
         $this->write('☠', "magenta");
         $this->write("\n");
@@ -937,10 +961,8 @@ class MyReporter extends \kahlan\reporter\Terminal
 
     /**
      * Callback called on a skipped spec.
-     *
-     * @param array $report The report array.
      */
-    public function skip($report = [])
+    public function skip($report)
     {
         $this->write('-', "cyan");
     }
@@ -948,7 +970,7 @@ class MyReporter extends \kahlan\reporter\Terminal
     /**
      * Callback called at the end of specs processing.
      */
-    public function end($results = [])
+    public function end($results)
     {
         $this->write("\n");
         $this->_summary($results);
@@ -1116,8 +1138,8 @@ For more information about filters, take a look at [the documentation of the fil
 The filterable entry points are the following:
 
 * `'workflow`'           # The one to rule them all
-  * `'interceptor`'      # Operations on the autoloader
   * `'namespaces`'       # Adds some namespaces not managed by composer (like `spec`)
+  * `'autoloader`'       # Operations on the autoloader
   * `'patchers`'         # Adds patchers
   * `'loadSpecs`'        # Loads specs
   * `'reporters`'        # Adds reporters

@@ -2,6 +2,7 @@
 namespace kahlan;
 
 use Exception;
+use kahlan\analysis\Debugger;
 use kahlan\analysis\Inspector;
 
 class Matcher
@@ -172,7 +173,10 @@ class Matcher
         $not = $this->_not;
         $pass = $not ? !$boolean : $boolean;
         $type = $pass ? 'pass' : 'fail';
-        $this->_parent->{$type}($data + compact('not', 'actual'));
+        $data['backtrace'] = Debugger::backtrace([
+            'start' => defined('HHVM_VERSION') ? 2 : 3
+        ]);
+        $this->_parent->$type($data + compact('not', 'actual'));
         return $boolean;
     }
 

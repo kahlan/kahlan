@@ -7,7 +7,21 @@ use kahlan\plugin\Stub;
 
 describe("Debugger", function() {
 
-	describe("::trace()", function() {
+	describe("->config()", function() {
+
+		it("should set config properly", function() {
+
+			$debugger = new Debugger();
+			$debugger->config([
+				'classes' => ['list', 'of', 'some', 'classes']
+			]);
+			expect(Debugger::$_classes)->toBe(['list', 'of', 'some', 'classes']);
+
+		});
+
+	});
+
+	describe("::trace", function() {
 
 		it("returns a default backtrace string", function() {
 
@@ -15,7 +29,7 @@ describe("Debugger", function() {
 			expect($backtrace)->toBeA('string');
 
 			$backtrace = explode("\n", $backtrace);
-			expect(empty($backtrace))->toBe(false);
+			expect($backtrace)->toHaveLength(14);
 
 		});
 
@@ -25,7 +39,7 @@ describe("Debugger", function() {
 			expect($backtrace)->toBeA('string');
 
 			$backtrace = explode("\n", $backtrace);
-			expect(empty($backtrace))->toBe(false);
+			expect($backtrace)->toHaveLength(12);
 
 		});
 
@@ -35,54 +49,36 @@ describe("Debugger", function() {
 			expect($backtrace)->toBeA('string');
 
 			$backtrace = explode("\n", $backtrace);
-			expect(empty($backtrace))->toBe(false);
+			expect($backtrace)->toHaveLength(13);
 
 		});
 
 	});
 
-	describe("::message()", function() {
+	describe("::message", function() {
 
-		it("formats an exception as a string message", function() {
+		it("returns the message of an exception", function() {
 
 			$message = Debugger::message(new Exception('World Destruction Error!'));
 			expect($message)->toBe('`Exception` Code(0): World Destruction Error!');
 
 		});
 
-		it("formats a backtrace array as a string message", function() {
+		it("return backtrace if it's not an exception instance", function() {
 
-			$backtrace = [
-				'message' => 'E_ERROR Error!',
-				'code'    => E_ERROR
-			];
-
-			$message = Debugger::message($backtrace);
-			expect($message)->toBe("`E_ERROR` Code(1): E_ERROR Error!");
-
-<<<<<<< HEAD
 			$exception = new \Exception("World Destruction Error!", 404);
 			$message = Debugger::message([
 				'message' => $exception->getMessage(),
 				'code' => $exception->getCode(),
 			]);
 			expect($message)->toBe("`<INVALID>` Code(404): World Destruction Error!");
-=======
-			$backtrace = [
-				'message' => 'Invalid Error!',
-				'code'    => 404
-			];
-
-			$message = Debugger::message($backtrace);
-			expect($message)->toBe("`<INVALID>` Code(404): Invalid Error!");
->>>>>>> dev
 
 		});
 
 	});
 
 
-    describe("::errorType()", function() {
+    describe("::errorType", function() {
 
         it("returns some reader-friendly error type string", function() {
 
