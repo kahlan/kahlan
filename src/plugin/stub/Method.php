@@ -74,10 +74,10 @@ class Method extends \kahlan\plugin\call\Message
     public function run($closure)
     {
         if ($this->_returns) {
-            throw new Exception("Some return values are already set.");
+            throw new \Exception("Some return values are already set.");
         }
         if (!is_callable($closure)) {
-            throw new Exception("The passed parameter is not callable.");
+            throw new \Exception("The passed parameter is not callable.");
         }
         $this->_closure = $closure;
     }
@@ -90,7 +90,7 @@ class Method extends \kahlan\plugin\call\Message
     public function andReturn()
     {
         if ($this->_closure) {
-            throw new Exception("Closure already set.");
+            throw new \Exception("Closure already set.");
         }
         if (func_num_args()) {
             $this->_returns = func_get_args();
