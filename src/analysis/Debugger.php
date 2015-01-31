@@ -16,6 +16,9 @@ class Debugger
      */
     public static $_loader = null;
 
+    public static $_classes = [];
+
+
     /**
      * Config method
      *
