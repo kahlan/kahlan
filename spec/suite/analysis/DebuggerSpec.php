@@ -15,7 +15,7 @@ describe("Debugger", function() {
 			expect($backtrace)->toBeA('string');
 
 			$backtrace = explode("\n", $backtrace);
-			expect($backtrace)->toHaveLength(14);
+			expect(empty($backtrace))->toBe(false);
 
 		});
 
@@ -25,7 +25,7 @@ describe("Debugger", function() {
 			expect($backtrace)->toBeA('string');
 
 			$backtrace = explode("\n", $backtrace);
-			expect($backtrace)->toHaveLength(12);
+			expect(empty($backtrace))->toBe(false);
 
 		});
 
@@ -35,7 +35,7 @@ describe("Debugger", function() {
 			expect($backtrace)->toBeA('string');
 
 			$backtrace = explode("\n", $backtrace);
-			expect($backtrace)->toHaveLength(13);
+			expect(empty($backtrace))->toBe(false);
 
 		});
 
