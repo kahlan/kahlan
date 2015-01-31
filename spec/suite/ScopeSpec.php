@@ -92,6 +92,17 @@ describe("Scope", function() {
 
         });
 
+        it("throws properly message on expect() usage inside of describe()", function() {
+
+            $closure = function() {
+                $this->expect;
+            };
+
+
+            expect($closure)->toThrow(new Exception("You can't use expect() inside of describe()"));
+
+        });
+
         context("when nested", function() {
 
             beforeEach(function() {
