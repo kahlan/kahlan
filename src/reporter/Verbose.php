@@ -41,17 +41,19 @@ class Verbose extends Terminal
         if ($this->_new) {
             $this->write("\n");
             $this->write('[Passed] ', 'green');
-            $this->_indent = $this->_messages($report);
+            $this->write($this->_file($report) . "\n");
+            $this->_indent = $this->_messages($report['messages']);
             $this->_new = false;
         }
         $trace = reset($report['backtrace']);
         $line = $trace['line'];
         $this->write(str_repeat('    ', $this->_indent));
-        $this->write($report['matcher'], 'green');
-        $this->write(' expectation');
+        $this->write('expect->');
+        $this->write($report['matcher'], 'magenta');
+        $this->write('()');
         $this->write(' passed', 'green');
-        $this->write(" (line {$line})");
-        $this->write("\n");
+        $this->write(' - ');
+        $this->write("line {$line}\n", 'yellow');
     }
 
     /**
