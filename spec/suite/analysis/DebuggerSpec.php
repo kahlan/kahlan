@@ -3,8 +3,23 @@ namespace kahlan\spec\suite\analysis;
 
 use Exception;
 use kahlan\analysis\Debugger;
+use kahlan\plugin\Stub;
 
 describe("Debugger", function() {
+
+	describe("->config()", function() {
+
+		it("should set config properly", function() {
+
+			$debugger = new Debugger();
+			$debugger->config([
+				'classes' => ['list', 'of', 'some', 'classes']
+			]);
+			expect(Debugger::$_classes)->toBe(['list', 'of', 'some', 'classes']);
+
+		});
+
+	});
 
 	describe("::trace", function() {
 
@@ -49,7 +64,20 @@ describe("Debugger", function() {
 
 		});
 
+		it("return backtrace if it's not an exception instance", function() {
+
+			$backtrace = [
+				'message' => 'World Destruction Error!',
+				'code'    => 404
+			];
+
+			$message = Debugger::message($backtrace);
+			expect($message)->toBe("`<INVALID>` Code(404): World Destruction Error!");
+
+		});
+
 	});
+
 
     describe("::errorType", function() {
 

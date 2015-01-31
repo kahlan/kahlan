@@ -26,6 +26,8 @@ Filter::register('kahlan.coverage', function($chain) {
             //Exclude coverage classes from code coverage reporting (don't know how to test the tester)
             'src/reporter/coverage/driver/Xdebug.php',
             'src/reporter/coverage/Collector.php',
+            //Exclude HHVM because of HHVM_VERSION return
+            'src/reporter/coverage/driver/HHVM.php',
             //Exclude text based reporter classes from code coverage reporting (a bit useless)
             'src/reporter/Dot.php',
             'src/reporter/Bar.php',
