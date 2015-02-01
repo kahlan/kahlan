@@ -1,4 +1,4 @@
-## 2 - Getting started
+## Getting started
 
 **Requirement: Just before continuing, make sure you have installed [Composer](https://getcomposer.org/).**
 

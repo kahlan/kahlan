@@ -1,4 +1,4 @@
-## 9 - The Kahlan config file
+## The `kahlan-config.php` file
 
 If you want to set some default options, change the execution workflow or load some custom plugins at a boostrap level, you will need to setup you own config file.
 

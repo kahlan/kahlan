@@ -1,4 +1,4 @@
-## 6 - Monkey Patching
+## Monkey Patching
 
 * [Monkey Patch Quit Statements](#monkey-patch-quit-statements)
 

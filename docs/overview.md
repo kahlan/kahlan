@@ -1,4 +1,4 @@
-## 3 - Overview
+## Overview
 
 ### Describe Your Specs
 

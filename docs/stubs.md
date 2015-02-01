@@ -1,4 +1,4 @@
-## 5 - Stubs
+## Stubs
 
 * [Method Stubbing](#method-stubbing)
 * [Instance Stubbing](#instance-stubbing)

@@ -1,4 +1,4 @@
-## 7 - Reporters
+## Reporters
 
 Kahlan provides a flexible reporter system which can be extended easily.
 

@@ -1,4 +1,4 @@
-## 8 - Pro Tips
+## Pro Tips
 
 ### Use the `--ff` option (fast fail)
 

@@ -1,4 +1,4 @@
-## 1 - Why This One?
+## Why This One?
 
 One of PHP's assumptions is that once you define a function/constant/class it stays defined forever. Although this assumption is not really problematic when you are building an application, things get a bit more complicated if you want your application to be easily testable...
 

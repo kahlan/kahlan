@@ -1,4 +1,4 @@
-## 4 - Matchers
+## Matchers
 
 * [Classic matchers](#classic)
 * [Method invocation matchers](#method)
