@@ -6,10 +6,22 @@ use Countable;
 class ToHaveLength
 {
     /**
+     * Checks that `$actual` has the `$expected` length.
+     *
+     * @param  mixed   $actual   The actual value.
+     * @param  mixed   $expected The expected value.
+     * @return boolean
+     */
+    public static function match($actual, $expected)
+    {
+        return static::actual($actual) === $expected;
+    }
+
+    /**
      * Normalize the actual value in the expected format.
      *
      * @param  mixed $actual The actual value to be normalized.
-     * @return mixed The normalized value.
+     * @return mixed         The normalized value.
      */
     public static function actual($actual)
     {
@@ -21,17 +33,10 @@ class ToHaveLength
     }
 
     /**
-     * Expect that `$actual` has the `$expected` length.
+     * Returns the description report.
      *
-     * @param  mixed   $actual The actual value.
-     * @param  mixed   $expected The expected value.
-     * @return boolean
+     * @return array The description report.
      */
-    public static function match($actual, $expected)
-    {
-        return static::actual($actual) === $expected;
-    }
-
     public static function description($report)
     {
         $description = "have the expected length.";

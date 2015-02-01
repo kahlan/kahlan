@@ -7,37 +7,37 @@ use kahlan\plugin\call\Message;
 class Call
 {
     /**
-     * Logged calls
+     * Logged calls.
      *
      * @var array
      */
     protected static $_logs = [];
 
     /**
-     * Current index of logged calls per reference
+     * Current index of logged calls per reference.
      *
      * @var array
      */
     protected static $_index = 0;
 
     /**
-     * Message invocation
+     * Message invocation.
      *
      * @var array
      */
     protected $_message = [];
 
     /**
-     * Reference
+     * Reference.
      *
      * @var array
      */
     protected $_reference = null;
 
     /**
-     * Constructor
+     * The Constructor.
      *
-     * @param mixed $reference An instance or a fully namespaced class name.
+     * @param object|string $reference An instance or a fully-namespaced class name.
      */
     public function __construct($reference, $static = false)
     {
@@ -49,9 +49,9 @@ class Call
     }
 
     /**
-     * Active method call logging for a method
+     * Enable logging for the passed method name.
      *
-     * @param string $name method name.
+     * @param string $name The method name.
      */
     public function method($name)
     {
@@ -68,9 +68,9 @@ class Call
     }
 
     /**
-     * Log a call.
+     * Logs a call.
      *
-     * @param mixed  $reference An instance or a fully namespaced class name.
+     * @param mixed  $reference An instance or a fully-namespaced class name or an array of them.
      * @param string $call      The method name.
      */
     public static function log($reference, $call)
@@ -86,6 +86,12 @@ class Call
         static::$_logs[] = $calls;
     }
 
+    /**
+     * Helper for the `log()` method.
+     *
+     * @param object|string $reference An instance or a fully-namespaced class name.
+     * @param string $call             The method name.
+     */
     public static function _call($reference, $call) {
         $static = false;
         if (preg_match('/^::.*/', $call['name'])) {
@@ -101,7 +107,7 @@ class Call
     }
 
     /**
-     * Return Logged calls.
+     * Returns Logged calls.
      */
     public static function logs()
     {
@@ -109,12 +115,13 @@ class Call
     }
 
     /**
-     * Get set the find index
+     * Gets/sets the find index
      *
      * @param  integer $index The index value to set or `null` to get the current one.
      * @return integer        Return founded log call.
      */
-    public static function lastFindIndex($index = null) {
+    public static function lastFindIndex($index = null)
+    {
         if ($index !== null) {
             static::$_index = $index;
         }
@@ -122,12 +129,12 @@ class Call
     }
 
     /**
-     * Find a logged call.
+     * Finds a logged call.
      *
-     * @param  mixed      $reference An instance or a fully namespaced class name.
-     * @param  string     $method    The method name.
-     * @param  interger   $index     Start index.
-     * @return array|null Return founded log call.
+     * @param  object|string $reference An instance or a fully-namespaced class name.
+     * @param  string        $method    The method name.
+     * @param  interger      $index     Start index.
+     * @return array|false              Return founded log call.
      */
     public static function find($reference, $call = null, $index = 0)
     {
@@ -149,6 +156,13 @@ class Call
         return false;
     }
 
+    /**
+     * Helper for the `find()` method.
+     *
+     * @param  object|string $reference An instance or a fully-namespaced class name.
+     * @param  interger      $index     Start index.
+     * @return array                    The founded log calls.
+     */
     protected static function _findAll($reference, $index)
     {
         $result = [];
@@ -162,6 +176,13 @@ class Call
         return $result;
     }
 
+    /**
+     * Helper for the `_findAll()` method.
+     *
+     * @param  object|string $reference An instance or a fully-namespaced class name.
+     * @param  array         $logs      The logged calls.
+     * @return array                    The founded log call.
+     */
     protected static function _matchReference($reference, $logs = [])
     {
         foreach ($logs as $log) {
@@ -176,7 +197,7 @@ class Call
     }
 
     /**
-     * Clear the registered references & logs.
+     * Clears the registered references & logs.
      */
     public static function clear()
     {

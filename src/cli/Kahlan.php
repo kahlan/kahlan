@@ -145,7 +145,7 @@ class Kahlan {
     /**
      * Load the config.
      *
-     * @param string $argv The command line string
+     * @param string $argv The command line string.
      */
     public function loadConfig($argv = [])
     {
@@ -280,13 +280,18 @@ EOD;
         });
     }
 
+    /**
+     * Returns the exit status.
+     *
+     * @return integer The exit status.
+     */
     public function status()
     {
         return $this->suite()->status();
     }
 
     /**
-     * Set up the default `'bootstrap'` filter.
+     * The default `'bootstrap'` filter.
      */
     protected function _bootstrap()
     {
@@ -298,7 +303,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'interceptor'` filter.
+     * The default `'interceptor'` filter.
      */
     protected function _interceptor()
     {
@@ -314,7 +319,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'namespace'` filter.
+     * The default `'namespace'` filter.
      */
     protected function _namespaces()
     {
@@ -329,7 +334,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'patcher'` filter.
+     * The default `'patcher'` filter.
      */
     protected function _patchers()
     {
@@ -347,7 +352,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'load'` filter.
+     * The default `'load'` filter.
      */
     protected function _load()
     {
@@ -363,7 +368,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'reporters'` filter.
+     * The default `'reporters'` filter.
      */
     protected function _reporters()
     {
@@ -374,7 +379,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'console'` filter.
+     * The default `'console'` filter.
      */
     protected function _console()
     {
@@ -396,7 +401,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'coverage'` filter.
+     * The default `'coverage'` filter.
      */
     protected function _coverage()
     {
@@ -421,7 +426,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'matchers'` filter.
+     * The default `'matchers'` filter.
      */
     protected function _matchers()
     {
@@ -431,7 +436,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'run'` filter.
+     * The default `'run'` filter.
      */
     protected function _run()
     {
@@ -446,7 +451,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'reporting'` filter.
+     * The default `'reporting'` filter.
      */
     protected function _reporting()
     {
@@ -463,7 +468,7 @@ EOD;
     }
 
     /**
-     * Set up the default `'stop'` filter.
+     * The default `'stop'` filter.
      */
     protected function _stop()
     {
@@ -474,7 +479,7 @@ EOD;
 
 
     /**
-     * Set up the default `'quit'` filter.
+     * The default `'quit'` filter.
      */
     protected function _quit()
     {

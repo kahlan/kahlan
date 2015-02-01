@@ -13,40 +13,49 @@ class Message
     ];
 
     /**
-     * Message name
+     * Message name.
      *
      * @var array
      */
     protected $_name = null;
 
     /**
-     * Message params
+     * Message params.
      *
      * @var array
      */
     protected $_params = [];
 
     /**
-     * Static call
+     * Static call.
      *
      * @var array
      */
     protected $_static = false;
 
-    public function __construct($options = [])
+    /**
+     * The Constructor.
+     *
+     * @param array $config Possible options are:
+     *                       - `'name'`   _string_ : The method name.
+     *                       - `'params'` _array_  : The method params.
+     *                       - `'static'` _boolean_: `true` if the method is static, `false` otherwise.
+     */
+    public function __construct($config = [])
     {
         $defaults = ['name' => null, 'params' => [], 'static' => false];
-        $options += $defaults;
+        $config += $defaults;
 
-        $this->_name = $options['name'];
-        $this->_params = $options['params'];
-        $this->_static = $options['static'];
+        $this->_name = $config['name'];
+        $this->_params = $config['params'];
+        $this->_static = $config['static'];
     }
 
     /**
-     * Set params requirement.
+     * Sets params requirement.
      *
-     * @param mixed <0,n> Parameter(s).
+     * @param  mixed  ... <0,n> Parameter(s).
+     * @return object     $this.
      */
     public function with()
     {
@@ -55,7 +64,7 @@ class Message
     }
 
     /**
-     * Check if this message is compatible with passed call array.
+     * Checks if this message is compatible with passed call array.
      *
      * @param  array   $call A call array.
      * @return boolean
@@ -77,7 +86,7 @@ class Message
     }
 
     /**
-     * Check if this stub is compatible with passed args.
+     * Checks if this stub is compatible with passed args.
      *
      * @param  array   $params The passed args.
      * @return boolean
@@ -101,17 +110,32 @@ class Message
         return true;
     }
 
-    public function getName()
+    /**
+     * Gets the method name.
+     *
+     * @return string
+     */
+    public function name()
     {
         return $this->_name;
     }
 
-    public function getWith()
+    /**
+     * Gets the method params.
+     *
+     * @return array
+     */
+    public function params()
     {
         return $this->_params;
     }
 
-    public function getStatic()
+    /**
+     * Checks if the method is a static method.
+     *
+     * @return boolean
+     */
+    public function isStatic()
     {
         return $this->_static;
     }

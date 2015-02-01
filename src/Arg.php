@@ -79,7 +79,7 @@ class Arg
      * Check if `$actual` matches the matcher.
      *
      * @param  string  $name The actual value.
-     * @return boolean returns `true` on success and `false` otherwise.
+     * @return boolean       Returns `true` on success and `false` otherwise.
      */
     public function match($actual)
     {

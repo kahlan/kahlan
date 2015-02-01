@@ -25,7 +25,7 @@ class Pointcut
      * @param  object $loader The autloader instance.
      * @param  string $class  The fully-namespaced class name.
      * @param  string $file   The correponding finded file path.
-     * @return string The patched file path.
+     * @return string         The patched file path.
      */
     public function findFile($loader, $class, $file)
     {
@@ -35,9 +35,9 @@ class Pointcut
     /**
      * The JIT patcher.
      *
-     * @param  NodeDef $node The node to patch.
-     * @param  string  $path The file path of the source code.
-     * @return NodeDef       The patched node.
+     * @param  object $node The node instance to patch.
+     * @param  string $path The file path of the source code.
+     * @return object       The patched node.
      */
     public function process($node, $path = null)
     {
@@ -64,7 +64,7 @@ class Pointcut
     /**
      * Helper for `Pointcut::process()`.
      *
-     * @param NodeDef The node to patch.
+     * @param object The node instance to patch.
      */
     protected function _processMethods($node)
     {

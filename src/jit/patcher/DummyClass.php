@@ -12,11 +12,17 @@ class DummyClass {
      */
     protected $_namespaces = [];
 
-    public function __construct($options = [])
+    /**
+     * The Constructor.
+     *
+     * @param array $config The config array. Possibles values are:
+     *                      - `'namespaces'` _string_: The namespaces where dummies are allowed.
+     */
+    public function __construct($config = [])
     {
         $defaults = ['namespaces' => []];
-        $options += $defaults;
-        $this->_namespaces = (array) $options['namespaces'];
+        $config += $defaults;
+        $this->_namespaces = (array) $config['namespaces'];
     }
 
     /**
@@ -48,9 +54,9 @@ class DummyClass {
     /**
      * The JIT patcher.
      *
-     * @param  NodeDef $node The node to patch.
-     * @param  string  $path The file path of the source code.
-     * @return NodeDef       The patched node.
+     * @param  object $node The node instance to patch.
+     * @param  string $path The file path of the source code.
+     * @return object       The patched node.
      */
     public function process($node, $path = null)
     {
@@ -58,11 +64,13 @@ class DummyClass {
     }
 
     /**
-     * Create a Dummy Class.
+     * Creates a Dummy Class.
      *
-     * @param  string $namespace The namespace name.
-     * @param  string $class     The class name.
-     * @return string            The Dummy Class content.
+     *
+     * @param  array $config The config array. Possibles values are:
+     * @param                - `'namespace'` _string_: The namespace name.
+     * @param                - `'class'`     _string_: The class name.
+     * @return string        The Dummy Class source code.
      */
     public static function generate($options = [])
     {

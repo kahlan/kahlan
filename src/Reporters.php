@@ -9,7 +9,9 @@ use Exception;
 class Reporters
 {
     /**
-     * The registered reporters
+     * The registered reporters.
+     *
+     * @var array
      */
     protected $_reporters = [];
 
@@ -73,7 +75,7 @@ class Reporters
     }
 
     /**
-     * Send a report
+     * Sends reports
      *
      * @param string $type The name of the report.
      * @param array  $data The data to report.

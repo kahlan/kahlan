@@ -164,7 +164,7 @@ class Scope
     protected $_locked = false;
 
     /**
-     * Constructor.
+     * The Constructor.
      *
      * @param array $options The Suite config array. Options are:
      *                       -`'message'` _string_ : the description message.
@@ -244,7 +244,7 @@ class Scope
     }
 
     /**
-     * Return the parent instance.
+     * Gets the parent instance.
      *
      * @return array
      */
@@ -254,7 +254,7 @@ class Scope
     }
 
     /**
-     * Return the spec's message.
+     * Gets the spec's message.
      *
      * @return array
      */
@@ -264,7 +264,7 @@ class Scope
     }
 
     /**
-     * Return all messages upon the root.
+     * Gets all messages upon the root.
      *
      * @return array
      */
@@ -279,7 +279,7 @@ class Scope
     }
 
     /**
-     * Skip test(s) if the condition is `true`.
+     * Skips test(s) if the condition is `true`.
      *
      * @param boolean $condition
      * @throws SkipException
@@ -301,7 +301,7 @@ class Scope
     }
 
     /**
-     * Manage catched exception.
+     * Manages catched exception.
      *
      * @param Exception $exception The catched exception.
      */
@@ -322,7 +322,7 @@ class Scope
     }
 
     /**
-     * Log a passing test.
+     * Logs a passing test.
      *
      * @param array $data The result data.
      */
@@ -332,7 +332,7 @@ class Scope
     }
 
     /**
-     * Log a failed test.
+     * Logs a failed test.
      *
      * @param array $data The result data.
      */
@@ -343,7 +343,7 @@ class Scope
     }
 
     /**
-     * Log a skipped test.
+     * Logs a skipped test.
      *
      * @param array $data The result data.
      */
@@ -354,7 +354,7 @@ class Scope
     }
 
     /**
-     * Log an uncached exception test.
+     * Logs an uncached exception test.
      *
      * @param array $data The result data.
      */
@@ -366,7 +366,7 @@ class Scope
     }
 
     /**
-     * Log a incomplete test.
+     * Logs a incomplete test.
      *
      * @param array $data The result data.
      */
@@ -377,7 +377,7 @@ class Scope
     }
 
     /**
-     * Set a result for the spec.
+     * Sets a result for the spec.
      *
      * @param array $data The result data.
      */
@@ -422,7 +422,7 @@ class Scope
     }
 
     /**
-     * Return all parent instances.
+     * Gets all parent instances.
      *
      * @param  boolean $current If `true` include `$this` to the list.
      * @return array.
@@ -439,7 +439,7 @@ class Scope
     }
 
     /**
-     * Bind the closure to the current context.
+     * Binds the closure to the current context.
      *
      * @param  Closure  $closure The variable to check
      * @param  string   $name Name of the parent type (TODO: to use somewhere).
@@ -454,7 +454,7 @@ class Scope
     }
 
     /**
-     * Gets/Sets exclusive mode.
+     * Gets/sets exclusive mode.
      *
      * @param  boolean|null For the setter behavior.
      * @return boolean
@@ -468,7 +468,7 @@ class Scope
     }
 
     /**
-     * Apply exclusivity up to the root.
+     * Applies exclusivity up to the root.
      */
     protected function _emitExclusive()
     {
@@ -513,7 +513,7 @@ class Scope
     }
 
     /**
-     * Send a report
+     * Sends a report
      *
      * @param string $type The name of the report.
      * @param array  $data The data to report.
@@ -527,7 +527,7 @@ class Scope
     }
 
     /**
-     * Returns suite reporters container.
+     * Gets the reporters container.
      *
      * @return object
      */

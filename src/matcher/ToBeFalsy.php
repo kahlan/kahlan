@@ -14,6 +14,11 @@ class ToBeFalsy extends ToEqual
         return parent::match($actual, false);
     }
 
+    /**
+     * Returns the description message.
+     *
+     * @return string The description message.
+     */
     public static function description()
     {
         return "be falsy.";

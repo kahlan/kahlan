@@ -4,14 +4,14 @@ namespace kahlan\reporter;
 class Reporter
 {
     /**
-     * Starting time
+     * Starting time.
      *
      * @var float
      */
     protected $_start = 0;
 
     /**
-     * Total of items to reach
+     * Total of items to reach.
      *
      * @var integer
      */
@@ -25,9 +25,10 @@ class Reporter
     protected $_current = 0;
 
     /**
-     * Reporter constructor
+     * The Constructor.
      *
-     * @param array $config (Unused).
+     * @param array $config The config array. Possible values are:
+     *                      - `'start' _integer_: A microtime value.
      */
     public function __construct($config = [])
     {

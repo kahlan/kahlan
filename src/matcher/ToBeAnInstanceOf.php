@@ -4,9 +4,9 @@ namespace kahlan\matcher;
 class ToBeAnInstanceOf
 {
     /**
-     * Expect that `$actual` is an instance of `$expected`.
+     * Checks that `$actual` is an instance of `$expected`.
      *
-     * @param  mixed   $actual The actual value.
+     * @param  mixed   $actual   The actual value.
      * @param  mixed   $expected The expected value.
      * @return boolean
      */
@@ -15,8 +15,14 @@ class ToBeAnInstanceOf
         return $actual instanceof $expected;
     }
 
+    /**
+     * Returns the description message.
+     *
+     * @return string The description message.
+     */
     public static function description()
     {
         return "be an instance of expected.";
     }
+
 }

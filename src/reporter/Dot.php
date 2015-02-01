@@ -93,6 +93,12 @@ class Dot extends Terminal
         $this->_exclusive($results);
     }
 
+    /**
+     * Outputs the string message in the console.
+     *
+     * @param string       $string  The string message.
+     * @param array|string $options The color options.
+     */
     protected function _write($string, $options = null)
     {
         $this->write($string, $options);

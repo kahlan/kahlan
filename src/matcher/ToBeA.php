@@ -4,9 +4,9 @@ namespace kahlan\matcher;
 class ToBeA
 {
     /**
-     * Expect that `$actual` has the `$expected` type.
+     * Checks that `$actual` has the `$expected` type.
      *
-     * @param  mixed   $actual The actual value.
+     * @param  mixed   $actual   The actual value.
      * @param  mixed   $expected The expected value.
      * @return boolean
      */
@@ -16,10 +16,10 @@ class ToBeA
     }
 
     /**
-     * Normalize the actual value in the expected format.
+     * Normalises the actual value in the expected format.
      *
      * @param  mixed $actual The actual value to be normalized.
-     * @return mixed The normalized value.
+     * @return mixed         The normalized value.
      */
     public static function actual($actual)
     {
@@ -27,10 +27,10 @@ class ToBeA
     }
 
     /**
-     * Normalize the expected value.
+     * Normalises the expected value.
      *
      * @param  mixed $expected The expected value to be normalized.
-     * @return mixed The normalized value.
+     * @return mixed           The normalized value.
      */
     public static function expected($expected)
     {
@@ -46,6 +46,11 @@ class ToBeA
         return strtolower($expected);
     }
 
+    /**
+     * Returns the description report.
+     *
+     * @return array The description report.
+     */
     public static function description($report)
     {
         $description = "have the expected type.";
@@ -53,4 +58,5 @@ class ToBeA
         $params['expected'] = static::expected($report['params']['expected']);
         return compact('description', 'params');
     }
+
 }

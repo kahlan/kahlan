@@ -6,13 +6,13 @@ use Exception;
 class ToThrow
 {
     /**
-     * Expect that `$actual` throws the `$expected` exception.
+     * Checks that `$actual` throws the `$expected` exception.
      *
      * The value passed to `$expected` is either an exception or the expected exception's message.
      *
-     * @param  Closure $actual The closure to run.
+     * @param  Closure $actual   The closure to run.
      * @param  mixed   $expected A string indicating what the error text is expected to be or a
-     *                 exception instance.
+     *                           exception instance.
      * @return boolean
      */
     public static function match($actual, $expected = null, $code = 0)
@@ -27,7 +27,7 @@ class ToThrow
     }
 
     /**
-     * Compare if two exception are similar.
+     * Compares if two exception are similar.
      *
      * @param  string  $actual   The actual message.
      * @param  string  $expected The expected message.
@@ -70,10 +70,10 @@ class ToThrow
     }
 
     /**
-     * Normalize the actual value as an Exception.
+     * Normalise the actual value as an Exception.
      *
      * @param  mixed $actual The actual value to be normalized.
-     * @return mixed The normalized value.
+     * @return mixed         The normalised value.
      */
     public static function actual($actual)
     {
@@ -85,10 +85,10 @@ class ToThrow
     }
 
     /**
-     * Normalize the expected value as an Exception.
+     * Normalise the expected value as an Exception.
      *
      * @param  mixed $expected The expected value to be normalized.
-     * @return mixed The normalized value.
+     * @return mixed           The normalised value.
      */
     public static function expected($expected, $code = 0)
     {
@@ -98,6 +98,11 @@ class ToThrow
         return $expected;
     }
 
+    /**
+     * Returns the description report.
+     *
+     * @return array The description report.
+     */
     public static function description($report)
     {
         $description = "throw a compatible exception.";
@@ -105,4 +110,5 @@ class ToThrow
         $params['expected'] = static::expected($report['params']['expected'], $report['params']['code']);
         return compact('description', 'params');
     }
+
 }

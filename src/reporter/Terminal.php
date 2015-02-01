@@ -22,9 +22,11 @@ class Terminal extends Reporter
     protected $_output = null;
 
     /**
-     * Reporter constructor
+     * The constructor.
      *
-     * @param array $config.
+     * @param array $config The config array. Possible values are:
+     *                      - `'colors' _boolean_ : If `false`, colors will be ignored.
+     *                      - `'output' _resource_: The output resource.
      */
     public function __construct($config = [])
     {
@@ -39,17 +41,18 @@ class Terminal extends Reporter
     }
 
     /**
-     * Print a string to STDOUT.
+     * Prints a string to output.
      *
-     * @param mixed        $string  The string to print.
+     * @param string       $string  The string to print.
      * @param string|array $options The possible values for an array are:
-     *                     - `'style`: a style code.
-     *                     - `'color'`: a color code.
-     *                     - `'background'`: a background color code.
-     *                     The string must respect one of the following format:
-     *                     - `'style;color;background'`
-     *                     - `'style;color'`
-     *                     - `'color'`
+     *                              - `'style`: a style code.
+     *                              - `'color'`: a color code.
+     *                              - `'background'`: a background color code.
+     *
+     *                              The string must respect one of the following format:
+     *                              - `'style;color;background'`
+     *                              - `'style;color'`
+     *                              - `'color'`
      *
      */
     public function write($string, $options = null)
@@ -73,7 +76,7 @@ class Terminal extends Reporter
     }
 
     /**
-     * Print a report to STDOUT
+     * Prints a report to STDOUT
      *
      * @param array $report A report array.
      */
@@ -96,7 +99,7 @@ class Terminal extends Reporter
     }
 
     /**
-     * Print a skipped report to STDOUT
+     * Prints a skipped report to STDOUT
      *
      * @param array $report A report array.
      */
@@ -117,7 +120,7 @@ class Terminal extends Reporter
     }
 
     /**
-     * Print a failure report to STDOUT
+     * Prints a failure report to STDOUT
      *
      * @param array $report A report array.
      */
@@ -147,38 +150,7 @@ class Terminal extends Reporter
     }
 
     /**
-     * Report a description of a spec
-     *
-     * @param array $report A report array.
-     */
-    protected function _reportDescription($report)
-    {
-        $not = $report['not'];
-        $description = $report['description'];
-        if (is_array($description)) {
-            $params = $description['params'];
-            $description = $description['description'];
-        } else {
-            $params = $report['params'];
-        }
-        foreach ($params as $key => $value) {
-            $this->write("{$key}: ", 'yellow');
-            $type = gettype($value);
-			$toString = function($instance) {
-                return 'an instance of `' . get_class($instance) . '`';
-            };
-            $this->write("({$type}) " . String::toString($value, ['object' => ['method' => $toString]]) . "\n");
-        }
-        $this->write('Description:', 'magenta');
-        $this->write(" {$report['matcher']} expected actual to ");
-        if ($not) {
-            $this->write('NOT ', 'magenta');
-        }
-        $this->write("{$description}\n");
-    }
-
-    /**
-     * Print an incomplete exception report to STDOUT
+     * Prints an incomplete exception report to STDOUT
      *
      * @param array $report A report array.
      */
@@ -238,7 +210,38 @@ class Terminal extends Reporter
     }
 
     /**
-     * Print an array of description messages to STDOUT
+     * Prints a description of a spec
+     *
+     * @param array $report A report array.
+     */
+    protected function _reportDescription($report)
+    {
+        $not = $report['not'];
+        $description = $report['description'];
+        if (is_array($description)) {
+            $params = $description['params'];
+            $description = $description['description'];
+        } else {
+            $params = $report['params'];
+        }
+        foreach ($params as $key => $value) {
+            $this->write("{$key}: ", 'yellow');
+            $type = gettype($value);
+            $toString = function($instance) {
+                return 'an instance of `' . get_class($instance) . '`';
+            };
+            $this->write("({$type}) " . String::toString($value, ['object' => ['method' => $toString]]) . "\n");
+        }
+        $this->write('Description:', 'magenta');
+        $this->write(" {$report['matcher']} expected actual to ");
+        if ($not) {
+            $this->write('NOT ', 'magenta');
+        }
+        $this->write("{$description}\n");
+    }
+
+    /**
+     * Prints an array of description messages to STDOUT
      *
      * @param  array   $messages An array of description message.
      * @return integer           The final message indentation.
@@ -275,7 +278,7 @@ class Terminal extends Reporter
 
 
     /**
-     * Print a summary of specs execution to STDOUT
+     * Prints a summary of specs execution to STDOUT
      *
      * @param array $results The results array of the execution.
      */
@@ -327,7 +330,7 @@ class Terminal extends Reporter
     }
 
     /**
-     * Print exclusive report to STDOUT
+     * Prints exclusive report to STDOUT
      *
      * @param array $report A report array.
      */

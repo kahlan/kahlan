@@ -52,7 +52,7 @@ class Spec extends Scope
     }
 
     /**
-     * Process the spec.
+     * Processes the spec.
      */
     public function process()
     {

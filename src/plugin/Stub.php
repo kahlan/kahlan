@@ -23,37 +23,37 @@ class Stub
     ];
 
     /**
-     * The pointcut patcher instance
+     * The pointcut patcher instance.
      *
      * @var object
      */
     protected static $_pointcut = null;
 
     /**
-     * Registered stubbed instance/class methods
+     * Registered stubbed instance/class methods.
      *
      * @var array
      */
     protected static $_registered = [];
 
     /**
-     * Stubbed methods
+     * Stubbed methods.
      *
      * @var array
      */
     protected $_stubs = [];
 
     /**
-     * Stub index counter
+     * Stub index counter.
      *
      * @var array
      */
     protected static $_index = 0;
 
     /**
-     * Constructor
+     * The Constructor.
      *
-     * @param mixed $reference An instance or a fully namespaced class name.
+     * @param mixed $reference An instance or a fully-namespaced class name.
      */
     public function __construct($reference)
     {
@@ -61,10 +61,10 @@ class Stub
     }
 
     /**
-     * Get/Set stubs for methods or get stubbed methods array.
+     * Getd/Setd stubs for methods or get stubbed methods array.
      *
-
-     * @return mixed Return the array of stubbed methods.
+     * @param  array $name An array of method names.
+     * @return mixed       Return the array of stubbed methods.
      */
     public function methods($name = [])
     {
@@ -85,10 +85,12 @@ class Stub
     }
 
     /**
-     * Stub class method.
+     * Stubs a method.
      *
-     * @param mixed $name Method name or array of stubs where key are method names and
-     *              values the stubs.
+     * @param  string $name    Method name or array of stubs where key are method names and
+     *                         values the stubs.
+     * @param  string $closure The stub implementation.
+     * @return object          The subbed method instance.
      */
     public function method($name, $closure = null)
     {
@@ -118,9 +120,10 @@ class Stub
     }
 
     /**
-     * Stub class methods.
+     * Stubs class methods.
      *
-     * @param mixed $reference An instance or a fully namespaced class name.
+     * @param  object|string $reference An instance or a fully-namespaced class name.
+     * @return object                   The Stub instance.
      */
     public static function on($reference)
     {
@@ -132,13 +135,13 @@ class Stub
     }
 
     /**
-     * Find a stub.
+     * Finds a stub.
      *
      * @param  mixed       $references An instance or a fully namespaced class name.
      *                                 or an array of that.
      * @param  string      $method     The method name.
      * @param  array       $params     The required arguments.
-     * @return object|null Return the subbed method or `null` if not founded.
+     * @return object|null             Return the subbed method or `null` if not founded.
      */
     public static function find($references, $method = null, $params = [])
     {
@@ -172,14 +175,14 @@ class Stub
     }
 
     /**
-     * Create a polyvalent instance.
+     * Creates a polyvalent instance.
      *
      * @param  array  $options Array of options. Options are:
-     *                - `'class'`  _string_: the fully-namespaced class name.
-     *                - `'extends'` _string_: the fully-namespaced parent class name.
-     *                - `'params'` _array_: params to pass to the constructor.
-     *                - `'constructor'` _boolean_: if set to `false` override to an empty function.
-     * @return string The created instance.
+     *                         - `'class'`  _string_: the fully-namespaced class name.
+     *                         - `'extends'` _string_: the fully-namespaced parent class name.
+     *                         - `'params'` _array_: params to pass to the constructor.
+     *                         - `'constructor'` _boolean_: if set to `false` override to an empty function.
+     * @return string          The created instance.
      */
     public static function create($options = [])
     {
@@ -191,12 +194,12 @@ class Stub
     }
 
     /**
-     * Create a polyvalent static class.
+     * Creates a polyvalent static class.
      *
      * @param  array  $options Array of options. Options are:
-     *                - `'class'` : the fully-namespaced class name.
-     *                - `'extends'` : the fully-namespaced parent class name.
-     * @return string The created fully-namespaced class name.
+     *                         - `'class'` : the fully-namespaced class name.
+     *                         - `'extends'` : the fully-namespaced parent class name.
+     * @return string          The created fully-namespaced class name.
      */
     public static function classname($options = [])
     {
@@ -221,12 +224,12 @@ class Stub
     }
 
     /**
-     * Create a class definition.
+     * Creates a class definition.
      *
      * @param  array  $options Array of options. Options are:
-     *                - `'class'` : the fully-namespaced class name.
-     *                - `'extends'` : the fully-namespaced parent class name.
-     * @return string The generated class string content.
+     *                         - `'class'` : the fully-namespaced class name.
+     *                         - `'extends'` : the fully-namespaced parent class name.
+     * @return string          The generated class string content.
      */
     public static function generate($options = [])
     {
@@ -278,6 +281,11 @@ EOT;
 
     }
 
+    /**
+     * Returns Magic Methods definitions.
+     *
+     * @return array
+     */
     public static function _getMagicMethods()
     {
         return [
@@ -299,10 +307,10 @@ EOT;
     }
 
     /**
-     * Create a `use` definition.
+     * Creates a `use` definition.
      *
      * @param  array  $uses An array of traits.
-     * @return string The generated `use` definition.
+     * @return string       The generated `use` definition.
      */
     protected static function _generateUses($uses)
     {
@@ -320,10 +328,10 @@ EOT;
     }
 
     /**
-     * Create an `extends` definition.
+     * Creates an `extends` definition.
      *
      * @param  string $extends The parent class name.
-     * @return string The generated `extends` definition.
+     * @return string          The generated `extends` definition.
      */
     protected static function _generateExtends($extends)
     {
@@ -334,10 +342,10 @@ EOT;
     }
 
     /**
-     * Create an `implements` definition.
+     * Creates an `implements` definition.
      *
      * @param  array  $uses An array of interfaces.
-     * @return string The generated `implements` definition.
+     * @return string       The generated `implements` definition.
      */
     protected static function _generateImplements($implements)
     {
@@ -351,6 +359,13 @@ EOT;
         return ' implements ' . join(', ', $classes);
     }
 
+    /**
+     * Creates method stubs.
+     *
+     * @param  array   $methods  An array of method definitions.
+     * @param  boolean $defaults If `true`, Magic Methods will be appended.
+     * @return string            The generated method definitions.
+     */
     protected static function _generateMethodStubs($methods, $defaults = true)
     {
         $result = [];
@@ -379,11 +394,11 @@ EOT;
     }
 
     /**
-     * Create methods definition from a class name.
+     * Creates method definitions from a class name.
      *
      * @param  string $class A class name.
      * @param  int    $mask  The method mask to filter.
-     * @return string The generated methods.
+     * @return string        The generated methods.
      */
     protected static function _generateClassMethods($class, $mask = ReflectionMethod::IS_ABSTRACT)
     {
@@ -403,11 +418,11 @@ EOT;
     }
 
     /**
-     * Create methods definition from an interface array.
+     * Creates method definitions from an interface array.
      *
      * @param  array  $interfaces A array on interfaces.
-     * @param  int    $mask  The method mask to filter.
-     * @return string The generated methods.
+     * @param  int    $mask       The method mask to filter.
+     * @return string             The generated methods.
      */
     protected static function _generateInterfaceMethods($interfaces, $mask = 255)
     {
@@ -429,10 +444,10 @@ EOT;
     }
 
     /**
-     * Create a method definition from a `ReflectionMethod` instance.
+     * Creates a method definition from a `ReflectionMethod` instance.
      *
-     * @param  ReflectionMethod  $method A instance of `ReflectionMethod`.
-     * @return string            The generated method.
+     * @param  objedct $method A instance of `ReflectionMethod`.
+     * @return string          The generated method.
      */
     protected static function _generateMethod($method)
     {
@@ -447,10 +462,10 @@ EOT;
     }
 
     /**
-     * Create a parameters definition list from a `ReflectionMethod` instance.
+     * Creates a parameters definition list from a `ReflectionMethod` instance.
      *
-     * @param  ReflectionMethod  $method A instance of `ReflectionMethod`.
-     * @return string            The parameters definition list.
+     * @param  object $method A instance of `ReflectionMethod`.
+     * @return string         The parameters definition list.
      */
     protected static function _generateParameters($method)
     {
@@ -476,7 +491,7 @@ EOT;
     }
 
     /**
-     * Check if a stub has been registered for a hash
+     * Checks if a stub has been registered for a hash
      *
      * @param  mixed         $hash An instance hash or a fully namespaced class name.
      * @return boolean|array
@@ -490,7 +505,7 @@ EOT;
     }
 
     /**
-     * Clear the registered references.
+     * Clears the registered references.
      *
      * @param string $reference An instance or a fully namespaced class name or `null` to clear all.
      */

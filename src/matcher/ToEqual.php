@@ -31,6 +31,11 @@ class ToEqual
         return preg_replace('/\r\n/', "\n", $actual);
     }
 
+    /**
+     * Returns the description message.
+     *
+     * @return string The description message.
+     */
     public static function description()
     {
         return "be equal to expected (==).";

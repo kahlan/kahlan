@@ -13,7 +13,7 @@ class Args {
     protected $_arguments = [];
 
     /**
-     * Arguments values
+     * Arguments values.
      *
      * @var array
      */
@@ -23,7 +23,7 @@ class Args {
      * The Constructor.
      *
      * @param array $arguments An array of argument's attributes where keys are argument's names
-     *                       and values are an array of attributes.
+     *                         and values are an array of attributes.
      */
     public function __construct($arguments = [])
     {
@@ -43,7 +43,7 @@ class Args {
 
 
     /**
-     * Get/Set/Override argument's attributes.
+     * Gets/Sets/Overrides an argument's attributes.
      *
      * @param  string $name   The name of the argument.
      * @param  array  $config The argument attributes to set.
@@ -69,7 +69,7 @@ class Args {
     }
 
     /**
-     * Parse a command line argv.
+     * Parses a command line argv.
      *
      * @param  array $argv An argv data.
      * @return array       The parsed attributes
@@ -90,7 +90,7 @@ class Args {
     }
 
     /**
-     * Helper for `parse()`
+     * Helper for `parse()`.
      *
      * @param  string $arg A string argument.
      * @return array       The parsed argument
@@ -109,7 +109,7 @@ class Args {
     }
 
     /**
-     * Check if an argument has been setted the value of a specific argument.
+     * Checks if an argument has been setted the value of a specific argument.
      *
      * @param  string  $name The name of the argument.
      * @return boolean
@@ -126,11 +126,11 @@ class Args {
     }
 
     /**
-     * Set the value of a specific argument.
+     * Sets the value of a specific argument.
      *
-     * @param  string $name      The name of the argument.
-     * @param  mixed  $value     The value of the argument to set.
-     * @return array             The setted value.
+     * @param  string $name  The name of the argument.
+     * @param  mixed  $value The value of the argument to set.
+     * @return array         The setted value.
      */
     public function set($name, $value)
     {
@@ -138,11 +138,11 @@ class Args {
     }
 
     /**
-     * Add a value to a specific argument (or set if it's not an array).
+     * Adds a value to a specific argument (or set if it's not an array).
      *
-     * @param  string $name      The name of the argument.
-     * @param  mixed  $value     The value of the argument to set.
-     * @return array             The setted value.
+     * @param  string $name  The name of the argument.
+     * @param  mixed  $value The value of the argument to set.
+     * @return array         The setted value.
      */
     public function add($name, $value)
     {
@@ -156,10 +156,10 @@ class Args {
     }
 
     /**
-     * Get the value of a specific argument.
+     * Gets the value of a specific argument.
      *
-     * @param  string $name      The name of the argument.
-     * @return array             The value.
+     * @param  string $name The name of the argument.
+     * @return array        The value.
      */
     public function get($name = null)
     {
@@ -227,4 +227,5 @@ class Args {
         }
         return $value;
     }
+
 }

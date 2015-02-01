@@ -60,9 +60,9 @@ class Metrics
      * Constructor
      *
       * @param array $options Possible options values are:
-     *                        - `'name'`: the string name reference of the metrics.
-     *                        - `'type'`  : the type of the metrics is about.
-     *                        - `'parent'`: reference to the parent metrics.
+     *                        - `'name'`   _string_  : the string name reference of the metrics.
+     *                        - `'type'`   _string_  : the type of the metrics is about.
+     *                        - `'parent'` _instance_: reference to the parent metrics.
      */
     public function __construct($options = [])
     {
@@ -92,7 +92,7 @@ class Metrics
     }
 
     /**
-     * Retruns the parent instance.
+     * Gets the parent instance.
      *
      * @return object The parent instance
      */
@@ -102,7 +102,7 @@ class Metrics
     }
 
     /**
-     * Retruns the name of the metrics.
+     * Gets the name of the metrics.
      *
      * @return string The name of the metrics.
      */
@@ -112,7 +112,7 @@ class Metrics
     }
 
     /**
-     * Retruns the type of the metrics.
+     * Gets the type of the metrics.
      *
      * @return string The type of the metrics.
      */
@@ -143,7 +143,7 @@ class Metrics
     }
 
     /**
-     * Add some metrics to the current metrics.
+     * Adds some metrics to the current metrics.
      *
      * @param string $name The name reference of the metrics.
      * @param string $type The type of metrics to add.
@@ -171,7 +171,7 @@ class Metrics
     }
 
     /**
-     * Get the metrics from a name.
+     * Gets the metrics from a name.
      *
      * @param  string $name The name reference of the metrics.
      * @return object       The metrics instance.
@@ -190,7 +190,7 @@ class Metrics
     }
 
     /**
-     * Get the childs of the current metrics.
+     * Gets the childs of the current metrics.
      *
      * @param  string $name The name reference of the metrics.
      * @return array        The metrics childs.
@@ -209,7 +209,7 @@ class Metrics
     }
 
     /**
-     * Retruns meta info of a metrics from a name reference..
+     * Gets meta info of a metrics from a name reference..
      *
      * @param  string $name The name reference of the metrics.
      * @param  string $type The type to use by default if not auto detected.
@@ -231,7 +231,7 @@ class Metrics
     }
 
     /**
-     * Merge some given metrics to the existing metrics .
+     * Merges some given metrics to the existing metrics .
      *
      * @param array   $metrics Metrics data to merge.
      * @param boolean $line    Set to `true` for function only

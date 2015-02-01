@@ -12,7 +12,9 @@ use string\String;
 class Debugger
 {
     /**
-     * Store the autoloader
+     * Store the autoloader.
+     *
+     * @param object
      */
     public static $_loader = null;
 
@@ -70,7 +72,7 @@ class Debugger
      *                       - `'depth'`: The maximum depth of the trace.
      *                       - `'message'`: Either `null` for default message or a string.
      *                       - `'trace'`: A trace to use instead of generating one.
-     * @return array         The backtrace array
+     * @return array         The backtrace array.
      */
     public static function backtrace($options = [])
     {
@@ -86,7 +88,7 @@ class Debugger
         $mask = $options['args'] ? 0 : DEBUG_BACKTRACE_IGNORE_ARGS;
         $mask = $options['object'] ? $mask | DEBUG_BACKTRACE_PROVIDE_OBJECT : $mask;
 
-        $backtrace = static::normalize($options['trace'] ?: debug_backtrace($mask));
+        $backtrace = static::normalise($options['trace'] ?: debug_backtrace($mask));
 
         $traceDefaults = [
             'line' => '?',
@@ -110,7 +112,13 @@ class Debugger
         return array_splice($back, $options['start'], $options['depth'] ?: $count);
     }
 
-    public static function normalize($backtrace)
+    /**
+     * Normalises a backtrace.
+     *
+     * @param  array|object $backtrace A backtrace array or an exception instance.
+     * @return array                   A backtrace array.
+     */
+    public static function normalise($backtrace)
     {
         if (!$backtrace instanceof Exception) {
             return $backtrace;
@@ -123,6 +131,12 @@ class Debugger
         ]], $backtrace->getTrace());
     }
 
+    /**
+     * Generates a string message from a backtrace array.
+     *
+     * @param  array|object $backtrace A backtrace array or an exception instance.
+     * @return string                  The string message.
+     */
     public static function message($backtrace)
     {
         if ($backtrace instanceof Exception) {
@@ -137,9 +151,9 @@ class Debugger
     }
 
     /**
-     * Locates original location of call from a trace.
+     * Locates a line number from a trace.
      *
-     * @param  array $trace A backtrace array.
+     * @param  array $trace A trace data.
      * @return mixed        Returns the line number where the method called is defined.
      */
     protected static function _line($trace)
@@ -198,7 +212,7 @@ class Debugger
      * Get/set a compatible composer autoloader.
      *
      * @param  object|null $loader The autoloader to set or `null` to get the default one.
-     * @return object      The autoloader.
+     * @return object              The autoloader.
      */
     public static function loader($loader = null)
     {
@@ -253,4 +267,5 @@ class Debugger
         }
         return '<INVALID>';
     }
+
 }

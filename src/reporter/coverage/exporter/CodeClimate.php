@@ -6,10 +6,10 @@ use RuntimeException;
 class CodeClimate
 {
     /**
-     * Write a coverage to an ouput file.
+     * Writes a coverage to an ouput file.
      *
      * @param  array   $options The option where the possible values are:
-     *                 -`'file'` _string_: The output file name.
+     *                          -`'file'` _string_: The output file name.
      * @return boolean
      */
     public static function write($options)
@@ -27,7 +27,7 @@ class CodeClimate
     }
 
     /**
-     * Export a coverage to a string.
+     * Exports a coverage to a string.
      *
      * @param  array  $options The option array where the possible values are:
      *                         -`'collector'`      _object_ : The collector instance.
@@ -79,7 +79,7 @@ class CodeClimate
     }
 
     /**
-     * Export source file coverage
+     * Exports source file coverage
      *
      * @param  object $collector The collector instance.
      * @return array

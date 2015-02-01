@@ -13,7 +13,11 @@ class Xdebug
     protected $_config = [];
 
     /**
-     * Construct.
+     * The Constructor.
+     *
+     * @param array $config The options array, possible options are:
+     *                      - `'cleanup'`  _boolean_: indicated if the coverage should be flushed on stop.
+     *                      - `'coverage'` _integer_: the code coverage mask.
      */
     public function __construct($config = [])
     {
@@ -33,7 +37,7 @@ class Xdebug
     }
 
     /**
-     * Start code coverage.
+     * Starts code coverage.
      */
     public function start()
     {
@@ -41,7 +45,7 @@ class Xdebug
     }
 
     /**
-     * Stop code coverage.
+     * Stops code coverage.
      *
      * @return array The collected coverage
      */

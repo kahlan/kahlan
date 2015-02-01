@@ -4,9 +4,9 @@ namespace kahlan\matcher;
 class ToBe
 {
     /**
-     * Expect that `$actual` is identical to `$expected`.
+     * Checks that `$actual` is identical to `$expected`.
      *
-     * @param  mixed   $actual The actual value.
+     * @param  mixed   $actual   The actual value.
      * @param  mixed   $expected The expected value.
      * @return boolean
      */
@@ -15,8 +15,14 @@ class ToBe
         return $actual === $expected;
     }
 
+    /**
+     * Returns the description message.
+     *
+     * @return string The description message.
+     */
     public static function description()
     {
         return "be identical to expected (===).";
     }
+
 }

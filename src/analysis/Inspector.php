@@ -15,10 +15,10 @@ class Inspector
     protected static $_cache = [];
 
     /**
-     * Get the ReflectionClass instance of a class.
+     * Gets the ReflectionClass instance of a class.
      *
-     * @param  $class The class name to inspect.
-     * @return ReflectionClass
+     * @param  string $class The class name to inspect.
+     * @return object        The ReflectionClass instance.
      */
     public static function inspect($class) {
         if (!isset(static::$_cache[$class])) {
@@ -28,12 +28,12 @@ class Inspector
     }
 
     /**
-     * Get the parameters array of a class method.
+     * Gets the parameters array of a class method.
      *
      * @param  $class  The class name.
-     * @param  $method The class method name.
-     * @param  $data   Some default values.
-     * @return array
+     * @param  $method The method name.
+     * @param  $data   The default values.
+     * @return array   The parameters array.
      */
     public static function parameters($class, $method, $data = null)
     {
@@ -60,9 +60,9 @@ class Inspector
     }
 
     /**
-     * Return the type hint of a `ReflectionParameter` instance.
+     * Returns the type hint of a `ReflectionParameter` instance.
      *
-     * @param  ReflectionMethod  $method A instance of `ReflectionParameter`.
+     * @param  object $parameter A instance of `ReflectionParameter`.
      * @return string            The parameter type hint.
      */
     public static function typehint($parameter)
@@ -77,4 +77,5 @@ class Inspector
         }
         return $typehint;
     }
+
 }

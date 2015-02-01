@@ -79,7 +79,7 @@ class Suite extends Scope
     protected $_ff = 0;
 
     /**
-     * Constructor.
+     * The Constructor.
      *
      * @param array $options The Suite config array. Options are:
      *                       -`'closure'` _Closure_: the closure of the test.
@@ -112,7 +112,7 @@ class Suite extends Scope
     }
 
     /**
-     * Add a group/class related spec.
+     * Adds a group/class related spec.
      *
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
@@ -127,7 +127,7 @@ class Suite extends Scope
     }
 
     /**
-     * Add a context related spec.
+     * Adds a context related spec.
      *
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
@@ -142,7 +142,7 @@ class Suite extends Scope
     }
 
     /**
-     * Add a spec.
+     * Adds a spec.
      *
      * @param  string|Closure $message Description message or a test closure.
      * @param  Closure|null   $closure A test case closure or `null`.
@@ -284,7 +284,7 @@ class Suite extends Scope
     }
 
     /**
-     * Process specs.
+     * Processes specs.
      *
      * @return array Process options.
      */
@@ -326,7 +326,7 @@ class Suite extends Scope
     }
 
     /**
-     * Process a child specs.
+     * Processes a child specs.
      *
      * @see kahlan\Suite::process()
      * @param object A child spec.
@@ -373,7 +373,7 @@ class Suite extends Scope
     }
 
     /**
-     * Return a each callback.
+     * Runs a callback.
      *
      * @param string $name The name of the callback (i.e `'beforeEach'` or `'afterEach'`).
      */
@@ -388,7 +388,7 @@ class Suite extends Scope
     }
 
     /**
-     * Override the default error handler
+     * Overrides the default error handler
      *
      * @param boolean $enable If `true` override the default error handler,
      *                if `false` restore the default handler.
@@ -415,7 +415,7 @@ class Suite extends Scope
     }
 
     /**
-     * Run all specs.
+     * Runs all specs.
      *
      * @param  array $options Run options.
      * @return array The result array.
@@ -454,10 +454,9 @@ class Suite extends Scope
     }
 
     /**
-     * Run all specs.
+     * Gets number of total specs.
      *
-     * @param  array $options Run options.
-     * @return array The result array.
+     * @return integer
      */
     public function total()
     {
@@ -467,6 +466,11 @@ class Suite extends Scope
         return $this->_stats['exclusive'] + $this->_stats['normal'];
     }
 
+    /**
+     * Gets number of enabled specs.
+     *
+     * @return integer
+     */
     public function enabled()
     {
         if ($this->_stats === null) {
@@ -476,7 +480,7 @@ class Suite extends Scope
     }
 
     /**
-     * Trigger the `stop` event.
+     * Triggers the `stop` event.
      */
     public function stop()
     {
@@ -487,9 +491,9 @@ class Suite extends Scope
     }
 
     /**
-     * Build the suite.
+     * Builds the suite.
      *
-     * @return array Process options.
+     * @return array The suite stats.
      */
     protected function stats()
     {
@@ -519,7 +523,7 @@ class Suite extends Scope
     }
 
     /**
-     * Returns an exit status code according passed results.
+     * Gets exit status code according passed results.
      *
      * @param  integer $status If set force a specific status to be retruned.
      * @return boolean         Returns `0` if no error occurred, `-1` otherwise.
@@ -572,7 +576,7 @@ class Suite extends Scope
     }
 
     /**
-     * Autoclear plugins.
+     * Autoclears plugins.
      */
     protected function _autoclear()
     {
@@ -585,7 +589,7 @@ class Suite extends Scope
     }
 
     /**
-     * Apply exclusivity downward to the leaf.
+     * Applies exclusivity downward to the leaf.
      */
     protected function _broadcastExclusive()
     {
@@ -598,7 +602,7 @@ class Suite extends Scope
     }
 
     /**
-     * Generate a hash from an instance or a string.
+     * Generates a hash from an instance or a string.
      *
      * @param  mixed $reference An instance or a fully namespaced class name.
      * @return string           A string hash.
@@ -616,7 +620,7 @@ class Suite extends Scope
     }
 
     /**
-     * Register a hash. [Mainly used for optimization]
+     * Registers a hash. [Mainly used for optimization]
      *
      * @param  mixed  $hash A hash to register.
      */
@@ -626,7 +630,7 @@ class Suite extends Scope
     }
 
     /**
-     * Get registered hashes. [Mainly used for optimizations]
+     * Gets registered hashes. [Mainly used for optimizations]
      *
      * @param  string  $hash The hash to look up. If `null` return all registered hashes.
      */
@@ -639,7 +643,7 @@ class Suite extends Scope
     }
 
     /**
-     * Clear the registered hash.
+     * Clears the registered hash.
      */
     public static function clear()
     {

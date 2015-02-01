@@ -6,10 +6,10 @@ use RuntimeException;
 class Coveralls
 {
     /**
-     * Write a coverage to an ouput file.
+     * Writes a coverage to an ouput file.
      *
      * @param  array   $options The option where the possible values are:
-     *                 -`'file'` _string_: The output file name.
+     *                          -`'file'` _string_: The output file name.
      * @return boolean
      */
     public static function write($options)
@@ -27,14 +27,14 @@ class Coveralls
     }
 
     /**
-     * Export a coverage to a string.
+     * Exports a coverage to a string.
      *
      * @param  array   $options The option array where the possible values are:
-     *                 -`'collector'`      _object_ : The collector instance.
-     *                 -`'service_name'`   _string_ : The name of the service.
-     *                 -`'service_job_id'` _string_ : The job id of the service.
-     *                 -`'repo_token'`     _string_ : The Coveralls repo token
-     *                 -`'run_at'`         _integer_: The date of a timestamp.
+     *                          -`'collector'`      _object_ : The collector instance.
+     *                          -`'service_name'`   _string_ : The name of the service.
+     *                          -`'service_job_id'` _string_ : The job id of the service.
+     *                          -`'repo_token'`     _string_ : The Coveralls repo token
+     *                          -`'run_at'`         _integer_: The date of a timestamp.
      * @return string
      */
     public static function export($options)

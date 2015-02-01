@@ -4,7 +4,7 @@ namespace kahlan\plugin;
 class Monkey
 {
     /**
-     * Registered monkey patches
+     * Registered monkey patches.
      *
      * @var array
      */
@@ -22,12 +22,12 @@ class Monkey
     }
 
     /**
-     * Return the patched string.
+     * Patches the string.
      *
      * @param  string  $namespace The namespace.
      * @param  string  $ref       The fully namespaced class/function reference string.
      * @param  boolean $isFunc    Boolean indicating if $ref is a function reference.
-     * @return string A fully namespaced reference.
+     * @return string             A fully namespaced reference.
      */
     public static function patched($namespace, $ref, $isFunc = true)
     {
@@ -39,9 +39,9 @@ class Monkey
     }
 
     /**
-     * Clear the registered references.
+     * Clears the registered references.
      *
-      * @param string $source A fully namespaced reference string or `null` to clear all.
+      * @param string $source A fully-namespaced reference string or `null` to clear all.
      */
     public static function clear($source = null)
     {

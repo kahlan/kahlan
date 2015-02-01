@@ -79,13 +79,13 @@ class Collector
     protected $_processed = [];
 
     /**
-     * Constructor.
+     * The Constructor.
      *
      * @param array $options Possible options values are:
-     *              - `'driver'`: the driver instance which will log the coverage data.
-     *              - `'path'`  : the path(s) which contain the code source files.
-     *              - `'base'`  : the base path of the repo (default: `getcwd`).
-     *              - `'prefix'`: some prefix to remove to get the real file path.
+     *                       - `'driver'` _object_: the driver instance which will log the coverage data.
+     *                       - `'path'`   _array_ : the path(s) which contain the code source files.
+     *                       - `'base'`   _string_: the base path of the repo (default: `getcwd`).
+     *                       - `'prefix'` _string_: some prefix to remove to get the real file path.
      */
     public function __construct($options = [])
     {
@@ -121,7 +121,7 @@ class Collector
     }
 
     /**
-     * Return the used driver.
+     * Gets the used driver.
      *
      * @return object
      */
@@ -130,7 +130,7 @@ class Collector
     }
 
     /**
-     * Return the base path used to compute relative paths.
+     * Gets the base path used to compute relative paths.
      *
      * @return string
      */
@@ -139,7 +139,7 @@ class Collector
     }
 
     /**
-     * Start collecting coverage data.
+     * Starts collecting coverage data.
      *
      * @return boolean
      */
@@ -154,7 +154,7 @@ class Collector
     }
 
     /**
-     * Stop collecting coverage data.
+     * Stops collecting coverage data.
      *
      * @return boolean
      */
@@ -179,10 +179,10 @@ class Collector
     }
 
     /**
-     * Add some coverage data to the collector.
+     * Adds some coverage data to the collector.
      *
      * @param  array $coverage Some coverage data.
-     * @return array The current coverage data.
+     * @return array           The current coverage data.
      */
     public function add($coverage)
     {
@@ -196,7 +196,7 @@ class Collector
     }
 
     /**
-     * Add some coverage data to the collector.
+     * Adds some coverage data to the collector.
      *
      * @param  string $file     A file path.
      * @param  array  $coverage Some coverage related to the file path.
@@ -221,6 +221,12 @@ class Collector
         }
     }
 
+    /**
+     * Helper for `Collector::addFile()`.
+     *
+     * @param  string $file     A file path.
+     * @param  array  $coverage Some coverage related to the file path.
+     */
     protected function _coverage($file, $coverage)
     {
         $result = [];
@@ -246,7 +252,7 @@ class Collector
     }
 
     /**
-     * Check if a filename is collectable.
+     * Checks if a filename is collectable.
      *
      * @param   string  $file A file path.
      * @return  boolean
@@ -260,7 +266,7 @@ class Collector
     }
 
     /**
-     * Returns the real path in the original src directory.
+     * Gets the real path in the original src directory.
      *
      * @param  string $file A file path or cached file path.
      * @return string       The original file path.
@@ -271,7 +277,7 @@ class Collector
     }
 
     /**
-     * Return coverage data.
+     * Exports coverage data.
      *
      * @return array The coverage data.
      */
@@ -290,7 +296,7 @@ class Collector
 
 
     /**
-     * Return the collected metrics from coverage data.
+     * Gets the collected metrics from coverage data.
      *
      * @return Metrics The collected metrics.
      */

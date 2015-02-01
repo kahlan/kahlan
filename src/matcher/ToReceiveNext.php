@@ -3,6 +3,12 @@ namespace kahlan\matcher;
 
 class ToReceiveNext extends ToReceive
 {
+    /**
+     * Resolves the matching.
+     *
+     * @param  string  $report The description report.
+     * @return boolean         Returns `true` if successfully resolved, `false` otherwise.
+     */
     public function resolve($report)
     {
         $call = $this->_classes['call'];
@@ -13,4 +19,5 @@ class ToReceiveNext extends ToReceive
         }
         return $success;
     }
+
 }

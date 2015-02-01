@@ -13,44 +13,44 @@ class Method extends \kahlan\plugin\call\Message
     protected $_index = 0;
 
     /**
-     * Implementation of the stub
+     * Stub implementation.
      *
      * @var Closure
      */
     protected $_closure = null;
 
     /**
-     * Return values
+     * Return values.
      *
      * @var array
      */
     protected $_returns = [];
 
     /**
-     * The constructor
+     * The Constructor.
      *
-     * @param array $options The options array, possible options are:
-     *                       - `'closure'`: the closure to execute for this stub.
-     *                       - `'params'`: the params required for exectuting this stub.
-     *                       - `'static'`: the type of call required for exectuting this stub.
-     *                       - `'returns'`: the returns values for this stub (used only if
-     *                         the `'closure'` option is missing).
+     * @param array $config The options array, possible options are:
+     *                      - `'closure'`: the closure to execute for this stub.
+     *                      - `'params'`: the params required for exectuting this stub.
+     *                      - `'static'`: the type of call required for exectuting this stub.
+     *                      - `'returns'`: the returns values for this stub (used only if
+     *                        the `'closure'` option is missing).
      */
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
         $defaults = ['closure' => null, 'params' => [], 'returns' => [], 'static' => false];
-        $options += $defaults;
-        parent::__construct($options);
-        $this->_closure = $options['closure'];
-        $this->_returns = $options['returns'];
+        $config += $defaults;
+        parent::__construct($config);
+        $this->_closure = $config['closure'];
+        $this->_returns = $config['returns'];
     }
 
     /**
-     * Run the stub.
+     * Runs the stub.
      *
      * @param  string $self   The context form which the stub need to be executed.
      * @param  array  $params The call parameters array.
-     * @return mixed  The returned stub result.
+     * @return mixed          The returned stub result.
      */
     public function __invoke($self, $params)
     {
@@ -69,7 +69,7 @@ class Method extends \kahlan\plugin\call\Message
     }
 
     /**
-     * Set the method logic
+     * Sets the stub logic.
      *
      * @param Closure $closure The logic.
      */
@@ -85,9 +85,9 @@ class Method extends \kahlan\plugin\call\Message
     }
 
     /**
-     * Set return values.
+     * Set. return values.
      *
-     * @param mixed <0,n> Return value(s).
+     * @param mixed ... <0,n> Return value(s).
      */
     public function andReturn()
     {

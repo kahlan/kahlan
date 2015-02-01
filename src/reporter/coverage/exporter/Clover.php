@@ -7,10 +7,10 @@ use RuntimeException;
 class Clover
 {
     /**
-     * Write a coverage to an ouput file.
+     * Writes a coverage to an ouput file.
      *
      * @param  array   $options The option where the possible values are:
-     *                 -`'file'` _string_: The output file name.
+     *                          -`'file'` _string_: The output file name.
      * @return boolean
      */
     public static function write($options)
@@ -28,11 +28,11 @@ class Clover
     }
 
     /**
-     * Export a coverage to a string.
+     * Exports a coverage to a string.
      *
      * @param  array   $options The option array where the possible values are:
-     *                 -`'collector'` _object_ : The collector instance.
-     *                 -`'time'`      _integer_: The name of the service.
+     *                          -`'collector'` _object_ : The collector instance.
+     *                          -`'time'`      _integer_: The name of the service.
      * @return string
      */
     public static function export($options)
@@ -69,8 +69,8 @@ class Clover
      * Export the coverage of a file.
      *
      * @param  array   $options The option array where the possible values are:
-     *                 -`'coverage'` The coverage instance.
-     * @return object  the XML file node.
+     *                          -`'coverage'` The coverage instance.
+     * @return object           The XML file node.
      */
     protected static function _exportFile($xmlDocument, $file, $data)
     {
@@ -89,8 +89,8 @@ class Clover
     /**
      * Export the coverage of a metrics.
      *
-     * @param  DOMDocument $xmlDocument The XML root node.
-     * @return object      the XML file node.
+     * @param  object $xmlDocument The DOMDocument root node instance.
+     * @return object              The XML file node.
      */
     protected static function _exportMetrics($xmlDocument, $metrics)
     {

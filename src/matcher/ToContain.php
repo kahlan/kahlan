@@ -20,6 +20,11 @@ class ToContain
         return false;
     }
 
+    /**
+     * Returns the description message.
+     *
+     * @return string The description message.
+     */
     public static function description()
     {
         return "contain expected.";

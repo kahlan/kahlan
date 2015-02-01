@@ -20,6 +20,11 @@ class ToMatch extends ToEqual
         return !!preg_match($expected, $actual);
     }
 
+    /**
+     * Returns the description message.
+     *
+     * @return string The description message.
+     */
     public static function description()
     {
         return "match expected.";

@@ -13,7 +13,10 @@ class HHVM
     protected $_config = [];
 
     /**
-     * Construct.
+     * The Constructor.
+     *
+     * @param array $config The options array, possible options are:
+     *                      - `'cleanup'` _boolean_: indicated if the coverage should be flushed on stop.
      */
     public function __construct($config = [])
     {
@@ -28,7 +31,7 @@ class HHVM
     }
 
     /**
-     * Start code coverage.
+     * Starts code coverage.
      */
     public function start()
     {
@@ -36,7 +39,7 @@ class HHVM
     }
 
     /**
-     * Stop code coverage.
+     * Stops code coverage.
      *
      * @return array The collected coverage
      */

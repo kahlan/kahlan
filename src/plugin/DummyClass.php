@@ -4,14 +4,14 @@ namespace kahlan\plugin;
 class DummyClass
 {
     /**
-     * Enable/disable the dummy class feature.
+     * Indicates if the dummy class feature is enabled or not.
      *
      * @var boolean
      */
     protected static $_enabled = true;
 
     /**
-     * Return the status of the quit statements.
+     * Returns the status of the quit statements.
      *
      * @return boolean $active
      */
@@ -38,7 +38,7 @@ class DummyClass
     }
 
     /**
-     * Clear class to default values.
+     * Clears class to default values.
      */
     public static function clear()
     {

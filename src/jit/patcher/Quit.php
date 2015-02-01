@@ -9,7 +9,7 @@ class Quit {
      * @param  object $loader The autloader instance.
      * @param  string $class  The fully-namespaced class name.
      * @param  string $file   The correponding finded file path.
-     * @return string The patched file path.
+     * @return string         The patched file path.
      */
     public function findFile($loader, $class, $file)
     {
@@ -19,9 +19,9 @@ class Quit {
     /**
      * The JIT patcher.
      *
-     * @param  NodeDef $node The node to patch.
-     * @param  string  $path The file path of the source code.
-     * @return NodeDef       The patched node.
+     * @param  object $node The node instance to patch.
+     * @param  string $path The file path of the source code.
+     * @return object       The patched node.
      */
     public function process($node, $path = null)
     {
@@ -30,9 +30,9 @@ class Quit {
     }
 
     /**
-     * Helper for `Monkey::process()`.
+     * Helper for `Quit::process()`.
      *
-     * @param array $nodes A node array to patch.
+     * @param array $nodes A array of nodes to patch.
      */
     protected function _processTree($nodes)
     {

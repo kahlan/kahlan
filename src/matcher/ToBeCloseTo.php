@@ -4,10 +4,10 @@ namespace kahlan\matcher;
 class ToBeCloseTo
 {
     /**
-     * Expect that `$actual` is close enough to `$expected`.
+     * Checks that `$actual` is close enough to `$expected`.
      *
-     * @param  mixed   $actual The actual value.
-     * @param  mixed   $expected The expected value.
+     * @param  mixed   $actual    The actual value.
+     * @param  mixed   $expected  The expected value.
      * @param  integer $precision The precision to use.
      * @return boolean
      */
@@ -19,6 +19,11 @@ class ToBeCloseTo
         return abs($expected - $actual) < (pow(10, -$precision) / 2);
     }
 
+    /**
+     * Returns the description report.
+     *
+     * @return array The description report.
+     */
     public static function description($report)
     {
         $precision = $report['params']['precision'];
@@ -28,4 +33,5 @@ class ToBeCloseTo
         $params['gap is >='] = pow(10, -$precision) / 2;
         return compact('description', 'params');
     }
+
 }

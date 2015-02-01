@@ -15,6 +15,11 @@ class ToBeLessThan
         return $actual < $expected;
     }
 
+    /**
+     * Returns the description message.
+     *
+     * @return string The description message.
+     */
     public static function description()
     {
         return "be lesser than expected.";

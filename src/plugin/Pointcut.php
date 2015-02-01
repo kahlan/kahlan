@@ -5,6 +5,12 @@ use kahlan\Suite;
 
 class Pointcut
 {
+    /**
+     * Class dependencies.
+     *
+     * @var array
+     */
+
     protected static $_classes = [
         'call' => 'kahlan\plugin\Call',
         'stub' => 'kahlan\plugin\Stub'
@@ -37,6 +43,16 @@ class Pointcut
         return static::_stubbedMethod($lsb, $self, $class, $name, $params);
     }
 
+    /**
+     * Checks if the called method has been stubbed.
+     *
+     * @param  string $lsb         Late state binding class name.
+     * @param  object|string $self The object instance or a fully-namespaces class name.
+     * @param  string $class       The class name.
+     * @param  string $name        The method name.
+     * @param  string $params      The passed params.
+     * @return boolean             Returns `true` if the method has been stubbed.
+     */
     protected static function _stubbedMethod($lsb, $self, $class, $name, $params)
     {
         if (is_object($self)) {

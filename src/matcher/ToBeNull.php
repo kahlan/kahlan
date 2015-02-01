@@ -14,6 +14,11 @@ class ToBeNull extends ToBe
         return parent::match($actual, null);
     }
 
+    /**
+     * Returns the description message.
+     *
+     * @return string The description message.
+     */
     public static function description()
     {
         return "be null.";

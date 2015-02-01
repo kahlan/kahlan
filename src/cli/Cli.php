@@ -4,7 +4,7 @@ namespace kahlan\cli;
 class Cli
 {
     /**
-     * ANSI/VT100 color/format sequences
+     * ANSI/VT100 color/format sequences.
      *
      * @var array
      */
@@ -32,31 +32,31 @@ class Cli
     ];
 
     /**
-     * The default color
+     * The default color.
      *
      * @var string
      */
     protected static $_vtcolor = 'default';
 
     /**
-     * The default background color
+     * The default background color.
      *
      * @var string
      */
     protected static $_vtbackground = 'default';
 
     /**
-     * The default style
+     * The default style.
      *
      * @var string
      */
     protected static $_vtstyle = 'default';
 
     /**
-     * Return the ANSI/VT100 number from a color name.
+     * Returns the ANSI/VT100 number from a color name.
      *
-     * @param  mixed $name A color name string or a ANSI/VT100 number
-     * @return integer a ANSI/VT100 number
+     * @param  mixed   $name A color name string or a ANSI/VT100 number.
+     * @return integer       A ANSI/VT100 number.
      */
     protected static function _vtcolor($name)
     {
@@ -64,10 +64,10 @@ class Cli
     }
 
     /**
-     * Return the ANSI/VT100 number from a backgound color name.
+     * Returns the ANSI/VT100 number from a backgound color name.
      *
-     * @param  mixed $name A backgound color name string or a ANSI/VT100 number
-     * @return integer a ANSI/VT100 number
+     * @param  mixed   $name A backgound color name string or a ANSI/VT100 number.
+     * @return integer       A ANSI/VT100 number.
      */
     protected static function _vtbackground($name)
     {
@@ -78,10 +78,10 @@ class Cli
     }
 
     /**
-     * Return a ANSI/VT100 number from a style name.
+     * Returns a ANSI/VT100 number from a style name.
      *
-     * @param  mixed $name A style name string or a ANSI/VT100 number
-     * @return integer a ANSI/VT100 number
+     * @param  mixed   $name A style name string or a ANSI/VT100 number.
+     * @return integer       A ANSI/VT100 number.
      */
     protected static function _vtstyle($name)
     {
@@ -89,10 +89,10 @@ class Cli
     }
 
     /**
-     * Return a ANSI/VT100 number from a color name.
+     * Returns a ANSI/VT100 number from a color name.
      *
-     * @param  mixed $name A color name string or a ANSI/VT100 number
-     * @return integer a ANSI/VT100 number
+     * @param  mixed   $name A color name string or a ANSI/VT100 number.
+     * @return integer       A ANSI/VT100 number.
      */
     protected static function _vt100($name)
     {
@@ -115,6 +115,11 @@ class Cli
         return $value;
     }
 
+    /**
+     * Bells.
+     *
+     * @param integer $count Number of times that the bells must ring.
+     */
     public static function bell($count = 1)
     {
         echo str_repeat("\007", $count);
@@ -125,13 +130,14 @@ class Cli
      *
      * @param mixed        $string  The string to color.
      * @param string|array $options The possible values for an array are:
-     *                     - `'style`: a style code.
-     *                     - `'color'`: a color code.
-     *                     - `'background'`: a background color code.
-     *                     The string must respect one of the following format:
-     *                     - `'style;color;background'`
-     *                     - `'style;color'`
-     *                     - `'color'`
+     *                              - `'style`: a style code.
+     *                              - `'color'`: a color code.
+     *                              - `'background'`: a background color code.
+     *
+     *                              The string must respect one of the following format:
+     *                              - `'style;color;background'`.
+     *                              - `'style;color'`.
+     *                              - `'color'`.
      *
      */
     public static function color($string, $options = null)
@@ -163,4 +169,5 @@ class Cli
 
         return $format . $string . "\e[0m";
     }
+
 }

@@ -15,14 +15,14 @@ class Coverage extends Terminal
     ];
 
     /**
-     * Collect time
+     * Collect time.
      *
      * @var float
      */
     protected $_time = 0;
 
     /**
-     * The coverage verbosity
+     * The coverage verbosity.
      *
      * @param integer
      */
@@ -43,7 +43,7 @@ class Coverage extends Terminal
     protected $_enabled = true;
 
     /**
-     * Display coverage results in the console.
+     * The Constructor.
      *
      * @param array $config The config for the reporter, the options are:
      *                      - `'verbosity`' _integer|string_: The verbosity level:
@@ -53,7 +53,6 @@ class Coverage extends Terminal
      *                        - 4      : overall coverage by methods and functions.
      *                        - string : coverage for a fully namespaced (class/method/namespace) string.
      */
-
     public function __construct($config = [])
     {
         parent::__construct($config);
@@ -113,7 +112,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Returns the collector.
+     * Gets the collector.
      *
      * @return object
      */
@@ -123,7 +122,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Return the base path used to compute relative paths.
+     * Gets the base path used to compute relative paths.
      *
      * @return string
      */
@@ -132,7 +131,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Returns the coverage result.
+     * Gets the coverage result.
      *
      * @return array
      */
@@ -142,7 +141,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Returns the metrics about the coverage result.
+     * Gets the metrics about the coverage result.
      */
     public function metrics()
     {
@@ -153,7 +152,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Output some metrics info.
+     * Outputs some metrics info.
      *
      * @param Metrics $metrics A metrics instance.
      * @param array   $options The options for the reporter, the options are:
@@ -189,7 +188,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Output the coverage report of a metrics instance.
+     * Outputs the coverage report of a metrics instance.
      *
      * @param Metrics $metrics A metrics instance.
      */
@@ -272,7 +271,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Return the status of the reporter.
+     * Gets the status of the reporter.
      *
      * @return boolean $active
      */
@@ -282,7 +281,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Enable this reporter.
+     * Gets this reporter.
      */
     public function enable()
     {
@@ -291,7 +290,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Disable this reporter.
+     * Disables this reporter.
      */
     public function disable()
     {

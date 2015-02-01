@@ -7,7 +7,7 @@ use string\String;
 class Bar extends Terminal
 {
     /**
-     * Colors preference.
+     * Color preferences.
      *
      * var array
      */
@@ -21,7 +21,7 @@ class Bar extends Terminal
     protected $_format = '';
 
     /**
-     * Chars preference.
+     * Char preferences.
      *
      * var array
      */
@@ -133,7 +133,7 @@ class Bar extends Terminal
     }
 
     /**
-     * Ouput the progress bar to STDOUT.
+     * Ouputs the progress bar to STDOUT.
      */
     protected function _progressBar()
     {

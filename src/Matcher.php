@@ -44,7 +44,7 @@ class Matcher
     /**
      * Registers a matcher.
      *
-     * @param string $name The name of the matcher.
+     * @param string $name  The name of the matcher.
      * @param string $class A fully-namespaced class name.
      */
     public static function register($name, $class)
@@ -108,7 +108,7 @@ class Matcher
     }
 
     /**
-     * Call a registered matcher.
+     * Calls a registered matcher.
      *
      * @param  string  $matcher The name of the matcher.
      * @param  array   $params The parameters to pass to the matcher.
@@ -140,7 +140,7 @@ class Matcher
     }
 
     /**
-     * Resolve deferred matchers.
+     * Resolves deferred matchers.
      */
     public function resolve()
     {
@@ -160,7 +160,7 @@ class Matcher
     }
 
     /**
-     * Send the result to the callee & clear states.
+     * Sends the result to the callee & clear states.
      *
      * @param  boolean $boolean Set `true` for success and `false` for failure.
      * @param  array   $data    Test details array.
@@ -190,7 +190,7 @@ class Matcher
     }
 
     /**
-     * Reset the class.
+     * Resets the class.
      */
     public static function reset()
     {
