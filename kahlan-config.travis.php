@@ -1,7 +1,6 @@
 <?php
 use filter\Filter;
 use kahlan\reporter\Coverage;
-use kahlan\reporter\coverage\driver\HHVM;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Coveralls;
 use kahlan\reporter\coverage\exporter\CodeClimate;
@@ -10,9 +9,6 @@ $args = $this->args();
 $args->argument('coverage', 'default', 3);
 
 Filter::register('kahlan.coverage', function($chain) {
-    if (defined('HHVM_VERSION')) {
-        return;
-    }
     $reporters = $this->reporters();
     $coverage = new Coverage([
         'verbosity' => $this->args()->get('coverage'),

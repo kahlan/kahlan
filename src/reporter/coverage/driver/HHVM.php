@@ -35,7 +35,10 @@ class HHVM
      */
     public function start()
     {
-        fb_enable_code_coverage();
+        //@see bug https://github.com/facebook/hhvm/issues/4752
+        try {
+            fb_enable_code_coverage();
+        } catch (Exception $e) {}
     }
 
     /**

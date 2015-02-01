@@ -1,6 +1,7 @@
 <?php
 namespace kahlan\reporter\coverage\driver;
 
+use Exception;
 use RuntimeException;
 
 class Xdebug
@@ -31,7 +32,7 @@ class Xdebug
             throw new RuntimeException('Xdebug is not loaded.');
         }
 
-        if (!ini_get('xdebug.coverage_enable')) {
+        if (!defined('HHVM_VERSION') && !ini_get('xdebug.coverage_enable')) {
             throw new RuntimeException('You need to set `xdebug.coverage_enable = On` in your php.ini.');
         }
     }
@@ -41,7 +42,10 @@ class Xdebug
      */
     public function start()
     {
-        xdebug_start_code_coverage($this->_config['coverage']);
+        //@see bug https://github.com/facebook/hhvm/issues/4752
+        try {
+            xdebug_start_code_coverage($this->_config['coverage']);
+        } catch (Exception $e) {}
     }
 
     /**
