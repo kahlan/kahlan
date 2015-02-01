@@ -59,12 +59,6 @@ class Debugger
         if (preg_match("/eval\(\)'d code/", $trace['file']) && $trace['class'] && $loader) {
             $trace['file'] = $loader->findFile($trace['class']);
         }
-
-        // This code will never fire, because of backtrace closure checking
-        // Please check this!
-        // if (strpos($trace['function'], '{closure}') !== false) {
-        //     $trace['function'] = "{closure}";
-        // }
         return $trace['function'] .' - ' . $trace['file'] . ', line ' . $trace['line'];
     }
 
