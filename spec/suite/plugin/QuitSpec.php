@@ -31,6 +31,29 @@ describe("Quit", function() {
         Interceptor::load($this->previous);
     });
 
+    describe("::enable()", function() {
+
+      beforeEach(function() {
+
+        Quit::enable();
+
+      });
+
+
+      it("should enables", function() {
+
+          expect(Quit::enabled())->toBe(true);
+
+      });
+
+      after(function() {
+
+          Quit::disable();
+
+      });
+
+    });
+
     describe("::disable()", function() {
 
         it("throws an exception when an exit statement occurs if not allowed", function() {
