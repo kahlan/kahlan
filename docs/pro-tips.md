@@ -63,12 +63,12 @@ describe("My Spec", function() {
 });
 ```
 
-### Use the exclusive mode
+### Use the focused mode
 
 When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec by doubling the first letter like in the following example:
 
 ```php
-describe("test exclusive mode", function() {
+describe("test focused mode", function() {
 
     it("will be ignored", function() {
     });
@@ -76,12 +76,12 @@ describe("test exclusive mode", function() {
     it("will be ignored", function() {
     });
 
-    iit("will be runned", function() {
+    fit("will be runned", function() {
     });
 });
 ```
 
-If you want to run a subset instead of a single test you can use `ddescribe` or `ccontext` instead.
+If you want to run a subset instead of a single test you can use `fdescribe` or `fcontext` instead.
 
 **Tip:** combined with `--coverage=<string>` this is a powerful combo to see exactly what part of the code is covered for a subset of specs only.
 

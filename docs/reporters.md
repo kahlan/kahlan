@@ -76,7 +76,7 @@ class MyReporter extends \kahlan\reporter\Terminal
     {
         $this->write("\n");
         $this->_summary($results);
-        $this->_exclusive($results);
+        $this->_focused($results);
     }
 }
 ?>

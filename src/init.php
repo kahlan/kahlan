@@ -41,16 +41,16 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
         return Suite::current()->it($message, $closure, $scope);
     }
 
-    function ddescribe($message, $closure) {
-        return describe($message, $closure, 'exclusive');
+    function fdescribe($message, $closure) {
+        return describe($message, $closure, 'focus');
     }
 
-    function ccontext($message, $closure) {
-        return context($message, $closure, 'exclusive');
+    function fcontext($message, $closure) {
+        return context($message, $closure, 'focus');
     }
 
-    function iit($message, $closure = null) {
-        return it($message, $closure, 'exclusive');
+    function fit($message, $closure = null) {
+        return it($message, $closure, 'focus');
     }
 
     function xdescribe($message, $closure) {
@@ -60,6 +60,27 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
     }
 
     function xit($message, $closure = null) {
+    }
+
+    /**
+     * Deprecated method use `fdescribe`.
+     */
+    function ddescribe($message, $closure) {
+        return fdescribe($message, $closure);
+    }
+
+    /**
+     * Deprecated method use `fcontext`.
+     */
+    function ccontext($message, $closure) {
+        return fcontext($message, $closure);
+    }
+
+    /**
+     * Deprecated method use `fit`.
+     */
+    function iit($message, $closure = null) {
+        return fit($message, $closure);
     }
 
     function expect($actual) {

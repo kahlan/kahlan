@@ -48,7 +48,8 @@ class Scope
         'current'     => true,
         'describe'    => true,
         'exception'   => true,
-        'exclusive'   => true,
+        'focus'       => true,
+        'focused'     => true,
         'expect'      => true,
         'fail'        => true,
         'failfast'    => true,
@@ -70,8 +71,11 @@ class Scope
         'skip'        => true,
         'skipIf'      => true,
         'status'      => true,
-        'xcontext'    => true,
+        'fdescribe'   => true,
+        'fcontext'    => true,
+        'fit'         => true,
         'xdescribe'   => true,
+        'xcontext'    => true,
         'xit'         => true
     ];
 
@@ -137,11 +141,11 @@ class Scope
     ];
 
     /**
-     * Exclusive scope detected.
+     * Focused scope detected.
      *
      * @var array
      */
-    protected $_exclusive = false;
+    protected $_focused = false;
 
     /**
      * Count the number of failure or exception.
@@ -454,28 +458,36 @@ class Scope
     }
 
     /**
-     * Gets/sets exclusive mode.
+     * Sets focused mode.
+     *
+     * @param  boolean The focus mode.
+     * @return boolean
+     */
+    public function focus($state = true)
+    {
+        return $this->_focused = $state;
+    }
+
+    /**
+     * Gets focused mode.
      *
      * @param  boolean|null For the setter behavior.
      * @return boolean
      */
-    public function exclusive($value = null)
+    public function focused()
     {
-        if ($value === null) {
-            return $this->_exclusive;
-        }
-        return $this->_exclusive = $value;
+        return $this->_focused;
     }
 
     /**
-     * Applies exclusivity up to the root.
+     * Applies focus up to the root.
      */
-    protected function _emitExclusive()
+    protected function _emitFocus()
     {
-        $this->_root->_exclusives[] = Debugger::backtrace(['start' => 4]);
+        $this->_root->_focuses[] = Debugger::backtrace(['start' => 4]);
         $instances = $this->_parents(true);
         foreach ($instances as $instance) {
-            $instance->exclusive(true);
+            $instance->focus();
         }
     }
 

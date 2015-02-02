@@ -261,9 +261,9 @@ describe("Suite", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->describe("ddescribe", function() {
+                $this->describe("fdescribe", function() {
 
                     $this->it("it", function() {
                         $this->exectuted['it']++;
@@ -271,8 +271,8 @@ describe("Suite", function() {
 
                     $this->describe("describe", function() {
 
-                        $this->iit("iit", function() {
-                            $this->exectuted['iit']++;
+                        $this->fit("fit", function() {
+                            $this->exectuted['fit']++;
                         });
 
                         $this->it("it", function() {
@@ -292,21 +292,21 @@ describe("Suite", function() {
 
     });
 
-    describe("->ddescribe()", function() {
+    describe("->fdescribe()", function() {
 
-        it("executes only the `it` in exclusive mode", function() {
+        it("executes only the `it` in focused mode", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->ddescribe("->ddescribe()", function() {
+                $this->fdescribe("->fdescribe()", function() {
 
-                    $this->iit("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->fit("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes iit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function() {
                         $this->exectuted['it']++;
                     });
 
@@ -316,29 +316,29 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 1]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
         });
 
-        it("executes all `it` in exclusive mode if no one is exclusive", function() {
+        it("executes all `it` in focused mode if no one is focused", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->ddescribe("->ddescribe()", function() {
+                $this->fdescribe("->fdescribe()", function() {
 
-                    $this->it("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->it("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->it("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
                 });
@@ -347,39 +347,39 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->enabled())->toBe(2);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
         });
 
-        it("executes all `it` in exclusive mode if no one is exclusive in a nested way", function() {
+        it("executes all `it` in focused mode if no one is focused in a nested way", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->ddescribe("->ddescribe()", function() {
+                $this->fdescribe("->fdescribe()", function() {
 
-                    $this->it("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->it("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->it("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
                     $this->describe("->describe()", function() {
 
-                        $this->it("assumes iit due to the parent", function() {
-                            $this->exectuted['iit']++;
+                        $this->it("assumes fit due to the parent", function() {
+                            $this->exectuted['fit']++;
                         });
 
-                        $this->it("assumes iit due to the parent", function() {
-                            $this->exectuted['iit']++;
+                        $this->it("assumes fit due to the parent", function() {
+                            $this->exectuted['fit']++;
                         });
 
                     });
@@ -390,10 +390,10 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 4]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->enabled())->toBe(4);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
@@ -401,21 +401,21 @@ describe("Suite", function() {
 
     });
 
-    describe("->ccontext()", function() {
+    describe("->fcontext()", function() {
 
-        it("executes only the `it` in exclusive mode", function() {
+        it("executes only the `it` in focused mode", function() {
 
             $context = $this->suite->context("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->ccontext("->ccontext()", function() {
+                $this->fcontext("->fcontext()", function() {
 
-                    $this->iit("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->fit("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes iit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function() {
                         $this->exectuted['it']++;
                     });
 
@@ -425,29 +425,29 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($context->exectuted)->toEqual(['it' => 0, 'iit' => 1]);
+            expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
         });
 
-        it("executes all `it` in exclusive mode if no one is exclusive", function() {
+        it("executes all `it` in focused mode if no one is focused", function() {
 
             $context = $this->suite->context("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->ccontext("->ccontext()", function() {
+                $this->fcontext("->fcontext()", function() {
 
-                    $this->it("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->it("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->it("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
                 });
@@ -456,39 +456,39 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($context->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
+            expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->enabled())->toBe(2);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
         });
 
-        it("executes all `it` in exclusive mode if no one is exclusive in a nested way", function() {
+        it("executes all `it` in focused mode if no one is focused in a nested way", function() {
 
             $context = $this->suite->context("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->ccontext("->ccontext()", function() {
+                $this->fcontext("->fcontext()", function() {
 
-                    $this->it("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->it("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes iit due to the parent", function() {
-                        $this->exectuted['iit']++;
+                    $this->it("assumes fit due to the parent", function() {
+                        $this->exectuted['fit']++;
                     });
 
                     $this->context("->context()", function() {
 
-                        $this->it("assumes iit due to the parent", function() {
-                            $this->exectuted['iit']++;
+                        $this->it("assumes fit due to the parent", function() {
+                            $this->exectuted['fit']++;
                         });
 
-                        $this->it("assumes iit due to the parent", function() {
-                            $this->exectuted['iit']++;
+                        $this->it("assumes fit due to the parent", function() {
+                            $this->exectuted['fit']++;
                         });
 
                     });
@@ -499,10 +499,10 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($context->exectuted)->toEqual(['it' => 0, 'iit' => 4]);
+            expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->enabled())->toBe(4);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
@@ -510,38 +510,38 @@ describe("Suite", function() {
 
     });
 
-    describe("->iit()", function() {
+    describe("->fit()", function() {
 
-        it("executes only the exclusive `it`", function() {
+        it("executes only the focused `it`", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
                 $this->it("an it", function() {
                     $this->exectuted['it']++;
                 });
 
-                $this->iit("an iit", function() {
-                    $this->exectuted['iit']++;
+                $this->fit("an fit", function() {
+                    $this->exectuted['fit']++;
                 });
 
                 $this->it("an it", function() {
                     $this->exectuted['it']++;
                 });
 
-                $this->iit("an iit", function() {
-                    $this->exectuted['iit']++;
+                $this->fit("an fit", function() {
+                    $this->exectuted['fit']++;
                 });
 
             });
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 2]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->enabled())->toBe(2);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
@@ -551,10 +551,9 @@ describe("Suite", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-
-                $this->ddescribe("ddescribe", function() {
+                $this->fdescribe("fdescribe", function() {
 
                     $this->describe("describe", function() {
 
@@ -562,8 +561,8 @@ describe("Suite", function() {
                             $this->exectuted['it']++;
                         });
 
-                        $this->iit("iit", function() {
-                            $this->exectuted['iit']++;
+                        $this->fit("fit", function() {
+                            $this->exectuted['fit']++;
                         });
 
                     });
@@ -574,10 +573,10 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 1]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
@@ -587,9 +586,9 @@ describe("Suite", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->describe("ddescribe", function() {
+                $this->describe("fdescribe", function() {
 
                     $this->it("it", function() {
                         $this->exectuted['it']++;
@@ -597,8 +596,8 @@ describe("Suite", function() {
 
                     $this->describe("describe", function() {
 
-                        $this->iit("iit", function() {
-                            $this->exectuted['iit']++;
+                        $this->fit("fit", function() {
+                            $this->exectuted['fit']++;
                         });
 
                         $this->it("it", function() {
@@ -613,10 +612,10 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'iit' => 1]);
+            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->exclusive())->toBe(true);
+            expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(true);
 
@@ -624,35 +623,35 @@ describe("Suite", function() {
 
     });
 
-    describe("->exclusives()", function() {
+    describe("->focused()", function() {
 
-        it("returns the references of runned exclusive specs", function() {
+        it("returns the references of runned focused specs", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->exectuted = ['it' => 0, 'iit' => 0];
+                $this->exectuted = ['it' => 0, 'fit' => 0];
 
                 $this->it("an it", function() {
                     $this->exectuted['it']++;
                 });
 
-                $this->iit("an iit", function() {
-                    $this->exectuted['iit']++;
+                $this->fit("an fit", function() {
+                    $this->exectuted['fit']++;
                 });
 
                 $this->it("an it", function() {
                     $this->exectuted['it']++;
                 });
 
-                $this->iit("an iit", function() {
-                    $this->exectuted['iit']++;
+                $this->fit("an fit", function() {
+                    $this->exectuted['fit']++;
                 });
 
             });
 
             $this->suite->run();
 
-            expect($this->suite->exclusives())->toHaveLength(2);
+            expect($this->suite->focuses())->toHaveLength(2);
 
         });
 
@@ -687,7 +686,7 @@ describe("Suite", function() {
             $this->suite->run(['reporters' => $reporters]);
 
             expect($describe->exectuted)->toEqual(['it' => 0]);
-            expect($this->suite->exclusive())->toBe(false);
+            expect($this->suite->focused())->toBe(false);
             expect($this->suite->status())->toBe(0);
             expect($this->suite->passed())->toBe(true);
 
@@ -939,7 +938,7 @@ describe("Suite", function() {
             $failed = $results['failed'];
 
             expect($failed)->toHaveLength(1);
-            expect($this->suite->exclusive())->toBe(false);
+            expect($this->suite->focused())->toBe(false);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(false);
 
@@ -969,7 +968,7 @@ describe("Suite", function() {
             $failed = $results['failed'];
 
             expect($failed)->toHaveLength(2);
-            expect($this->suite->exclusive())->toBe(false);
+            expect($this->suite->focused())->toBe(false);
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(false);
 
@@ -1023,7 +1022,7 @@ describe("Suite", function() {
             $reporters = Stub::create();
 
             expect($reporters)->toReceive('process')->with('stop', Arg::toMatch(function($actual) {
-                return isset($actual['specs']) && isset($actual['exclusives']);
+                return isset($actual['specs']) && isset($actual['focuses']);
             }));
 
             $this->suite->run(['reporters' => $reporters]);

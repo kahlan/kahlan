@@ -165,6 +165,6 @@ class Bar extends Terminal
     {
         $this->write("\n\n");
         $this->_summary($results);
-        $this->_exclusive($results);
+        $this->_focused($results);
     }
 }

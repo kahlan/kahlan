@@ -17,7 +17,7 @@ class Spec extends Scope
      *
      * @param array $options The Suite config array. Options are:
      *                       -`'closure'` _Closure_ : the closure of the test.
-     *                       -`'scope'`   _string_  : supported scope are `'normal'` & `'exclusive'`.
+     *                       -`'scope'`   _string_  : supported scope are `'normal'` & `'focus'`.
      *                       -`'matcher'` _object_  : the matcher instance.
      */
     public function __construct($options = [])
@@ -36,8 +36,8 @@ class Spec extends Scope
         $closure = $this->_bind($closure, 'it');
         $this->_closure = $closure;
         $this->_matcher = $options['matcher'];
-        if ($scope === 'exclusive') {
-            $this->_emitExclusive();
+        if ($scope === 'focus') {
+            $this->_emitFocus();
         }
     }
 

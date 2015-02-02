@@ -103,6 +103,6 @@ class Verbose extends Terminal
     {
         $this->write("\n");
         $this->_summary($results);
-        $this->_exclusive($results);
+        $this->_focused($results);
     }
 }

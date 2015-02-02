@@ -330,16 +330,16 @@ class Terminal extends Reporter
     }
 
     /**
-     * Prints exclusive report to STDOUT
+     * Prints _ocused report to STDOUT
      *
      * @param array $report A report array.
      */
-    protected function _exclusive($report)
+    protected function _focused($report)
     {
-        if (!$backtraces = $report['exclusives']) {
+        if (!$backtraces = $report['focuses']) {
             return;
         }
-        $this->write("Exclusive Mode Detected in the following files:\n", 'yellow');
+        $this->write("Focus Mode Detected in the following files:\n", 'yellow');
         foreach ($backtraces as $backtrace) {
             $this->write(Debugger::trace(['trace' => $backtrace, 'depth' => 1]) . "\n");
         }

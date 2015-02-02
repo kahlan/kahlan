@@ -64,11 +64,11 @@ class Suite extends Scope
     protected $_autoclear = [];
 
     /**
-     * Saved backtrace of exclusive specs.
+     * Saved backtrace of focused specs.
      *
      * @var array
      */
-    protected $_exclusives = [];
+    protected $_focuses = [];
 
     /**
      * Set the number of fails allowed before aborting. `0` mean no fast fail.
@@ -84,7 +84,7 @@ class Suite extends Scope
      * @param array $options The Suite config array. Options are:
      *                       -`'closure'` _Closure_: the closure of the test.
      *                       -`'name'`    _string_ : the type of the suite.
-     *                       -`'scope'`   _string_ : supported scope are `'normal'` & `'exclusive'`.
+     *                       -`'scope'`   _string_ : supported scope are `'normal'` & `'focus'`.
      *                       -`'matcher'` _object_ : the matcher instance.
      */
     public function __construct($options = [])
@@ -106,8 +106,8 @@ class Suite extends Scope
         }
         $closure = $this->_bind($closure, $name);
         $this->_closure = $closure;
-        if ($scope === 'exclusive') {
-            $this->_emitExclusive();
+        if ($scope === 'focus') {
+            $this->_emitFocus();
         }
     }
 
@@ -198,39 +198,39 @@ class Suite extends Scope
     }
 
     /**
-     * Adds an exclusive group/class related spec.
+     * Adds an focused group/class related spec.
      *
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function ddescribe($message, $closure)
+    public function fdescribe($message, $closure)
     {
-        return $this->describe($message, $closure, 'exclusive');
+        return $this->describe($message, $closure, 'focus');
     }
 
     /**
-     * Adds an exclusive context related spec.
+     * Adds an focused context related spec.
      *
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function ccontext($message, $closure)
+    public function fcontext($message, $closure)
     {
-        return $this->context($message, $closure, 'exclusive');
+        return $this->context($message, $closure, 'focus');
     }
 
     /**
-     * Adds an exclusive spec.
+     * Adds an focused spec.
      *
      * @param  string|Closure $message Description message or a test closure.
      * @param  Closure|null   $closure A test case closure or `null`.
      * @return $this
      */
-    public function iit($message, $closure = null)
+    public function fit($message, $closure = null)
     {
-        return $this->it($message, $closure, 'exclusive');
+        return $this->it($message, $closure, 'focus');
     }
 
     /**
@@ -333,7 +333,7 @@ class Suite extends Scope
      */
     protected function _process($child)
     {
-        if ($this->_root->exclusive() && !$child->exclusive()) {
+        if ($this->_root->focused() && !$child->focused()) {
             return;
         }
         if ($child instanceof Suite) {
@@ -444,8 +444,8 @@ class Suite extends Scope
         $this->report('begin', ['total' => $this->enabled()]);
         $this->_run();
         $this->report('end', [
-            'specs'      => $this->_results,
-            'exclusives' => $this->_exclusives
+            'specs'   => $this->_results,
+            'focuses' => $this->_focuses
         ]);
 
         $this->_locked = false;
@@ -463,7 +463,7 @@ class Suite extends Scope
         if ($this->_stats === null) {
             $this->stats();
         }
-        return $this->_stats['exclusive'] + $this->_stats['normal'];
+        return $this->_stats['focused'] + $this->_stats['normal'];
     }
 
     /**
@@ -476,7 +476,7 @@ class Suite extends Scope
         if ($this->_stats === null) {
             $this->stats();
         }
-        return $this->exclusive() ? $this->_stats['exclusive'] : $this->_stats['normal'];
+        return $this->focused() ? $this->_stats['focused'] : $this->_stats['normal'];
     }
 
     /**
@@ -485,8 +485,8 @@ class Suite extends Scope
     public function stop()
     {
         $this->report('stop', [
-            'specs'      => $this->_results,
-            'exclusives' => $this->_exclusives
+            'specs'   => $this->_results,
+            'focuses' => $this->_focuses
         ]);
     }
 
@@ -503,23 +503,23 @@ class Suite extends Scope
         }
 
         $normal = 0;
-        $exclusive = 0;
+        $focused = 0;
         foreach($this->childs() as $child) {
             if ($child instanceof Suite) {
                 $result = $child->stats();
-                if ($child->exclusive() && !$result['exclusive']) {
-                    $exclusive += $result['normal'];
-                    $child->_broadcastExclusive();
+                if ($child->focused() && !$result['focused']) {
+                    $focused += $result['normal'];
+                    $child->_broadcastFocus();
                 } else {
-                    $exclusive += $result['exclusive'];
+                    $focused += $result['focused'];
                     $normal += $result['normal'];
                 }
             } else {
-                $child->exclusive() ? $exclusive++ : $normal++;
+                $child->focused() ? $focused++ : $normal++;
             }
         }
         array_pop(static::$_instances);
-        return $this->_stats = compact('normal', 'exclusive');
+        return $this->_stats = compact('normal', 'focused');
     }
 
     /**
@@ -538,7 +538,7 @@ class Suite extends Scope
             return $this->_status;
         }
 
-        if ($this->exclusive()) {
+        if ($this->focused()) {
             return -1;
         }
         return $this->passed() ? 0 : -1;
@@ -566,13 +566,13 @@ class Suite extends Scope
     }
 
     /**
-     * Gets references of runned exclusives specs.
+     * Gets references of focused specs.
      *
      * @return array
      */
-    public function exclusives()
+    public function focuses()
     {
-        return $this->_exclusives;
+        return $this->_focuses;
     }
 
     /**
@@ -589,14 +589,14 @@ class Suite extends Scope
     }
 
     /**
-     * Applies exclusivity downward to the leaf.
+     * Applies focus downward to the leaf.
      */
-    protected function _broadcastExclusive()
+    protected function _broadcastFocus()
     {
         foreach ($this->_childs as $child) {
-            $child->exclusive(true);
+            $child->focus();
             if ($child instanceof Suite) {
-                $child->_broadcastExclusive();
+                $child->_broadcastFocus();
             }
         }
     }
