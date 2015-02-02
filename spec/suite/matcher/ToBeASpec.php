@@ -86,12 +86,8 @@ describe("toBeA", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => 1,
-                'expected' => 'boolean'
-            ];
-
-            $actual = ToBeA::description($report);
+            ToBeA::match(1, 'boolean');
+            $actual = ToBeA::description();
 
             expect($actual['description'])->toBe('have the expected type.');
             expect((string) $actual['params']['actual'])->toBe('integer');

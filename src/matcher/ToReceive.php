@@ -54,7 +54,7 @@ class ToReceive
      *
      * @var array
      */
-    protected $_report = null;
+    protected $_description = [];
 
     /**
      * Checks that `$actual` receive the `$expected` message.
@@ -67,16 +67,6 @@ class ToReceive
     {
         $class = get_called_class();
         return new static($actual, $expected);
-    }
-
-    /**
-     * Returns the description report.
-     *
-     * @return array The description report.
-     */
-    public static function description($report)
-    {
-        return $report['instance']->report();
     }
 
     /**
@@ -113,16 +103,13 @@ class ToReceive
     /**
      * Resolves the matching.
      *
-     * @param  string  $report The description report.
-     * @return boolean         Returns `true` if successfully resolved, `false` otherwise.
+     * @return boolean Returns `true` if successfully resolved, `false` otherwise.
      */
-    public function resolve($report)
+    public function resolve()
     {
         $call = $this->_classes['call'];
         $success = !!$call::find($this->_actual, $this->_message);
-        if (!$success) {
-            $this->report($report);
-        }
+        $this->_buildDescription();
         return $success;
     }
 
@@ -147,34 +134,39 @@ class ToReceive
     }
 
     /**
-     * Returns the description report.
+     * Build the description of the runned `::match()` call.
      *
-     * @return array The description report.
+     * @param mixed $startIndex The startIndex in calls log.
      */
-    public function report($report = null, $startIndex = 0)
+    public function _buildDescription($startIndex = 0)
     {
-        if ($report === null) {
-            return $this->_report;
-        }
         $call = $this->_classes['call'];
 
         $with = $this->_message->params();
         $this->_message->with();
 
         if ($log = $call::find($this->_actual, $this->_message, $startIndex)) {
-            $this->_report['description'] = 'receive correct parameters.';
-            $this->_report['params']['actual with'] = $log['params'];
-            $this->_report['params']['expected with'] = $with;
+            $this->_description['description'] = 'receive correct parameters.';
+            $this->_description['params']['actual with'] = $log['params'];
+            $this->_description['params']['expected with'] = $with;
             return;
         }
 
-        $this->_report['description'] = 'receive the correct message.';
+        $this->_description['description'] = 'receive the correct message.';
         $called = [];
         foreach($call::find($this->_actual, null, $startIndex) as $log) {
             $called[] = $log['static'] ? '::' . $log['name'] : $log['name'];
         }
-        $this->_report['params']['actual received'] = $called;
-        $this->_report['params']['expected'] = $report['params']['expected'];
+        $this->_description['params']['actual received'] = $called;
+        $this->_description['params']['expected'] = $this->_expected;
+    }
+
+    /**
+     * Returns the description report.
+     */
+    public function description()
+    {
+        return $this->_description;
     }
 
 }

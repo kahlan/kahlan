@@ -43,11 +43,7 @@ describe("toBeNull", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => 2
-            ];
-
-            $actual = ToBeNull::description($report);
+            $actual = ToBeNull::description();
 
             expect($actual)->toBe('be null.');
 

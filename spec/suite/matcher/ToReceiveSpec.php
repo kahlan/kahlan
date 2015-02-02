@@ -216,7 +216,7 @@ describe("toReceive", function() {
 
     });
 
-    describe("::description()", function() {
+    describe("->description()", function() {
 
         it("returns the description message", function() {
 
@@ -242,7 +242,7 @@ describe("toReceive", function() {
                 ]
             ]);
 
-            $actual = ToReceive::description(['instance' => $matcher]);
+            $actual = $matcher->description();
 
             expect($actual['description'])->toBe('receive the correct message.');
             expect($actual['params'])->toBe([
@@ -269,7 +269,7 @@ describe("toReceive", function() {
                 ]
             ]);
 
-            $actual = ToReceive::description(['instance' => $matcher]);
+            $actual = $matcher->description();
 
             expect($actual['description'])->toBe('receive correct parameters.');
             expect($actual['params'])->toBe([

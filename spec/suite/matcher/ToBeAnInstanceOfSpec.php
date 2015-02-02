@@ -27,12 +27,7 @@ describe("toBeAnInstanceOf", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => new stdClass(),
-                'expected' => 'Exception'
-            ];
-
-            $actual = ToBeAnInstanceOf::description($report);
+            $actual = ToBeAnInstanceOf::description();
 
             expect($actual)->toBe('be an instance of expected.');
 

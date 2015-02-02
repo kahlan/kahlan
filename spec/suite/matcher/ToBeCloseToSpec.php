@@ -57,13 +57,8 @@ describe("toBeCloseTo", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'precision' => 2,
-                'actual'    => 1.23,
-                'expected'  => 1.22499991
-            ];
-
-            $actual = ToBeCloseTo::description($report);
+            ToBeCloseTo::match(1.23, 1.22499991, 2);
+            $actual = ToBeCloseTo::description();
 
             expect($actual['description'])->toBe('be close to expected relying to a precision of 2.');
             expect((string) $actual['params']['actual'])->toBe((string) 1.23);

@@ -115,12 +115,7 @@ describe("toEqual", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => 1,
-                'expected' => 2
-            ];
-
-            $actual = ToEqual::description($report);
+            $actual = ToEqual::description();
 
             expect($actual)->toBe('be equal to expected (==).');
 

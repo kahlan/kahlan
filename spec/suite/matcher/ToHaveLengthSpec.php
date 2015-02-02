@@ -31,12 +31,8 @@ describe("toHaveLength", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => [1, 2, 3],
-                'expected' => 5
-            ];
-
-            $actual = ToHaveLength::description($report);
+            ToHaveLength::match([1, 2, 3], 5);
+            $actual = ToHaveLength::description();
 
             expect($actual['description'])->toBe('have the expected length.');
             expect($actual['params']['actual'])->toBe([1, 2, 3]);

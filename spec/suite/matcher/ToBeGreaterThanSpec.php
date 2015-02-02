@@ -31,12 +31,7 @@ describe("toBeGreaterThan", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => 1,
-                'expected' => 2
-            ];
-
-            $actual = ToBeGreaterThan::description($report);
+            $actual = ToBeGreaterThan::description();
 
             expect($actual)->toBe('be greater than expected.');
 

@@ -4,7 +4,14 @@ namespace kahlan\matcher;
 class ToBeA
 {
     /**
-     * Checks that `$actual` has the `$expected` type.
+     * Description reference of the last `::match()` call.
+     *
+     * @var array
+     */
+    public static $_description = [];
+
+    /**
+     * Checks that `$actual` is of the `$expected` type.
      *
      * @param  mixed   $actual   The actual value.
      * @param  mixed   $expected The expected value.
@@ -12,7 +19,11 @@ class ToBeA
      */
     public static function match($actual, $expected)
     {
-        return static::actual($actual) === static::expected($expected);
+        $a = static::actual($actual);
+        $e = static::expected($expected);
+
+        static::_buildDescription($a, $e);
+        return $a === $e;
     }
 
     /**
@@ -47,16 +58,25 @@ class ToBeA
     }
 
     /**
-     * Returns the description report.
+     * Build the description of the runned `::match()` call.
      *
-     * @return array The description report.
+     * @param string $actual   The actual type.
+     * @param string $expected The expected type.
      */
-    public static function description($report)
+    public static function _buildDescription($actual, $expected)
     {
         $description = "have the expected type.";
-        $params['actual'] = static::actual($report['params']['actual']);
-        $params['expected'] = static::expected($report['params']['expected']);
-        return compact('description', 'params');
+        $params['actual'] = $actual;
+        $params['expected'] = $expected;
+        static::$_description = compact('description', 'params');
+    }
+
+    /**
+     * Returns the description report.
+     */
+    public static function description()
+    {
+        return static::$_description;
     }
 
 }

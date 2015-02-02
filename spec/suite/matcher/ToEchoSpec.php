@@ -26,14 +26,8 @@ describe("toEcho", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => function() {
-                	echo 'Hello';
-                },
-                'expected' => 'Good Bye!'
-            ];
-
-            $actual = ToEcho::description($report);
+            ToEcho::match(function() {echo 'Hello';}, 'Good Bye!');
+            $actual = ToEcho::description();
 
             expect($actual)->toBe([
                 'description' => 'echo the expected string.',

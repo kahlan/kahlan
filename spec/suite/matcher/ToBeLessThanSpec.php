@@ -31,12 +31,7 @@ describe("toBeLessThan", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => 2,
-                'expected' => 1
-            ];
-
-            $actual = ToBeLessThan::description($report);
+            $actual = ToBeLessThan::description();
 
             expect($actual)->toBe('be lesser than expected.');
 

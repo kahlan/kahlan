@@ -6,6 +6,13 @@ use Countable;
 class ToHaveLength
 {
     /**
+     * Description reference of the last `::match()` call.
+     *
+     * @var array
+     */
+    public static $_description = [];
+
+    /**
      * Checks that `$actual` has the `$expected` length.
      *
      * @param  mixed   $actual   The actual value.
@@ -14,7 +21,10 @@ class ToHaveLength
      */
     public static function match($actual, $expected)
     {
-        return static::actual($actual) === $expected;
+        $length = static::actual($actual);
+        static::_buildDescription($actual, $length, $expected);
+
+        return $length === $expected;
     }
 
     /**
@@ -33,17 +43,26 @@ class ToHaveLength
     }
 
     /**
-     * Returns the description report.
+     * Build the description of the runned `::match()` call.
      *
-     * @return array The description report.
+     * @param mixed   $actual   The actual value.
+     * @param mixed   $length   The actual length value value.
+     * @param mixed   $expected The expected length value.
      */
-    public static function description($report)
+    public static function _buildDescription($actual, $length, $expected)
     {
         $description = "have the expected length.";
-        $params['actual'] = $report['params']['actual'];
-        $params['actual length'] = static::actual($report['params']['actual']);
-        $params['expected length'] = $report['params']['expected'];
-        return compact('description', 'params');
+        $params['actual'] = $actual;
+        $params['actual length'] = $length;
+        $params['expected length'] = $expected;
+        static::$_description = compact('description', 'params');
     }
 
+    /**
+     * Returns the description report.
+     */
+    public static function description()
+    {
+        return static::$_description;
+    }
 }

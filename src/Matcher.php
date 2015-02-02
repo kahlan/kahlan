@@ -125,11 +125,7 @@ class Matcher
         $params = Inspector::parameters($class, 'match', $params);
         if (!is_object($result)) {
             $data = compact('class', 'matcher', 'params');
-            $success = $result;
-            $success = $this->_not ? !$success : $success;
-            if (!$success) {
-                $data['description'] = $class::description($data);
-            }
+            $data['description'] = $class::description();
             $this->_result($result, $data);
             return $this;
         }
@@ -147,11 +143,9 @@ class Matcher
         foreach($this->_deferred as $deferred) {
             extract($deferred);
             $this->_not = $not;
+            $boolean = $instance->resolve();
             $data = compact('class', 'matcher', 'params', 'instance');
-            $boolean = $instance->resolve($data);
-            if ($not ? $boolean : !$boolean) {
-                $data['description'] = $class::description($data);
-            }
+            $data['description'] = $instance->description();
             $data['backtrace'] = $instance->backtrace();
             $this->_result($boolean, $data);
         }

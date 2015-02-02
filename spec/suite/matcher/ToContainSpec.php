@@ -31,12 +31,7 @@ describe("toContain", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => [1, 2, 3],
-                'expected' => 4
-            ];
-
-            $actual = ToContain::description($report);
+            $actual = ToContain::description();
 
             expect($actual)->toBe('contain expected.');
 

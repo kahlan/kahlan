@@ -145,19 +145,44 @@ describe("toThrow", function() {
 
         it("returns the description message", function() {
 
+            $actualException = new Exception();
+            $expectedException = new Exception();
+
+            $actual = function() use ($actualException) {
+                throw $actualException;
+            };
+
+            ToThrow::match($actual, $expectedException, 0);
+            $actual = ToThrow::description();
+
+            expect($actual['description'])->toBe('throw a compatible exception.');
+            expect($actual['params']['actual'])->toBe($actualException);
+            expect($actual['params']['expected'])->toBe($expectedException);
+
+        });
+
+        it("returns the description message when actual doesn't throw any exception", function() {
+
             $exception = new Exception();
 
-            $report['params'] = [
-                'actual'   => function() {},
-                'expected' => $exception,
-                'code'     => 0
-            ];
-
-            $actual = ToThrow::description($report);
+            ToThrow::match(function() {}, $exception, 0);
+            $actual = ToThrow::description();
 
             expect($actual['description'])->toBe('throw a compatible exception.');
             expect($actual['params']['actual'])->toBe(null);
             expect($actual['params']['expected'])->toBe($exception);
+
+        });
+
+        it("returns the description message when the expected value is a string", function() {
+
+            ToThrow::match(function() {}, 'Expected exception message', 0);
+            $actual = ToThrow::description();
+
+            expect($actual['description'])->toBe('throw a compatible exception.');
+            expect($actual['params']['actual'])->toBe(null);
+            expect($actual['params']['expected'])->toBeAnInstanceOf('kahlan\matcher\AnyException');
+            expect($actual['params']['expected']->getMessage())->toBe('Expected exception message');
 
         });
 

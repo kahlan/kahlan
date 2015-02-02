@@ -37,11 +37,7 @@ describe("toBeTruthy", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => 2
-            ];
-
-            $actual = ToBeTruthy::description($report);
+            $actual = ToBeTruthy::description();
 
             expect($actual)->toBe('be truthy.');
 

@@ -4,15 +4,25 @@ namespace kahlan\matcher;
 class ToEcho
 {
     /**
+     * Description reference of the last `::match()` call.
+     *
+     * @var array
+     */
+    public static $_description = [];
+
+    /**
      * Checks that `$actual` echo the `$expected` string.
      *
      * @param  Closure $actual   The closure to run.
-     * @param  mixed   $expected The output string.
+     * @param  mixed   $expected The expected string.
      * @return boolean
      */
     public static function match($actual, $expected = null)
     {
-        return static::actual($actual) === $expected;
+        $a = static::actual($actual);
+        static::_buildDescription($a, $expected);
+
+        return $a === $expected;
     }
 
     /**
@@ -31,15 +41,24 @@ class ToEcho
     }
 
     /**
-     * Returns the description report.
+     * Build the description of the runned `::match()` call.
      *
-     * @return array The description report.
+     * @param string $actual   The actual string.
+     * @param string $expected The expected string.
      */
-    public static function description($report)
+    public static function _buildDescription($actual, $expected)
     {
         $description = "echo the expected string.";
-        $params['actual'] = static::actual($report['params']['actual']);
-        $params['expected'] = $report['params']['expected'];
-        return compact('description', 'params');
+        $params['actual'] = $actual;
+        $params['expected'] = $expected;
+        static::$_description = compact('description', 'params');
+    }
+
+    /**
+     * Returns the description report.
+     */
+    public static function description()
+    {
+        return static::$_description;
     }
 }

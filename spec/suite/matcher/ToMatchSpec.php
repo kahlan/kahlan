@@ -31,12 +31,7 @@ describe("toMatch", function() {
 
         it("returns the description message", function() {
 
-            $report['params'] = [
-                'actual'   => 'Hello',
-                'expected' => '~^World$~'
-            ];
-
-            $actual = ToMatch::description($report);
+            $actual = ToMatch::description();
 
             expect($actual)->toBe('match expected.');
 
