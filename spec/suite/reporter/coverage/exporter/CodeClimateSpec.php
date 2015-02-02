@@ -6,6 +6,7 @@ use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\CodeClimate;
 use kahlan\spec\fixture\reporter\coverage\NoEmptyLine;
 use kahlan\spec\fixture\reporter\coverage\ExtraEmptyLine;
+use RuntimeException;
 
 describe("CodeClimate", function() {
 
@@ -178,6 +179,34 @@ describe("CodeClimate", function() {
             expect($coverage['name'])->toBe($path);
             $coverage = json_decode($coverage['coverage']);
             expect($coverage)->toHaveLength(16);
+
+        });
+
+        it("throws an exception when file not set", function() {
+
+            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
+
+            $collector = new Collector([
+                'driver' => new Xdebug(),
+                'path'   => $path
+            ]);
+
+            $code = new ExtraEmptyLine();
+
+            $collector->start();
+            $code->shallNotPass();
+            $collector->stop();
+
+            expect(function() use($collector) {
+                CodeClimate::write([
+                    'collector'   => $collector,
+                    'file'        => null,
+                    'environment' => [
+                        'pwd'     => '/home/crysalead/kahlan'
+                    ],
+                    'repo_token'  => 'ABC'
+                ]);
+            })->toThrow(new RuntimeException("Missing file name"));
 
         });
 
