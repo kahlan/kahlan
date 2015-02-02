@@ -3,6 +3,7 @@ namespace kahlan\spec\fixture\jit\patcher\monkey;
 
 use kahlan\MongoId;
 use string\String;
+use sub\name\space;
 
 function time() {
     return 0;
@@ -65,6 +66,11 @@ class Example extends \kahlan\fixture\Parent
     public function instantiateRootBasedFromUsed()
     {
         new \MongoId;
+    }
+
+    public function instantiateFromUsedSubnamespace()
+    {
+        new space\MyClass;
     }
 
     public function instantiateVariable()

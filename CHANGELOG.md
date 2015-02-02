@@ -2,6 +2,10 @@
 
 ## Changes on the master branch
 
+## 1.0.3 (2015-02-02)
+
+  * Bug: fixes `use` statement patching for partial namespace
+
 ## 1.0.2 (2015-02-01)
 
   * Bug: fixes code coverage driver to make it work with HHVM

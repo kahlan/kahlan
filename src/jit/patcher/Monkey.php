@@ -154,11 +154,17 @@ class Monkey
             return $matches[0];
         }
 
+        $tokens = explode('\\', $name, 2);
+
         if ($name[0] === '\\') {
             $name = substr($name, 1);
             $args = "null , '{$name}'";
-        } elseif (isset($this->_uses[$name])) {
-            $args = "null, '" . $this->_uses[$name] . "'";
+        } elseif (isset($this->_uses[$tokens[0]])) {
+            $ns = $this->_uses[$tokens[0]];
+            if (count($tokens) === 2) {
+                $ns .= '\\' . $tokens[1];
+            }
+            $args = "null, '" . $ns . "'";
         } else {
             $isFunc = $matches[1] || $static ? 'false' : 'true';
             $args = "__NAMESPACE__ , '{$name}', {$isFunc}";
