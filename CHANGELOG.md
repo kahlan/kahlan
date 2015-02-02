@@ -2,6 +2,10 @@
 
 ## Changes on the master branch
 
+## 1.0.4 (2015-02-03)
+
+  * Deprecate: deprecates ddescribe/ccontext/iit in flavor of fdescribe/fcontext/fit (Jasmine 2.x naming)
+
 ## 1.0.3 (2015-02-02)
 
   * Bug: fixes `use` statement patching for partial namespace.
