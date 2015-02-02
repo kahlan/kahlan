@@ -116,4 +116,12 @@ describe("DummyClass", function() {
 
     });
 
+
+    it("should enables", function() {
+
+        DummyClass::enable();
+        expect(DummyClass::enabled())->toBe(true);
+
+    });
+
 });
