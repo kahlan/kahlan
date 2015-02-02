@@ -33,24 +33,29 @@ describe("Quit", function() {
 
     describe("::enable()", function() {
 
-      beforeEach(function() {
+        it("enables quit statements", function() {
 
-        Quit::enable();
+            Quit::disable();
+            expect(Quit::enabled())->toBe(false);
 
-      });
+            Quit::enable();
+            expect(Quit::enabled())->toBe(true);
 
+        });
 
-      it("should enables", function() {
+    });
 
-          expect(Quit::enabled())->toBe(true);
+    describe("::disable()", function() {
 
-      });
+        it("disables quit statements", function() {
 
-      after(function() {
+            Quit::enable();
+            expect(Quit::enabled())->toBe(true);
 
-          Quit::disable();
+            Quit::disable();
+            expect(Quit::enabled())->toBe(false);
 
-      });
+        });
 
     });
 

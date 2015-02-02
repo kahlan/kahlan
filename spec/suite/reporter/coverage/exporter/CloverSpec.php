@@ -163,31 +163,10 @@ EOD;
 
         });
 
+        it("throws exception when no file is set", function() {
 
-        it("throws exception when file not set", function() {
-
-            $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
-
-            $collector = new Collector([
-                'driver' => new Xdebug(),
-                'path'   => $path
-            ]);
-
-            $code = new NoEmptyLine();
-
-            $collector->start();
-            $code->shallNotPass();
-            $collector->stop();
-
-            $time = time();
-
-            expect(function() use($collector, $time){
-                Clover::write([
-                    'collector' => $collector,
-                    'file'      => null,
-                    'time'      => $time,
-                    'base_path' => '/home/crysalead/kahlan'
-                ]);
+            expect(function() {
+                Clover::write([]);
             })->toThrow(new RuntimeException('Missing file name'));
 
         });

@@ -157,29 +157,10 @@ describe("Coveralls", function() {
 
         });
 
-        it("throws an exception when file not set", function() {
+        it("throws an exception no file is set", function() {
 
-            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
-
-            $collector = new Collector([
-                'driver'    => new Xdebug(),
-                'path'      => $path
-            ]);
-
-            $code = new ExtraEmptyLine();
-
-            $collector->start();
-            $code->shallNotPass();
-            $collector->stop();
-
-            expect(function() use($collector) {
-                Coveralls::write([
-                    'collector'      => $collector,
-                    'file'           => null,
-                    'service_name'   => 'kahlan-ci',
-                    'service_job_id' => '123',
-                    'repo_token'     => 'ABC'
-                ]);
+            expect(function() {
+                Coveralls::write([]);
             })->toThrow(new RuntimeException("Missing file name"));
 
         });

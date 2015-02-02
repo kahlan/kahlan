@@ -116,11 +116,31 @@ describe("DummyClass", function() {
 
     });
 
+    describe("::enable()", function() {
 
-    it("should enables", function() {
+        it("enables dummies", function() {
 
-        DummyClass::enable();
-        expect(DummyClass::enabled())->toBe(true);
+            DummyClass::disable();
+            expect(DummyClass::enabled())->toBe(false);
+
+            DummyClass::enable();
+            expect(DummyClass::enabled())->toBe(true);
+
+        });
+
+    });
+
+    describe("::disable()", function() {
+
+        it("disables dummies", function() {
+
+            DummyClass::enable();
+            expect(DummyClass::enabled())->toBe(true);
+
+            DummyClass::disable();
+            expect(DummyClass::enabled())->toBe(false);
+
+        });
 
     });
 

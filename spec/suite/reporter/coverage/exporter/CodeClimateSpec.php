@@ -182,30 +182,10 @@ describe("CodeClimate", function() {
 
         });
 
-        it("throws an exception when file not set", function() {
+        it("throws an exception when no file is set", function() {
 
-            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
-
-            $collector = new Collector([
-                'driver' => new Xdebug(),
-                'path'   => $path
-            ]);
-
-            $code = new ExtraEmptyLine();
-
-            $collector->start();
-            $code->shallNotPass();
-            $collector->stop();
-
-            expect(function() use($collector) {
-                CodeClimate::write([
-                    'collector'   => $collector,
-                    'file'        => null,
-                    'environment' => [
-                        'pwd'     => '/home/crysalead/kahlan'
-                    ],
-                    'repo_token'  => 'ABC'
-                ]);
+            expect(function() {
+                CodeClimate::write([]);
             })->toThrow(new RuntimeException("Missing file name"));
 
         });
