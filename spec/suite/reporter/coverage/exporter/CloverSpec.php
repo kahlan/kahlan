@@ -6,6 +6,7 @@ use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Clover;
 use kahlan\spec\fixture\reporter\coverage\NoEmptyLine;
 use kahlan\spec\fixture\reporter\coverage\ExtraEmptyLine;
+use RuntimeException;
 
 describe("Clover", function() {
 
@@ -159,6 +160,35 @@ $expected = <<<EOD
 EOD;
 
             expect($xml)->toBe($expected);
+
+        });
+
+
+        it("throws exception when file not set", function() {
+
+            $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
+
+            $collector = new Collector([
+                'driver' => new Xdebug(),
+                'path'   => $path
+            ]);
+
+            $code = new NoEmptyLine();
+
+            $collector->start();
+            $code->shallNotPass();
+            $collector->stop();
+
+            $time = time();
+
+            expect(function() use($collector, $time){
+                Clover::write([
+                    'collector' => $collector,
+                    'file'      => null,
+                    'time'      => $time,
+                    'base_path' => '/home/crysalead/kahlan'
+                ]);
+            })->toThrow(new RuntimeException('Missing file name'));
 
         });
 
