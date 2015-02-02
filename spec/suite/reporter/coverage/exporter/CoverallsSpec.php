@@ -6,6 +6,7 @@ use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Coveralls;
 use kahlan\spec\fixture\reporter\coverage\NoEmptyLine;
 use kahlan\spec\fixture\reporter\coverage\ExtraEmptyLine;
+use RuntimeException;
 
 describe("Coveralls", function() {
 
@@ -153,6 +154,33 @@ describe("Coveralls", function() {
             expect($coverage['name'])->toBe($path);
             expect($coverage['source'])->toBe(file_get_contents($path));
             expect($coverage['coverage'])->toHaveLength(16);
+
+        });
+
+        it("throws an exception when file not set", function() {
+
+            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
+
+            $collector = new Collector([
+                'driver'    => new Xdebug(),
+                'path'      => $path
+            ]);
+
+            $code = new ExtraEmptyLine();
+
+            $collector->start();
+            $code->shallNotPass();
+            $collector->stop();
+
+            expect(function() use($collector) {
+                Coveralls::write([
+                    'collector'      => $collector,
+                    'file'           => null,
+                    'service_name'   => 'kahlan-ci',
+                    'service_job_id' => '123',
+                    'repo_token'     => 'ABC'
+                ]);
+            })->toThrow(new RuntimeException("Missing file name"));
 
         });
 
