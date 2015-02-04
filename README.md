@@ -28,6 +28,28 @@ See the whole [documentation here](http://kahlan.readthedocs.org/en/latest).
  * Composer
  * [Xdebug](http://xdebug.org/) (if you want to perform code coverage analysis)
 
+# Syntax
+
+```php
+
+describe("Example", function() {
+
+    it("passes if true === true", function() {
+
+        expect(true)->toBe(true);
+
+    });
+
+    it("passes if false !== true", function() {
+
+        expect(false)->not->toBe(true);
+
+    });
+
+});
+
+```
+
 # Screenshots
 
 Example of output:
