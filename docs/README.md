@@ -35,3 +35,4 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 * [Reporters](reporters.md)
 * [Pro Tips](pro-tips.md) - including CLI arguments
 * [The `kahlan-config.php` file](config-file.md)
+* [Integration with popular frameworks](integration.md)

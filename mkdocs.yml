@@ -13,5 +13,6 @@ pages:
 - ['reporters.md', 'Reporters']
 - ['pro-tips.md', 'Pro Tips']
 - ['config-file.md', 'Kahlan-config.php']
+- ['integration.md', 'Integration with popular frameworks']
 theme: readthedocs
 include_search: true
