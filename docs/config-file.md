@@ -102,3 +102,20 @@ Finally you can also disable all the patching everywhere if you prefer to deal w
 $this->args()->set('include', []);
 ```
 **Note:** You will still able to stub instances and classes created with `Stub::create()`/`Stub::classname()` anyway.
+
+### Integration with popular frameworks
+Kahlan is perfectly fits to composer autoloader, but in case you need to load something you must have in test enviroment runtime, you can do it, by yourself, using **kahlan-config.php** file. It's easy and simple. Keep on eye on examples located below.
+
+#### Phalcon
+This configuration will add a **PSR-4** based loading of namespaces: `\Api\Models` and `Api\Controllers`, located in `/app/models/` and `/app/controllers/` to your kahlan test suite.
+
+```php
+Filter::register('app.namespaces', function($chain) {
+  $this->_autoloader->addPsr4('Api\\Models\\', __DIR__ . '/app/models/');
+  $this->_autoloader->addPsr4('Api\\Controllers\\', __DIR__ . '/app/controllers/');
+
+  kahlan\Matcher::register('toThrowLogic', 'Spec\Helper\ToThrowLogic');
+});
+
+Filter::apply($this, 'namespaces', 'app.namespaces');
+```
