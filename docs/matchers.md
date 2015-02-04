@@ -60,7 +60,7 @@ it("passes if $actual is null", function() {
 });
 ```
 
-**toBeA()**
+**toBeA($expected)**
 
 ```php
 it("passes if $actual is of a specific type", function() {
@@ -72,7 +72,7 @@ it("passes if $actual is of a specific type", function() {
 });
 ```
 
-**toBeAnInstanceOf()**
+**toBeAnInstanceOf($expected)**
 
 ```php
 it("passes if $actual is an instance of stdObject", function() {
@@ -82,7 +82,7 @@ it("passes if $actual is an instance of stdObject", function() {
 });
 ```
 
-**toHaveLength()**
+**toHaveLength($expected)**
 
 ```php
 it("passes if $actual has the correct length", function() {
@@ -103,7 +103,7 @@ it("passes if $actual contain $expected", function() {
 });
 ```
 
-**toBeCloseTo($expected)**
+**toBeCloseTo($expected, $precision)**
 
 ```php
 it("passes if abs($actual - $expected)*2 < 0.01", function() {
