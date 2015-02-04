@@ -4,6 +4,30 @@ namespace kahlan;
 use Exception;
 use kahlan\analysis\Inspector;
 
+/**
+ * Class Matcher
+ *
+ * @method Matcher toBe(mixed $expected) passes if actual === expected
+ * @method Matcher toEqual(mixed $expected) passes if actual == expected
+ * @method Matcher toBeTruthy() passes if actual is truthy
+ * @method Matcher toBeFalsy() passes if actual is falsy
+ * @method Matcher toBeEmpty() passes if actual is falsy
+ * @method Matcher toBeNull() passes if actual is null
+ * @method Matcher toBeA(string $expected) passes if actual is a specific type of expected
+ * @method Matcher toBeAnInstanceOf(string $expected) passes if actual is an instance of expected
+ * @method Matcher toHaveLength(int $expected) passes if actual has correct expected length
+ * @method Matcher toContain(mixed $expected) passes if actual contain expected value
+ * @method Matcher toBeCloseTo(float $expected, int $precision) passes if actual is close to expected in some precision
+ * @method Matcher toBeGreaterThan(mixed $expected) passes if actual if greater than expected
+ * @method Matcher toBeLessThan(mixed $expected) passes if actual is less then expected
+ * @method Matcher toThrow(mixed $expected) passes if actual throws something, exception, exception with code
+ * @method Matcher toMatch(string $expected) passes if actual matches with expected regexp
+ * @method Matcher toEcho(string $expected) passes if actual echoes expected string
+ * @method Matcher toReceive(string $expected) passes if actual invoke expected method
+ * @method Matcher toReceiveNext(string $expected) passes if actual invoke expected method after some other method
+ *
+ * @package kahlan
+ */
 class Matcher
 {
     /**
@@ -97,7 +121,7 @@ class Matcher
      *
      * @param  mixed   $actual The expression to test.
      * @param  object  The parent context class.
-     * @return boolean
+     * @return Matcher
      */
     public function expect($actual, $parent)
     {
