@@ -1,27 +1,57 @@
 <?php
 namespace kahlan\spec\suite\matcher;
 
+use stdClass;
 use kahlan\matcher\ToContain;
 
 describe("toContain", function() {
 
     describe("::match()", function() {
 
-        it("passes if 3 is in [1, 2, 3]", function() {
+        context("with an array", function() {
 
-            expect([1, 2, 3])->toContain(3);
+            it("passes if 3 is in [1, 2, 3]", function() {
+
+                expect([1, 2, 3])->toContain(3);
+
+            });
+
+            it("passes if 'a' is in ['a', 'b', 'c']", function() {
+
+                expect(['a', 'b', 'c'])->toContain('a');
+
+            });
+
+            it("passes if 'd' is in ['a', 'b', 'c']", function() {
+
+                expect(['a', 'b', 'c'])->not->toContain('d');
+
+            });
 
         });
 
-        it("passes if 'a' is in ['a', 'b', 'c']", function() {
+        context("with a string", function() {
 
-            expect(['a', 'b', 'c'])->toContain('a');
+            it("passes if contained in expected", function() {
+
+                expect('World')->toContain('Hello World!');
+                expect('World')->toContain('World');
+
+            });
+
+            it("fails if not contained in expected", function() {
+
+                expect('world')->not->toContain('Hello World!');
+
+            });
 
         });
 
-        it("passes if 'd' is in ['a', 'b', 'c']", function() {
+        it("fails with non string/array", function() {
 
-            expect(['a', 'b', 'c'])->not->toContain('d');
+            expect(new stdClass())->not->toContain('Hello World!');
+            expect(false)->not->toContain('0');
+            expect(true)->not->toContain('1');
 
         });
 

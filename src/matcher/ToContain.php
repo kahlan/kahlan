@@ -12,9 +12,13 @@ class ToContain
      */
     public static function match($actual, $expected)
     {
-        foreach ($actual as $key => $value) {
-            if ($value === $expected) {
-                return true;
+        if (is_string($actual)) {
+            return strpos($expected, $actual) !== false;
+        } elseif (is_array($actual)) {
+            foreach ($actual as $key => $value) {
+                if ($value === $expected) {
+                    return true;
+                }
             }
         }
         return false;
