@@ -14,21 +14,33 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 
 **Killer feature:** Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.
 
-# Video
+## Video
 
  * <a href="http://vimeo.com/116949820" target="_blank">Warren Seymour presentation at Unified Diff (2015)</a>
 
-# Documentation
+## Documentation
 
 See the whole [documentation here](http://kahlan.readthedocs.org/en/latest).
 
-# Requirements
+## Requirements
 
  * PHP 5.4+
  * Composer
  * [Xdebug](http://xdebug.org/) (if you want to perform code coverage analysis)
 
-# Syntax
+## Main Features
+
+* Simple API
+* Small code base (~10 times smaller than PHPUnit)
+* Fast Code Coverage metrics ([xdebug](http://xdebug.org) required)
+* Handy stubbing system ([mockery](https://github.com/padraic/mockery) or [prophecy](https://github.com/phpspec/prophecy) are no longer needed)
+* Set stubs on your class methods directly (i.e allows dynamic mocking)
+* Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
+* Check called methods on your class/instances
+* Built-in Reporters/Exporters (Terminal, Coveralls, Code Climate, Scrutinizer, Clover)
+* Extensible, customizable workflow
+
+## Syntax
 
 ```php
 
@@ -50,7 +62,7 @@ describe("Example", function() {
 
 ```
 
-# Screenshots
+## Screenshots
 
 Example of output:
 ![Kahlan](docs/assets/kahlan.png)
@@ -58,9 +70,9 @@ Example of output:
 Example of detailed code coverage on a specific scope:
 ![code_coverage_example](docs/assets/code_coverage_example.png)
 
-# Installation
+## Installation
 
-## via Composer
+### via Composer
 
 Here is a sample composer.json to install Kahlan:
 
@@ -71,7 +83,7 @@ Here is a sample composer.json to install Kahlan:
     "require": {
     },
     "require-dev": {
-        "crysalead/kahlan": "dev-master"
+        "crysalead/kahlan": "~1.0"
     },
     "license": "MIT",
     "minimum-stability": "dev"
@@ -84,7 +96,10 @@ Then install via:
 composer install --dev
 ```
 
-## via Git clone
+Note:
+Kahlan uses the [ferver](https://github.com/jonathanong/ferver) versioning so a `"~x.y"` version constraint shouldn't ever BC-break.
+
+### via Git clone
 
 ```
 git clone git@github.com:crysalead/kahlan.git
