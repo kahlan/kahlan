@@ -313,7 +313,7 @@ EOD;
                 'include'    => $this->args()->get('include'),
                 'exclude'    => array_merge($this->args()->get('exclude'), ['kahlan\\']),
                 'persistent' => $this->args()->get('persistent'),
-                'cachePath'  => rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan'
+                'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan'
             ]);
         });
     }
