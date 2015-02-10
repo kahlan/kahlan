@@ -1,6 +1,8 @@
 <?php
 namespace kahlan\matcher;
 
+use Traversable;
+
 class ToContain
 {
     /**
@@ -14,7 +16,7 @@ class ToContain
     {
         if (is_string($actual)) {
             return strpos($expected, $actual) !== false;
-        } elseif (is_array($actual)) {
+        } elseif (is_array($actual) || $actual instanceof Traversable) {
             foreach ($actual as $key => $value) {
                 if ($value === $expected) {
                     return true;

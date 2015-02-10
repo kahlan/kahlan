@@ -2,6 +2,7 @@
 namespace kahlan\spec\suite\matcher;
 
 use stdClass;
+use kahlan\spec\mock\Collection;
 use kahlan\matcher\ToContain;
 
 describe("toContain", function() {
@@ -25,6 +26,28 @@ describe("toContain", function() {
             it("passes if 'd' is in ['a', 'b', 'c']", function() {
 
                 expect(['a', 'b', 'c'])->not->toContain('d');
+
+            });
+
+        });
+
+        context("with a traversable instance", function() {
+
+            it("passes if 3 is in [1, 2, 3]", function() {
+
+                expect(new Collection(['data' => [1, 2, 3]]))->toContain(3);
+
+            });
+
+            it("passes if 'a' is in ['a', 'b', 'c']", function() {
+
+                expect(new Collection(['data' => ['a', 'b', 'c']]))->toContain('a');
+
+            });
+
+            it("passes if 'd' is in ['a', 'b', 'c']", function() {
+
+                expect(new Collection(['data' => ['a', 'b', 'c']]))->not->toContain('d');
 
             });
 
