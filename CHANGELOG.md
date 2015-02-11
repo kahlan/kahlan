@@ -2,6 +2,12 @@
 
 ## Changes on the master branch
 
+## 1.0.6 (2015-02-11)
+
+  * Change: Allows arguments to also be set in kahlan config files.
+  * Bugfix: fixes Monkey patcher when some patchable code are outside namespaces/classes or functions.
+  * Add: implements missing Jasmine `expect(string)->toContain(substring)` behavior.
+
 ## 1.0.5 (2015-02-10)
 
   * Bugfix: resolves default cache path (based on`sys_get_temp_dir()`) to be a real dir on OS X.
