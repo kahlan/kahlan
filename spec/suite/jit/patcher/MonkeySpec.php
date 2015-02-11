@@ -31,6 +31,15 @@ describe("Monkey", function() {
 
         });
 
+        it("patches plain php file", function() {
+
+            $nodes = Parser::parse(file_get_contents($this->path . '/Plain.php'));
+            $expected = file_get_contents($this->path . '/PlainProcessed.php');
+            $actual = Parser::unparse($this->patcher->process($nodes));
+            expect($actual)->toBe($expected);
+
+        });
+
     });
 
 });

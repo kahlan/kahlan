@@ -123,14 +123,20 @@ class Monkey
                 $node->body = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
                 $code = $this->_classes['node'];
                 $body = '';
-                foreach ($this->_variables as $variable) {
-                    $body .= $variable['name'] . $variable['patch'];
+                if ($this->_variables) {
+                    foreach ($this->_variables as $variable) {
+                        $body .= $variable['name'] . $variable['patch'];
+                    }
+                    $parent = $node->function ?: $node->parent;
+                    if (!$parent->inPhp) {
+                        $body = '<?php ' . $body . ' ?>';
+                    }
+                    $patch = new $code($body, 'code');
+                    $patch->parent = $parent;
+                    $patch->function = $node->function;
+                    $patch->namespace = $node->namespace;
+                    array_unshift($parent->tree, $patch);
                 }
-                $patch = new $code($body, 'code');
-                $patch->parent = $node->function ?: $node->parent;
-                $patch->function = $node->function;
-                $patch->namespace = $node->namespace;
-                array_unshift($patch->parent->tree, $patch);
             }
             if (count($node->tree)) {
                 $this->_processTree($node->tree);
