@@ -160,6 +160,19 @@ EOD;
 
         });
 
+        it("doesn't filter empty string from include & exclude", function() {
+
+            $args = [
+                '--include=',
+                '--exclude=',
+            ];
+
+            $this->specs->loadConfig($args);
+            expect($this->specs->args()->get()['include'])->toBe([]);
+            expect($this->specs->args()->get()['exclude'])->toBe([]);
+
+        });
+
     });
 
     describe("->run()", function() {

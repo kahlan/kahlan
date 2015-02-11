@@ -90,8 +90,20 @@ class Kahlan {
         $args->argument('config', ['default' => 'kahlan-config.php']);
         $args->argument('ff', ['type' => 'numeric', 'default' => 0]);
         $args->argument('no-colors', ['type' => 'boolean', 'default' => false]);
-        $args->argument('include', ['array' => 'true', 'default' => ['*']]);
-        $args->argument('exclude', ['array' => 'true', 'default' => []]);
+        $args->argument('include', [
+            'array' => 'true',
+            'default' => ['*'],
+            'value' => function($value) {
+                return array_filter($value);
+            }
+        ]);
+        $args->argument('exclude', [
+            'array' => 'true',
+            'default' => [],
+            'value' => function($value) {
+                return array_filter($value);
+            }
+        ]);
         $args->argument('persistent', ['type'  => 'boolean', 'default' => true]);
         $args->argument('autoclear', ['array' => 'true', 'default' => [
             'kahlan\plugin\Monkey',
@@ -162,7 +174,7 @@ class Kahlan {
             require $args->get('config');
         }
 
-        $this->_args->parse($argv);
+        $this->_args->parse($argv, false);
     }
 
     /**

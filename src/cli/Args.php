@@ -71,19 +71,24 @@ class Args {
     /**
      * Parses a command line argv.
      *
-     * @param  array $argv An argv data.
-     * @return array       The parsed attributes
+     * @param  array   $argv     An argv data.
+     * @param  boolean $override If set to `false` it doesn't override already setted data.
+     * @return array             The parsed attributes
      */
-    public function parse($argv)
+    public function parse($argv, $override = true)
     {
-        $this->_values = [];
+        $exists = [];
+        $override ? $this->_values = [] : $exists = array_fill_keys(array_keys($this->_values), true);
+
         foreach($argv as $arg) {
             if ($arg === '--') {
                 break;
             }
             if ($arg[0] === '-') {
                 list($name, $value) = $this->_parse(ltrim($arg,'-'));
-                $this->add($name, $value);
+                if ($override || !isset($exists[$name])) {
+                    $this->add($name, $value, $override);
+                }
             }
         }
         return $this->get();

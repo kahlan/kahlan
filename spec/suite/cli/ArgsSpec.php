@@ -202,6 +202,24 @@ describe("Args", function() {
 
         });
 
+        context("with override set to `false`", function() {
+
+            it("doesn't override existing arguments when the override params is set to `false`", function() {
+
+                $args = new Args();
+                $args->set('argument1', 'value1');
+                $actual = $args->parse(['--argument1=valueX']);
+                expect($actual)->toBe(['argument1' => 'valueX']);
+
+                $args = new Args();
+                $args->set('argument1', 'value1');
+                $actual = $args->parse(['--argument1=valueX'], false);
+                expect($actual)->toBe(['argument1' => 'value1']);
+
+            });
+
+        });
+
     });
 
     describe("->get()", function() {
