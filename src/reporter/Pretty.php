@@ -81,13 +81,13 @@ class Pretty extends Terminal
                     $this->write(str_repeat('  ', $this->_getReportOffset() + 1));
                     $this->write("actual:\n", 'red');
 
-                    $this->write($report['params']['actual'], 'n;black;91');
+                    $this->write(String::toString($report['params']['actual']), 'n;black;91');
                     $this->write("\n", "black");
 
                     // Excpected fetch
                     $this->write(str_repeat('  ', $this->_getReportOffset() + 1));
                     $this->write("expected:\n", 'green');
-                    $this->write($report['params']['expected'], 'n;black;92');
+                    $this->write(String::toString($report['params']['expected']), 'n;black;92');
                     $this->write("\n");
 
                     static::$_skip = true;
