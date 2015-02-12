@@ -63,7 +63,7 @@ class Pretty extends Terminal
 
             // If not, let's show it to user
             $this->write(str_repeat('  ', $key));
-            $this->write($message . "\n", 'b;black');
+            $this->write($message . "\n", 'b;');
 
             // Store to avoid duplicates
             static::$_structure[$trace] = true;
@@ -81,13 +81,13 @@ class Pretty extends Terminal
                     $this->write(str_repeat('  ', $this->_getReportOffset() + 1));
                     $this->write("actual:\n", 'red');
 
-                    $this->write(String::toString($report['params']['actual']), 'n;black;91');
+                    $this->write(String::toString($report['params']['actual']), 'n;;91');
                     $this->write("\n", "black");
 
                     // Excpected fetch
                     $this->write(str_repeat('  ', $this->_getReportOffset() + 1));
                     $this->write("expected:\n", 'green');
-                    $this->write(String::toString($report['params']['expected']), 'n;black;92');
+                    $this->write(String::toString($report['params']['expected']), 'n;;92');
                     $this->write("\n");
 
                     static::$_skip = true;
@@ -107,7 +107,7 @@ class Pretty extends Terminal
                     $this->write("\n");
                     foreach(explode("\n", Debugger::trace(['trace' => $report['backtrace']])) as $msg) {
                         $this->write(str_repeat('  ', $this->_getReportOffset() + 2));
-                        $this->write($msg . "\n", 'd;black');
+                        $this->write($msg . "\n", 'd;');
                     }
                     $this->write("\n");
                     break;
