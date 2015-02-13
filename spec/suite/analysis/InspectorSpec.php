@@ -73,6 +73,15 @@ describe("Inspector", function() {
 
         });
 
+        it("should return other hinting", function() {
+
+            $inspector = Inspector::parameters($this->class, 'is_number');
+            $typehint = Inspector::typehint(current($inspector));
+            expect($typehint)->toBeA('string');
+            expect(trim($typehint))->toBe('callable');
+
+        });
+
     });
 
 });

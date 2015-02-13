@@ -16,4 +16,8 @@ class DummyClass {
         return max($values);
     }
 
+    public function is_number(callable $i) {
+        return is_numeric($i);
+    }
+
 }
