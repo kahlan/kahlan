@@ -297,16 +297,17 @@ class Scope
         if (!$condition) {
             return;
         }
+        $exception = new SkipException();
+        $this->report()->add('skip', ['exception' => $exception]);
+
         if ($this instanceof Suite) {
             foreach ($this->_childs as $child) {
-                $messages = $this->messages();
-                $backtrace = $this->_backtrace;
                 $report = $child->report();
                 $this->emitReport('before', $report);
                 $this->emitReport('after', $report);
             }
         }
-        throw new SkipException();
+        throw $exception;
     }
 
     /**
@@ -319,7 +320,6 @@ class Scope
         $data = compact('exception');
         switch(get_class($exception)) {
             case 'kahlan\SkipException':
-                $this->report()->add('skip', $data);
             break;
             case 'kahlan\IncompleteException':
                 $this->report()->add('incomplete', $data);

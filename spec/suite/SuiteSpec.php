@@ -682,6 +682,12 @@ describe("Suite", function() {
             $reporters = Stub::create();
 
             expect($reporters)->toReceive('process')->with('begin', ['total' => 2]);
+            expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('before', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('after', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('before', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('after', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('end', Arg::toBeAn('array'));
 
             $this->suite->run(['reporters' => $reporters]);
 
