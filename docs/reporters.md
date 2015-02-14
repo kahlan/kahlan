@@ -28,9 +28,9 @@ class MyReporter extends \kahlan\reporter\Terminal
     /**
      * Callback called on successful expectation.
      *
-     * @param array $report The report array.
+     * @param object $report An expect report object.
      */
-    public function pass($report = [])
+    public function pass($report = null)
     {
         $this->write('✓', "green");
     }
@@ -38,9 +38,9 @@ class MyReporter extends \kahlan\reporter\Terminal
     /**
      * Callback called on failure.
      *
-     * @param array $report The report array.
+     * @param object $report An expect report object.
      */
-    public function fail($report = [])
+    public function fail($report = null)
     {
         $this->write('☠', "red");
         $this->write("\n");
@@ -50,9 +50,9 @@ class MyReporter extends \kahlan\reporter\Terminal
     /**
      * Callback called when an exception occur.
      *
-     * @param array $report The report array.
+     * @param object $report An expect report object.
      */
-    public function exception($report = [])
+    public function exception($report = null)
     {
         $this->write('☠', "magenta");
         $this->write("\n");
@@ -62,9 +62,9 @@ class MyReporter extends \kahlan\reporter\Terminal
     /**
      * Callback called on a skipped spec.
      *
-     * @param array $report The report array.
+     * @param object $report An expect report object.
      */
-    public function skip($report = [])
+    public function skip($report = null)
     {
         $this->write('-', "cyan");
     }
