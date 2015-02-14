@@ -10,14 +10,14 @@ class Cli
      */
     protected static $_vt100 = [
         'colors' => [
-            'black' => 30,
-            'red' => 31,
-            'green' => 32,
-            'yellow' => 33,
-            'blue' => 34,
+            'black'   => 30,
+            'red'     => 31,
+            'green'   => 32,
+            'yellow'  => 33,
+            'blue'    => 34,
             'magenta' => 35,
-            'cyan' => 36,
-            'white' => 37,
+            'cyan'    => 36,
+            'white'   => 37,
             'default' => 39
         ],
         'formats' => [
