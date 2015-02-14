@@ -85,9 +85,9 @@ class Bar extends Terminal
     /**
      * Callback called when entering a new spec.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function before($report = [])
+    public function before($report = null)
     {
         parent::before($report);
         $this->_progressBar();
@@ -96,9 +96,9 @@ class Bar extends Terminal
     /**
      * Callback called on failure.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function fail($report = [])
+    public function fail($report = null)
     {
         $this->_color = $this->_preferences['failure'];
         $this->write("\n");
@@ -109,9 +109,9 @@ class Bar extends Terminal
     /**
      * Callback called when an exception occur.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function exception($report = [])
+    public function exception($report = null)
     {
         $this->_color = $this->_preferences['failure'];
         $this->write("\n");
@@ -122,9 +122,9 @@ class Bar extends Terminal
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function incomplete($report = [])
+    public function incomplete($report = null)
     {
         $this->_color = $this->_preferences['incomplete'];
         $this->write("\n");

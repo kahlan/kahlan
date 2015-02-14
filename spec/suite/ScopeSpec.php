@@ -45,19 +45,16 @@ describe("Scope", function() {
                 'context',
                 'current',
                 'describe',
-                'exception',
                 'focus',
                 'focused',
+                'emitReport',
                 'expect',
-                'fail',
                 'failfast',
                 'hash',
-                'incomplete',
                 'it',
                 'log',
                 'message',
                 'messages',
-                'pass',
                 'passed',
                 'process',
                 'register',
@@ -66,7 +63,6 @@ describe("Scope", function() {
                 'reset',
                 'results',
                 'run',
-                'skip',
                 'skipIf',
                 'status',
                 'fcontext',
@@ -213,19 +209,18 @@ describe("Scope", function() {
 
     });
 
-
     describe("->pass()", function() {
 
         it("logs a pass", function() {
 
-            $this->scope->pass(['data' => 'value']);
+            $this->scope->report()->add('pass', ['matcher' => 'kahlan\matcher\ToBe']);
             $results = $this->scope->results();
-            $result = reset($results['passed']);
+            $report = reset($results['passed']);
 
-            expect($result['data'])->toBe('value');
-            expect($result['type'])->toBe('pass');
-            expect($result['messages'])->toBe(['it runs a spec']);
-            expect($result['backtrace'])->toBeAn('array');
+            expect($report->matcher())->toBe('kahlan\matcher\ToBe');
+            expect($report->type())->toBe('pass');
+            expect($report->messages())->toBe(['it runs a spec']);
+            expect($report->backtrace())->toBeAn('array');
 
         });
 
@@ -235,14 +230,14 @@ describe("Scope", function() {
 
         it("logs a fail", function() {
 
-            $this->scope->fail(['data' => 'value']);
+            $this->scope->report()->add('fail', ['matcher' => 'kahlan\matcher\ToBe']);
             $results = $this->scope->results();
-            $result = reset($results['failed']);
+            $report = reset($results['failed']);
 
-            expect($result['data'])->toBe('value');
-            expect($result['type'])->toBe('fail');
-            expect($result['messages'])->toBe(['it runs a spec']);
-            expect($result['backtrace'])->toBeAn('array');
+            expect($report->matcher())->toBe('kahlan\matcher\ToBe');
+            expect($report->type())->toBe('fail');
+            expect($report->messages())->toBe(['it runs a spec']);
+            expect($report->backtrace())->toBeAn('array');
 
         });
 
@@ -252,17 +247,17 @@ describe("Scope", function() {
 
         it("logs a fail", function() {
 
-            $this->scope->exception([
-                'data' => 'value',
+            $this->scope->report()->add('exception', [
+                'matcher' => 'kahlan\matcher\toThrow',
                 'exception' => new Exception()
             ]);
             $results = $this->scope->results();
-            $result = reset($results['exceptions']);
+            $report = reset($results['exceptions']);
 
-            expect($result['data'])->toBe('value');
-            expect($result['type'])->toBe('exception');
-            expect($result['messages'])->toBe(['it runs a spec']);
-            expect($result['backtrace'])->toBeAn('array');
+            expect($report->matcher())->toBe('kahlan\matcher\toThrow');
+            expect($report->type())->toBe('exception');
+            expect($report->messages())->toBe(['it runs a spec']);
+            expect($report->backtrace())->toBeAn('array');
 
         });
 
@@ -272,18 +267,15 @@ describe("Scope", function() {
 
         it("logs a skip", function() {
 
-            $this->scope->skip([
-                'data' => 'value',
+            $this->scope->report()->add('skip', [
                 'exception' => new SkipException()
             ]);
             $results = $this->scope->results();
-            $result = reset($results['skipped']);
+            $report = reset($results['skipped']);
 
-            expect($result['data'])->toBe('value');
-            expect($result['type'])->toBe('skip');
-            expect($result['messages'])->toBe(['it runs a spec']);
-            expect($result['backtrace'])->toBeAn('array');
-
+            expect($report->type())->toBe('skip');
+            expect($report->messages())->toBe(['it runs a spec']);
+            expect($report->backtrace())->toBeAn('array');
         });
 
     });
@@ -292,17 +284,15 @@ describe("Scope", function() {
 
         it("logs a fail", function() {
 
-            $this->scope->incomplete([
-                'data' => 'value',
+            $this->scope->report()->add('incomplete', [
                 'exception' => new IncompleteException()
             ]);
             $results = $this->scope->results();
-            $result = reset($results['incomplete']);
+            $report = reset($results['incomplete']);
 
-            expect($result['data'])->toBe('value');
-            expect($result['type'])->toBe('incomplete');
-            expect($result['messages'])->toBe(['it runs a spec']);
-            expect($result['backtrace'])->toBeAn('array');
+            expect($report->type())->toBe('incomplete');
+            expect($report->messages())->toBe(['it runs a spec']);
+            expect($report->backtrace())->toBeAn('array');
 
         });
 

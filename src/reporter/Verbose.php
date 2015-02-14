@@ -24,9 +24,9 @@ class Verbose extends Terminal
     /**
      * Callback called when entering a new spec.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function before($report = [])
+    public function before($report = null)
     {
         $this->_new = true;
     }
@@ -34,9 +34,9 @@ class Verbose extends Terminal
     /**
      * Callback called on successful expect.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function pass($report = [])
+    public function pass($report = null)
     {
         if ($this->_new) {
             $this->write("\n");
@@ -59,9 +59,9 @@ class Verbose extends Terminal
     /**
      * Callback called on skipped.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function skip($report = [])
+    public function skip($report = null)
     {
         $this->_report($report);
     }
@@ -69,9 +69,9 @@ class Verbose extends Terminal
     /**
      * Callback called on failure.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function fail($report = [])
+    public function fail($report = null)
     {
         $this->_report($report);
     }
@@ -79,9 +79,9 @@ class Verbose extends Terminal
     /**
      * Callback called when an exception occur.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function exception($report = [])
+    public function exception($report = null)
     {
         $this->_report($report);
     }
@@ -89,9 +89,9 @@ class Verbose extends Terminal
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function incomplete($report = [])
+    public function incomplete($report = null)
     {
         $this->_report($report);
     }

@@ -24,9 +24,9 @@ class Dot extends Terminal
     /**
      * Callback called on successful expect.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function pass($report = [])
+    public function pass($report = null)
     {
         $this->_write('.');
     }
@@ -34,9 +34,9 @@ class Dot extends Terminal
     /**
      * Callback called on failure.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function fail($report = [])
+    public function fail($report = null)
     {
         $this->_write('F', 'red');
     }
@@ -44,9 +44,9 @@ class Dot extends Terminal
     /**
      * Callback called when an exception occur.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function exception($report = [])
+    public function exception($report = null)
     {
         $this->_write('E', 'magenta');
     }
@@ -54,9 +54,9 @@ class Dot extends Terminal
     /**
      * Callback called on a skipped spec.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function skip($report = [])
+    public function skip($report = null)
     {
         $this->_write('S', 'cyan');
     }
@@ -64,9 +64,9 @@ class Dot extends Terminal
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function incomplete($report = [])
+    public function incomplete($report = null)
     {
         $this->_write('I', 'yellow');
     }
@@ -82,7 +82,7 @@ class Dot extends Terminal
 
         foreach ($results['specs'] as $type => $reports) {
             foreach ($reports as $report) {
-                if ($report['type'] !== 'skip') {
+                if ($report->type() !== 'skip') {
                     $this->_report($report);
                 }
             }

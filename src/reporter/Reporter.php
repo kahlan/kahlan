@@ -51,9 +51,9 @@ class Reporter
     /**
      * Callback called before a spec.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function before($report = [])
+    public function before($report = null)
     {
         $this->_current++;
     }
@@ -61,54 +61,54 @@ class Reporter
     /**
      * Callback called after a spec.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function after($report = [])
+    public function after($report = null)
     {
     }
 
     /**
      * Callback called on successful expect.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function pass($report = [])
+    public function pass($report = null)
     {
     }
 
     /**
      * Callback called on failure.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function fail($report = [])
+    public function fail($report = null)
     {
     }
 
     /**
      * Callback called when an exception occur.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function exception($report = [])
+    public function exception($report = null)
     {
     }
 
     /**
      * Callback called on a skipped spec.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function skip($report = [])
+    public function skip($report = null)
     {
     }
 
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function incomplete($report = [])
+    public function incomplete($report = null)
     {
     }
 

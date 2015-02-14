@@ -8,10 +8,10 @@ use kahlan\analysis\Debugger;
 class Scope
 {
     /**
-     * A shell wildcard pattern used to removes useless traces to focus on the one
+     * A regexp pattern used to removes useless traces to focus on the one
      * related to a spec file.
      *
-     * @var boolean
+     * @var string
      */
     protected $_backtraceFocus = null;
 
@@ -47,19 +47,16 @@ class Scope
         'context'     => true,
         'current'     => true,
         'describe'    => true,
-        'exception'   => true,
+        'emitReport'  => true,
         'focus'       => true,
         'focused'     => true,
         'expect'      => true,
-        'fail'        => true,
         'failfast'    => true,
         'hash'        => true,
-        'incomplete'  => true,
         'it'          => true,
         'log'         => true,
         'message'     => true,
         'messages'    => true,
-        'pass'        => true,
         'passed'      => true,
         'process'     => true,
         'register'    => true,
@@ -68,7 +65,6 @@ class Scope
         'reset'       => true,
         'results'     => true,
         'run'         => true,
-        'skip'        => true,
         'skipIf'      => true,
         'status'      => true,
         'fdescribe'   => true,
@@ -113,6 +109,13 @@ class Scope
      * @var array
      */
     protected $_data = [];
+
+    /**
+     * The report result of executed spec.
+     *
+     * @var object
+     */
+    protected $_report = null;
 
     /**
      * The results array.
@@ -188,7 +191,8 @@ class Scope
         $this->_message = $message;
         $this->_parent = $parent;
         $this->_root = $parent ? $parent->_root : $this;
-        $this->_backtrace = $this->_backtraceFocus(Debugger::backtrace(), 1);
+        $this->_report = new Report(['scope' => $this]);
+        $this->_backtrace = Debugger::focus($this->backtraceFocus(), Debugger::backtrace(), 1);
     }
 
     /**
@@ -297,8 +301,8 @@ class Scope
             foreach ($this->_childs as $child) {
                 $messages = $this->messages();
                 $backtrace = $this->_backtrace;
-                $this->report('before', ['messages'  => $messages, 'backtrace' => $backtrace]);
-                $this->report('after', ['messages'  => $messages, 'backtrace' => $backtrace]);
+                $this->emitReport('before', ['messages'  => $messages, 'backtrace' => $backtrace]);
+                $this->emitReport('after', ['messages'  => $messages, 'backtrace' => $backtrace]);
             }
         }
         throw new SkipException();
@@ -314,115 +318,15 @@ class Scope
         $data = compact('exception');
         switch(get_class($exception)) {
             case 'kahlan\SkipException':
-                $this->skip($data);
+                $this->report()->add('skip', $data);
             break;
             case 'kahlan\IncompleteException':
-                $this->incomplete($data);
+                $this->report()->add('incomplete', $data);
             break;
             default:
-                $this->exception($data);
+                $this->report()->add('exception', $data);
             break;
         }
-    }
-
-    /**
-     * Logs a passing test.
-     *
-     * @param array $data The result data.
-     */
-    public function pass($data = [])
-    {
-        $this->log('pass', $data);
-    }
-
-    /**
-     * Logs a failed test.
-     *
-     * @param array $data The result data.
-     */
-    public function fail($data = [])
-    {
-        $this->_root->_failure++;
-        $this->log('fail', $data);
-    }
-
-    /**
-     * Logs a skipped test.
-     *
-     * @param array $data The result data.
-     */
-    public function skip($data = [])
-    {
-        $data['backtrace'] = Debugger::backtrace(['trace' => $data['exception']]);
-        $this->log('skip', $data);
-    }
-
-    /**
-     * Logs an uncached exception test.
-     *
-     * @param array $data The result data.
-     */
-    public function exception($data = [])
-    {
-        $this->_root->_failure++;
-        $data['backtrace'] = Debugger::backtrace(['trace' => $data['exception']]);
-        $this->log('exception', $data);
-    }
-
-    /**
-     * Logs a incomplete test.
-     *
-     * @param array $data The result data.
-     */
-    public function incomplete($data = [])
-    {
-        $data['backtrace'] = Debugger::backtrace(['trace' => $data['exception']]);
-        $this->log('incomplete', $data);
-    }
-
-    /**
-     * Sets a result for the spec.
-     *
-     * @param array $data The result data.
-     */
-    public function log($type, $data = [])
-    {
-        $data['type'] = $type;
-        $data += ['messages'  => $this->messages()];
-        if (!isset($data['backtrace'])) {
-            $data['backtrace'] = Debugger::backtrace();
-        }
-        $depth = ($type === 'pass' || $type === 'fail' | $type === 'skip') ? 1 : null;
-        $data['backtrace'] = $this->_backtraceFocus($data['backtrace'], $depth);
-        $resultType = $this->_resultTypes[$type];
-        $this->_root->_results[$resultType][] = $data;
-        $this->report($type, $data);
-    }
-
-    /**
-     * Removes all useless traces up to the trace which match a spec file pattern.
-     *
-     * @param  array $backtrace A backtrace.
-     * @param  array $depth     Number of traces to keep.
-     * @return array            A cleaned backtrace limited to $length trace.
-     */
-    protected function _backtraceFocus($backtrace, $depth = null) {
-        if (!$this->_root->_backtraceFocus) {
-            return $backtrace;
-        }
-
-        $i = 0;
-        $found = false;
-        $pattern = strtr(preg_quote($this->_root->_backtraceFocus, '~'), ['\*' => '.*', '\?' => '.']);
-
-        while ($i < 10 && isset($backtrace[$i])) {
-            if (preg_match('~^' . $pattern . '$~', $backtrace[$i]['file'])) {
-                $found = true;
-                break;
-            }
-            $i++;
-        }
-        return array_slice($found ? array_slice($backtrace, $i) : $backtrace, 0, $depth);
     }
 
     /**
@@ -455,6 +359,17 @@ class Scope
             throw new Exception("Error, invalid closure.");
         }
         return $closure->bindTo($this);
+    }
+
+    /**
+     * Returns the regexp pattern used to removes useless traces to focus on the one
+     * related to a spec file.
+     *
+     * @return string
+     */
+    public function backtraceFocus()
+    {
+        return $this->_root->_backtraceFocus;
     }
 
     /**
@@ -515,6 +430,14 @@ class Scope
     }
 
     /**
+     * Notifies a failure occurs.
+     */
+    public function failure()
+    {
+        $this->_root->_failure++;
+    }
+
+    /**
      * Get the active scope instance.
      *
      * @return object The object instance or `null` if there's no active instance.
@@ -525,17 +448,40 @@ class Scope
     }
 
     /**
-     * Sends a report
+     * Logs a report up to the root scope.
+     * It only logs expectations report.
+     *
+     * @param object $report The report object to log.
+     */
+    public function log($report)
+    {
+        $resultType = $this->_resultTypes[$report->type()];
+        $this->_root->_results[$resultType][] = $report;
+        $this->emitReport($report->type(), $report);
+    }
+
+    /**
+     * Emit a report even up to reporters.
      *
      * @param string $type The name of the report.
      * @param array  $data The data to report.
      */
-    public function report($type, $data = null)
+    public function emitReport($type, $data = null)
     {
         if (!$this->_root->_reporters) {
             return;
         }
         $this->_root->_reporters->process($type, $data);
+    }
+
+    /**
+     * Gets the report instance.
+     *
+     * @return object The report instance.
+     */
+    public function report()
+    {
+        return $this->_report;
     }
 
     /**

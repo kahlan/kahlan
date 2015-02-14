@@ -681,7 +681,7 @@ describe("Suite", function() {
 
             $reporters = Stub::create();
 
-            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAn('array'));
+            expect($reporters)->toReceive('process')->with('begin', ['total' => 2]);
 
             $this->suite->run(['reporters' => $reporters]);
 
@@ -851,8 +851,8 @@ describe("Suite", function() {
             $results = $this->suite->results();
             expect($results['exceptions'])->toHaveLength(1);
 
-            $exception = reset($results['exceptions']);
-            $actual = $exception['exception']->getMessage();
+            $report = reset($results['exceptions']);
+            $actual = $report->exception()->getMessage();
             expect($actual)->toBe('Breaking the flow should execute afterEach anyway.');
 
         });
@@ -874,10 +874,10 @@ describe("Suite", function() {
             $results = $this->suite->results();
             expect($results['incomplete'])->toHaveLength(1);
 
-            $result = reset($results['incomplete']);
-            expect($result['exception'])->toBe($incomplete);
-            expect($result['type'])->toBe('incomplete');
-            expect($result['messages'])->toBe(['', '', 'it throws an `IncompleteException`']);
+            $report = reset($results['incomplete']);
+            expect($report->exception())->toBe($incomplete);
+            expect($report->type())->toBe('incomplete');
+            expect($report->messages())->toBe(['', '', 'it throws an `IncompleteException`']);
 
         });
 
@@ -908,8 +908,8 @@ describe("Suite", function() {
             $results = $this->suite->results();
             expect($results['exceptions'])->toHaveLength(1);
 
-            $exception = reset($results['exceptions']);
-            $actual = $exception['exception']->getMessage();
+            $report = reset($results['exceptions']);
+            $actual = $report->exception()->getMessage();
             expect($actual)->toBe('Method not allowed in this context.');
 
         });

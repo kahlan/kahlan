@@ -343,31 +343,23 @@ class Suite extends Scope
 
         $messages = $this->messages();
         $backtrace = $this->_backtrace;
+        $report = $child->report();
 
         try {
-            $this->report('before', [
-                'messages'  => $messages,
-                'backtrace' => $backtrace
-            ]);
+            $this->emitReport('before', $report);
 
             $this->_callbacks('beforeEach');
             $child->process();
             $this->_autoclear();
             $this->_callbacks('afterEach');
 
-            $this->report('after', [
-                'messages'  => $messages,
-                'backtrace' => $backtrace
-            ]);
+            $this->emitReport('after', $report);
         } catch (Exception $exception) {
             $this->_exception($exception);
             try {
                 $this->_autoclear();
                 $this->_callbacks('afterEach');
-                $this->report('after', [
-                    'messages'  => $messages,
-                    'backtrace' => $backtrace
-                ]);
+                $this->emitReport('after', $report);
             } catch (Exception $exception) {}
         }
     }
@@ -439,11 +431,14 @@ class Suite extends Scope
         $this->_reporters = $options['reporters'];
         $this->_autoclear = (array) $options['autoclear'];
         $this->_ff = $options['ff'];
-        $this->_backtraceFocus = $options['backtraceFocus'];
 
-        $this->report('begin', ['total' => $this->enabled()]);
+        if ($options['backtraceFocus']) {
+            $this->_backtraceFocus = strtr(preg_quote($options['backtraceFocus'], '~'), ['\*' => '.*', '\?' => '.']);
+        }
+
+        $this->emitReport('begin', ['total' => $this->enabled()]);
         $this->_run();
-        $this->report('end', [
+        $this->emitReport('end', [
             'specs'   => $this->_results,
             'focuses' => $this->_focuses
         ]);
@@ -484,7 +479,7 @@ class Suite extends Scope
      */
     public function stop()
     {
-        $this->report('stop', [
+        $this->emitReport('stop', [
             'specs'   => $this->_results,
             'focuses' => $this->_focuses
         ]);

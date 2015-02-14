@@ -38,11 +38,11 @@ class Matcher
     protected static $_matchers = [];
 
     /**
-     * The current parent class instance.
+     * The spec context instance.
      *
      * @var object
      */
-    protected $_parent = null;
+    protected $_spec = null;
 
     /**
      * The current value to test.
@@ -120,13 +120,13 @@ class Matcher
      * The expect statement.
      *
      * @param  mixed   $actual The expression to test.
-     * @param  object  The parent context class.
+     * @param  object  The spec context.
      * @return Matcher
      */
-    public function expect($actual, $parent)
+    public function expect($actual, $spec)
     {
         $this->_not = false;
-        $this->_parent = $parent;
+        $this->_spec = $spec;
         $this->_actual = $actual;
         return $this;
     }
@@ -134,26 +134,26 @@ class Matcher
     /**
      * Calls a registered matcher.
      *
-     * @param  string  $matcher The name of the matcher.
+     * @param  string  $name   The name of the matcher.
      * @param  array   $params The parameters to pass to the matcher.
      * @return boolean
      */
-    public function __call($matcher, $params)
+    public function __call($matcherName, $params)
     {
-        if (!isset(static::$_matchers[$matcher])) {
-            throw new Exception("Error, undefined matcher `{$matcher}`.");
+        if (!isset(static::$_matchers[$matcherName])) {
+            throw new Exception("Error, undefined matcher `{$matcherName}`.");
         }
-        $class = static::$_matchers[$matcher];
+        $matcher = static::$_matchers[$matcherName];
         array_unshift($params, $this->_actual);
-        $result = call_user_func_array($class . '::match', $params);
-        $params = Inspector::parameters($class, 'match', $params);
+        $result = call_user_func_array($matcher . '::match', $params);
+        $params = Inspector::parameters($matcher, 'match', $params);
         if (!is_object($result)) {
-            $data = compact('class', 'matcher', 'params');
-            $data['description'] = $class::description();
+            $data = compact('matcherName', 'matcher', 'params');
+            $data['description'] = $matcher::description();
             $this->_result($result, $data);
             return $this;
         }
-        $this->_deferred[] = compact('class', 'matcher', 'params') + [
+        $this->_deferred[] = compact('matcherName', 'matcher', 'params') + [
             'instance' => $result, 'not' => $this->_not
         ];
         return $result;
@@ -164,11 +164,10 @@ class Matcher
      */
     public function resolve()
     {
-        foreach($this->_deferred as $deferred) {
-            extract($deferred);
-            $this->_not = $not;
+        foreach($this->_deferred as $data) {
+            $instance = $data['instance'];
+            $this->_not = $data['not'];
             $boolean = $instance->resolve();
-            $data = compact('class', 'matcher', 'params', 'instance');
             $data['description'] = $instance->description();
             $data['backtrace'] = $instance->backtrace();
             $this->_result($boolean, $data);
@@ -186,11 +185,16 @@ class Matcher
      */
     protected function _result($boolean, $data = [])
     {
-        $actual = $this->_actual;
         $not = $this->_not;
         $pass = $not ? !$boolean : $boolean;
         $type = $pass ? 'pass' : 'fail';
-        $this->_parent->{$type}($data + compact('not', 'actual'));
+
+        $description = $data['description'];
+        if (is_array($description)) {
+            $data['params'] = $description['params'];
+            $data['description'] = $description['description'];
+        }
+        $this->_spec->report()->add($type, $data + compact('not'));
         return $boolean;
     }
 

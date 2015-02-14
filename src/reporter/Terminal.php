@@ -82,7 +82,7 @@ class Terminal extends Reporter
      */
     protected function _report($report)
     {
-        switch($report['type']) {
+        switch($report->type()) {
             case 'skip':
                 $this->_reportSkipped($report);
             break;
@@ -107,11 +107,10 @@ class Terminal extends Reporter
     {
         $this->write("\n");
         $this->write('[Skipped] ', 'cyan');
-        $this->write($this->_file($report) . "\n");
+        $this->write($report->file() . "\n");
 
-        $indent = $this->_messages($report['messages']);
-        $trace = reset($report['backtrace']);
-        $line = $trace['line'];
+        $indent = $this->_messages($report->messages());
+        $line = $report->line();
         $this->write(str_repeat('    ', $indent));
         $this->write(' specification');
         $this->write(' skipped', 'cyan');
@@ -128,14 +127,13 @@ class Terminal extends Reporter
     {
         $this->write("\n");
         $this->write('[Failure] ', 'red');
-        $this->write($this->_file($report) . "\n");
+        $this->write($report->file() . "\n");
 
-        $indent = $this->_messages($report['messages']);
-        $trace = reset($report['backtrace']);
-        $line = $trace['line'];
+        $indent = $this->_messages($report->messages());
+        $line = $report->line();
         $this->write(str_repeat('    ', $indent));
         $this->write('expect->');
-        $this->write($report['matcher'], 'magenta');
+        $this->write($report->matcher(), 'magenta');
         $this->write('()');
         $this->write(' failed', 'red');
         $this->write(' - ');
@@ -145,7 +143,7 @@ class Terminal extends Reporter
         $this->_reportDescription($report);
         $this->write('Trace:', 'yellow');
         $this->write("\n");
-        $this->write(Debugger::trace(['trace' => $report['backtrace'], 'depth' => 1]));
+        $this->write(Debugger::trace(['trace' => $report->backtrace(), 'depth' => 1]));
         $this->write("\n");
     }
 
@@ -158,11 +156,10 @@ class Terminal extends Reporter
     {
         $this->write("\n");
         $this->write('[Incomplete] ', 'yellow');
-        $this->write($this->_file($report) . "\n");
+        $this->write($report->file() . "\n");
 
-        $indent = $this->_messages($report['messages']);
-        $trace = reset($report['backtrace']);
-        $line = $trace['line'];
+        $indent = $this->_messages($report->messages());
+        $line = $report->line();
         $this->write(str_repeat('    ', $indent));
         $this->write(' an unexisting');
         $this->write(' class', 'yellow');
@@ -172,10 +169,10 @@ class Terminal extends Reporter
 
         $this->write("\n\n");
         $this->write('Description:', 'magenta');
-        $this->write(' ' . Debugger::message($report['exception']) ."\n");
+        $this->write(' ' . Debugger::message($report->exception()) ."\n");
         $this->write('Trace:', 'yellow');
         $this->write("\n");
-        $this->write(Debugger::trace(['trace' => $report['backtrace']]));
+        $this->write(Debugger::trace(['trace' => $report->backtrace()]));
         $this->write("\n");
     }
 
@@ -188,11 +185,10 @@ class Terminal extends Reporter
     {
         $this->write("\n");
         $this->write('[Exception] ', 'magenta');
-        $this->write($this->_file($report) . "\n");
+        $this->write($report->file() . "\n");
 
-        $indent = $this->_messages($report['messages']);
-        $trace = reset($report['backtrace']);
-        $line = $trace['line'];
+        $indent = $this->_messages($report->messages());
+        $line = $report->line();
         $this->write(str_repeat('    ', $indent));
         $this->write(' an uncaught');
         $this->write(' exception', 'magenta');
@@ -202,10 +198,10 @@ class Terminal extends Reporter
 
         $this->write("\n\n");
         $this->write('Description:', 'magenta');
-        $this->write(' ' . String::toString($report['exception']) ."\n");
+        $this->write(' ' . String::toString($report->exception()) ."\n");
         $this->write('Trace:', 'yellow');
         $this->write("\n");
-        $this->write(Debugger::trace(['trace' => $report['backtrace']]));
+        $this->write(Debugger::trace(['trace' => $report->backtrace()]));
         $this->write("\n");
     }
 
@@ -216,14 +212,7 @@ class Terminal extends Reporter
      */
     protected function _reportDescription($report)
     {
-        $not = $report['not'];
-        $description = $report['description'];
-        if (is_array($description)) {
-            $params = $description['params'];
-            $description = $description['description'];
-        } else {
-            $params = $report['params'];
-        }
+        $params = $report->params();
         foreach ($params as $key => $value) {
             $this->write("{$key}: ", 'yellow');
             $type = gettype($value);
@@ -233,11 +222,12 @@ class Terminal extends Reporter
             $this->write("({$type}) " . String::toString($value, ['object' => ['method' => $toString]]) . "\n");
         }
         $this->write('Description:', 'magenta');
-        $this->write(" {$report['matcher']} expected actual to ");
-        if ($not) {
+        $matcher = $report->matcher();
+        $this->write(" {$matcher} expected actual to ");
+        if ($report->not()) {
             $this->write('NOT ', 'magenta');
         }
-        $this->write("{$description}\n");
+        $this->write($report->description() . "\n");
     }
 
     /**
@@ -260,22 +250,6 @@ class Terminal extends Reporter
         }
         return $indent;
     }
-
-    /**
-     * Extracts the file path reference of a report.
-     *
-     * @param  array       $report A report array.
-     * @return string|null         The file path reference or `null` if no backtrace is available.
-     */
-    protected function _file($report) {
-        if (!isset($report['backtrace'])) {
-            return;
-        }
-        $backtrace = reset($report['backtrace']);
-        $path = preg_replace('~' . getcwd() . '~', '', $backtrace['file']);
-        return $path;
-    }
-
 
     /**
      * Prints a summary of specs execution to STDOUT

@@ -86,9 +86,9 @@ class Coverage extends Terminal
     /**
      * Callback called before a spec.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function before($report = [])
+    public function before($report = null)
     {
         parent::before($report);
         if (!$this->enabled()) {
@@ -100,9 +100,9 @@ class Coverage extends Terminal
     /**
      * Callback called after a spec.
      *
-     * @param array $report The report array.
+     * @param object $report The report object.
      */
-    public function after($report = [])
+    public function after($report = null)
     {
         parent::after($report);
         if (!$this->enabled()) {

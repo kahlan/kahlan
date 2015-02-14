@@ -51,21 +51,20 @@ describe("Matcher", function() {
                 $result = $matcher->expect(true, $this->spec)->toBe(true);
                 expect($this->spec->passed())->toBe(true);
 
-                $passes = $this->spec->results()['passed'];
-                expect($passes)->toHaveLength(1);
+                $passed = $this->spec->results()['passed'];
+                expect($passed)->toHaveLength(1);
 
-                $pass = reset($passes);
+                $pass = reset($passed);
 
-                expect($pass['class'])->toBe('kahlan\matcher\ToBe');
-                expect($pass['matcher'])->toBe('toBe');
-                expect($pass['not'])->toBe(false);
-                expect($pass['actual'])->toBe(true);
-                expect($pass['type'])->toBe('pass');
-                expect($pass['params'])->toBe([
+                expect($pass->matcher())->toBe('kahlan\matcher\ToBe');
+                expect($pass->matcherName())->toBe('toBe');
+                expect($pass->not())->toBe(false);
+                expect($pass->type())->toBe('pass');
+                expect($pass->params())->toBe([
                     'actual'   => true,
                     'expected' => true
                 ]);
-                expect($pass['messages'])->toBe(['it runs a spec']);
+                expect($pass->messages())->toBe(['it runs a spec']);
 
             });
 
@@ -84,17 +83,15 @@ describe("Matcher", function() {
 
                 $pass = reset($passes);
 
-                expect($pass['class'])->toBe('kahlan\matcher\ToReceive');
-                expect($pass['matcher'])->toBe('toReceive');
-                expect($pass['not'])->toBe(false);
-                expect($pass['actual'])->toBe($stub);
-                expect($pass['type'])->toBe('pass');
-                expect($pass['params'])->toBe([
-                    'actual'   => $stub,
-                    'expected' => 'methodName'
+                expect($pass->matcher())->toBe('kahlan\matcher\ToReceive');
+                expect($pass->matcherName())->toBe('toReceive');
+                expect($pass->not())->toBe(false);
+                expect($pass->type())->toBe('pass');
+                expect($pass->params())->toBe([
+                    'actual with'   => [],
+                    'expected with' => []
                 ]);
-                expect($pass['messages'])->toBe(['it runs a spec']);
-                expect($pass['instance'])->toBe($result);
+                expect($pass->messages())->toBe(['it runs a spec']);
 
             });
 
@@ -109,7 +106,7 @@ describe("Matcher", function() {
 
                 $pass = reset($passes);
 
-                expect($pass['not'])->toBe(true);
+                expect($pass->not())->toBe(true);
 
             });
 
@@ -127,7 +124,7 @@ describe("Matcher", function() {
 
                 $pass = reset($passes);
 
-                expect($pass['not'])->toBe(true);
+                expect($pass->not())->toBe(true);
 
             });
 
@@ -141,22 +138,21 @@ describe("Matcher", function() {
                 $result = $matcher->expect(true, $this->spec)->toBe(false);
                 expect($this->spec->passed())->toBe(false);
 
-                $failures = $this->spec->results()['failed'];
-                expect($failures)->toHaveLength(1);
+                $failured = $this->spec->results()['failed'];
+                expect($failured)->toHaveLength(1);
 
-                $failure = reset($failures);
+                $failure = reset($failured);
 
-                expect($failure['class'])->toBe('kahlan\matcher\ToBe');
-                expect($failure['matcher'])->toBe('toBe');
-                expect($failure['not'])->toBe(false);
-                expect($failure['actual'])->toBe(true);
-                expect($failure['type'])->toBe('fail');
-                expect($failure['params'])->toBe([
+                expect($failure->matcher())->toBe('kahlan\matcher\ToBe');
+                expect($failure->matcherName())->toBe('toBe');
+                expect($failure->not())->toBe(false);
+                expect($failure->type())->toBe('fail');
+                expect($failure->params())->toBe([
                     'actual'   => true,
                     'expected' => false
                 ]);
-                expect($failure['messages'])->toBe(['it runs a spec']);
-                expect($failure['backtrace'])->toBeAn('array');
+                expect($failure->messages())->toBe(['it runs a spec']);
+                expect($failure->backtrace())->toBeAn('array');
             });
 
             it("logs a fail with a deferred matcher", function() {
@@ -168,30 +164,22 @@ describe("Matcher", function() {
 
                 expect($this->spec->passed())->toBe(false);
 
-                $failures = $this->spec->results()['failed'];
-                expect($failures)->toHaveLength(1);
+                $failured = $this->spec->results()['failed'];
+                expect($failured)->toHaveLength(1);
 
-                $failure = reset($failures);
+                $failure = reset($failured);
 
-                expect($failure['class'])->toBe('kahlan\matcher\ToReceive');
-                expect($failure['matcher'])->toBe('toReceive');
-                expect($failure['not'])->toBe(false);
-                expect($failure['actual'])->toBe($stub);
-                expect($failure['type'])->toBe('fail');
-                expect($failure['params'])->toBe([
-                    'actual'   => $stub,
+                expect($failure->matcher())->toBe('kahlan\matcher\ToReceive');
+                expect($failure->matcherName())->toBe('toReceive');
+                expect($failure->not())->toBe(false);
+                expect($failure->type())->toBe('fail');
+                expect($failure->params())->toBe([
+                    'actual received' =>['__construct'],
                     'expected' => 'methodName'
                 ]);
-                expect($failure['description'])->toBe([
-                    'description' => 'receive the correct message.',
-                    'params' => [
-                        'actual received' =>['__construct'],
-                        'expected' => 'methodName'
-                    ]
-                ]);
-                expect($failure['messages'])->toBe(['it runs a spec']);
-                expect($failure['instance'])->toBe($result);
-                expect($failure['backtrace'])->toBeA('array');
+                expect($failure->description())->toBe('receive the correct message.');
+                expect($failure->messages())->toBe(['it runs a spec']);
+                expect($failure->backtrace())->toBeAn('array');
 
             });
 
@@ -206,7 +194,7 @@ describe("Matcher", function() {
 
                 $failure = reset($failures);
 
-                expect($failure['not'])->toBe(true);
+                expect($failure->not())->toBe(true);
 
             });
 
@@ -225,7 +213,7 @@ describe("Matcher", function() {
 
                 $failure = reset($failures);
 
-                expect($failure['not'])->toBe(true);
+                expect($failure->not())->toBe(true);
 
             });
 

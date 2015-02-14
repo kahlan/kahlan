@@ -19,18 +19,22 @@ class Debugger
     public static $_loader = null;
 
     /**
-     * Gets a backtrace string based on the supplied options.
+     * Gets a backtrace string or string array based on the supplied options.
      *
      * @param  array $options Format for outputting stack trace. Available options are:
-     *                        - `'start'`: The depth to start with.
-     *                        - `'depth'`: The maximum depth of the trace.
-     *                        - `'message'`: Either `null` for default message or a string.
-     *                        - `'trace'`: A trace to use instead of generating one.
+     *                        - `'start'`   _integer_: The depth to start with.
+     *                        - `'depth'`   _integer_: The maximum depth of the trace.
+     *                        - `'message'` _string_ : Either `null` for default message or a string.
+     *                        - `'trace'`   _array_: A trace to use instead of generating one.
+     *                        - `'array'`   _array_: Returns an string array instead of a plain string.
      * @return array          The formatted backtrace.
      */
     public static function trace($options = [])
     {
-        $defaults = ['trace' => []];
+        $defaults = [
+            'trace' => [],
+            'array' => false
+        ];
         $options += $defaults;
         $back = [];
         $backtrace = static::backtrace($options);
@@ -38,7 +42,7 @@ class Debugger
         foreach ($backtrace as $trace) {
             $back[] =  static::_traceToString($trace);
         }
-        return join("\n", $back);
+        return $options['array'] ? $back : join("\n", $back);
     }
 
     /**
@@ -206,6 +210,34 @@ class Debugger
             }
             $i++;
         }
+    }
+
+    /**
+     * Unstack all traces up to a trace which match a filename regexp.
+     *
+     * @param  array $pattern    The regexp to match on.
+     * @param  array $backtrace  The backtrace.
+     * @param  array $depth      Number of traces to keep.
+     * @param  array $maxLookup  The maximum lookup window.
+     * @return array             A cleaned backtrace.
+     *
+     */
+    public static function focus($pattern, $backtrace, $depth = null, $maxLookup = 10) {
+        if (!$pattern) {
+            return $backtrace;
+        }
+
+        $i = 0;
+        $found = false;
+
+        while ($i < $maxLookup && isset($backtrace[$i])) {
+            if (preg_match('~^' . $pattern . '$~', $backtrace[$i]['file'])) {
+                $found = true;
+                break;
+            }
+            $i++;
+        }
+        return array_slice($found ? array_slice($backtrace, $i) : $backtrace, 0, $depth);
     }
 
     /**
