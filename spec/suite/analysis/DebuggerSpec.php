@@ -8,81 +8,89 @@ use kahlan\spec\fixture\analysis\Evaluation;
 
 describe("Debugger", function() {
 
-	describe("::trace()", function() {
+    beforeEach(function() {
+        $this->loader = Debugger::loader();
+    });
 
-		it("returns a default backtrace string", function() {
+    afterEach(function() {
+        Debugger::loader($this->loader);
+    });
 
-			$backtrace = Debugger::trace();
-			expect($backtrace)->toBeA('string');
+    describe("::trace()", function() {
 
-			$backtrace = explode("\n", $backtrace);
-			expect(empty($backtrace))->toBe(false);
+        it("returns a default backtrace string", function() {
 
-		});
+            $backtrace = Debugger::trace();
+            expect($backtrace)->toBeA('string');
 
-		it("returns a custom backtrace string", function() {
+            $backtrace = explode("\n", $backtrace);
+            expect(empty($backtrace))->toBe(false);
 
-			$backtrace = Debugger::trace(['trace' => debug_backtrace()]);
-			expect($backtrace)->toBeA('string');
+        });
 
-			$backtrace = explode("\n", $backtrace);
-			expect(empty($backtrace))->toBe(false);
+        it("returns a custom backtrace string", function() {
 
-		});
+            $backtrace = Debugger::trace(['trace' => debug_backtrace()]);
+            expect($backtrace)->toBeA('string');
 
-		it("returns a backtrace of an Exception", function() {
+            $backtrace = explode("\n", $backtrace);
+            expect(empty($backtrace))->toBe(false);
 
-			$backtrace = Debugger::trace(['trace' => new Exception('World Destruction Error!')]);
-			expect($backtrace)->toBeA('string');
+        });
 
-			$backtrace = explode("\n", $backtrace);
-			expect(empty($backtrace))->toBe(false);
+        it("returns a backtrace of an Exception", function() {
 
-		});
+            $backtrace = Debugger::trace(['trace' => new Exception('World Destruction Error!')]);
+            expect($backtrace)->toBeA('string');
 
-	});
+            $backtrace = explode("\n", $backtrace);
+            expect(empty($backtrace))->toBe(false);
 
-	describe("::message()", function() {
+        });
 
-		it("formats an exception as a string message", function() {
+    });
 
-			$message = Debugger::message(new Exception('World Destruction Error!'));
-			expect($message)->toBe('`Exception` Code(0): World Destruction Error!');
+    describe("::message()", function() {
 
-		});
+        it("formats an exception as a string message", function() {
 
-		it("formats a backtrace array as a string message", function() {
+            $message = Debugger::message(new Exception('World Destruction Error!'));
+            expect($message)->toBe('`Exception` Code(0): World Destruction Error!');
 
-			$backtrace = [
-				'message' => 'E_ERROR Error!',
-				'code'    => E_ERROR
-			];
+        });
 
-			$message = Debugger::message($backtrace);
-			expect($message)->toBe("`E_ERROR` Code(1): E_ERROR Error!");
+        it("formats a backtrace array as a string message", function() {
 
-			$backtrace = [
-				'message' => 'Invalid Error!',
-				'code'    => 404
-			];
+            $backtrace = [
+                'message' => 'E_ERROR Error!',
+                'code'    => E_ERROR
+            ];
 
-			$message = Debugger::message($backtrace);
-			expect($message)->toBe("`<INVALID>` Code(404): Invalid Error!");
+            $message = Debugger::message($backtrace);
+            expect($message)->toBe("`E_ERROR` Code(1): E_ERROR Error!");
 
-		});
+            $backtrace = [
+                'message' => 'Invalid Error!',
+                'code'    => 404
+            ];
 
-	});
+            $message = Debugger::message($backtrace);
+            expect($message)->toBe("`<INVALID>` Code(404): Invalid Error!");
 
-	describe("::loader()", function() {
+        });
 
-		it("should return provided loader", function() {
+    });
 
-			$loader = Stub::create();
-			expect(Debugger::loader($loader))->toBe($loader);
+    describe("::loader()", function() {
 
-		});
+        it("gets/sets a loader", function() {
 
-	});
+            $loader = Stub::create();
+            expect(Debugger::loader($loader))->toBe($loader);
+
+        });
+
+    });
 
     describe("::errorType()", function() {
 
@@ -108,11 +116,11 @@ describe("Debugger", function() {
 
         });
 
-		it("returns <INVALID> for undefined error type", function() {
+        it("returns <INVALID> for undefined error type", function() {
 
-			expect(Debugger::errorType(123456))->toBe('<INVALID>');
+            expect(Debugger::errorType(123456))->toBe('<INVALID>');
 
-		});
+        });
 
     });
 

@@ -6,31 +6,42 @@ use kahlan\plugin\Call;
 describe("Call", function() {
 
     beforeEach(function() {
-
         Call::clear();
-
     });
 
     describe("::log()", function() {
 
-        it("should log a call", function() {
+        it("logs a dynamic call", function() {
 
-            Call::log("reference", [
-                'name' => '\My\Namespace\Class'
+            Call::log('my\name\space\Class', [
+                'name' => 'methodName'
             ]);
 
             $logs = Call::logs();
-            expect($logs)->toBeA('array');
-            expect(isset($logs[0]))->toBeTruthy();
-            expect(isset($logs[0][0]))->toBeTruthy();
 
-            $record = $logs[0][0];
-            expect(array_keys($record))->toBe(['name', 'instance', 'class', 'static']);
-            expect($record['name'])->toBe('\My\Namespace\Class');
-            expect($record['class'])->toBe('reference');
-            expect($record['static'])->toBe(false);
+            expect($logs[0][0])->toEqual([
+                'class'    => 'my\name\space\Class',
+                'name'     => 'methodName',
+                'instance' => null,
+                'static'   => false
+            ]);
 
-            Call::clear();
+        });
+
+        it("logs a static call", function() {
+
+            Call::log('my\name\space\Class', [
+                'name' => '::methodName'
+            ]);
+
+            $logs = Call::logs();
+
+            expect($logs[0][0])->toEqual([
+                'class'    => 'my\name\space\Class',
+                'name'     => 'methodName',
+                'instance' => null,
+                'static'   => true
+            ]);
 
         });
 
@@ -38,20 +49,15 @@ describe("Call", function() {
 
     describe("::lastFindIndex()", function() {
 
-        it("should set index", function() {
+        it("gets/sets the last find index", function() {
 
             $index = Call::lastFindIndex(100);
             expect($index)->toBe(100);
+
             $index = Call::lastFindIndex();
             expect($index)->toBe(100);
 
         });
-
-    });
-
-    after(function() {
-
-        Call::clear();
 
     });
 

@@ -602,42 +602,27 @@ describe("Stub", function() {
 
    describe("::generate()", function() {
 
-       it("throws on incomplete trait", function () {
+       it("throws an exception with an unexisting trait", function () {
 
            expect(function() {
-               Stub::generate([
-                   'class' => 'kahlan\spec\plugin\stub\Stub',
-                   'methods' => ['__construct'],
-                   'uses' => ['\Some\Strange\Trait'],
-                   'magicMethods' => false
-               ]);
-           })->toThrow(new IncompleteException('Unexisting trait `\Some\Strange\Trait`'));
+               Stub::generate(['uses' => ['an\unexisting\Trait']]);
+           })->toThrow(new IncompleteException('Unexisting trait `an\unexisting\Trait`'));
 
        });
 
-       it("throws on incomplete interface", function() {
+       it("throws an exception with an unexisting interface", function() {
 
            expect(function() {
-               Stub::generate([
-                   'class' => 'kahlan\spec\plugin\stub\Stub',
-                   'methods' => ['__construct'],
-                   'implements' => ['\Some\Strange\Interface'],
-                   'magicMethods' => false
-               ]);
-           })->toThrow(new IncompleteException('Unexisting interface `\\Some\\Strange\\Interface`'));
+               Stub::generate(['implements' => ['an\unexisting\Interface']]);
+           })->toThrow(new IncompleteException('Unexisting interface `an\unexisting\Interface`'));
 
        });
 
-       it("throws on incomplete extends", function() {
+       it("throws an exception with an unexisting parent class", function() {
 
            expect(function() {
-               Stub::generate([
-                   'class' => 'kahlan\spec\plugin\stub\Stub',
-                   'methods' => ['__construct'],
-                   'extends' => '\Some\Strange\Interface',
-                   'magicMethods' => false
-               ]);
-           })->toThrow(new IncompleteException('Unexisting class to extend of `\\Some\\Strange\\Interface`'));
+               Stub::generate(['extends' => 'an\unexisting\ParentClass']);
+           })->toThrow(new IncompleteException('Unexisting parent class `an\unexisting\ParentClass`'));
 
        });
 

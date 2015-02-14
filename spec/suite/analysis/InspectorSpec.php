@@ -6,76 +6,86 @@ use kahlan\analysis\Inspector;
 describe("Inspector", function() {
 
     before(function() {
-        $this->class = 'kahlan\spec\fixture\analysis\DummyClass';
+        $this->class = 'kahlan\spec\fixture\analysis\SampleClass';
     });
 
-    it("should create class inspection", function() {
+    describe('::inspect()', function() {
 
-        $inspector = Inspector::inspect($this->class);
-        expect($inspector)->toBeAnInstanceOf('ReflectionClass');
-        expect($inspector->name)->toBe($this->class);
+        it("gets the reflexion layer of a class", function() {
 
-    });
-
-    it("should retrieve params of reflection class", function() {
-
-        $inspector = Inspector::parameters($this->class, 'rand');
-        expect($inspector)->toBeA('array');
-
-        expect($inspector[0])->toBeAnInstanceOf('ReflectionParameter');
-        expect(isset($inspector[0]->name))->toBe(true);
-        expect($inspector[0]->name)->toBe('min');
-
-        expect($inspector[1])->toBeAnInstanceOf('ReflectionParameter');
-        expect(isset($inspector[1]->name))->toBe(true);
-        expect($inspector[1]->name)->toBe('max');
-
-    });
-
-    it("should retrieve params of reflection class with slice", function() {
-
-        $inspector = Inspector::parameters($this->class, 'rand', ['min' => 1000]);
-        expect($inspector)->toBeA('array');
-
-        expect(array_keys($inspector))->toContain('min')->toContain('max');
-        expect($inspector['min'])->toBe(1000);
-
-    });
-
-    describe("->typehint()", function() {
-        it("should return no typehint", function() {
-
-            $inspector = Inspector::parameters($this->class, 'rand');
-
-            $minParameter = $inspector[0];
-            $maxParameter = $inspector[1];
-
-            $typehint = Inspector::typehint($minParameter);
-            expect($typehint)->toBe("");
+            $inspector = Inspector::inspect($this->class);
+            expect($inspector)->toBeAnInstanceOf('ReflectionClass');
+            expect($inspector->name)->toBe($this->class);
 
         });
 
-        it("should return class typehint", function() {
+    });
 
-            $inspector = Inspector::parameters($this->class, 'getTrace');
+    describe('::parameters()', function() {
+
+        it("gets method's parameters details", function() {
+
+            $inspector = Inspector::parameters($this->class, 'parametersExample');
+            expect($inspector)->toBeA('array');
+
+            $param2 = next($inspector);
+            expect($param2)->toBeAnInstanceOf('ReflectionParameter');
+            expect($param2->getName())->toBe('b');
+            expect($param2->getDefaultValue())->toBe(100);
+
+            $param3 = next($inspector);
+            expect($param3)->toBeAnInstanceOf('ReflectionParameter');
+            expect($param3->getName())->toBe('c');
+            expect($param3->getDefaultValue())->toBe('abc');
+
+            $param4 = next($inspector);
+            expect($param4)->toBeAnInstanceOf('ReflectionParameter');
+            expect($param4->getName())->toBe('d');
+            expect($param4->getDefaultValue())->toBe(null);
+
+        });
+
+        it("merges defauts values with populated values when the third argument is not empty", function() {
+
+            $inspector = Inspector::parameters($this->class, 'parametersExample', [
+                'first',
+                1000,
+                true
+            ]);
+
+            expect($inspector)->toBe([
+                'a' => 'first',
+                'b' => 1000,
+                'c' => true,
+                'd' => null
+            ]);
+
+        });
+
+    });
+
+    describe("::typehint()", function() {
+
+        it("returns an empty string when no typehint is present", function() {
+
+            $inspector = Inspector::parameters($this->class, 'parametersExample');
+            expect(Inspector::typehint($inspector[0]))->toBe('');
+
+        });
+
+        it("returns parameter typehint", function() {
+
+            $inspector = Inspector::parameters($this->class, 'exceptionTypeHint');
             $typehint = Inspector::typehint(current($inspector));
             expect($typehint)->toBeA('string');
             expect(trim($typehint))->toBe('Exception');
 
-        });
-
-        it("should return array typehint", function() {
-
-            $inspector = Inspector::parameters($this->class, 'max');
+            $inspector = Inspector::parameters($this->class, 'arrayTypeHint');
             $typehint = Inspector::typehint(current($inspector));
             expect($typehint)->toBeA('string');
             expect(trim($typehint))->toBe('array');
 
-        });
-
-        it("should return other hinting", function() {
-
-            $inspector = Inspector::parameters($this->class, 'is_number');
+            $inspector = Inspector::parameters($this->class, 'callableTypeHint');
             $typehint = Inspector::typehint(current($inspector));
             expect($typehint)->toBeA('string');
             expect(trim($typehint))->toBe('callable');

@@ -407,7 +407,7 @@ EOT;
         }
         $result = [];
         if (!class_exists($class)) {
-            throw new IncompleteException("Unexisting class to extend of `{$class}`");
+            throw new IncompleteException("Unexisting parent class `{$class}`");
         }
         $reflection = Inspector::inspect($class);
         $methods = $reflection->getMethods($mask);
