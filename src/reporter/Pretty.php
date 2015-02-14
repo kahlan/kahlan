@@ -7,150 +7,109 @@ use kahlan\analysis\Debugger;
 
 class Pretty extends Terminal
 {
-    protected static $_report       = null;
-    protected static $_skip         = false;
-    protected static $_structure    = [];
+    protected static $_reports = [];
 
-    public function pass($report = [])
+    public function after($report = null)
     {
-        $this->_report($report);
-    }
+        $messages = array_values($report->messages());
 
-    public function skip($report = [])
-    {
-        $this->_report($report);
-    }
+        $_report = '';
+        foreach(array_slice($messages, 0, -1) as $idx => $message) {
+            if (strlen($message) == 0) continue;
 
-    public function fail($report = [])
-    {
-        $this->_report($report);
-    }
-
-    public function exception($report = [])
-    {
-        $this->_report($report);
-    }
-
-    public function incomplete($report = [])
-    {
-        $this->_report($report);
-    }
-
-    public function _report($report)
-    {
-        $messages = $report['messages'];
-
-        if (self::$_report === null) {
-            self::$_report = $messages;
-        } elseif (self::$_report != $messages) {
-            if (!static::$_skip) {
-                $this->_flush();
+            $_report .= '\\' . $message;
+            if (!in_array($_report, static::$_reports)) {
+                static::$_reports[] = $_report;
+                $this->write(str_repeat("  ", $idx));
+                $this->write("{$message}\n", "b;");
             }
-
-            self::$_report = $messages;
-            self::$_skip = false;
         }
 
-        // We must traverse current message
-        $messageTrace = array_slice($report['messages'], 0, -1);
+        $check  = current(array_slice($messages, -1, 1));
+        $offset = count($messages) - 1;
+        switch($report->type()) {
+            case "pass":
+                $this->write(str_repeat('  ', $offset));
+                $this->write("✔", 'green');
+                $this->write(" ");
+                $this->write("{$check}\n", 'd;black');
+                break;
+            case "fail":
+                $this->write(str_repeat('  ', $offset));
+                $this->write("✘", 'red');
+                $this->write(" ");
+                $this->write("{$check}\n", 'red');
+                $this->write("\n");
 
-        foreach($messageTrace as $key => $message) {
-            // Generate a unique report message hash
-            $trace = md5(implode('-', array_values(array_slice($messageTrace, 0, $key+1))));
+                foreach($report->childs() as $child) {
+                    $params = $child->params();
+                    $this->write(str_repeat('  ', $offset + 1));
+                    $this->write("Failed {$child->matcherName()}() on line {$child->line()} in {$child->file()}\n", 's;red');
 
-            // If we have it in structure we must skip
-            if (isset(static::$_structure[$trace])) continue;
+                    // Actual
+                    $actual = String::toString($params['actual']);
+                    foreach(explode("\n", $actual) as $str) {
+                        $this->write(str_repeat('  ', $offset + 1) . "{$str}\x1B[K", 'n;;91');
+                        $this->write("\n");
+                    }
 
-            // If not, let's show it to user
-            $this->write(str_repeat('  ', $key));
-            $this->write($message . "\n", 'b;');
-
-            // Store to avoid duplicates
-            static::$_structure[$trace] = true;
-        }
-
-        if (!static::$_skip) {
-            switch($report['type']) {
-                case "fail":
-                    $this->write(str_repeat('  ', $this->_getReportOffset()));
-                    $this->write("✘", 'red');
-                    $this->write(" ");
-                    $this->write($this->_getReportTask() . "\n", 'red');
-
-                    // Actual fetch
-                    $this->write(str_repeat('  ', $this->_getReportOffset() + 1));
-                    $this->write("actual:\n", 'red');
-
-                    $this->write(String::toString($report['params']['actual']), 'n;;91');
-                    $this->write("\n", "black");
-
-                    // Excpected fetch
-                    $this->write(str_repeat('  ', $this->_getReportOffset() + 1));
-                    $this->write("expected:\n", 'green');
-                    $this->write(String::toString($report['params']['expected']), 'n;;92');
-                    $this->write("\n");
-
-                    static::$_skip = true;
-                    break;
-                case "exception":
-                    $this->write(str_repeat('  ', $this->_getReportOffset()));
-                    $this->write("✘", 'red');
-                    $this->write(" ");
-                    $this->write($this->_getReportTask() . "\n", 'red');
-
-                    $this->write(str_repeat('  ', $this->_getReportOffset() + 1));
-                    $this->write("Exception: ", 'red');
-                    $this->write(String::toString($report['exception']), "b;red");
-                    $this->write("\n");
-                    $this->write(str_repeat('  ', $this->_getReportOffset() + 1));
-                    $this->write("Trace: ", 'yellow');
-                    $this->write("\n");
-                    foreach(explode("\n", Debugger::trace(['trace' => $report['backtrace']])) as $msg) {
-                        $this->write(str_repeat('  ', $this->_getReportOffset() + 2));
-                        $this->write($msg . "\n", 'd;');
+                    // Expected
+                    $expected = String::toString($params['expected']);
+                    foreach(explode("\n", $expected) as $str) {
+                        $this->write(str_repeat('  ', $offset + 1) . "{$str}\x1B[K", 'n;;92');
+                        $this->write("\n");
                     }
                     $this->write("\n");
-                    break;
-                case "skip":
-                    $this->write(str_repeat('  ', $this->_getReportOffset()));
-                    $this->write("→", 'magenta');
-                    $this->write(" ");
-                    $this->write($this->_getReportTask() . "\n", 'd;magenta');
+                }
+                break;
+            case "exception":
+                $exception = $report->exception();
+                $backtrace = $report->backtrace();
 
-                    static::$_skip = true;
-                    break;
-                default:
-
-                    break;
-            }
+                $this->write(str_repeat('  ', $offset));
+                $this->write("✘", 'red');
+                $this->write(" ");
+                $this->write("{$check}\n", 'red');
+                $this->write(str_repeat('  ', $offset + 1));
+                $this->write("Exception: ", 'red');
+                $this->write(String::toString($exception), "b;red");
+                $this->write("\n");
+                $this->write(str_repeat('  ', $offset + 1));
+                $this->write("Trace: ", 'yellow');
+                $this->write("\n");
+                foreach(explode("\n", Debugger::trace(['trace' => $backtrace])) as $msg) {
+                    $this->write(str_repeat('  ', $offset + 2));
+                    $this->write($msg . "\n", 'd;');
+                }
+                break;
+            case "skip":
+                $this->write(str_repeat('  ', $offset));
+                $this->write("→", 'magenta');
+                $this->write(" ");
+                $this->write("{$check}\n", 'd;magenta');
+                break;
         }
-    }
-
-    public function _flush()
-    {
-        $this->write(str_repeat('  ', $this->_getReportOffset()));
-        $this->write("✔", 'green');
-        $this->write(" ");
-        $this->write($this->_getReportTask() . "\n", 'd;black');
-
-        self::$_report = null;
-    }
-
-    protected function _getReportOffset()
-    {
-        return (count(static::$_report) - 1);
-    }
-
-    protected function _getReportTask()
-    {
-        return current(array_slice(static::$_report, -1, 1));
     }
 
     public function end($results = [])
     {
-        $this->_flush();
-        $this->write("\n");
+        $this->write("\n\n");
         $this->_summary($results);
         $this->_focused($results);
+    }
+
+    public function _focused($report)
+    {
+        if (!$backtraces = $report['focuses']) {
+            return;
+        }
+
+        $this->write("Focus Mode Detected in the following files:\n", 'b;yellow;');
+        foreach ($backtraces as $backtrace) {
+            $this->write(Debugger::trace(['trace' => $backtrace, 'depth' => 1]), 'n;;yellow');
+            $this->write("\n");
+        }
+
+        $this->write("\n\n");
     }
 }
