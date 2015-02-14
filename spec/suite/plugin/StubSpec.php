@@ -9,6 +9,7 @@ use jit\Parser;
 use kahlan\Arg;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\plugin\Stub;
+use kahlan\IncompleteException;
 
 use kahlan\spec\fixture\plugin\pointcut\Foo;
 use kahlan\spec\fixture\plugin\pointcut\SubBar;
@@ -601,7 +602,46 @@ describe("Stub", function() {
 
    describe("::generate()", function() {
 
-        it("overrides the construct method", function() {
+       it("throws on incomplete trait", function () {
+
+           expect(function() {
+               Stub::generate([
+                   'class' => 'kahlan\spec\plugin\stub\Stub',
+                   'methods' => ['__construct'],
+                   'uses' => ['\Some\Strange\Trait'],
+                   'magicMethods' => false
+               ]);
+           })->toThrow(new IncompleteException('Unexisting trait `\Some\Strange\Trait`'));
+
+       });
+
+       it("throws on incomplete interface", function() {
+
+           expect(function() {
+               Stub::generate([
+                   'class' => 'kahlan\spec\plugin\stub\Stub',
+                   'methods' => ['__construct'],
+                   'implements' => ['\Some\Strange\Interface'],
+                   'magicMethods' => false
+               ]);
+           })->toThrow(new IncompleteException('Unexisting interface `\\Some\\Strange\\Interface`'));
+
+       });
+
+       it("throws on incomplete extends", function() {
+
+           expect(function() {
+               Stub::generate([
+                   'class' => 'kahlan\spec\plugin\stub\Stub',
+                   'methods' => ['__construct'],
+                   'extends' => '\Some\Strange\Interface',
+                   'magicMethods' => false
+               ]);
+           })->toThrow(new IncompleteException('Unexisting class to extend of `\\Some\\Strange\\Interface`'));
+
+       });
+
+       it("overrides the construct method", function() {
 
             $result = Stub::generate([
                 'class' => 'kahlan\spec\plugin\stub\Stub',

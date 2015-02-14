@@ -4,6 +4,7 @@ namespace kahlan\spec\suite\analysis;
 use Exception;
 use kahlan\analysis\Debugger;
 use kahlan\plugin\Stub;
+use kahlan\spec\fixture\analysis\Evaluation;
 
 describe("Debugger", function() {
 
@@ -72,6 +73,16 @@ describe("Debugger", function() {
 
 	});
 
+	describe("::loader()", function() {
+
+		it("should return provided loader", function() {
+
+			$loader = Stub::create();
+			expect(Debugger::loader($loader))->toBe($loader);
+
+		});
+
+	});
 
     describe("::errorType()", function() {
 
