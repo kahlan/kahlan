@@ -85,7 +85,7 @@ class Bar extends Terminal
     /**
      * Callback called when entering a new spec.
      *
-     * @param object $report The report object.
+     * @param object $report The report object of the whole spec.
      */
     public function before($report = null)
     {
@@ -96,7 +96,7 @@ class Bar extends Terminal
     /**
      * Callback called on failure.
      *
-     * @param object $report The report object.
+     * @param object $report An expect report object.
      */
     public function fail($report = null)
     {
@@ -109,7 +109,7 @@ class Bar extends Terminal
     /**
      * Callback called when an exception occur.
      *
-     * @param object $report The report object.
+     * @param object $report An expect report object.
      */
     public function exception($report = null)
     {
@@ -122,7 +122,7 @@ class Bar extends Terminal
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      *
-     * @param object $report The report object.
+     * @param object $report An expect report object.
      */
     public function incomplete($report = null)
     {

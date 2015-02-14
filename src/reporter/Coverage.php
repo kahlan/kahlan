@@ -86,7 +86,7 @@ class Coverage extends Terminal
     /**
      * Callback called before a spec.
      *
-     * @param object $report The report object.
+     * @param object $report The report object of the whole spec.
      */
     public function before($report = null)
     {
@@ -100,7 +100,7 @@ class Coverage extends Terminal
     /**
      * Callback called after a spec.
      *
-     * @param object $report The report object.
+     * @param object $report The report object of the whole spec.
      */
     public function after($report = null)
     {

@@ -51,7 +51,7 @@ class Reporter
     /**
      * Callback called before a spec.
      *
-     * @param object $report The report object.
+     * @param object $report The report object of the whole spec.
      */
     public function before($report = null)
     {
@@ -61,7 +61,7 @@ class Reporter
     /**
      * Callback called after a spec.
      *
-     * @param object $report The report object.
+     * @param object $report The report object of the whole spec.
      */
     public function after($report = null)
     {
@@ -70,7 +70,7 @@ class Reporter
     /**
      * Callback called on successful expect.
      *
-     * @param object $report The report object.
+     * @param object $report An expect report object.
      */
     public function pass($report = null)
     {
@@ -79,7 +79,7 @@ class Reporter
     /**
      * Callback called on failure.
      *
-     * @param object $report The report object.
+     * @param object $report An expect report object.
      */
     public function fail($report = null)
     {
@@ -88,7 +88,7 @@ class Reporter
     /**
      * Callback called when an exception occur.
      *
-     * @param object $report The report object.
+     * @param object $report An expect report object.
      */
     public function exception($report = null)
     {
@@ -97,7 +97,7 @@ class Reporter
     /**
      * Callback called on a skipped spec.
      *
-     * @param object $report The report object.
+     * @param object $report An expect report object.
      */
     public function skip($report = null)
     {
@@ -106,7 +106,7 @@ class Reporter
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      *
-     * @param object $report The report object.
+     * @param object $report An expect report object.
      */
     public function incomplete($report = null)
     {
