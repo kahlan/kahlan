@@ -301,8 +301,9 @@ class Scope
             foreach ($this->_childs as $child) {
                 $messages = $this->messages();
                 $backtrace = $this->_backtrace;
-                $this->emitReport('before', ['messages'  => $messages, 'backtrace' => $backtrace]);
-                $this->emitReport('after', ['messages'  => $messages, 'backtrace' => $backtrace]);
+                $report = $child->report();
+                $this->emitReport('before', $report);
+                $this->emitReport('after', $report);
             }
         }
         throw new SkipException();
