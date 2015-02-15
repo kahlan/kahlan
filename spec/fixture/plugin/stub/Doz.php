@@ -21,6 +21,7 @@ abstract class Doz
     }
 
     abstract public function bar($var1 = null, array $var2 = []);
+    abstract public function __get($name);
 }
 
 ?>
