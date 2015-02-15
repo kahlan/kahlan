@@ -73,7 +73,6 @@ class Reporter
      */
     public function specStart($report = null)
     {
-        $this->_current++;
     }
 
     /**
