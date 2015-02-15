@@ -3,95 +3,42 @@ namespace kahlan\reporter;
 
 use set\Set;
 use string\String;
+use kahlan\cli\Cli;
 use kahlan\analysis\Debugger;
 
 class Verbose extends Terminal
 {
     /**
-     * Is entering a new spec.
-     *
-     * @var array
-     */
-    protected $_new = false;
-
-    /**
-     * Current indentation.
-     *
-     * @var integer
-     */
-    protected $_indent = 0;
-
-    /**
-     * Callback called on a spec start.
+     * Callback called on a suite start.
      *
      * @param object $report The report object of the whole spec.
      */
-    public function specStart($report = null)
+    public function suiteStart($report = null)
     {
-        $this->_new = true;
+        $messages = $report->messages();
+        $message = end($messages);
+        $this->write("{$message}\n", "b;");
+        $this->_indent++;
     }
 
     /**
-     * Callback called on successful expect.
+     * Callback called after a suite execution.
      *
-     * @param object $report An expect report object.
+     * @param object $report The report object of the whole spec.
      */
-    public function pass($report = null)
+    public function suiteEnd($report = null)
     {
-        if ($this->_new) {
-            $this->write("\n");
-            $this->write('[Passed] ', 'green');
-            $this->write($report->file() . "\n");
-            $this->_indent = $this->_messages($report->messages());
-            $this->_new = false;
-        }
-        $this->write(str_repeat('    ', $this->_indent));
-        $this->write('expect->');
-        $this->write($report->matcherName(), 'magenta');
-        $this->write('()');
-        $this->write(' passed', 'green');
-        $this->write(' - ');
-        $this->write("line {$report->line()}\n", 'yellow');
+        $this->_indent--;
     }
 
     /**
-     * Callback called on skipped.
+     * Callback called after a spec execution.
      *
-     * @param object $report An expect report object.
+     * @param object $report The report object of the whole spec.
      */
-    public function skip($report = null)
+    public function specEnd($report = null)
     {
-        $this->_report($report);
-    }
-
-    /**
-     * Callback called on failure.
-     *
-     * @param object $report An expect report object.
-     */
-    public function fail($report = null)
-    {
-        $this->_report($report);
-    }
-
-    /**
-     * Callback called when an exception occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function exception($report = null)
-    {
-        $this->_report($report);
-    }
-
-    /**
-     * Callback called when a `kahlan\IncompleteException` occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function incomplete($report = null)
-    {
-        $this->_report($report);
+        $this->_reportSpec($report);
     }
 
     /**
@@ -99,7 +46,7 @@ class Verbose extends Terminal
      */
     public function end($results = [])
     {
-        $this->write("\n");
+        $this->write("\n\n");
         $this->_summary($results);
         $this->_focused($results);
     }

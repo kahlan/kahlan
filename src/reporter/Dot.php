@@ -82,7 +82,7 @@ class Dot extends Terminal
 
         foreach ($results['specs'] as $type => $reports) {
             foreach ($reports as $report) {
-                if ($report->type() !== 'skip') {
+                if ($report->type() !== 'pass' && $report->type() !== 'skip') {
                     $this->_report($report);
                 }
             }

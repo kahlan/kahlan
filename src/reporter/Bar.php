@@ -52,9 +52,10 @@ class Bar extends Terminal
         $defaults = [
             'size' => 50,
             'preferences' => [
-                'failure' => 'red',
-                'success' => 'green',
-                'incomplete' => 'yellow'
+                'pass' => 'green',
+                'fail' => 'red',
+                'incomplete' => 'yellow',
+                'exception' => 'magenta'
             ],
             'chars' => [
                 'bar' => '=',
@@ -68,7 +69,7 @@ class Bar extends Terminal
             $_key = "_{$key}";
             $this->$_key = $value;
         }
-        $this->_color = $this->_preferences['success'];
+        $this->_color = $this->_preferences['pass'];
     }
 
     /**
@@ -93,43 +94,41 @@ class Bar extends Terminal
         $this->_progressBar();
     }
 
+
     /**
      * Callback called on failure.
      *
-     * @param object $report An expect report object.
+     * @param array $report The report array.
      */
-    public function fail($report = null)
+    public function fail($report = [])
     {
-        $this->_color = $this->_preferences['failure'];
+        $this->_color = $this->_preferences['fail'];
         $this->write("\n");
         $this->_report($report);
-        $this->write("\n");
     }
 
     /**
      * Callback called when an exception occur.
      *
-     * @param object $report An expect report object.
+     * @param array $report The report array.
      */
-    public function exception($report = null)
+    public function exception($report = [])
     {
-        $this->_color = $this->_preferences['failure'];
+        $this->_color = $this->_preferences['exception'];
         $this->write("\n");
         $this->_report($report);
-        $this->write("\n");
     }
 
     /**
      * Callback called when a `kahlan\IncompleteException` occur.
      *
-     * @param object $report An expect report object.
+     * @param array $report The report array.
      */
-    public function incomplete($report = null)
+    public function incomplete($report = [])
     {
         $this->_color = $this->_preferences['incomplete'];
         $this->write("\n");
         $this->_report($report);
-        $this->write("\n");
     }
 
     /**
