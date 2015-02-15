@@ -52,9 +52,52 @@ class Spec extends Scope
     }
 
     /**
-     * Processes the spec.
+     * Processes a child specs.
+     *
+     * @see kahlan\Suite::process()
+     * @param object A child spec.
      */
     public function process()
+    {
+        if ($this->_root->focused() && !$this->focused()) {
+            return;
+        }
+
+        try {
+            $this->_specStart();
+            $this->run();
+            $this->_specEnd();
+        } catch (Exception $exception) {
+            $this->_exception($exception);
+            try {
+                $this->_specEnd();
+            } catch (Exception $exception) {}
+        }
+    }
+
+    /**
+     * Spec start helper.
+     */
+    protected function _specStart()
+    {
+        $this->emitReport('specStart', $this->report());
+        $this->_parent->runCallbacks('beforeEach');
+    }
+
+    /**
+     * Spec end helper.
+     */
+    protected function _specEnd()
+    {
+        $this->_parent->autoclear();
+        $this->_parent->runCallbacks('afterEach');
+        $this->emitReport('specEnd', $this->report());
+    }
+
+    /**
+     * Processes the spec.
+     */
+    public function run()
     {
         if ($this->_locked) {
             throw new Exception('Method not allowed in this context.');

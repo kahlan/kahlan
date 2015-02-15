@@ -15,9 +15,9 @@ class Dot extends Terminal
      *
      * @param array $params The suite params array.
      */
-    public function begin($params)
+    public function start($params)
     {
-        parent::begin($params);
+        parent::start($params);
         $this->write("\n");
     }
 

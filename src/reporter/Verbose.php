@@ -22,11 +22,11 @@ class Verbose extends Terminal
     protected $_indent = 0;
 
     /**
-     * Callback called when entering a new spec.
+     * Callback called on a spec start.
      *
      * @param object $report The report object of the whole spec.
      */
-    public function before($report = null)
+    public function specStart($report = null)
     {
         $this->_new = true;
     }
@@ -41,19 +41,17 @@ class Verbose extends Terminal
         if ($this->_new) {
             $this->write("\n");
             $this->write('[Passed] ', 'green');
-            $this->write($this->_file($report) . "\n");
-            $this->_indent = $this->_messages($report['messages']);
+            $this->write($report->file() . "\n");
+            $this->_indent = $this->_messages($report->messages());
             $this->_new = false;
         }
-        $trace = reset($report['backtrace']);
-        $line = $trace['line'];
         $this->write(str_repeat('    ', $this->_indent));
         $this->write('expect->');
-        $this->write($report['matcher'], 'magenta');
+        $this->write($report->matcherName(), 'magenta');
         $this->write('()');
         $this->write(' passed', 'green');
         $this->write(' - ');
-        $this->write("line {$line}\n", 'yellow');
+        $this->write("line {$report->line()}\n", 'yellow');
     }
 
     /**

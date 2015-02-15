@@ -627,7 +627,7 @@ describe("Suite", function() {
 
         it("returns the references of runned focused specs", function() {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("focused suite", function() {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -661,7 +661,7 @@ describe("Suite", function() {
 
         it("skips specs", function() {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("skip suite", function() {
 
                 $this->exectuted = ['it' => 0];
 
@@ -681,12 +681,14 @@ describe("Suite", function() {
 
             $reporters = Stub::create();
 
-            expect($reporters)->toReceive('process')->with('begin', ['total' => 2]);
+            expect($reporters)->toReceive('process')->with('start', ['total' => 2]);
+            expect($reporters)->toReceiveNext('process')->with('suiteStart', Arg::toBeAnInstanceOf('kahlan\Report'));
             expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('before', Arg::toBeAnInstanceOf('kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('after', Arg::toBeAnInstanceOf('kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('before', Arg::toBeAnInstanceOf('kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('after', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('specEnd', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('specEnd', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('suiteEnd', Arg::toBeAnInstanceOf('kahlan\Report'));
             expect($reporters)->toReceiveNext('process')->with('end', Arg::toBeAn('array'));
 
             $this->suite->run(['reporters' => $reporters]);

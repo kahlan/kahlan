@@ -42,29 +42,48 @@ class Reporter
      *
      * @param array $params The suite params array.
      */
-    public function begin($params)
+    public function start($params)
     {
         $this->_start = $this->_start ?: microtime(true);
         $this->_total = max(1, $params['total']);
     }
 
     /**
-     * Callback called before a spec.
+     * Callback called on a suite start.
      *
      * @param object $report The report object of the whole spec.
      */
-    public function before($report = null)
+    public function suiteStart($report = null)
+    {
+    }
+
+    /**
+     * Callback called after a suite execution.
+     *
+     * @param object $report The report object of the whole spec.
+     */
+    public function suiteEnd($report = null)
+    {
+    }
+
+    /**
+     * Callback called on a spec start.
+     *
+     * @param object $report The report object of the whole spec.
+     */
+    public function specStart($report = null)
     {
         $this->_current++;
     }
 
     /**
-     * Callback called after a spec.
+     * Callback called after a spec execution.
      *
      * @param object $report The report object of the whole spec.
      */
-    public function after($report = null)
+    public function specEnd($report = null)
     {
+        $this->_current++;
     }
 
     /**

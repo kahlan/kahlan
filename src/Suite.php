@@ -284,35 +284,58 @@ class Suite extends Scope
     }
 
     /**
-     * Processes specs.
+     * Suite run.
      *
      * @return array Process options.
      */
-    protected function _run($options = [])
+    protected function process($options = [])
     {
+        if ($this->_root->focused() && !$this->focused()) {
+            return;
+        }
         static::$_instances[] = $this;
         $this->_errorHandler(true, $options);
 
         try {
-            $this->_callbacks('before', false);
-
+            $this->_suiteStart();
             foreach($this->_childs as $child) {
                 if ($this->failfast()) {
                     break;
                 }
-                $this->_process($child);
+                $child->process();
             }
-
-            $this->_callbacks('after', false);
+            $this->_suiteEnd();
         } catch (Exception $exception) {
-            try {
-                $this->_callbacks('after', false);
-            } catch (Exception $exception) {}
             $this->_exception($exception);
+            try {
+                $this->_suiteEnd();
+            } catch (Exception $exception) {}
         }
 
         $this->_errorHandler(false);
         array_pop(static::$_instances);
+    }
+
+    /**
+     * Suite start helper.
+     */
+    protected function _suiteStart()
+    {
+        if ($this->message()) {
+            $this->emitReport('suiteStart', $this->report());
+        }
+        $this->runCallbacks('before', false);
+    }
+
+    /**
+     * Suite end helper.
+     */
+    protected function _suiteEnd()
+    {
+        $this->runCallbacks('after', false);
+        if ($this->message()) {
+            $this->emitReport('suiteEnd', $this->report());
+        }
     }
 
     /**
@@ -326,50 +349,11 @@ class Suite extends Scope
     }
 
     /**
-     * Processes a child specs.
-     *
-     * @see kahlan\Suite::process()
-     * @param object A child spec.
-     */
-    protected function _process($child)
-    {
-        if ($this->_root->focused() && !$child->focused()) {
-            return;
-        }
-        if ($child instanceof Suite) {
-            $child->_run();
-            return;
-        }
-
-        $messages = $this->messages();
-        $backtrace = $this->_backtrace;
-        $report = $child->report();
-
-        try {
-            $this->emitReport('before', $report);
-
-            $this->_callbacks('beforeEach');
-            $child->process();
-            $this->_autoclear();
-            $this->_callbacks('afterEach');
-
-            $this->emitReport('after', $report);
-        } catch (Exception $exception) {
-            $this->_exception($exception);
-            try {
-                $this->_autoclear();
-                $this->_callbacks('afterEach');
-                $this->emitReport('after', $report);
-            } catch (Exception $exception) {}
-        }
-    }
-
-    /**
      * Runs a callback.
      *
      * @param string $name The name of the callback (i.e `'beforeEach'` or `'afterEach'`).
      */
-    protected function _callbacks($name, $recursive = true)
+    public function runCallbacks($name, $recursive = true)
     {
         $instances = $recursive ? $this->_parents(true) : [$this];
         foreach ($instances as $instance) {
@@ -436,8 +420,8 @@ class Suite extends Scope
             $this->_backtraceFocus = strtr(preg_quote($options['backtraceFocus'], '~'), ['\*' => '.*', '\?' => '.']);
         }
 
-        $this->emitReport('begin', ['total' => $this->enabled()]);
-        $this->_run();
+        $this->emitReport('start', ['total' => $this->enabled()]);
+        $this->process();
         $this->emitReport('end', [
             'specs'   => $this->_results,
             'focuses' => $this->_focuses
@@ -573,7 +557,7 @@ class Suite extends Scope
     /**
      * Autoclears plugins.
      */
-    protected function _autoclear()
+    public function autoclear()
     {
         foreach ($this->_root->_autoclear as $plugin) {
             if (method_exists($plugin, 'clear')) {

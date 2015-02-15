@@ -76,20 +76,20 @@ class Bar extends Terminal
      *
      * @param array $params The suite params array.
      */
-    public function begin($params)
+    public function start($params)
     {
-        parent::begin($params);
+        parent::start($params);
         $this->write("\n");
     }
 
     /**
-     * Callback called when entering a new spec.
+     * Callback called on a spec start.
      *
      * @param object $report The report object of the whole spec.
      */
-    public function before($report = null)
+    public function specStart($report = null)
     {
-        parent::before($report);
+        parent::specStart($report);
         $this->_progressBar();
     }
 

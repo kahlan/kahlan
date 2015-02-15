@@ -287,7 +287,7 @@ class Scope
     }
 
     /**
-     * Skips test(s) if the condition is `true`.
+     * Skips specs(s) if the condition is `true`.
      *
      * @param boolean $condition
      * @throws SkipException
@@ -298,16 +298,30 @@ class Scope
             return;
         }
         $exception = new SkipException();
-        $this->report()->add('skip', ['exception' => $exception]);
+        $this->_skipChilds($exception);
+        throw $exception;
+    }
 
+    /**
+     * Skips childs specs(s).
+     *
+     * @param object  $exception The exception at the origin of the skip.
+     * @param boolean $emit      Indicated if report events should be generated.
+     */
+    protected function _skipChilds($exception, $emit = false)
+    {
+        $report = $this->report();
         if ($this instanceof Suite) {
             foreach ($this->_childs as $child) {
-                $report = $child->report();
-                $this->emitReport('before', $report);
-                $this->emitReport('after', $report);
+                $child->_skipChilds($exception, true);
             }
+        } elseif ($emit) {
+            $this->emitReport('specStart', $report);
+            $report->add('skip', ['exception' => $exception]);
+            $this->emitReport('specEnd', $report);
+        } else {
+            $report->add('skip', ['exception' => $exception]);
         }
-        throw $exception;
     }
 
     /**

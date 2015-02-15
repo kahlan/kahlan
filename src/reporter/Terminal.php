@@ -66,9 +66,9 @@ class Terminal extends Reporter
      *
      * @param array $params The suite params array.
      */
-    public function begin($params)
+    public function start($params)
     {
-        parent::begin($params);
+        parent::start($params);
         $this->write("\n");
         $this->write("Kahlan - PHP Testing Framework\n" , 'green');
         $this->write("\nWorking Directory: ", 'blue');

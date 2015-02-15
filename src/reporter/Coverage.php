@@ -79,18 +79,18 @@ class Coverage extends Terminal
      *
      * @param array $params The suite params array.
      */
-    public function begin($params)
+    public function start($params)
     {
     }
 
     /**
-     * Callback called before a spec.
+     * Callback called on a spec start.
      *
      * @param object $report The report object of the whole spec.
      */
-    public function before($report = null)
+    public function specStart($report = null)
     {
-        parent::before($report);
+        parent::specStart($report);
         if (!$this->enabled()) {
             return;
         }
@@ -98,13 +98,13 @@ class Coverage extends Terminal
     }
 
     /**
-     * Callback called after a spec.
+     * Callback called after a spec execution.
      *
      * @param object $report The report object of the whole spec.
      */
-    public function after($report = null)
+    public function specEnd($report = null)
     {
-        parent::after($report);
+        parent::specEnd($report);
         if (!$this->enabled()) {
             return;
         }
