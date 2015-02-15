@@ -476,14 +476,12 @@ EOT;
             $name = ($name && $name !== '...') ? $name : 'param' . $num;
             $reference = $parameter->isPassedByReference() ? '&' : '';
             $default = '';
-            if ($parameter->isOptional()) {
-                if ($parameter->isDefaultValueAvailable()) {
-                    $default = var_export($parameter->getDefaultValue(), true);
-                } else {
-                    $default = 'null';
-                }
-                $default = ' = ' . preg_replace('/\s+/', '', $default);
+            if ($parameter->isDefaultValueAvailable()) {
+                $default = var_export($parameter->getDefaultValue(), true);
+            } else {
+                $default = 'NULL';
             }
+            $default = ' = ' . preg_replace('/\s+/', '', $default);
 
             $params[] = "{$typehint}{$reference}\${$name}{$default}";
         }

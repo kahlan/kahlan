@@ -20,6 +20,8 @@ abstract class Doz
         return new \DateTime($datetime);
     }
 
+    abstract public function foo($var);
+
     abstract public function bar($var1 = null, array $var2 = []);
 }
 
