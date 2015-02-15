@@ -391,17 +391,15 @@ describe("Stub", function() {
 
         describe("without provided hash", function() {
 
-            it("should return empty array when no instance registered", function() {
+            it("returns an empty array when no instance are registered", function() {
 
                 expect(Stub::registered())->toBe([]);
 
             });
 
-            it("should return array of registered instance", function() {
+            it("returns an array of registered instances", function() {
 
-                Stub::on('kahlan\spec\fixture\plugin\pointcut\Foo')->method('inited', function() {
-                    return false;
-                });
+                Stub::on('kahlan\spec\fixture\plugin\pointcut\Foo')->method('foo', function() {});
 
                 expect(Stub::registered())->toBeA('array')->toBe([
                     'kahlan\spec\fixture\plugin\pointcut\Foo'
@@ -413,17 +411,15 @@ describe("Stub", function() {
 
         describe("with provided hash", function() {
 
-            it("should return false on non-registered stub", function() {
+            it("returns `false` for registered stub", function() {
 
                 expect(Stub::registered('kahlan\spec\fixture\plugin\pointcut\Foo'))->toBe(false);
 
             });
 
-            it("should return registered stub", function() {
+            it("returns `true` for registered stub", function() {
 
-                Stub::on('kahlan\spec\fixture\plugin\pointcut\Foo')->method('inited', function() {
-                    return false;
-                });
+                Stub::on('kahlan\spec\fixture\plugin\pointcut\Foo')->method('foo', function() {});
 
                 expect(Stub::registered('kahlan\spec\fixture\plugin\pointcut\Foo'))->toBe(true);
 
@@ -437,28 +433,23 @@ describe("Stub", function() {
 
         beforeEach(function() {
 
-            Stub::on('kahlan\spec\fixture\plugin\pointcut\Foo')->method('inited', function() {
-                return false;
-            });
-
-            Stub::on('kahlan\spec\fixture\plugin\pointcut\Bar')->method('send', function() {
-                return 'false';
-            });
+            Stub::on('kahlan\spec\fixture\plugin\pointcut\Foo')->method('foo', function() {});
+            Stub::on('kahlan\spec\fixture\plugin\pointcut\Bar')->method('bar', function() {});
 
         });
 
-        it("should clear all current stubs", function() {
+        it("clears all stubs", function() {
 
             Stub::clear();
             expect(Stub::registered())->toBe([]);
 
         });
 
-        it("should clear one stub", function() {
+        it("clears one stub", function() {
 
             Stub::clear('kahlan\spec\fixture\plugin\pointcut\Foo');
             expect(Stub::registered())->toBe([
-                'kahlan\\spec\\fixture\\plugin\\pointcut\\Bar'
+                'kahlan\spec\fixture\plugin\pointcut\Bar'
             ]);
 
         });
@@ -780,7 +771,7 @@ EOD;
 
             $result = Stub::generate([
                 'class'      => 'kahlan\spec\plugin\stub\Stub',
-                'extends'    => 'kahlan\spec\fixture\plugin\stub\Doz',
+                'extends'    => 'kahlan\spec\fixture\plugin\stub\Doz'
             ]);
 
             $expected = <<<EOD
@@ -792,7 +783,6 @@ class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz {
 
     function foo(\$var = NULL) {}
     function bar(\$var1 = NULL, array \$var2 = array()) {}
-    
 
 }
 ?>
