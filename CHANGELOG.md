@@ -1,6 +1,10 @@
 # Change Log
 
-## Changes on the master branch
+## Last changes
+
+  * Bugfix: generalizes method overriding with stubs.
+  * Change: the look & feel of reporters has been modified.
+  * BC break: reporter's hooks has been renamed and now receive a report instance as parameter instead of an array.
 
 ## 1.0.6 (2015-02-11)
 
