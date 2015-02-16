@@ -64,7 +64,7 @@ describe("Example", function() {
 
 ## Screenshots
 
-Example of output:
+Example of error reporting:
 ![Kahlan](docs/assets/kahlan.png)
 
 Example of detailed code coverage on a specific scope:
