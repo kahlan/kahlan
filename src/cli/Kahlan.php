@@ -308,6 +308,7 @@ EOD;
     protected function _bootstrap()
     {
         return Filter::on($this, 'bootstrap', [], function($chain) {
+            $this->suite()->backtraceFocus($this->args()->get('pattern'));
             if ($this->args()->exists('clover') && !$this->args()->exists('coverage')) {
                 $this->args()->set('coverage', 1);
             }
@@ -456,8 +457,7 @@ EOD;
             $this->suite()->run([
                 'reporters'      => $this->reporters(),
                 'autoclear'      => $this->args()->get('autoclear'),
-                'ff'             => $this->args()->get('ff'),
-                'backtraceFocus' => $this->args()->get('pattern'),
+                'ff'             => $this->args()->get('ff')
             ]);
         });
     }

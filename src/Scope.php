@@ -377,14 +377,18 @@ class Scope
     }
 
     /**
-     * Returns the regexp pattern used to removes useless traces to focus on the one
+     * Gets/sets the regexp pattern used to removes useless traces to focus on the one
      * related to a spec file.
      *
-     * @return string
+     * @param  string $pattern A wildcard pattern (i.e. `fnmatch()` style).
+     * @return string          The focus regexp.
      */
-    public function backtraceFocus()
+    public function backtraceFocus($pattern = null)
     {
-        return $this->_root->_backtraceFocus;
+        if ($pattern === null) {
+            return $this->_root->_backtraceFocus;
+        }
+        return $this->_root->_backtraceFocus = strtr(preg_quote($pattern, '~'), ['\*' => '.*', '\?' => '.']);
     }
 
     /**
@@ -414,7 +418,7 @@ class Scope
      */
     protected function _emitFocus()
     {
-        $this->_root->_focuses[] = Debugger::backtrace(['start' => 4]);
+        $this->_root->_focuses[] = Debugger::focus($this->backtraceFocus(), Debugger::backtrace());
         $instances = $this->_parents(true);
         foreach ($instances as $instance) {
             $instance->focus();

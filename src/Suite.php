@@ -401,8 +401,7 @@ class Suite extends Scope
         $defaults = [
             'reporters'      => null,
             'autoclear'      => [],
-            'ff'             => 0,
-            'backtraceFocus' => '*Spec.php'
+            'ff'             => 0
         ];
         $options += $defaults;
 
@@ -415,10 +414,6 @@ class Suite extends Scope
         $this->_reporters = $options['reporters'];
         $this->_autoclear = (array) $options['autoclear'];
         $this->_ff = $options['ff'];
-
-        if ($options['backtraceFocus']) {
-            $this->_backtraceFocus = strtr(preg_quote($options['backtraceFocus'], '~'), ['\*' => '.*', '\?' => '.']);
-        }
 
         $this->emitReport('start', ['total' => $this->enabled()]);
         $this->process();

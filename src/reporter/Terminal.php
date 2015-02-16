@@ -377,7 +377,7 @@ class Terminal extends Reporter
      *
      * @param array $report A report array.
      */
-    protected function _focused($report)
+    protected function _reportFocused($report)
     {
         if (!$backtraces = $report['focuses']) {
             return;
