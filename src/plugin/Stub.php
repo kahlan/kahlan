@@ -264,8 +264,8 @@ class Stub
         $implements = static::_generateImplements($options['implements']);
 
         $methods = static::_generateMethodStubs($options['methods'], $options['magicMethods']);
-        $methods = array_merge($methods, static::_generateClassMethods($options['extends']));
-        $methods = array_merge($methods, static::_generateInterfaceMethods($options['implements']));
+        $methods += static::_generateClassMethods($options['extends']);
+        $methods += static::_generateInterfaceMethods($options['implements']);
 
         $methods = $methods ? '    ' . join("\n    ", $methods) : '';
 
@@ -380,13 +380,13 @@ EOT;
 
         foreach ($methods as $name) {
             if (isset($magicMethods[$name])) {
-                $result[] = $magicMethods[$name];
+                $result[$name] = $magicMethods[$name];
             } else {
                 $return = '';
                 if ($name[0] === '&') {
                     $return = '$r = null; return $r;';
                 }
-                $result[] = "public function {$name}() {{$return}}";
+                $result[$name] = "public function {$name}() {{$return}}";
             }
         }
 
@@ -412,7 +412,7 @@ EOT;
         $reflection = Inspector::inspect($class);
         $methods = $reflection->getMethods($mask);
         foreach ($methods as $method) {
-            $result[] = static::_generateMethod($method);
+            $result[$method->getName()] = static::_generateMethod($method);
         }
         return $result;
     }
@@ -437,7 +437,7 @@ EOT;
             $reflection = Inspector::inspect($interface);
             $methods = $reflection->getMethods($mask);
             foreach ($methods as $method) {
-                $result[] = static::_generateMethod($method);
+                $result[$method->getName()] = static::_generateMethod($method);
             }
         }
         return $result;
@@ -452,13 +452,10 @@ EOT;
     protected static function _generateMethod($method)
     {
         $result = join(' ', Reflection::getModifierNames($method->getModifiers()));
-        $result = preg_replace('/^abstract /', '', $result);
+        $result = preg_replace('/abstract\s*/', '', $result);
         $name = $method->getName();
-        if ($name === '__get' || $name === '__call' || $name === '__callStatic') {
-            return '';
-        }
         $parameters = static::_generateParameters($method);
-        return "function {$name}({$parameters}) {}";
+        return "{$result} function {$name}({$parameters}) {}";
     }
 
     /**

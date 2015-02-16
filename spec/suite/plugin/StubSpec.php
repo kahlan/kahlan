@@ -719,30 +719,6 @@ EOD;
 
         });
 
-        it("generates interface methods", function() {
-
-            $result = Stub::generate([
-                'class'        => 'kahlan\spec\plugin\stub\Stub',
-                'implements'   => ['Countable'],
-                'magicMethods' => false
-            ]);
-
-            $expected = <<<EOD
-<?php
-
-namespace kahlan\\spec\\plugin\\stub;
-
-class Stub implements \\Countable {
-
-    function count() {}
-
-}
-?>
-EOD;
-            expect($result)->toBe($expected);
-
-        });
-
         it("generates use statement", function() {
 
             $result = Stub::generate([
@@ -781,8 +757,100 @@ namespace kahlan\\spec\\plugin\\stub;
 
 class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz {
 
-    function foo(\$var = NULL) {}
-    function bar(\$var1 = NULL, array \$var2 = array()) {}
+    public function foo(\$var = NULL) {}
+    public function bar(\$var1 = NULL, array \$var2 = array()) {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
+        it("generates interface methods", function() {
+
+            $result = Stub::generate([
+                'class'        => 'kahlan\spec\plugin\stub\Stub',
+                'implements'   => ['Countable'],
+                'magicMethods' => false
+            ]);
+
+            $expected = <<<EOD
+<?php
+
+namespace kahlan\\spec\\plugin\\stub;
+
+class Stub implements \\Countable {
+
+    public function count() {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
+        it("manages methods inheritence", function() {
+
+            $result = Stub::generate([
+                'class'      => 'kahlan\spec\plugin\stub\Stub',
+                'implements' => ['kahlan\spec\fixture\plugin\stub\DozInterface'],
+                'magicMethods' => false
+            ]);
+
+            $expected = <<<EOD
+<?php
+
+namespace kahlan\\spec\\plugin\\stub;
+
+class Stub implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
+
+    public function foo(\$a = NULL) {}
+    public function bar(\$b = NULL) {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+            $result = Stub::generate([
+                'class'      => 'kahlan\spec\plugin\stub\Stub',
+                'extends'    => 'kahlan\spec\fixture\plugin\stub\Doz',
+                'implements' => ['kahlan\spec\fixture\plugin\stub\DozInterface'],
+            ]);
+
+            $expected = <<<EOD
+<?php
+
+namespace kahlan\\spec\\plugin\\stub;
+
+class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
+
+    public function foo(\$var = NULL) {}
+    public function bar(\$var1 = NULL, array \$var2 = array()) {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+            $result = Stub::generate([
+                'class'      => 'kahlan\spec\plugin\stub\Stub',
+                'extends'    => 'kahlan\spec\fixture\plugin\stub\Doz',
+                'implements' => ['kahlan\spec\fixture\plugin\stub\DozInterface'],
+                'methods'    => ['foo', 'bar']
+            ]);
+
+            $expected = <<<EOD
+<?php
+
+namespace kahlan\\spec\\plugin\\stub;
+
+class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
+
+    public function foo() {}
+    public function bar() {}
 
 }
 ?>
