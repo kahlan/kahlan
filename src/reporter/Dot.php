@@ -80,6 +80,8 @@ class Dot extends Terminal
             $this->_write(' ');
         } while ($this->_counter % 80 !== 0);
 
+        $this->write("\n");
+
         foreach ($results['specs'] as $type => $reports) {
             foreach ($reports as $report) {
                 if ($report->type() !== 'pass' && $report->type() !== 'skip') {

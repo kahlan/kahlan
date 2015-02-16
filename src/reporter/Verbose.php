@@ -9,6 +9,17 @@ use kahlan\analysis\Debugger;
 class Verbose extends Terminal
 {
     /**
+     * Callback called before any specs processing.
+     *
+     * @param array $params The suite params array.
+     */
+    public function start($params)
+    {
+        parent::start($params);
+        $this->write("\n");
+    }
+
+    /**
      * Callback called on a suite start.
      *
      * @param object $report The report object of the whole spec.

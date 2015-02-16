@@ -189,7 +189,7 @@ class Terminal extends Reporter
                 $this->write("\n\n");
 
                 $this->write('message:', 'yellow');
-                $this->write(' ' . String::toString($report->exception()) ."\n");
+                $this->_reportException($report->exception());
                 $this->prefix($this->format(' ', 'n;;magenta') . ' ');
                 $this->write(Debugger::trace(['trace' => $report->backtrace()]));
                 $this->prefix('');
@@ -202,7 +202,7 @@ class Terminal extends Reporter
                 $this->write("\n\n");
 
                 $this->write('message:', 'yellow');
-                $this->write(' ' . String::toString($report->exception()) ."\n");
+                $this->_reportException($report->exception());
                 $this->prefix($this->format(' ', 'n;;magenta') . ' ');
                 $this->write(Debugger::trace(['trace' => $report->backtrace()]));
                 $this->prefix('');
@@ -239,6 +239,18 @@ class Terminal extends Reporter
             $this->write("\n");
         }
         $this->write("\n");
+    }
+
+    protected function _reportException($exception)
+    {
+        $msg = '`' . get_class($exception) .'` Code(' . $exception->getCode() . ') with ';
+        $message = $exception->getMessage();
+        if ($message) {
+            $msg .= 'message '. String::dump($exception->getMessage());
+        } else {
+            $msg .= 'no message';
+        }
+        $this->write("{$msg}\n\n");
     }
 
     /**
