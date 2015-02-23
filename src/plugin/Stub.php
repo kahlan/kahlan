@@ -227,8 +227,12 @@ class Stub
      * Creates a class definition.
      *
      * @param  array  $options Array of options. Options are:
-     *                         - `'class'` : the fully-namespaced class name.
-     *                         - `'extends'` : the fully-namespaced parent class name.
+     *                         - `'class'`      _string_ : the fully-namespaced class name.
+     *                         - `'extends'`    _string_ : the fully-namespaced parent class name.
+     *                         - `'implements'` _array_  : the implemented interfaces.
+     *                         - `'uses'`       _array_  : the used traits.
+     *                         - `'methods'`    _array_  : the methods to stubs.
+     *                         - `'layer'`      _boolean_: indicate if public methods should be layered.
      * @return string          The generated class string content.
      */
     public static function generate($options = [])
@@ -238,7 +242,8 @@ class Stub
             'extends' => '',
             'implements' => [],
             'uses' => [],
-            'methods' => []
+            'methods' => [],
+            'layer' => false
         ];
         $options += $defaults;
 
@@ -264,7 +269,7 @@ class Stub
         $implements = static::_generateImplements($options['implements']);
 
         $methods = static::_generateMethodStubs($options['methods'], $options['magicMethods']);
-        $methods += static::_generateClassMethods($options['extends']);
+        $methods += static::_generateClassMethods($options['extends'], $options['layer']);
         $methods += static::_generateInterfaceMethods($options['implements']);
 
         $methods = $methods ? '    ' . join("\n    ", $methods) : '';
@@ -396,11 +401,40 @@ EOT;
     /**
      * Creates method definitions from a class name.
      *
+     * @param  string  $class A class name.
+     * @param  boolean $layer If `true`, all public methods are "overriden".
+     * @return string         The generated methods.
+     */
+    protected static function _generateClassMethods($class, $layer = false)
+    {
+        if (!$class) {
+            return [];
+        }
+        $result = [];
+        if (!class_exists($class)) {
+            throw new IncompleteException("Unexisting parent class `{$class}`");
+        }
+        $result = static::_generateAbstractMethods($class);
+
+        if (!$layer) {
+            return $result;
+        }
+        $reflection = Inspector::inspect($class);
+        $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+        foreach ($methods as $method) {
+            $result[$method->getName()] = static::_generateMethod($method, true);
+        }
+        return $result;
+    }
+
+    /**
+     * Creates method definitions from a class name.
+     *
      * @param  string $class A class name.
      * @param  int    $mask  The method mask to filter.
      * @return string        The generated methods.
      */
-    protected static function _generateClassMethods($class, $mask = ReflectionMethod::IS_ABSTRACT)
+    protected static function _generateAbstractMethods($class)
     {
         if (!$class) {
             return [];
@@ -410,7 +444,7 @@ EOT;
             throw new IncompleteException("Unexisting parent class `{$class}`");
         }
         $reflection = Inspector::inspect($class);
-        $methods = $reflection->getMethods($mask);
+        $methods = $reflection->getMethods(ReflectionMethod::IS_ABSTRACT);
         foreach ($methods as $method) {
             $result[$method->getName()] = static::_generateMethod($method);
         }
@@ -449,22 +483,27 @@ EOT;
      * @param  objedct $method A instance of `ReflectionMethod`.
      * @return string          The generated method.
      */
-    protected static function _generateMethod($method)
+    protected static function _generateMethod($method, $callParent = false)
     {
         $result = join(' ', Reflection::getModifierNames($method->getModifiers()));
         $result = preg_replace('/abstract\s*/', '', $result);
         $name = $method->getName();
-        $parameters = static::_generateParameters($method);
-        return "{$result} function {$name}({$parameters}) {}";
+        $parameters = static::_generateSignature($method);
+        $body = "{$result} function {$name}({$parameters}) {";
+        if ($callParent) {
+            $parameters = static::_generateParameters($method);
+            $body .= "return parent::{$name}({$parameters});";
+        }
+        return $body . "}";
     }
 
     /**
-     * Creates a parameters definition list from a `ReflectionMethod` instance.
+     * Creates a parameters signature of a `ReflectionMethod` instance.
      *
      * @param  object $method A instance of `ReflectionMethod`.
      * @return string         The parameters definition list.
      */
-    protected static function _generateParameters($method)
+    protected static function _generateSignature($method)
     {
         $params = [];
         foreach ($method->getParameters() as $num => $parameter) {
@@ -481,6 +520,23 @@ EOT;
             $default = ' = ' . preg_replace('/\s+/', '', $default);
 
             $params[] = "{$typehint}{$reference}\${$name}{$default}";
+        }
+        return join(', ', $params);
+    }
+
+    /**
+     * Creates a parameters list from a `ReflectionMethod` instance.
+     *
+     * @param  object $method A instance of `ReflectionMethod`.
+     * @return string         The parameters definition list.
+     */
+    protected static function _generateParameters($method)
+    {
+        $params = [];
+        foreach ($method->getParameters() as $num => $parameter) {
+            $name = $parameter->getName();
+            $name = ($name && $name !== '...') ? $name : 'param' . $num;
+            $params[] = "\${$name}";
         }
         return join(', ', $params);
     }

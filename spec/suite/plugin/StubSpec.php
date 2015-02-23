@@ -859,6 +859,32 @@ EOD;
 
         });
 
+        it("overrides all parent class method", function() {
+
+            $result = Stub::generate([
+                'class'   => 'kahlan\spec\plugin\stub\Stub',
+                'extends' => 'kahlan\analysis\Inspector',
+                'layer'   => true
+            ]);
+
+            $expected = <<<EOD
+<?php
+
+namespace kahlan\spec\plugin\stub;
+
+class Stub extends \kahlan\analysis\Inspector {
+
+    public static function inspect(\$class = NULL) {return parent::inspect(\$class);}
+    public static function parameters(\$class = NULL, \$method = NULL, \$data = NULL) {return parent::parameters(\$class, \$method, \$data);}
+    public static function typehint(\$parameter = NULL) {return parent::typehint(\$parameter);}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
     });
 
 });
