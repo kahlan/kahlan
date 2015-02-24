@@ -4,6 +4,7 @@ namespace kahlan\plugin;
 use InvalidArgumentException;
 use Reflection;
 use ReflectionMethod;
+use ReflectionClass;
 use kahlan\Suite;
 use kahlan\IncompleteException;
 use kahlan\analysis\Inspector;
@@ -187,11 +188,12 @@ class Stub
     public static function create($options = [])
     {
         $class = static::classname($options);
-        $refl = new \ReflectionClass($class);
+
         if (isset($options['params'])) {
+            $refl = new ReflectionClass($class);
             $instance = $refl->newInstanceArgs($options['params']);
         } else {
-            $instance = $refl->newInstance();
+            $instance = new $class();
         }
         $call = static::$_classes['call'];
         new $call($instance);
