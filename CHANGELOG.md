@@ -2,6 +2,10 @@
 
 ## Last changes
 
+  * BC break: the Stubs `'params'` option now identifies each values to pass to `__construct()`.
+  * Bugfix: adds a default value for stubbed function parameters only when exists.
+  * Bugfix: returns absolute namespace for typehint
+  * Add: allows Stubs to override all public method of their parent class by setting the `'layer'` option to `true`.
   * Bugfix: generalizes method overriding with stubs.
   * Change: the look & feel of reporters has been modified.
   * BC break: reporter's hooks has been renamed and now receive a report instance as parameter instead of an array.
