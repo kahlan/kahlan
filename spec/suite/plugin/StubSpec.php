@@ -874,9 +874,9 @@ namespace kahlan\spec\plugin\stub;
 
 class Stub extends \kahlan\analysis\Inspector {
 
-    public static function inspect(\$class = NULL) {return parent::inspect(\$class);}
-    public static function parameters(\$class = NULL, \$method = NULL, \$data = NULL) {return parent::parameters(\$class, \$method, \$data);}
-    public static function typehint(\$parameter = NULL) {return parent::typehint(\$parameter);}
+    public static function inspect(\$class) {return parent::inspect(\$class);}
+    public static function parameters(\$class, \$method, \$data = NULL) {return parent::parameters(\$class, \$method, \$data);}
+    public static function typehint(\$parameter) {return parent::typehint(\$parameter);}
 
 }
 ?>
