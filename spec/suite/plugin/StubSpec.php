@@ -757,7 +757,7 @@ namespace kahlan\\spec\\plugin\\stub;
 
 class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz {
 
-    public function foo(\$var = NULL) {}
+    public function foo(\$var) {}
     public function bar(\$var1 = NULL, array \$var2 = array()) {}
 
 }
@@ -806,7 +806,7 @@ namespace kahlan\\spec\\plugin\\stub;
 
 class Stub implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
 
-    public function foo(\$a = NULL) {}
+    public function foo(\$a) {}
     public function bar(\$b = NULL) {}
 
 }
@@ -827,7 +827,7 @@ namespace kahlan\\spec\\plugin\\stub;
 
 class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
 
-    public function foo(\$var = NULL) {}
+    public function foo(\$var) {}
     public function bar(\$var1 = NULL, array \$var2 = array()) {}
 
 }
