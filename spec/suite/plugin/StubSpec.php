@@ -600,6 +600,18 @@ describe("Stub", function() {
 
         });
 
+        it("applies constructor parameters to the stub", function () {
+
+            $stub = Stub::create([
+                'extends' => 'kahlan\spec\fixture\plugin\stub\ConstrDoz',
+                'params' => ['a', 'b']
+            ]);
+
+            expect($stub->a)->toBe('a');
+            expect($stub->b)->toBe('b');
+
+        });
+
     });
 
     describe("::classname()", function() {
