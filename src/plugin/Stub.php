@@ -187,7 +187,12 @@ class Stub
     public static function create($options = [])
     {
         $class = static::classname($options);
-        $instance = isset($options['params']) ? new $class($options['params']) : new $class();
+        $refl = new \ReflectionClass($class);
+        if (isset($options['params'])) {
+            $instance = $refl->newInstanceArgs($options['params']);
+        } else {
+            $instance = $refl->newInstance();
+        }
         $call = static::$_classes['call'];
         new $call($instance);
         return $instance;
