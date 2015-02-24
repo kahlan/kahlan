@@ -78,7 +78,7 @@ describe("Inspector", function() {
             $inspector = Inspector::parameters($this->class, 'exceptionTypeHint');
             $typehint = Inspector::typehint(current($inspector));
             expect($typehint)->toBeA('string');
-            expect(trim($typehint))->toBe('Exception');
+            expect(trim($typehint))->toBe('\\Exception');
 
             $inspector = Inspector::parameters($this->class, 'arrayTypeHint');
             $typehint = Inspector::typehint(current($inspector));

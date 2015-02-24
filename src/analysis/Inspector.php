@@ -71,7 +71,7 @@ class Inspector
         if ($parameter->isArray()) {
             $typehint = 'array ';
         } elseif ($parameter->getClass()) {
-            $typehint = $parameter->getClass()->getName() . ' ';
+            $typehint = '\\' . $parameter->getClass()->getName() . ' ';
         } elseif (preg_match('/.*?\[ \<[^\>]+\> (\S+ )(.*?)\$/', (string) $parameter, $match)) {
             $typehint = $match[1];
         }
