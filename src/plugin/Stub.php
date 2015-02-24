@@ -514,10 +514,8 @@ EOT;
             $default = '';
             if ($parameter->isDefaultValueAvailable()) {
                 $default = var_export($parameter->getDefaultValue(), true);
-            } else {
-                $default = 'NULL';
+                $default = ' = ' . preg_replace('/\s+/', '', $default);
             }
-            $default = ' = ' . preg_replace('/\s+/', '', $default);
 
             $params[] = "{$typehint}{$reference}\${$name}{$default}";
         }
