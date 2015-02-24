@@ -13,7 +13,7 @@ use kahlan\IncompleteException;
 
 use kahlan\spec\fixture\plugin\pointcut\Foo;
 use kahlan\spec\fixture\plugin\pointcut\SubBar;
-use kahlan\spec\fixture\plugin\stub\Doz;
+use kahlan\spec\fixture\plugin\stub\AbstractDoz;
 
 describe("Stub", function() {
 
@@ -747,7 +747,7 @@ EOD;
 
             $result = Stub::generate([
                 'class'      => 'kahlan\spec\plugin\stub\Stub',
-                'extends'    => 'kahlan\spec\fixture\plugin\stub\Doz'
+                'extends'    => 'kahlan\spec\fixture\plugin\stub\AbstractDoz'
             ]);
 
             $expected = <<<EOD
@@ -755,7 +755,7 @@ EOD;
 
 namespace kahlan\\spec\\plugin\\stub;
 
-class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz {
+class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\AbstractDoz {
 
     public function foo(\$var) {}
     public function bar(\$var1 = NULL, array \$var2 = array()) {}
@@ -816,7 +816,7 @@ EOD;
 
             $result = Stub::generate([
                 'class'      => 'kahlan\spec\plugin\stub\Stub',
-                'extends'    => 'kahlan\spec\fixture\plugin\stub\Doz',
+                'extends'    => 'kahlan\spec\fixture\plugin\stub\AbstractDoz',
                 'implements' => ['kahlan\spec\fixture\plugin\stub\DozInterface'],
             ]);
 
@@ -825,7 +825,7 @@ EOD;
 
 namespace kahlan\\spec\\plugin\\stub;
 
-class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
+class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\AbstractDoz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
 
     public function foo(\$var) {}
     public function bar(\$var1 = NULL, array \$var2 = array()) {}
@@ -837,7 +837,7 @@ EOD;
 
             $result = Stub::generate([
                 'class'      => 'kahlan\spec\plugin\stub\Stub',
-                'extends'    => 'kahlan\spec\fixture\plugin\stub\Doz',
+                'extends'    => 'kahlan\spec\fixture\plugin\stub\AbstractDoz',
                 'implements' => ['kahlan\spec\fixture\plugin\stub\DozInterface'],
                 'methods'    => ['foo', 'bar']
             ]);
@@ -847,7 +847,7 @@ EOD;
 
 namespace kahlan\\spec\\plugin\\stub;
 
-class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
+class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\AbstractDoz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
 
     public function foo() {}
     public function bar() {}
@@ -859,24 +859,28 @@ EOD;
 
         });
 
-        it("overrides all parent class method", function() {
+        it("overrides all parent class method and respect typehints", function() {
 
             $result = Stub::generate([
                 'class'   => 'kahlan\spec\plugin\stub\Stub',
-                'extends' => 'kahlan\analysis\Inspector',
+                'extends' => 'kahlan\spec\fixture\plugin\stub\Doz',
                 'layer'   => true
             ]);
 
             $expected = <<<EOD
 <?php
 
-namespace kahlan\spec\plugin\stub;
+namespace kahlan\\spec\\plugin\\stub;
 
-class Stub extends \kahlan\analysis\Inspector {
+class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz {
 
-    public static function inspect(\$class) {return parent::inspect(\$class);}
-    public static function parameters(\$class, \$method, \$data = NULL) {return parent::parameters(\$class, \$method, \$data);}
-    public static function typehint(\$parameter) {return parent::typehint(\$parameter);}
+    public function foo(\$a) {return parent::foo(\$a);}
+    public function foo2(\$b = NULL) {return parent::foo2(\$b);}
+    public function foo3(array \$b = array()) {return parent::foo3(\$b);}
+    public function foo4(callable \$fct) {return parent::foo4(\$fct);}
+    public function foo5(\\Closure \$fct) {return parent::foo5(\$fct);}
+    public function foo6(\\Exception \$e) {return parent::foo6(\$e);}
+    public function foo7(\\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface \$instance) {return parent::foo7(\$instance);}
 
 }
 ?>

@@ -78,17 +78,17 @@ describe("Inspector", function() {
             $inspector = Inspector::parameters($this->class, 'exceptionTypeHint');
             $typehint = Inspector::typehint(current($inspector));
             expect($typehint)->toBeA('string');
-            expect(trim($typehint))->toBe('\\Exception');
+            expect($typehint)->toBe('\Exception');
 
             $inspector = Inspector::parameters($this->class, 'arrayTypeHint');
             $typehint = Inspector::typehint(current($inspector));
             expect($typehint)->toBeA('string');
-            expect(trim($typehint))->toBe('array');
+            expect($typehint)->toBe('array');
 
             $inspector = Inspector::parameters($this->class, 'callableTypeHint');
             $typehint = Inspector::typehint(current($inspector));
             expect($typehint)->toBeA('string');
-            expect(trim($typehint))->toBe('callable');
+            expect($typehint)->toBe('callable');
 
         });
 

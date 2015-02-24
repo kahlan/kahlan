@@ -508,6 +508,7 @@ EOT;
         $params = [];
         foreach ($method->getParameters() as $num => $parameter) {
             $typehint = Inspector::typehint($parameter);
+            $typehint = $typehint ? $typehint . ' ' : $typehint;
             $name = $parameter->getName();
             $name = ($name && $name !== '...') ? $name : 'param' . $num;
             $reference = $parameter->isPassedByReference() ? '&' : '';

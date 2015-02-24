@@ -68,11 +68,9 @@ class Inspector
     public static function typehint($parameter)
     {
         $typehint = '';
-        if ($parameter->isArray()) {
-            $typehint = 'array ';
-        } elseif ($parameter->getClass()) {
-            $typehint = '\\' . $parameter->getClass()->getName() . ' ';
-        } elseif (preg_match('/.*?\[ \<[^\>]+\> (\S+ )(.*?)\$/', (string) $parameter, $match)) {
+        if ($parameter->getClass()) {
+            $typehint = '\\' . $parameter->getClass()->getName();
+        } elseif (preg_match('/.*?\[ \<[^\>]+\> (\S+)(.*?)\$/', (string) $parameter, $match)) {
             $typehint = $match[1];
         }
         return $typehint;

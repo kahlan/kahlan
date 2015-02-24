@@ -1,27 +1,13 @@
 <?php
 namespace kahlan\spec\fixture\plugin\stub;
 
-abstract class Doz
+class Doz
 {
-    protected $_inited = false;
-
-    public function __construct()
-    {
-        $this->_inited = true;
-    }
-
-    public function rand($min = 0, $max = 100)
-    {
-        return rand($min, $max);
-    }
-
-    public function datetime($datetime = 'now')
-    {
-        return new \DateTime($datetime);
-    }
-
-    abstract public function foo($var);
-
-    abstract public function bar($var1 = null, array $var2 = []);
-
+    public function foo($a) {}
+    public function foo2($b = null) {}
+    public function foo3(array $b = array()) {}
+    public function foo4(callable $fct) {}
+    public function foo5(\Closure $fct) {}
+    public function foo6(\Exception $e) {}
+    public function foo7(DozInterface $instance) {}
 }
