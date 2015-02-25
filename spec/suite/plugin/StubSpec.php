@@ -717,7 +717,6 @@ describe("Stub", function() {
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub {
@@ -741,7 +740,6 @@ EOD;
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub {
@@ -764,7 +762,6 @@ EOD;
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\AbstractDoz {
@@ -789,7 +786,6 @@ EOD;
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub implements \\Countable {
@@ -813,7 +809,6 @@ EOD;
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
@@ -834,7 +829,6 @@ EOD;
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\AbstractDoz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
@@ -856,7 +850,6 @@ EOD;
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\AbstractDoz implements \\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface {
@@ -881,7 +874,6 @@ EOD;
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz {
@@ -913,7 +905,6 @@ EOD;
 
             $expected = <<<EOD
 <?php
-
 namespace kahlan\\spec\\plugin\\stub;
 
 class Stub extends \\LogicException {
@@ -923,6 +914,29 @@ class Stub extends \\LogicException {
 
 }
 ?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
+        it("generates code without PHP tags", function() {
+
+            $result = Stub::generate([
+                'class' => 'kahlan\spec\plugin\stub\Stub',
+                'magicMethods' => false,
+                'openTag' => false,
+                'closeTag' => false,
+            ]);
+
+            $expected = <<<EOD
+namespace kahlan\\spec\\plugin\\stub;
+
+class Stub {
+
+
+
+}
+
 EOD;
             expect($result)->toBe($expected);
 

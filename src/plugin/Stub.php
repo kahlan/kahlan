@@ -250,7 +250,9 @@ class Stub
             'implements' => [],
             'uses' => [],
             'methods' => [],
-            'layer' => false
+            'layer' => false,
+            'openTag' => true,
+            'closeTag' => true
         ];
         $options += $defaults;
 
@@ -281,14 +283,17 @@ class Stub
 
         $methods = $methods ? '    ' . join("\n    ", $methods) : '';
 
-return "<?php\n\n" . $namespace . <<<EOT
+        $openTag = $options['openTag'] ? "<?php\n" : '';
+        $closeTag = $options['closeTag'] ? "?>" : '';
+
+return $openTag . $namespace . <<<EOT
 
 class {$class}{$extends}{$implements} {
 
 {$uses}{$methods}
 
 }
-?>
+$closeTag
 EOT;
 
     }
