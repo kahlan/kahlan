@@ -2,41 +2,44 @@
 
 ## Last changes
 
-  * BC break: the Stubs `'params'` option now identifies each values to pass to `__construct()`.
-  * Bugfix: adds a default value for stubbed function parameters only when exists.
-  * Bugfix: returns absolute namespace for typehint
-  * Add: allows Stubs to override all public method of their parent class by setting the `'layer'` option to `true`.
-  * Bugfix: generalizes method overriding with stubs.
-  * Change: the look & feel of reporters has been modified.
-  * BC break: reporter's hooks has been renamed and now receive a report instance as parameter instead of an array.
+## 1.1.0 (2015-02-25)
+
+  * **Add:** allows Stubs to override all public method of their parent class by setting the `'layer'` option to `true`.
+  * **Add:** introduces the `Layer` proxy to be able to stub methods inherited from PHP core method.
+  * **Change:** the look & feel of reporters has been modified.
+  * **Bugfix:** adds a default value for stubbed function parameters only when exists.
+  * **Bugfix:** returns absolute namespace for typehint
+  * **Bugfix:** generalizes method overriding with stubs.
+  * **BC break:** the Stubs `'params'` option now identifies each values to pass to `__construct()`.
+  * **BC break:** reporter's hooks has been renamed and now receive a report instance as parameter instead of an array.
 
 ## 1.0.6 (2015-02-11)
 
-  * Change: Allows arguments to also be set in kahlan config files.
-  * Bugfix: fixes Monkey patcher when some patchable code are outside namespaces/classes or functions.
-  * Add: implements missing Jasmine `expect(string)->toContain(substring)` behavior.
+  * **Add:** implements missing Jasmine `expect(string)->toContain(substring)` behavior.
+  * **Change:** Allows arguments to also be set in kahlan config files.
+  * **Bugfix:** fixes Monkey patcher when some patchable code are outside namespaces/classes or functions.
 
 ## 1.0.5 (2015-02-10)
 
-  * Bugfix: resolves default cache path (based on`sys_get_temp_dir()`) to be a real dir on OS X.
+  * **Bugfix:** resolves default cache path (based on`sys_get_temp_dir()`) to be a real dir on OS X.
 
 ## 1.0.4 (2015-02-03)
 
-  * Deprecate: deprecates ddescribe/ccontext/iit in flavor of fdescribe/fcontext/fit (Jasmine 2.x naming)
+  * **Deprecate:** deprecates ddescribe/ccontext/iit in flavor of fdescribe/fcontext/fit (Jasmine 2.x naming)
 
 ## 1.0.3 (2015-02-02)
 
-  * Bugfix: fixes `use` statement patching for partial namespace
+  * **Bugfix:** fixes `use` statement patching for partial namespace
 
 ## 1.0.2 (2015-02-01)
 
-  * Bugfix: fixes code coverage driver to make it work with HHVM
-  * BC break: the `'autoloader'` filter entry point has been renamed to `'interceptor'`
-  * Change: the terminal reporter displaying has been modified
+  * **Change:** the terminal reporter displaying has been modified
+  * **Bugfix:** fixes code coverage driver to make it work with HHVM
+  * **BC break:** the `'autoloader'` filter entry point has been renamed to `'interceptor'`
 
 ## 1.0.1 (2015-01-28)
 
-  * Add: new reporter `--reporter=verbose`
+  * **Add:** new reporter `--reporter=verbose`
 
 ## 1.0.0 (2015-01-24)
 
