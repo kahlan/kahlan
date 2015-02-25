@@ -29,7 +29,7 @@ namespace kahlan\\spec\\fixture\\jit\\patcher\\layer;
 class Inspector extends InspectorKLAYER
 {
 
-}class InspectorKLAYER extends \\kahlan\\analysis\\Inspector {    public static function inspect(\$class) {return parent::inspect(\$class);}    public static function parameters(\$class, \$method, \$data = NULL) {return parent::parameters(\$class, \$method, \$data);}    public static function typehint(\$parameter) {return parent::typehint(\$parameter);}}
+}<?php class InspectorKLAYER extends \\kahlan\\analysis\\Inspector {    public static function inspect(\$class) {\$__KPOINTCUT_ARGS__ = func_get_args(); \$__KPOINTCUT_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__KPOINTCUT__ = \\kahlan\\plugin\\Pointcut::before(__METHOD__, \$__KPOINTCUT_SELF__, \$__KPOINTCUT_ARGS__)) { \$r = \$__KPOINTCUT__(\$__KPOINTCUT_SELF__, \$__KPOINTCUT_ARGS__); return \$r; }return parent::inspect(\$class);}    public static function parameters(\$class, \$method, \$data = NULL) {\$__KPOINTCUT_ARGS__ = func_get_args(); \$__KPOINTCUT_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__KPOINTCUT__ = \\kahlan\\plugin\\Pointcut::before(__METHOD__, \$__KPOINTCUT_SELF__, \$__KPOINTCUT_ARGS__)) { \$r = \$__KPOINTCUT__(\$__KPOINTCUT_SELF__, \$__KPOINTCUT_ARGS__); return \$r; }return parent::parameters(\$class, \$method, \$data);}    public static function typehint(\$parameter) {\$__KPOINTCUT_ARGS__ = func_get_args(); \$__KPOINTCUT_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__KPOINTCUT__ = \\kahlan\\plugin\\Pointcut::before(__METHOD__, \$__KPOINTCUT_SELF__, \$__KPOINTCUT_ARGS__)) { \$r = \$__KPOINTCUT__(\$__KPOINTCUT_SELF__, \$__KPOINTCUT_ARGS__); return \$r; }return parent::typehint(\$parameter);}}?>
 
 EOD;
 

@@ -6,6 +6,23 @@ use kahlan\plugin\Stub;
 class Layer {
 
     /**
+     * Class dependencies.
+     *
+     * @var array
+     */
+    protected $_classes = [
+        'parser'   => 'jit\Parser',
+        'pointcut' => 'kahlan\jit\patcher\Pointcut'
+    ];
+
+    /**
+     * The pointcut patcher
+     *
+     * @var object
+     */
+    protected $_pointcut = null;
+
+    /**
      * Suffix for Layer class.
      *
      * @var string
@@ -28,12 +45,16 @@ class Layer {
     public function __construct($config = [])
     {
         $defaults = [
+            'classes'  => [],
             'suffix'   => 'KLAYER',
             'override' => []
         ];
         $config += $defaults;
         $this->_override = array_fill_keys($config['override'], true);
         $this->_suffix = $config['suffix'];
+        $this->_classes += $config['classes'];
+        $pointcut = $this->_classes['pointcut'];
+        $this->_pointcut = new $pointcut();
     }
 
     /**
@@ -85,13 +106,18 @@ class Layer {
                 $pattern = preg_quote($parent);
                 $node->body = preg_replace("~(extends\s+){$pattern}~", "\\1{$layerClass}", $node->body);
 
-                $node->close .= str_replace("\n", '', Stub::generate([
+                $code = Stub::generate([
                     'class'     => $layerClass,
                     'extends'   => $extends,
                     'openTag'   => false,
                     'closeTag'  => false,
                     'layer'     => true
-                ]));
+                ]);
+
+                $parser = $this->_classes['parser'];
+                $nodes = $parser::parse("<?php \n\n{$code}?>");
+                $node->close .= str_replace("\n", '', $parser::unparse($this->_pointcut->process($nodes)));
+
             } elseif (count($node->tree)) {
                 $this->_processTree($node->tree);
             }
