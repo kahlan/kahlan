@@ -115,7 +115,7 @@ class Layer {
                 ]);
 
                 $parser = $this->_classes['parser'];
-                $nodes = $parser::parse("<?php \n\n{$code}?>");
+                $nodes = $parser::parse($code, ['php' => true]);
                 $node->close .= str_replace("\n", '', $parser::unparse($this->_pointcut->process($nodes)));
 
             } elseif (count($node->tree)) {
