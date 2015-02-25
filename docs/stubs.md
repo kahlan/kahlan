@@ -4,6 +4,7 @@
 * [Instance Stubbing](#instance-stubbing)
 * [Class Stubbing](#class-stubbing)
 * [Custom Stubbing](#custom-stubbing)
+* [Stubbing via a layer](#layer-stubbing)
 
 To enable **Method Stubbing** add the following `use` statement in the top of your specs:
 
@@ -201,3 +202,133 @@ it("stubs an instance using a trait", function() {
     expect($stub->hello())->toBe('Hello World From Trait!');
 });
 ```
+
+
+### <a name="layer-stubbing"></a>Stubbing via a layer
+
+#### Using a `Stub` instance.
+
+With user defined classes, you can apply stubs everywhere. However this stubbing technique has some limitation with PHP core classes. Let's take the following example as an illustration:
+
+```php
+it("can't stubs PHP core method", function() {
+
+    $redis = Stub::create(['extends' => 'Redis']);
+    Stub::on($redis)->method('connect')->andReturn('stubbed');
+    expect($stub->connect('127.0.0.1'))->toBe('stubbed'); //It fails
+
+});
+```
+
+In the above example, `Redis` is a built-in class. So in this case, all inherited methods are not real PHP methods but some built-in C methods. And it's not possible to change the behavior of built-in C methods.
+
+So the alternative here is to override all parent methods using the `'layer'` option to be PHP methods. With The layer option set to `true`, all methods from the parent class will be overrided in PHP to call their parent method in C. So the following spec will now pass.
+
+```php
+it("stubs overrided PHP core method", function() {
+
+    $redis = Stub::create(['extends' => 'Redis', 'layer' => true]);
+    Stub::on($redis)->method('connect')->andReturn('stubbed');
+    expect($stub->connect('127.0.0.1'))->toBe('stubbed'); //It passes
+
+});
+```
+
+#### Using the `Layer` patcher.
+
+In some circumstances it's not always possible to use a stub instance to build a spec. Long story short, let's take the following example as an illustration:
+
+We have a model:
+
+```php
+namespace Api\Models;
+
+class MyModel extends \Phalcon\Mvc\Model
+{
+    public $title;
+    public function getTitle()
+    {
+        return $this->title;
+    }
+}
+```
+
+We have a controller:
+
+```php
+namespace Api\Contollers;
+
+use Exception;
+use Api\Models\MyModel;
+
+class MyController extends \Phalcon\Mvc\Controller
+{
+   public function indexAction()
+   {
+      $article = MyModel::findFirst();
+      $this->view->setVar("title", $article->getTitle());
+   }
+}
+```
+
+And we want to check that `indexAction()` correctly set a view var. This check can be tranlsated into the following spec:
+
+```php
+namespace Api\Spec\Contollers;
+
+use Api\Models\MyModel;
+use Api\Contollers\MyController;
+use kahlan\plugin\Stub;
+
+describe("MyController", function() {
+
+    describe("->indexAction()", function() {
+
+        it("correctly populates the view var", function() {
+
+            $article = new MyModel();
+            $article->title = 'Hello World';
+
+            Stub::on('Api\Models\MyModel')->method('::findFirst')->andReturn($article);
+
+            $controller = new MyController();
+            $controller->indexAction();
+
+            expect($controller->view->getVar('title'))->toBe('Hello World');
+
+        });
+
+    });
+
+});
+```
+
+Unfortunalty it doesn't work out of the box. Indeed `MyModel` extends `Phalcon\Mvc\Model` which is a core class. So since the `MyModel::findFirst()` method doesn't exists in PHP land, it can't be stubbed.
+
+The solution here is to configure the `Layer` patcher right in [the `kahlan-config.php` file](config-file.md). The `Layer` patcher can dynamically replace all `extends` done on core class to a layer class in PHP.
+
+The `Layer` patcher can be configured like the following for the above example:
+
+```php
+use filter\Filter;
+use jit\Interceptor;
+use kahlan\plugin\Layer;
+
+Filter::register('api.patchers', function($chain) {
+    if (!$interceptor = Interceptor::instance()) {
+        return;
+    }
+    $patchers = $interceptor->patchers();
+    $patchers->add('layer', new Layer([
+        'override' => [
+            'Phalcon\Mvc\Model' // Will dynamically apply a layer on top of the `Phalcon\Mvc\Model` when extended.
+        ]
+    ]));
+
+    return $chain->next();
+});
+
+Filter::apply($this, 'patchers', 'api.patchers');
+```
+
+**Note:** You will probably need to remove all cached files in `/tmp/kahlan` (or in `sys_get_temp_dir() . '/kahlan'` if you are not on linux) to make it works.
