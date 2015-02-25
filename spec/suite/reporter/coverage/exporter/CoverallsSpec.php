@@ -140,7 +140,7 @@ describe("Coveralls", function() {
                 'repo_token'     => 'ABC'
             ]);
 
-            expect($success)->toBe(553);
+            expect($success)->toBe(585);
 
             $json = file_get_contents($this->output);
             $actual = json_decode($json, true);
