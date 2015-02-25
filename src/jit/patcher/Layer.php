@@ -6,6 +6,13 @@ use kahlan\plugin\Stub;
 class Layer {
 
     /**
+     * Suffix for Layer class.
+     *
+     * @var string
+     */
+    protected $_suffix = 'KLAYER';
+
+    /**
      * The fully namespeced class names to "layerize".
      *
      * @var array
@@ -20,9 +27,13 @@ class Layer {
      */
     public function __construct($config = [])
     {
-        $defaults = ['override' => []];
+        $defaults = [
+            'suffix'   => 'KLAYER',
+            'override' => []
+        ];
         $config += $defaults;
         $this->_override = array_fill_keys($config['override'], true);
+        $this->_suffix = $config['suffix'];
     }
 
     /**
@@ -69,9 +80,18 @@ class Layer {
                 if (!isset($this->_override[$extends])) {
                     continue;
                 }
-                $node->extends = Stub::classname(['extends' => $extends, 'layer' => true]);
+                $layerClass = $node->name . $this->_suffix;
+                $node->extends = $layerClass;
                 $pattern = preg_quote($parent);
-                $node->body = preg_replace("~(extends\s+){$pattern}~", "\\1\\{$node->extends}", $node->body);
+                $node->body = preg_replace("~(extends\s+){$pattern}~", "\\1{$layerClass}", $node->body);
+
+                $node->close .= str_replace("\n", '', Stub::generate([
+                    'class'     => $layerClass,
+                    'extends'   => $extends,
+                    'openTag'   => false,
+                    'closeTag'  => false,
+                    'layer'     => true
+                ]));
             } elseif (count($node->tree)) {
                 $this->_processTree($node->tree);
             }

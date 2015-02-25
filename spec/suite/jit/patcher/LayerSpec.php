@@ -21,7 +21,19 @@ describe("Layer", function() {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Layer.php'));
             $actual = Parser::unparse($this->patcher->process($nodes));
-            expect($actual)->toMatch('~Inspector extends \\\kahlan\\\spec\\\plugin\\\stub\\\Stub\d+~');
+
+            $expected = <<<EOD
+<?php
+namespace kahlan\\spec\\fixture\\jit\\patcher\\layer;
+
+class Inspector extends InspectorKLAYER
+{
+
+}class InspectorKLAYER extends \\kahlan\\analysis\\Inspector {    public static function inspect(\$class) {return parent::inspect(\$class);}    public static function parameters(\$class, \$method, \$data = NULL) {return parent::parameters(\$class, \$method, \$data);}    public static function typehint(\$parameter) {return parent::typehint(\$parameter);}}
+
+EOD;
+
+            expect($actual)->toBe($expected);
 
         });
 
