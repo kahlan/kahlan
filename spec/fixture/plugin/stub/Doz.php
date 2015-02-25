@@ -10,4 +10,5 @@ class Doz
     public function foo5(\Closure $fct) {}
     public function foo6(\Exception $e) {}
     public function foo7(DozInterface $instance) {}
+    final public function foo8() {}
 }

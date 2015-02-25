@@ -871,7 +871,7 @@ EOD;
 
         });
 
-        it("overrides all parent class method and respect typehints", function() {
+        it("overrides all parent class method and respect typehints using the layer option", function() {
 
             $result = Stub::generate([
                 'class'   => 'kahlan\spec\plugin\stub\Stub',
@@ -893,6 +893,33 @@ class Stub extends \\kahlan\\spec\\fixture\\plugin\\stub\\Doz {
     public function foo5(\\Closure \$fct) {return parent::foo5(\$fct);}
     public function foo6(\\Exception \$e) {return parent::foo6(\$e);}
     public function foo7(\\kahlan\\spec\\fixture\\plugin\\stub\\DozInterface \$instance) {return parent::foo7(\$instance);}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
+        it("adds ` = NULL` to optional parameter in PHP core method", function() {
+
+            skipIf(defined('HHVM_VERSION'));
+
+            $result = Stub::generate([
+                'class'   => 'kahlan\spec\plugin\stub\Stub',
+                'extends' => 'LogicException',
+                'layer'   => true
+            ]);
+
+            $expected = <<<EOD
+<?php
+
+namespace kahlan\\spec\\plugin\\stub;
+
+class Stub extends \\LogicException {
+
+    public function __construct(\$message = NULL, \$code = NULL, \$previous = NULL) {return parent::__construct(\$message, \$code, \$previous);}
+    public function __toString() {return parent::__toString();}
 
 }
 ?>
