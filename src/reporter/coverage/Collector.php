@@ -358,7 +358,9 @@ class Collector
         } else {
             $type = $node->parent ? $node->parent->type : 'namespace';
         }
-
+        if ($type === 'interface') {
+            return;
+        }
         $metrics = $this->_processMetrics($file, $node, $coverage);
         $this->_metrics->add($path, $type, $metrics);
     }

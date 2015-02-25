@@ -5,6 +5,7 @@ use kahlan\reporter\coverage\Collector;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\spec\fixture\reporter\coverage\NoEmptyLine;
 use kahlan\spec\fixture\reporter\coverage\ExtraEmptyLine;
+use kahlan\spec\fixture\reporter\coverage\ImplementsCoverage;
 
 describe("Metrics", function() {
 
@@ -164,6 +165,46 @@ describe("Metrics", function() {
             $metrics = $this->collector->metrics();
             $actual = $metrics->get('some\unknown\name\space');
             expect($actual)->toBe(null);
+
+        });
+
+        it("doesn't store interfaces in metrics", function() {
+
+            $path = [
+                'spec/fixture/reporter/coverage/ImplementsCoverage.php',
+                'spec/fixture/reporter/coverage/ImplementsCoverageInterface.php'
+            ];
+
+            $collector = new Collector([
+                'driver'    => new Xdebug(),
+                'path'      => $path
+            ]);
+
+            $code = new ImplementsCoverage();
+
+            $collector->start();
+            $code->foo();
+            $collector->stop();
+
+            $metrics = $collector->metrics();
+            $actual = $metrics->get()->data();
+
+            $files = $actual['files'];
+            unset($actual['files']);
+
+            expect($actual)->toBe([
+                'loc'      => 10,
+                'nlloc'    => 9,
+                'lloc'     => 1,
+                'cloc'     => 1,
+                'coverage' => 1,
+                'methods'  => 1,
+                'cmethods' => 1,
+                'percent'  => 100
+            ]);
+
+            $path = realpath('spec/fixture/reporter/coverage/ImplementsCoverage.php');
+            expect(isset($files[$path]))->toBe(true);
 
         });
 
