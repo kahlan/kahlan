@@ -429,6 +429,7 @@ EOT;
         $reflection = Inspector::inspect($class);
         $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
+            if ($method->getModifiers() & ReflectionMethod::IS_FINAL) continue;
             $result[$method->getName()] = static::_generateMethod($method, true);
         }
         return $result;
@@ -523,6 +524,8 @@ EOT;
             if ($parameter->isDefaultValueAvailable()) {
                 $default = var_export($parameter->getDefaultValue(), true);
                 $default = ' = ' . preg_replace('/\s+/', '', $default);
+            } else if ($parameter->isOptional()) {
+                $default = ' = null';
             }
 
             $params[] = "{$typehint}{$reference}\${$name}{$default}";
