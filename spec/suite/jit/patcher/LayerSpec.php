@@ -4,7 +4,7 @@ namespace kahlan\spec\suite\jit\patcher;
 use jit\Parser;
 use kahlan\jit\patcher\Layer;
 
-fdescribe("Layer", function() {
+describe("Layer", function() {
 
     describe("->file()", function() {
 
