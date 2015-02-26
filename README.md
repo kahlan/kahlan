@@ -83,7 +83,7 @@ Here is a sample composer.json to install Kahlan:
     "require": {
     },
     "require-dev": {
-        "crysalead/kahlan": "~1.0"
+        "crysalead/kahlan": "~1.1"
     },
     "license": "MIT",
     "minimum-stability": "dev"
