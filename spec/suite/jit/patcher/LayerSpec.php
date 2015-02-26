@@ -4,7 +4,18 @@ namespace kahlan\spec\suite\jit\patcher;
 use jit\Parser;
 use kahlan\jit\patcher\Layer;
 
-describe("Layer", function() {
+fdescribe("Layer", function() {
+
+    describe("->file()", function() {
+
+        it("should return file", function() {
+
+            $layer = new Layer();
+            expect($layer->findFile(null, null, 'some_file_name'))->toBe('some_file_name');
+
+        });
+
+    });
 
     describe("->process()", function() {
 
@@ -33,6 +44,40 @@ class Inspector extends InspectorKLAYER
 
 EOD;
 
+            expect($actual)->toBe($expected);
+
+        });
+        
+        it("just skip if no override is set", function() {
+
+            $this->patcher = new Layer([]);
+            $nodes = Parser::parse(file_get_contents($this->path . '/Layer.php'));
+            $actual = Parser::unparse($this->patcher->process($nodes));
+
+            expect($actual)->toBe("");
+
+        });
+
+        it("skips if no need in override", function() {
+
+            $this->patcher = new Layer([
+                'override' => [
+                    'kahlan\analysis\Debugger'
+                ]
+            ]);
+
+            $nodes = Parser::parse(file_get_contents($this->path . '/Layer.php'));
+            $actual = Parser::unparse($this->patcher->process($nodes));
+            $expected = <<<EOD
+<?php
+namespace kahlan\\spec\\fixture\\jit\\patcher\\layer;
+
+class Inspector extends \\kahlan\\analysis\\Inspector
+{
+
+}
+
+EOD;
             expect($actual)->toBe($expected);
 
         });
