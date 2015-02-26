@@ -6,12 +6,12 @@ use kahlan\jit\patcher\Layer;
 
 describe("Layer", function() {
 
-    describe("->file()", function() {
+    describe("->findFile()", function() {
 
-        it("should return file", function() {
+        it("returns the file path to patch", function() {
 
             $layer = new Layer();
-            expect($layer->findFile(null, null, 'some_file_name'))->toBe('some_file_name');
+            expect($layer->findFile(null, null, '/some/file/path.php'))->toBe('/some/file/path.php');
 
         });
 
@@ -47,8 +47,8 @@ EOD;
             expect($actual)->toBe($expected);
 
         });
-        
-        it("just skip if no override is set", function() {
+
+        it("bails out when `'override'` is empty", function() {
 
             $this->patcher = new Layer([]);
             $nodes = Parser::parse(file_get_contents($this->path . '/Layer.php'));
@@ -58,7 +58,7 @@ EOD;
 
         });
 
-        it("skips if no need in override", function() {
+        it("doesn't patch classes which are not present in the `'override'` option", function() {
 
             $this->patcher = new Layer([
                 'override' => [
