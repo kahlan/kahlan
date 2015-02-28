@@ -87,7 +87,7 @@ describe("Debugger", function() {
                 expect($backtrace)->toBeA('string');
 
                 $trace = current(explode("\n", $backtrace));
-                expect($trace)->toMatch('/line\s\sto\s10000/');
+                expect($trace)->toMatch('/line\s\sto\s([0-9]+)/');
 
             });
 
