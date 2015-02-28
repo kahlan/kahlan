@@ -14,6 +14,7 @@ use kahlan\IncompleteException;
 use kahlan\spec\fixture\plugin\pointcut\Foo;
 use kahlan\spec\fixture\plugin\pointcut\SubBar;
 use kahlan\spec\fixture\plugin\stub\AbstractDoz;
+use kahlan\spec\mock\plugin\stub\SuperStubber;
 
 describe("Stub", function() {
 
@@ -451,6 +452,34 @@ describe("Stub", function() {
             expect(Stub::registered())->toBe([
                 'kahlan\spec\fixture\plugin\pointcut\Bar'
             ]);
+
+        });
+
+    });
+
+    describe("::_generateAbstractMethods()", function() {
+
+        it("should return when class not probhited", function() {
+
+            expect(SuperStubber::generateAbstractMethods(null))->toBe([]);
+
+        });
+
+        it("should throw when we try to call non-existant class", function() {
+
+            expect(function() {
+                SuperStubber::generateAbstractMethods('Some\None\Existant\Class');
+            })->toThrow(new IncompleteException('Unexisting parent class `Some\None\Existant\Class`'));
+
+        });
+
+        it("should grab all abstract methods successfully", function() {
+
+            $result = SuperStubber::generateAbstractMethods('kahlan\spec\fixture\plugin\stub\AbstractDoz');
+            expect($result)->toBeA('array');
+            expect(array_keys($result))->toBe(['foo', 'bar']);
+            expect($result['foo'])->toBe('public function foo($var) {}');
+            expect($result['bar'])->toBe('public function bar($var1 = NULL, array $var2 = array()) {}');
 
         });
 

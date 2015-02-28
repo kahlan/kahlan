@@ -48,6 +48,51 @@ describe("Debugger", function() {
 
         });
 
+        it("returns a trace from eval'd code", function() {
+
+            $trace = debug_backtrace();
+            $trace[1]['file']  = "eval()'d code";
+
+            $backtrace = Debugger::trace(['trace' => $trace]);
+            expect($backtrace)->toBeA('string');
+
+            $trace = current(explode("\n", $backtrace));
+            expect($trace)->toMatch('/kahlan\/src\/Spec.php/');
+
+        });
+
+        describe("::_line()", function() {
+
+            it("should return empty line when class not provided and file not exists", function() {
+
+                $trace = debug_backtrace();
+                $trace[1]['file']  = '/some/none/existant/path/file.php';
+                $trace[1]['class'] = null;
+
+                $backtrace = Debugger::trace(['trace' => $trace]);
+                expect($backtrace)->toBeA('string');
+
+                $trace = current(explode("\n", $backtrace));
+                expect($trace)->toMatch('/line\s\sto\s([0-9]+)/');
+
+            });
+
+            it("should return empty line when position cannot be found", function() {
+
+                $trace = debug_backtrace();
+                $trace[1]['line']  = 100*100; 
+                $trace[1]['class'] = null;
+
+                $backtrace = Debugger::trace(['trace' => $trace]);
+                expect($backtrace)->toBeA('string');
+
+                $trace = current(explode("\n", $backtrace));
+                expect($trace)->toMatch('/line\s\sto\s10000/');
+
+            });
+
+        });
+
     });
 
     describe("::message()", function() {
