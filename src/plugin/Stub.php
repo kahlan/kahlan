@@ -278,7 +278,9 @@ class Stub
         $implements = static::_generateImplements($options['implements']);
 
         $methods = static::_generateMethodStubs($options['methods'], $options['magicMethods']);
-        $methods += static::_generateClassMethods($options['extends'], $options['layer']);
+        if ($options['extends']) {
+            $methods += static::_generateClassMethods($options['extends'], $options['layer']);
+        }
         $methods += static::_generateInterfaceMethods($options['implements']);
 
         $methods = $methods ? '    ' . join("\n    ", $methods) : '';
@@ -423,9 +425,6 @@ EOT;
      */
     protected static function _generateClassMethods($class, $layer = false)
     {
-        if (!$class) {
-            return [];
-        }
         $result = [];
         if (!class_exists($class)) {
             throw new IncompleteException("Unexisting parent class `{$class}`");
@@ -453,9 +452,6 @@ EOT;
      */
     protected static function _generateAbstractMethods($class)
     {
-        if (!$class) {
-            return [];
-        }
         $result = [];
         if (!class_exists($class)) {
             throw new IncompleteException("Unexisting parent class `{$class}`");

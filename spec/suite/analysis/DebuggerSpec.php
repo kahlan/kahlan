@@ -48,6 +48,60 @@ describe("Debugger", function() {
 
         });
 
+        it("returns a trace from eval'd code", function() {
+
+            $trace = debug_backtrace();
+            $trace[1]['file']  = "eval()'d code";
+
+            $backtrace = Debugger::trace(['trace' => $trace]);
+            expect($backtrace)->toBeA('string');
+
+            $trace = current(explode("\n", $backtrace));
+            expect($trace)->toMatch('/kahlan\/src\/Spec.php/');
+
+        });
+
+        describe("::_line()", function() {
+
+            beforeEach(function() {
+                $this->debugger = Stub::classname([
+                    'extends' => 'kahlan\analysis\Debugger',
+                    'methods' => ['::line']
+                ]);
+                Stub::on($this->debugger)->method('::line', function($trace) {
+                    return static::_line($trace);
+                });
+            });
+
+
+            it("returns `null` with non-existing files", function() {
+
+                $debugger = $this->debugger;
+
+                $trace = [
+                    'file' => '/some/none/existant/path/file.php',
+                    'line' => null
+                ];
+                expect($debugger::line($trace))->toBe(null);
+
+            });
+
+            it("returns `null` when a line can't be found", function() {
+
+                $debugger = $this->debugger;
+
+                $nbline = count(file('spec/suite/analysis/DebuggerSpec.php')) + 1;
+
+                $trace = [
+                    'file' => 'spec/suite/analysis/DebuggerSpec.php',
+                    'line' => $nbline + 1
+                ];
+                expect($debugger::line($trace))->toBe(null);
+
+            });
+
+        });
+
     });
 
     describe("::message()", function() {

@@ -457,6 +457,25 @@ describe("Stub", function() {
 
     });
 
+    describe("::_generateAbstractMethods()", function() {
+
+        it("throws an exception when called with a non-existing class", function() {
+
+            expect(function() {
+                $stub = Stub::classname([
+                    'extends' => 'kahlan\plugin\Stub',
+                    'methods' => ['::generateAbstractMethods']
+                ]);
+                Stub::on($stub)->method('::generateAbstractMethods', function($class) {
+                    return static::_generateAbstractMethods($class);
+                });
+                $stub::generateAbstractMethods('some\unexisting\Class');
+            })->toThrow(new IncompleteException('Unexisting parent class `some\unexisting\Class`'));
+
+        });
+
+    });
+
     describe("::create()", function() {
 
         before(function() {
