@@ -306,20 +306,20 @@ EOT;
     public static function _getMagicMethods()
     {
         return [
-            '__construct'  =>  "public function __construct() {}",
-            '__destruct'   =>  "public function __destruct() {}",
-            '__call'       =>  "public function __call(\$name, \$params) { return new static(); }",
-            '__callStatic' =>  "public static function __callStatic(\$name, \$params) {}",
-            '__get'        =>  "public function __get(\$key){ return new static(); }",
-            '__set'        =>  "public function __set(\$key, \$value) { \$this->{\$key} = \$value; }",
-            '__isset'      =>  "public function __isset(\$key) { return isset(\$this->{\$key}); }",
-            '__unset'      =>  "public function __unset(\$key) { unset(\$this->{\$key}); }",
-            '__sleep'      =>  "public function __sleep() { return []; }",
-            '__wakeup'     =>  "public function __wakeup() {}",
-            '__toString'   =>  "public function __toString() { return get_class(); }",
-            '__invoke'     =>  "public function __invoke() {}",
-            '__set_sate'   =>  "public function __set_sate(\$properties) {}",
-            '__clone'      =>  "public function __clone() {}"
+            '__construct'    =>  "public function __construct() {}",
+            '__destruct'     =>  "public function __destruct() {}",
+            '__call'         =>  "public function __call(\$name, \$params) { return new static(); }",
+            '::__callStatic' =>  "public static function __callStatic(\$name, \$params) {}",
+            '__get'          =>  "public function __get(\$key){ return new static(); }",
+            '__set'          =>  "public function __set(\$key, \$value) { \$this->{\$key} = \$value; }",
+            '__isset'        =>  "public function __isset(\$key) { return isset(\$this->{\$key}); }",
+            '__unset'        =>  "public function __unset(\$key) { unset(\$this->{\$key}); }",
+            '__sleep'        =>  "public function __sleep() { return []; }",
+            '__wakeup'       =>  "public function __wakeup() {}",
+            '__toString'     =>  "public function __toString() { return get_class(); }",
+            '__invoke'       =>  "public function __invoke() {}",
+            '__set_sate'     =>  "public function __set_sate(\$properties) {}",
+            '__clone'        =>  "public function __clone() {}"
         ];
     }
 
@@ -399,11 +399,15 @@ EOT;
             if (isset($magicMethods[$name])) {
                 $result[$name] = $magicMethods[$name];
             } else {
-                $return = '';
+                $static = $return = '';
                 if ($name[0] === '&') {
                     $return = '$r = null; return $r;';
                 }
-                $result[$name] = "public function {$name}() {{$return}}";
+                if (preg_match('/^&?::.*/', $name)) {
+                    $static = 'static ';
+                    $name = substr($name, 2);
+                }
+                $result[$name] = "public {$static}function {$name}() {{$return}}";
             }
         }
 

@@ -1,6 +1,7 @@
 <?php
 namespace kahlan\kahlan\spec\suite\plugin;
 
+use ReflectionMethod;
 use InvalidArgumentException;
 
 use jit\Interceptor;
@@ -458,6 +459,27 @@ describe("Stub", function() {
 
     describe("::create()", function() {
 
+        before(function() {
+            $this->is_method_exists = function($instance, $method, $type = "public") {
+                if (!method_exists($instance, $method)) {
+                    return false;
+                }
+                $refl = new ReflectionMethod($instance, $method);
+                switch($type) {
+                    case "static":
+                    return $refl->isStatic();
+                    break;
+                    case "public":
+                    return $refl->isPublic();
+                    break;
+                    case "private":
+                    return $refl->isPrivate();
+                    break;
+                }
+                return false;
+            };
+        });
+
         it("stubs an instance", function() {
 
             $stub = Stub::create();
@@ -569,18 +591,31 @@ describe("Stub", function() {
 
         });
 
-        it("stubs instances with a custom method", function() {
+        it("stubs an instance with an extra method", function() {
 
             $stub = Stub::create([
                 'methods' => ['method1']
             ]);
 
-            expect(method_exists($stub, 'method1'))->toBe(true);
-            expect(method_exists($stub, 'method2'))->toBe(false);
+            expect($this->is_method_exists($stub, 'method1'))->toBe(true);
+            expect($this->is_method_exists($stub, 'method2'))->toBe(false);
+            expect($this->is_method_exists($stub, 'method1', 'static'))->toBe(false);
 
         });
 
-        it("stubs instances with a custom method which returns a reference", function() {
+        it("stubs an instance with an extra static method", function() {
+
+            $stub = Stub::create([
+                'methods' => ['::method1']
+            ]);
+
+            expect($this->is_method_exists($stub, 'method1'))->toBe(true);
+            expect($this->is_method_exists($stub, 'method2'))->toBe(false);
+            expect($this->is_method_exists($stub, 'method1', 'static'))->toBe(true);
+
+        });
+
+        it("stubs an instance with an extra method returning by reference", function() {
 
             $stub = Stub::create([
                 'methods' => ['&method1']
@@ -596,7 +631,7 @@ describe("Stub", function() {
 
             $result = $stub->method1();
             $result[] = 'out';
-            expect($array)->toBe(['in'/*, 'out'*/]); //I guess that's the limitation of the system.
+            expect($array)->toBe(['in'/*, 'out'*/]); //I guess that's the limit of the system.
 
         });
 
