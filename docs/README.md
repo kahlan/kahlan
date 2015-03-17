@@ -13,7 +13,8 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 
 ## IRC
 
-server:chat.freenode.net / channel:#kahlan
+**chat.freenode.net** (server)
+**#kahlan** (channel)
 
 ## Download
 

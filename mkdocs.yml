@@ -14,5 +14,6 @@ pages:
 - ['pro-tips.md', 'Pro Tips']
 - ['config-file.md', 'Kahlan-config.php']
 - ['integration.md', 'Integration with popular frameworks']
+- ['faq.md', 'FAQ']
 theme: readthedocs
 include_search: true

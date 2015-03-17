@@ -13,4 +13,4 @@
 **A:** You can view it [here](https://github.com/crysalead/kahlan/wiki/Roadmap)
 
 **Q:** I have a question and can't solve it by myself!
-**A:** If this question is related to **Kahlan**, please open issue. Or ask your question in live on IRC (server:chat.freenode.net / channel:#kahlan).
+**A:** If this question is related to **Kahlan**, please open issue. Or ask your question in live on [IRC](index.md).
