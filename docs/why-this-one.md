@@ -39,6 +39,7 @@ Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attem
 * Small code base (~10 times smaller than PHPUnit)
 * Fast Code Coverage metrics ([xdebug](http://xdebug.org) required)
 * Handy stubbing system ([mockery](https://github.com/padraic/mockery) or [prophecy](https://github.com/phpspec/prophecy) are no longer needed)
+* Can layer extenstion through stubs (in e.g. Phalcon and Ice models and controllers)
 * Set stubs on your class methods directly (i.e allows dynamic mocking)
 * Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
 * Check called methods on your class/instances

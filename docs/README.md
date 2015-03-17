@@ -36,3 +36,4 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 * [Pro Tips](pro-tips.md) - including CLI arguments
 * [The `kahlan-config.php` file](config-file.md)
 * [Integration with popular frameworks](integration.md)
+* [FAQ](faq.md)
