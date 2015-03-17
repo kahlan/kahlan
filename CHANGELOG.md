@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 1.1.1 (2015-03-17)
+
+  * **Bug:** fixes a double open tag issue with the `Layer` patcher.
+  * **Bug:** fixes missing pointcut patching in the `Layer` patcher.
+
 ## 1.1.0 (2015-02-25)
 
   * **Add:** allows Stubs to override all public method of their parent class by setting the `'layer'` option to `true`.
