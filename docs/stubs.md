@@ -2,7 +2,6 @@
 
 * [Method Stubbing](#method-stubbing)
 * [Instance Stubbing](#instance-stubbing)
-* [Stub all instances](#all-instance-stubbing)
 * [Class Stubbing](#class-stubbing)
 * [Custom Stubbing](#custom-stubbing)
 * [Stubbing via a layer](#layer-stubbing)
@@ -112,45 +111,6 @@ it("stubs a static method", function() {
 });
 ```
 
-### <a name="all-instance-stubbing"></a>All instance Stubbing
-
-Sometimes you need stub all new class instances in some method. In e.g. you have such code
-
-```php
-public function testFunction()
-{
-    $user = new \Models\User();
-    $user->name  = 'Username';
-    $user->email = 'username@example.com';
-
-    if (!$user->save()) {
-        throw new \Exception('Something gone wrong');
-    }
-}
-```
-
-To test an exception you can use a new instance stubbing:
-
-```php
-describe("Test", function() {
-    
-    it("Should throws an exception", function() {
-
-        // You must provide all arguments into "save" method
-        // In our case original "save" don't have any
-        Stub::on('Models\User')->method("save", function() {
-            return false;
-        });
-
-        expect(function() {
-            testFunction();
-        })->toThrow(new \Exception('Something gone wrong'));
-
-    });
-
-});
-```
-
 ### <a name="class-stubbing"></a>Class Stubbing
 
 You can also create class names (i.e a string) using `Stub::classname()`:
@@ -163,6 +123,58 @@ it("generates a polyvalent class", function() {
 
     $stub = new $class()
     expect($stub)->toBeAnInstanceOf($class);
+
+});
+```
+
+Class stubbing is useful when you need to stub instance's methods of a specific class. Let's take the following code as example:
+
+```php
+namespace controller;
+
+use Exception;
+use model\User;
+
+class testController {
+
+    public function testFunction()
+    {
+        $user = new User();
+        $user->name  = 'Username';
+        $user->email = 'username@example.com';
+
+        if (!$user->save()) {
+            throw new Exception('Something gone wrong');
+        }
+    }
+}
+```
+
+To test that the above exception is correctly thrown when `$user->save()` is false, you can roll on :
+
+```php
+use controller\testController;
+use Exception;
+
+describe("testController", function() {
+
+    describe("->testFunction()", function() {
+
+        it("throws an exception when save fails", function() {
+
+            // Note: the sub must provide all arguments required by the `User::save()` method.
+            Stub::on('model\User')->method("save", function() {
+                return false;
+            });
+
+            expect(function() {
+                $controller = new testController();
+                $controller->testFunction();
+            })->toThrow(new Exception('Something gone wrong'));
+
+        });
+
+    });
 
 });
 ```

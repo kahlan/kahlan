@@ -9,7 +9,11 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 
 ## Video
 
- * <a href="http://vimeo.com/116949820" target="_blank">Warren Seymour presentation at Unified Diff (2015)</a>
+* <a href="http://vimeo.com/116949820" target="_blank">Warren Seymour presentation at Unified Diff (2015)</a>
+
+## IRC
+
+server:chat.freenode.net / channel:#kahlan
 
 ## Download
 
