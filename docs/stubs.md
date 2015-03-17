@@ -2,6 +2,7 @@
 
 * [Method Stubbing](#method-stubbing)
 * [Instance Stubbing](#instance-stubbing)
+* [Stub all instances](#all-instance-stubbing)
 * [Class Stubbing](#class-stubbing)
 * [Custom Stubbing](#custom-stubbing)
 * [Stubbing via a layer](#layer-stubbing)
@@ -107,6 +108,45 @@ it("stubs a static method", function() {
 
     $stub = Stub::create(['methods' => ['myMethod']]); // Adds the method `'myMethod'` as an existing "endpoint"
     expect(method_exists($stub, 'myMethod'))->toBe(true); // It works !
+
+});
+```
+
+### <a name="all-instance-stubbing"></a>All instance Stubbing
+
+Sometimes you need stub all new class instances in some method. In e.g. you have such code
+
+```php
+public function testFunction()
+{
+    $user = new \Models\User();
+    $user->name  = 'Username';
+    $user->email = 'username@example.com';
+
+    if (!$user->save()) {
+        throw new \Exception('Something gone wrong');
+    }
+}
+```
+
+To test an exception you can use a new instance stubbing:
+
+```php
+describe("Test", function() {
+    
+    it("Should throws an exception", function() {
+
+        // You must provide all arguments into "save" method
+        // In our case original "save" don't have any
+        Stub::on('Models\User')->method("save", function() {
+            return false;
+        });
+
+        expect(function() {
+            testFunction();
+        })->toThrow(new \Exception('Something gone wrong'));
+
+    });
 
 });
 ```
