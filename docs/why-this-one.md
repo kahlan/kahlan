@@ -1,6 +1,6 @@
 ## Why This One?
 
-One of PHP's assumptions is that once you define a function/constant/class it stays defined forever. Although this assumption is not really problematic when you are building an application, things get a bit more complicated if you want your application to be easily testable...
+One of PHP's assumptions is that once you define a function/constant/class it stays defined forever. Although this assumption is not really problematic when you are building an application, things get a bit more complicated if you want your application to be easily testable.
 
 **The main test frameworks for PHP are:**
 * [PHPUnit](https://phpunit.de) _(which reaches just [23.80% of code coverage after > 10 years of experience in tests](assets/phpunit_4.4_code_coverage.png) by the way)_
@@ -46,5 +46,25 @@ Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attem
 * Built-in Reporters/Exporters (Terminal, Coveralls, Code Climate, Scrutinizer, Clover)
 * Extensible, customizable workflow
 
-**PS:**
-All of these features work with the [Composer](https://getcomposer.org/) autoloader out of the box, but if you want to make it work with your own autoloader, you will need to create your own `Interceptor` class for it (which thankfully is pretty trivial! ;-) ).
+### Working with autoloader
+
+All of these features work with the [Composer](https://getcomposer.org/) autoloader out of the box. If you have your own autoloader you have multiple ways to solve this problem.
+
+1. You have a PSR-0 compatible autoloader.
+2. You have your own autoloader.
+
+In first case you need just to register your namespaces into kahlan workflow. In example you could use something like this in `kahlan-config.php` file:
+
+```php
+use filter\Filter;
+
+Filter::register('mycustom.namespaces', function($chain) {
+
+  $this->_autoloader->addPsr4('Api\\Models\\', __DIR__ . '/app/models/');
+
+});
+
+Filter::apply($this, 'namespaces', 'mycustom.namespaces');
+```
+
+In second case your must implement a `PSR-0` **Composer** compatible autoloader. To have a right direction you could see at [sources](https://github.com/composer/composer/blob/master/src/Composer/Autoload/ClassLoader.php), and take care of `findFile`, `loadClass` and `add` functions.

@@ -1,13 +1,24 @@
 ## Matchers
 
+* [Overview](#overview)
 * [Classic matchers](#classic)
 * [Method invocation matchers](#method)
 * [Argument matchers](#argument)
 * [Custom matchers](#custom)
 
-### <a name="classic"></a>Classic matchers
+### <a name="overview"></a>Overview
 
 **Note:** Expectations can only be done inside `it` blocks.
+
+Kahlan have a lot of matchers, that can help you up in your testing journey. All matchers can be chained up. It shown in a code below.
+
+```php
+it("can chain up a lots of matchers", function() {
+   expect([1, 2, 3])->toBeA('array')->toBe([1, 2, 3])->toContain(1);
+});
+```
+
+### <a name="classic"></a>Classic matchers
 
 **toBe($expected)**
 
@@ -71,6 +82,16 @@ it("passes if $actual is of a specific type", function() {
 
 });
 ```
+
+*Supported types:* 
+* string
+* integer
+* float (floating point numbers - also called double)
+* boolean
+* array
+* object
+* null
+* resource
 
 **toBeAnInstanceOf($expected)**
 
@@ -185,6 +206,8 @@ it("passes if $closure echoes the expected output", function() {
 
 ### <a name="method"></a>Method invocation matchers
 
+**Note:** You should **always remember** to use `toReceive`, `toReceiveNext` function **before** you call a method.
+
 **toReceive($expected)**
 
 ```php
@@ -196,6 +219,7 @@ it("expects $foo to receive message() with the correct param", function() {
 
 });
 ```
+
 ```php
 it("expects $foo to receive ::message() with the correct param", function() {
 

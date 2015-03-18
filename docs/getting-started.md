@@ -18,7 +18,7 @@ Here is the tree structure of this project:
 ├── README.md
 ├── spec                       # The directory which contain specs
 │   └── string
-│       └── StringSpec.php
+│       └── StringSpec.php     # Name of spec should match pattern *Spec.php
 ├── src                        # The directory which contain sources code
 │   └── String.php
 ```
