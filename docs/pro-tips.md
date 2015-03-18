@@ -88,3 +88,17 @@ If you want to run a subset instead of a single test you can use `fdescribe` or 
 ### Comment out a spec
 
 To comment out a spec, you can use the `x` prefix i.e. `xdescribe`, `xcontext` or `xit`.
+
+### Skip a spec
+
+To skip a spec you should use a `skipIf()` function inside of it. This function takes a bolean, that mean you can provide a conditions to skip this spec up. In example:
+
+```php
+it("should not run on weekends", function() {
+
+    skipIf(date("w") == 0 || date("w") == 6);
+
+    expect(true)->toBe(true);
+     
+});
+```
