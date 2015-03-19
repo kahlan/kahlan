@@ -183,12 +183,17 @@ class Kahlan {
     public function loadConfig($argv = [])
     {
         $args = new Args();
-        $args->argument('config', ['default' => 'kahlan-config.php']);
-        $args->argument('help',   ['type'    => 'boolean']);
+        $args->argument('config',  ['default'  => 'kahlan-config.php']);
+        $args->argument('help',    ['type'     => 'boolean']);
+        $args->argument('version', ['type'     => 'boolean']);
         $args->parse($argv);
 
         if ($args->get('help')) {
             return $this->_help();
+        }
+
+        if ($args->get('version')) {
+            return $this->_version();
         }
 
         if (file_exists($args->get('config'))) {
@@ -196,6 +201,19 @@ class Kahlan {
         }
 
         $this->_args->parse($argv, false);
+    }
+
+    protected function _version()
+    {
+        $version = '1.1.2';
+        echo <<<EOD
+You are using Kahlan {$version}
+The Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.
+
+For additional help you must use --help
+
+EOD;
+        \kahlan\plugin\Quit::quit();
     }
 
     /**
@@ -249,6 +267,7 @@ Test Execution Options:
 Miscellaneous Options:
 
   --help                 Prints this usage information.
+  --version              Prints Kahlan version
 
 Note: The `[]` notation in default values mean that the related option can accepts an array of values.
 To add additionnal values, just repeat the same option many times in the command line.
