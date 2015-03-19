@@ -19,7 +19,7 @@ if (!$autoloader) {
 
 use box\Box;
 use kahlan\Suite;
-use kahlan\Matcher;;
+use kahlan\Matcher;
 use kahlan\cli\Kahlan;
 
 $box = box('kahlan', new Box());
