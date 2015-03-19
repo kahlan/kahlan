@@ -82,22 +82,22 @@ class Kahlan {
         $this->_reporters = new Reporters();
         $this->_args = $args = new Args();
 
-        $args->argument('src', ['array' => 'true', 'default' => ['src']]);
-        $args->argument('spec', ['array' => 'true', 'default' => ['spec']]);
-        $args->argument('pattern', ['default' => '*Spec.php']);
-        $args->argument('reporter', ['default' => 'dot']);
-        $args->argument('coverage', ['type' => 'string']);
-        $args->argument('config', ['default' => 'kahlan-config.php']);
-        $args->argument('ff', ['type' => 'numeric', 'default' => 0]);
-        $args->argument('no-colors', ['type' => 'boolean', 'default' => false]);
-        $args->argument('include', [
+        $args->argument('src',        ['array'   => 'true', 'default' => ['src']]);
+        $args->argument('spec',       ['array'   => 'true', 'default' => ['spec']]);
+        $args->argument('pattern',    ['default' => '*Spec.php']);
+        $args->argument('reporter',   ['default' => 'dot']);
+        $args->argument('coverage',   ['type'    => 'string']);
+        $args->argument('config',     ['default' => 'kahlan-config.php']);
+        $args->argument('ff',         ['type'    => 'numeric', 'default' => 0]);
+        $args->argument('no-colors',  ['type'    => 'boolean', 'default' => false]);
+        $args->argument('include',    [
             'array' => 'true',
             'default' => ['*'],
             'value' => function($value) {
                 return array_filter($value);
             }
         ]);
-        $args->argument('exclude', [
+        $args->argument('exclude',    [
             'array' => 'true',
             'default' => [],
             'value' => function($value) {
@@ -105,7 +105,7 @@ class Kahlan {
             }
         ]);
         $args->argument('persistent', ['type'  => 'boolean', 'default' => true]);
-        $args->argument('autoclear', ['array' => 'true', 'default' => [
+        $args->argument('autoclear',  ['array' => 'true', 'default' => [
             'kahlan\plugin\Monkey',
             'kahlan\plugin\Call',
             'kahlan\plugin\Stub',
@@ -163,7 +163,7 @@ class Kahlan {
     {
         $args = new Args();
         $args->argument('config', ['default' => 'kahlan-config.php']);
-        $args->argument('help', ['type'  => 'boolean']);
+        $args->argument('help',   ['type'    => 'boolean']);
         $args->parse($argv);
 
         if ($args->get('help')) {
@@ -455,9 +455,9 @@ EOD;
     {
         return Filter::on($this, 'run', [], function($chain) {
             $this->suite()->run([
-                'reporters'      => $this->reporters(),
-                'autoclear'      => $this->args()->get('autoclear'),
-                'ff'             => $this->args()->get('ff')
+                'reporters' => $this->reporters(),
+                'autoclear' => $this->args()->get('autoclear'),
+                'ff'        => $this->args()->get('ff')
             ]);
         });
     }
