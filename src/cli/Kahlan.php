@@ -89,6 +89,7 @@ class Kahlan {
         $args->argument('coverage',   ['type'    => 'string']);
         $args->argument('config',     ['default' => 'kahlan-config.php']);
         $args->argument('ff',         ['type'    => 'numeric', 'default' => 0]);
+        $args->argument('cc',         ['type'    => 'boolean', 'default' => false]);
         $args->argument('no-colors',  ['type'    => 'boolean', 'default' => false]);
         $args->argument('include',    [
             'array' => 'true',
@@ -216,7 +217,8 @@ Test Execution Options:
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --autoclear                         classes to autoclear after each spec (default: [
+  --cc                                Clear cache before spec run.
+  --autoclear                         Classes to autoclear after each spec (default: [
                                           `'kahlan\plugin\Monkey'`,
                                           `'kahlan\plugin\Call'`,
                                           `'kahlan\plugin\Stub'`,
@@ -326,7 +328,8 @@ EOD;
                 'include'    => $this->args()->get('include'),
                 'exclude'    => array_merge($this->args()->get('exclude'), ['kahlan\\']),
                 'persistent' => $this->args()->get('persistent'),
-                'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan'
+                'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan',
+                'clearCache' => $this->args()->get('cc')
             ]);
         });
     }
