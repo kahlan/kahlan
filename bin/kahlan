@@ -38,8 +38,9 @@ $box->service('suite.global', function() {
 
 $specs = new Kahlan([
     'autoloader' => $autoloader,
-    'suite' => $box->get('suite.global')
+    'suite'      => $box->get('suite.global')
 ]);
+
 $specs->loadConfig($argv);
 $specs->run();
 exit($specs->status());

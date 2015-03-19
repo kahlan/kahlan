@@ -1,6 +1,8 @@
 <?php
 namespace kahlan;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Exception;
 use InvalidArgumentException;
 use set\Set;
@@ -401,12 +403,34 @@ class Suite extends Scope
         $defaults = [
             'reporters'      => null,
             'autoclear'      => [],
-            'ff'             => 0
+            'ff'             => 0,
+            'clearCache'     => false,
+            'cachePath'      => false            
         ];
         $options += $defaults;
 
         if ($this->_locked) {
             throw new Exception('Method not allowed in this context.');
+        }
+
+        if ($options['clearCache'] && $options['cachePath']) {
+            if (!is_dir($options['cachePath'])) {
+                throw new Exception("Cache path {$options['cachePath']} is not a directory");
+            }
+
+            $dir   = new RecursiveDirectoryIterator($options['cachePath'], RecursiveDirectoryIterator::SKIP_DOTS);
+            $files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
+
+            foreach($files as $file) {
+                $path = $file->getRealPath();
+                if ($file->isDir()) {
+                    rmdir($path);
+                } else {
+                    unlink($path);
+                }
+            }
+
+            rmdir($options['cachePath']);
         }
 
         $this->_locked = true;

@@ -47,6 +47,7 @@ describe("Kahlan", function() {
                 '--coverage=3',
                 '--config=spec/fixture/kahlan/kahlan-config.php',
                 '--ff=5',
+                '-cc',
                 '--no-colors',
                 '--include=*',
                 '--exclude=kahlan\\',
@@ -65,6 +66,7 @@ describe("Kahlan", function() {
                 'reporter'   => "verbose",
                 'config'     => "spec/fixture/kahlan/kahlan-config.php",
                 'ff'         => 5,
+                'cc'         => true,
                 'no-colors'  => true,
                 'include'    => ['*'],
                 'exclude'    => ['kahlan\\'],
@@ -130,7 +132,8 @@ Test Execution Options:
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --autoclear                         classes to autoclear after each spec (default: [
+  --cc                                Clear cache before spec run
+  --autoclear                         Classes to autoclear after each spec (default: [
                                           `'kahlan\plugin\Monkey'`,
                                           `'kahlan\plugin\Call'`,
                                           `'kahlan\plugin\Stub'`,
