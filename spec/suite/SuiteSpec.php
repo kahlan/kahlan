@@ -876,6 +876,7 @@ describe("Suite", function() {
         it("clears cache files when --cc provided", function() {
 
             $cachePath = rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan-spec';
+            shell_exec("rm -rf {$cachePath}");
             mkdir($cachePath);
             touch($cachePath . '/test.txt');
             mkdir($cachePath . '/test');

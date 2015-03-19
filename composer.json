@@ -24,6 +24,9 @@
         },
         "files": ["src/init.php"]
     },
+    "scripts": {
+        "post-update-cmd": "kahlan\\Suite::clearCache"
+    },
     "bin": ["bin/kahlan"],
     "minimum-stability": "dev"
 }
