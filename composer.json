@@ -24,6 +24,11 @@
         },
         "files": ["src/init.php"]
     },
+    "scripts": {
+        "post-update-cmd": [
+            "kahlan\\cli\\Kahlan::composerPostUpdate"
+        ]
+    },
     "bin": ["bin/kahlan"],
     "minimum-stability": "dev"
 }

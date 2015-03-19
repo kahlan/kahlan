@@ -24,6 +24,7 @@ use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\driver\HHVM;
 use kahlan\reporter\coverage\exporter\Clover;
+use Composer\Script\Event;
 
 class Kahlan {
 
@@ -63,6 +64,25 @@ class Kahlan {
      * @var object
      */
     protected $_args = null;
+
+    /**
+     * Warning !
+     * This method should only be called by Composer as an attempt to auto clear up caches automatically
+     * when the version of Kahlan is updated.
+     * It will have no effect if the cache location is changed the default config file (i.e. `'kahlan-config.php'`).
+     */
+    public static function composerPostUpdate(Event $event)
+    {
+        if (!defined('DS')) {
+            define('DS', DIRECTORY_SEPARATOR);
+        }
+        $kahlan = new static(['autoloader' => $event->getComposer()]);
+        $kahlan->loadConfig();
+        $kahlan->_interceptor();
+        if ($interceptor = Interceptor::instance()) {
+            $interceptor->clearCache();
+        }
+    }
 
     /**
      * The Constructor.
