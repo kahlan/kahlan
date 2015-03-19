@@ -865,6 +865,29 @@ describe("Suite", function() {
 
         });
 
+        it("throw on unexisting cache directory", function() {
+
+            expect(function() {
+                $this->suite->run(['clearCache' => true, 'cachePath' => '/tmp/some/unexistsing/path/in/your/system']);
+            })->toThrow(new Exception('Cache path /tmp/some/unexistsing/path/in/your/system is not a directory'));
+
+        });
+
+        it("clears cache files when --cc provided", function() {
+
+            $cachePath = rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan-spec';
+            shell_exec("rm -rf {$cachePath}");
+            mkdir($cachePath);
+            touch($cachePath . '/test.txt');
+            mkdir($cachePath . '/test');
+            mkdir($cachePath . '/test/test.sql');
+
+            $this->suite->run(['clearCache' => true, 'cachePath' => $cachePath]);
+
+            expect(is_dir($cachePath))->toBe(false);
+
+        });
+
         it("logs `IncompleteException` when thrown", function() {
 
             $incomplete = new IncompleteException();

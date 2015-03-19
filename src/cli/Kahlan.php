@@ -64,6 +64,8 @@ class Kahlan {
      */
     protected $_args = null;
 
+    protected $_cachePath = null;
+
     /**
      * The Constructor.
      *
@@ -76,20 +78,22 @@ class Kahlan {
         $defaults = ['autoloader' => null, 'suite' => null];
         $options += $defaults;
 
+        $this->_cachePath  = rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan';
         $this->_autoloader = $options['autoloader'];
-        $this->_suite = $options['suite'];
+        $this->_suite      = $options['suite'];
 
         $this->_reporters = new Reporters();
-        $this->_args = $args = new Args();
+        $this->_args      = $args = new Args();
 
-        $args->argument('src', ['array' => 'true', 'default' => ['src']]);
-        $args->argument('spec', ['array' => 'true', 'default' => ['spec']]);
-        $args->argument('pattern', ['default' => '*Spec.php']);
-        $args->argument('reporter', ['default' => 'dot']);
-        $args->argument('coverage', ['type' => 'string']);
-        $args->argument('config', ['default' => 'kahlan-config.php']);
-        $args->argument('ff', ['type' => 'numeric', 'default' => 0]);
-        $args->argument('no-colors', ['type' => 'boolean', 'default' => false]);
+        $args->argument('src',          ['array'    => 'true', 'default' => ['src']]);
+        $args->argument('spec',         ['array'    => 'true', 'default' => ['spec']]);
+        $args->argument('pattern',      ['default'  => '*Spec.php']);
+        $args->argument('reporter',     ['default'  => 'dot']);
+        $args->argument('coverage',     ['type'     => 'string']);
+        $args->argument('config',       ['default'  => 'kahlan-config.php']);
+        $args->argument('ff',           ['type'     => 'numeric', 'default' => 0]);
+        $args->argument('cc',           ['type'     => 'boolean', 'default' => false]);
+        $args->argument('no-colors',    ['type'     => 'boolean', 'default' => false]);
         $args->argument('include', [
             'array' => 'true',
             'default' => ['*'],
@@ -104,8 +108,8 @@ class Kahlan {
                 return array_filter($value);
             }
         ]);
-        $args->argument('persistent', ['type'  => 'boolean', 'default' => true]);
-        $args->argument('autoclear', ['array' => 'true', 'default' => [
+        $args->argument('persistent',   ['type'  => 'boolean',  'default' => true]);
+        $args->argument('autoclear',    ['array' => 'true',     'default' => [
             'kahlan\plugin\Monkey',
             'kahlan\plugin\Call',
             'kahlan\plugin\Stub',
@@ -162,12 +166,17 @@ class Kahlan {
     public function loadConfig($argv = [])
     {
         $args = new Args();
-        $args->argument('config', ['default' => 'kahlan-config.php']);
-        $args->argument('help', ['type'  => 'boolean']);
+        $args->argument('config',   ['default'  => 'kahlan-config.php']);
+        $args->argument('help',     ['type'     => 'boolean']);
+        $args->argument('version',  ['type'     => 'boolean']);
         $args->parse($argv);
 
         if ($args->get('help')) {
             return $this->_help();
+        }
+
+        if ($args->get('version')) {
+            return $this->_version();
         }
 
         if (file_exists($args->get('config'))) {
@@ -175,6 +184,19 @@ class Kahlan {
         }
 
         $this->_args->parse($argv, false);
+    }
+
+    protected function _version()
+    {
+        $version = '1.0.0';
+        echo <<<EOD
+You are using Kahlan \033[1;31m{$version}\033[0m
+Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.
+
+For additional help you must use \033[1;32m--help\033[0m
+
+EOD;
+        \kahlan\plugin\Quit::quit();
     }
 
     /**
@@ -216,7 +238,8 @@ Test Execution Options:
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --autoclear                         classes to autoclear after each spec (default: [
+  --cc                                Clear cache before spec run
+  --autoclear                         Classes to autoclear after each spec (default: [
                                           `'kahlan\plugin\Monkey'`,
                                           `'kahlan\plugin\Call'`,
                                           `'kahlan\plugin\Stub'`,
@@ -227,6 +250,7 @@ Test Execution Options:
 Miscellaneous Options:
 
   --help                 Prints this usage information.
+  --version              Prints Kahlan version
 
 Note: The `[]` notation in default values mean that the related option can accepts an array of values.
 To add additionnal values, just repeat the same option many times in the command line.
@@ -289,6 +313,7 @@ EOD;
             $this->_stop();
 
             $this->_quit();
+
         });
     }
 
@@ -320,13 +345,15 @@ EOD;
      */
     protected function _interceptor()
     {
-        return Filter::on($this, 'interceptor', [], function($chain) {
+        $cachePath = $this->_cachePath;
+
+        return Filter::on($this, 'interceptor', [], function($chain) use($cachePath) {
             Interceptor::patch([
                 'loader'     => [$this->autoloader(), 'loadClass'],
                 'include'    => $this->args()->get('include'),
                 'exclude'    => array_merge($this->args()->get('exclude'), ['kahlan\\']),
                 'persistent' => $this->args()->get('persistent'),
-                'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan'
+                'cachePath'  => $cachePath
             ]);
         });
     }
@@ -430,9 +457,9 @@ EOD;
             $reporters = $this->reporters();
             $coverage = new Coverage([
                 'verbosity' => $this->args()->get('coverage') === null ? 1 : $this->args()->get('coverage'),
-                'driver' => new Xdebug(),
-                'path' => $this->args()->get('src'),
-                'colors' => !$this->args()->get('no-colors')
+                'driver'    => new Xdebug(),
+                'path'      => $this->args()->get('src'),
+                'colors'    => !$this->args()->get('no-colors')
             ]);
             $reporters->add('coverage', $coverage);
         });
@@ -453,11 +480,15 @@ EOD;
      */
     protected function _run()
     {
-        return Filter::on($this, 'run', [], function($chain) {
+        $cachePath = $this->_cachePath;
+
+        return Filter::on($this, 'run', [], function($chain) use ($cachePath) {
             $this->suite()->run([
                 'reporters'      => $this->reporters(),
                 'autoclear'      => $this->args()->get('autoclear'),
-                'ff'             => $this->args()->get('ff')
+                'ff'             => $this->args()->get('ff'),
+                'clearCache'     => $this->args()->get('cc'),
+                'cachePath'      => $cachePath
             ]);
         });
     }

@@ -19,7 +19,7 @@ if (!$autoloader) {
 
 use box\Box;
 use kahlan\Suite;
-use kahlan\Matcher;;
+use kahlan\Matcher;
 use kahlan\cli\Kahlan;
 
 $box = box('kahlan', new Box());
@@ -38,8 +38,9 @@ $box->service('suite.global', function() {
 
 $specs = new Kahlan([
     'autoloader' => $autoloader,
-    'suite' => $box->get('suite.global')
+    'suite'      => $box->get('suite.global')
 ]);
+
 $specs->loadConfig($argv);
 $specs->run();
 exit($specs->status());
