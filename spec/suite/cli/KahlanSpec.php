@@ -98,6 +98,29 @@ describe("Kahlan", function() {
 
         });
 
+        it("echoes version if --version if provided", function() {
+
+            $version = <<<EOD
+You are using Kahlan \033[1;31m1.0.0\033[0m
+Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.
+
+For additional help you must use \033[1;32m--help\033[0m
+
+EOD;
+
+            $closure = function() {
+                try {
+                    $this->specs->loadConfig(['--version']);
+                } catch (Exception $e) {
+
+                }
+            };
+
+            Quit::disable();
+            expect($closure)->toEcho($version);            
+
+        });
+
         it("echoes the help if --help is provided", function() {
 
             $help = <<<EOD
@@ -144,6 +167,7 @@ Test Execution Options:
 Miscellaneous Options:
 
   --help                 Prints this usage information.
+  --version              Prints Kahlan version
 
 Note: The `[]` notation in default values mean that the related option can accepts an array of values.
 To add additionnal values, just repeat the same option many times in the command line.
