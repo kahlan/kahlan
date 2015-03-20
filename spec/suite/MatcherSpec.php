@@ -114,6 +114,15 @@ describe("Matcher", function() {
 
             });
 
+            it('resets `not` to `false ` after any matcher call', function () {
+
+                expect([])
+                    ->not->toBeNull()
+                    ->toBeA('array')
+                    ->toBeEmpty();
+
+            });
+
         });
 
         context("when the matcher fails", function() {

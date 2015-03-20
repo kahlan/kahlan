@@ -194,6 +194,7 @@ class Matcher
             $data['description'] = $description['description'];
         }
         $this->_spec->report()->add($type, $data + compact('not'));
+        $this->_not = false;
         return $boolean;
     }
 
