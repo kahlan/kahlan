@@ -13,20 +13,19 @@ use kahlan\analysis\Inspector;
  * @method Matcher toBeFalsy() passes if actual is falsy
  * @method Matcher toBeEmpty() passes if actual is falsy
  * @method Matcher toBeNull() passes if actual is null
- * @method Matcher toBeA(string $expected) passes if actual is a specific type of expected
+ * @method Matcher toBeA(string $expected) passes if actual is of the expected type
  * @method Matcher toBeAnInstanceOf(string $expected) passes if actual is an instance of expected
- * @method Matcher toHaveLength(int $expected) passes if actual has correct expected length
- * @method Matcher toContain(mixed $expected) passes if actual contain expected value
+ * @method Matcher toHaveLength(int $expected) passes if actual has the expected length
+ * @method Matcher toContain(mixed $expected) passes if actual contain the expected value
  * @method Matcher toBeCloseTo(float $expected, int $precision) passes if actual is close to expected in some precision
  * @method Matcher toBeGreaterThan(mixed $expected) passes if actual if greater than expected
- * @method Matcher toBeLessThan(mixed $expected) passes if actual is less then expected
- * @method Matcher toThrow(mixed $expected) passes if actual throws something, exception, exception with code
- * @method Matcher toMatch(string $expected) passes if actual matches with expected regexp
- * @method Matcher toEcho(string $expected) passes if actual echoes expected string
- * @method Matcher toReceive(string $expected) passes if actual invoke expected method
- * @method Matcher toReceiveNext(string $expected) passes if actual invoke expected method after some other method
- *
- * @package kahlan
+ * @method Matcher toBeLessThan(mixed $expected) passes if actual is less than expected
+ * @method Matcher toThrow(mixed $expected) passes if actual throws the expeted exception
+ * @method Matcher toMatch(string $expected) passes if actual matches the expected regexp
+ * @method Matcher toEcho(string $expected) passes if actual echoes the expected string
+ * @method Matcher toMatchEcho(string $expected) passes if actual echoes matches the expected string
+ * @method Matcher toReceive(string $expected) passes if the expected method as been called on actual
+ * @method Matcher toReceiveNext(string $expected) passes if the expected method as been called on actual after some other method
  */
 class Matcher
 {
