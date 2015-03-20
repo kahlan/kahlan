@@ -517,9 +517,9 @@ describe("Stub", function() {
 
         it("stubs an instance with a parent class", function() {
 
-            $stub = Stub::create(['extends' => 'string\String']);
+            $stub = Stub::create(['extends' => 'kahlan\util\Str']);
             expect(is_object($stub))->toBe(true);
-            expect(get_parent_class($stub))->toBe('string\String');
+            expect(get_parent_class($stub))->toBe('kahlan\util\Str');
 
         });
 

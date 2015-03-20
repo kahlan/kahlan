@@ -188,9 +188,9 @@ An example using `'extends'`:
 ```php
 it("stubs an instance with a parent class", function() {
 
-    $stub = Stub::create(['extends' => 'string\String']);
+    $stub = Stub::create(['extends' => 'kahlan\util\Str']);
     expect(is_object($stub))->toBe(true);
-    expect(get_parent_class($stub))->toBe('string\String');
+    expect(get_parent_class($stub))->toBe('kahlan\util\Str');
 
 });
 ```
@@ -204,7 +204,7 @@ However, if you still want to include magic methods with the `'extends'` option,
 it("stubs an instance with a parent class and keeps magic methods", function() {
 
     $stub = Stub::create([
-        'extends'      => 'string\String',
+        'extends'      => 'kahlan\util\Str',
         'magicMethods' => true
     ]);
 

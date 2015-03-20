@@ -1,13 +1,13 @@
 <?php
 namespace kahlan\spec\fixture\jit\patcher\monkey;
 
-use string\String;
+use kahlan\util\Str;
 
 trait Filterable
 {
     protected function dump()
     {
-        return String::dump('Hello');
+        return Str::dump('Hello');
     }
 
 }

@@ -13,7 +13,6 @@
         "crysalead/jit": "dev-master",
         "crysalead/box": "dev-master",
         "crysalead/filter": "dev-master",
-        "crysalead/string": "dev-master",
         "crysalead/dir": "dev-master"
     },
     "autoload": {

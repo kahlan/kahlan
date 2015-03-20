@@ -2,7 +2,7 @@
 namespace kahlan\spec\fixture\jit\patcher\monkey;
 
 use kahlan\MongoId;
-use string\String;
+use kahlan\util\Str;
 use sub\name\space;
 
 function time() {
@@ -86,7 +86,7 @@ class Example extends \kahlan\fixture\Parent
 
     public function staticCallFromUsed()
     {
-        return String::hash((object) 'hello');
+        return Str::hash((object) 'hello');
     }
 
     public function noIndent()
