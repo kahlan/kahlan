@@ -17,9 +17,11 @@ use kahlan\jit\patcher\Pointcut;
 use kahlan\jit\patcher\Monkey;
 use kahlan\jit\patcher\Rebase;
 use kahlan\jit\patcher\Quit;
+use kahlan\plugin\Quit as QuitStatement;
 use kahlan\Reporters;
 use kahlan\reporter\Dot;
 use kahlan\reporter\Bar;
+use kahlan\reporter\Terminal;
 use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\driver\HHVM;
@@ -111,6 +113,7 @@ class Kahlan {
         $args->argument('ff',         ['type'    => 'numeric', 'default' => 0]);
         $args->argument('cc',         ['type'    => 'boolean', 'default' => false]);
         $args->argument('no-colors',  ['type'    => 'boolean', 'default' => false]);
+        $args->argument('no-header',  ['type'    => 'boolean', 'default' => false]);
         $args->argument('include',    [
             'array' => 'true',
             'default' => ['*'],
@@ -188,6 +191,12 @@ class Kahlan {
         $args->argument('version', ['type'     => 'boolean']);
         $args->parse($argv);
 
+        if (file_exists($args->get('config'))) {
+            require $args->get('config');
+        }
+
+        $this->_args->parse($argv, false);
+
         if ($args->get('help')) {
             return $this->_help();
         }
@@ -195,36 +204,54 @@ class Kahlan {
         if ($args->get('version')) {
             return $this->_version();
         }
-
-        if (file_exists($args->get('config'))) {
-            require $args->get('config');
-        }
-
-        $this->_args->parse($argv, false);
-    }
-
-    protected function _version()
-    {
-        $version = '1.1.2';
-        echo <<<EOD
-You are using Kahlan {$version}
-The Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.
-
-For additional help you must use --help
-
-EOD;
-        \kahlan\plugin\Quit::quit();
     }
 
     /**
-     * Echoes the help.
+     * Gets the default terminal console.
      *
-     * @return string
+     * @return object The default terminal console.
+     */
+    protected function _terminal()
+    {
+        return new Terminal([
+            'colors' => !$this->args()->get('no-colors'),
+            'header' => !$this->args()->get('no-header')
+        ]);
+    }
+
+    /**
+     * Echoes the Kahlan version.
+     */
+    protected function _version()
+    {
+        $terminal = $this->_terminal();
+        if (!$this->args()->get('no-header')) {
+            $terminal->write($terminal->kahlan() ."\n\n");
+            $terminal->write($terminal->kahlanBaseline(), 'd');
+            $terminal->write("\n\n");
+        }
+
+        $terminal->write("version ");
+        $terminal->write("1.1.2" , 'green');
+        $terminal->write("\n\n");
+        $terminal->write("For additional help you must use ");
+        $terminal->write("--help" , 'green');
+        $terminal->write("\n\n");
+        QuitStatement::quit();
+    }
+
+    /**
+     * Echoes the help message.
      */
     protected function _help()
     {
-        echo <<<EOD
-Kahlan - PHP Testing Framework
+        $terminal = $this->_terminal();
+        if (!$this->args()->get('no-header')) {
+            $terminal->write($terminal->kahlan() ."\n\n");
+            $terminal->write($terminal->kahlanBaseline(), 'd');
+            $terminal->write("\n\n");
+        }
+        $help = <<<EOD
 
 Usage: kahlan [options]
 
@@ -252,10 +279,11 @@ Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
   --no-colors=<boolean>               To turn off colors. (default: `false`).
+  --no-header=<boolean>               To turn off header. (default: `false`).
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --cc                                Clear cache before spec run.
+  --cc=<boolean>                      Clear cache before spec run. (default: `false`).
   --autoclear                         Classes to autoclear after each spec (default: [
                                           `'kahlan\plugin\Monkey'`,
                                           `'kahlan\plugin\Call'`,
@@ -272,8 +300,10 @@ Miscellaneous Options:
 Note: The `[]` notation in default values mean that the related option can accepts an array of values.
 To add additionnal values, just repeat the same option many times in the command line.
 
+
 EOD;
-        \kahlan\plugin\Quit::quit();
+        $terminal->write($help);
+        QuitStatement::quit();
     }
 
     /**
@@ -448,8 +478,9 @@ EOD;
             $class = 'kahlan\reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $reporter)));
 
             $reporter = new $class([
-                'start'   => $this->_start,
-                'colors'  => !$this->args()->get('no-colors')
+                'start'  => $this->_start,
+                'colors' => !$this->args()->get('no-colors'),
+                'header' => !$this->args()->get('no-header')
             ]);
             $reporters->add('console', $reporter);
         });

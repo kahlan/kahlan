@@ -49,6 +49,7 @@ describe("Kahlan", function() {
                 '--ff=5',
                 '--cc',
                 '--no-colors',
+                '--no-header',
                 '--include=*',
                 '--exclude=kahlan\\',
                 '--persistent=false',
@@ -68,6 +69,7 @@ describe("Kahlan", function() {
                 'ff'         => 5,
                 'cc'         => true,
                 'no-colors'  => true,
+                'no-header'  => true,
                 'include'    => ['*'],
                 'exclude'    => ['kahlan\\'],
                 'persistent' => false,
@@ -101,10 +103,18 @@ describe("Kahlan", function() {
         it("echoes version if --version if provided", function() {
 
             $version = <<<EOD
-You are using Kahlan 1.1.2
-The Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.
+            _     _
+  /\ /\__ _| |__ | | __ _ _ __
+ / //_/ _` | '_ \| |/ _` | '_ \
+/ __ \ (_| | | | | | (_| | | | |
+\/  \/\__,_|_| |_|_|\__,_|_| |_|
 
-For additional help you must use --help
+\033[2;39;49mThe Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.\033[0m
+
+version \033[0;32;49m1.1.2\033[0m
+
+For additional help you must use \033[0;32;49m--help\033[0m
+
 
 EOD;
 
@@ -122,7 +132,14 @@ EOD;
         it("echoes the help if --help is provided", function() {
 
             $help = <<<EOD
-Kahlan - PHP Testing Framework
+            _     _
+  /\ /\__ _| |__ | | __ _ _ __
+ / //_/ _` | '_ \| |/ _` | '_ \
+/ __ \ (_| | | | | | (_| | | | |
+\/  \/\__,_|_| |_|_|\__,_|_| |_|
+
+\033[2;39;49mThe Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.\033[0m
+
 
 Usage: kahlan [options]
 
@@ -150,10 +167,11 @@ Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
   --no-colors=<boolean>               To turn off colors. (default: `false`).
+  --no-header=<boolean>               To turn off header. (default: `false`).
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --cc                                Clear cache before spec run.
+  --cc=<boolean>                      Clear cache before spec run. (default: `false`).
   --autoclear                         Classes to autoclear after each spec (default: [
                                           `'kahlan\plugin\Monkey'`,
                                           `'kahlan\plugin\Call'`,
@@ -170,6 +188,7 @@ Miscellaneous Options:
 Note: The `[]` notation in default values mean that the related option can accepts an array of values.
 To add additionnal values, just repeat the same option many times in the command line.
 
+
 EOD;
 
             $closure = function() {
@@ -182,6 +201,27 @@ EOD;
 
             Quit::disable();
             expect($closure)->toEcho($help);
+
+        });
+
+        it("doesn't display header with --no-header", function() {
+
+            $version = <<<EOD
+version \033[0;32;49m1.1.2\033[0m
+
+For additional help you must use \033[0;32;49m--help\033[0m
+
+
+EOD;
+
+            $closure = function() {
+                try {
+                    $this->specs->loadConfig(['--version', '--no-header']);
+                } catch (Exception $e) {}
+            };
+
+            Quit::disable();
+            expect($closure)->toEcho($version);
 
         });
 

@@ -36,6 +36,13 @@ class Terminal extends Reporter
     protected $_prefix = '';
 
     /**
+     * Indicates if the header can be displayed.
+     *
+     * @var boolean
+     */
+    protected $_header = true;
+
+    /**
      * Indicates if colors will be used.
      *
      * @var boolean
@@ -60,11 +67,13 @@ class Terminal extends Reporter
     {
         parent::__construct($config);
         $defaults = [
-            'colors'  => true,
-            'output'  => fopen('php://output', 'r')
+            'colors' => true,
+            'header'  => true,
+            'output' => fopen('php://output', 'r')
         ];
         $config += $defaults;
         $this->_colors = $config['colors'];
+        $this->_header = $config['header'];
         $this->_output = $config['output'];
     }
 
@@ -76,10 +85,39 @@ class Terminal extends Reporter
     public function start($params)
     {
         parent::start($params);
-        $this->write("\n");
-        $this->write("Kahlan - PHP Testing Framework\n" , 'green');
+        if (!$this->_header) {
+            return;
+        }
+        $this->write($this->kahlan() . "\n\n");
+        $this->write($this->kahlanBaseline() . "\n", 'd');
         $this->write("\nWorking Directory: ", 'blue');
         $this->write(getcwd() . "\n");
+    }
+
+    /**
+     * Returns the Kahlan ascii art string.
+     *
+     * @return string
+     */
+    public function kahlan()
+    {
+        return <<<EOD
+            _     _
+  /\ /\__ _| |__ | | __ _ _ __
+ / //_/ _` | '_ \| |/ _` | '_ \
+/ __ \ (_| | | | | | (_| | | | |
+\/  \/\__,_|_| |_|_|\__,_|_| |_|
+EOD;
+    }
+
+    /**
+     * Returns the Kahlan baseline string.
+     *
+     * @return string
+     */
+    public function kahlanBaseline()
+    {
+        return "The Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.";
     }
 
     /**
