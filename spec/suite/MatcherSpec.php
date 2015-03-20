@@ -15,29 +15,15 @@ describe("Matcher", function() {
             'closure' => function() {}
         ]);
 
+        $this->matchers = Matcher::get();
+
     });
 
     afterEach(function() {
 
-        Matcher::register('toBe', 'kahlan\matcher\ToBe');
-        Matcher::register('toBeA', 'kahlan\matcher\ToBeA');
-        Matcher::register('toBeAn', 'kahlan\matcher\ToBeA');
-        Matcher::register('toBeAnInstanceOf', 'kahlan\matcher\ToBeAnInstanceOf');
-        Matcher::register('toBeCloseTo', 'kahlan\matcher\ToBeCloseTo');
-        Matcher::register('toBeEmpty', 'kahlan\matcher\ToBeFalsy');
-        Matcher::register('toBeFalsy', 'kahlan\matcher\ToBeFalsy');
-        Matcher::register('toBeGreaterThan', 'kahlan\matcher\ToBeGreaterThan');
-        Matcher::register('toBeLessThan', 'kahlan\matcher\ToBeLessThan');
-        Matcher::register('toBeNull', 'kahlan\matcher\ToBeNull');
-        Matcher::register('toBeTruthy', 'kahlan\matcher\ToBeTruthy');
-        Matcher::register('toContain', 'kahlan\matcher\ToContain');
-        Matcher::register('toEcho', 'kahlan\matcher\ToEcho');
-        Matcher::register('toEqual', 'kahlan\matcher\ToEqual');
-        Matcher::register('toHaveLength', 'kahlan\matcher\ToHaveLength');
-        Matcher::register('toMatch', 'kahlan\matcher\ToMatch');
-        Matcher::register('toReceive', 'kahlan\matcher\ToReceive');
-        Matcher::register('toReceiveNext', 'kahlan\matcher\ToReceiveNext');
-        Matcher::register('toThrow', 'kahlan\matcher\ToThrow');
+        foreach ($this->matchers as $name => $value) {
+            Matcher::register($name, $value);
+        }
 
     });
 
