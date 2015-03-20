@@ -2,6 +2,15 @@
 
 ## Last changes
 
+## 1.1.2 (2015-03-20)
+
+  * **Add:** adds the command line --cc option to clear the cache.
+  * **Add:** auto clear cache on "composer update".
+  * **Add:** adds the command line --version option.
+  * **Add:** adds `toMatchEcho` matcher.
+  * **Bugfix:** fixes report duplication of some skip exceptions.
+  * **Bugfix:** resets `not` to false after any matcher call.
+
 ## 1.1.1 (2015-03-17)
 
   * **Bug:** fixes a double open tag issue with the `Layer` patcher.
