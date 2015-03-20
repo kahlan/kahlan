@@ -4,7 +4,7 @@ namespace kahlan\spec\suite\matcher;
 use stdClass;
 use kahlan\matcher\ToMatchEcho;
 
-fdescribe("toMatchEcho", function() {
+describe("toMatchEcho", function() {
 
     describe("::match()", function() {
 
