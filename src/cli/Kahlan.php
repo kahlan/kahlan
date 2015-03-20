@@ -329,6 +329,7 @@ EOD;
         Matcher::register('toReceive', 'kahlan\matcher\ToReceive');
         Matcher::register('toReceiveNext', 'kahlan\matcher\ToReceiveNext');
         Matcher::register('toThrow', 'kahlan\matcher\ToThrow');
+        Matcher::register('toMatchEcho', 'kahlan\matcher\ToMatchEcho');
     }
 
     /**
