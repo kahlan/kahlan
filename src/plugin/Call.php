@@ -203,5 +203,6 @@ class Call
     {
         static::$_logs = [];
         static::$_index = 0;
+        Suite::clear();
     }
 }

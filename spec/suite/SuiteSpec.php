@@ -659,7 +659,7 @@ describe("Suite", function() {
 
     describe("skipIf", function() {
 
-        it("skips specs", function() {
+        it("skips specs in a before", function() {
 
             $describe = $this->suite->describe("skip suite", function() {
 
@@ -683,11 +683,53 @@ describe("Suite", function() {
 
             expect($reporters)->toReceive('process')->with('start', ['total' => 2]);
             expect($reporters)->toReceiveNext('process')->with('suiteStart', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('kahlan\Report'));
             expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('kahlan\Report'));
             expect($reporters)->toReceiveNext('process')->with('specEnd', Arg::toBeAnInstanceOf('kahlan\Report'));
             expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('kahlan\Report'));
             expect($reporters)->toReceiveNext('process')->with('specEnd', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('suiteEnd', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('end', Arg::toBeAn('array'));
+
+            $this->suite->run(['reporters' => $reporters]);
+
+            expect($describe->exectuted)->toEqual(['it' => 0]);
+            expect($this->suite->focused())->toBe(false);
+            expect($this->suite->status())->toBe(0);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+        it("skips specs in a beforeEach", function() {
+
+            $describe = $this->suite->describe("skip suite", function() {
+
+                $this->exectuted = ['it' => 0];
+
+                beforeEach(function() {
+                    skipIf(true);
+                });
+
+                $this->it("an it", function() {
+                    $this->exectuted['it']++;
+                });
+
+                $this->it("an it", function() {
+                    $this->exectuted['it']++;
+                });
+
+            });
+
+            $reporters = Stub::create();
+
+            expect($reporters)->toReceive('process')->with('start', ['total' => 2]);
+            expect($reporters)->toReceiveNext('process')->with('suiteStart', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('specEnd', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('kahlan\Report'));
+            expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('kahlan\Report'));
             expect($reporters)->toReceiveNext('process')->with('suiteEnd', Arg::toBeAnInstanceOf('kahlan\Report'));
             expect($reporters)->toReceiveNext('process')->with('end', Arg::toBeAn('array'));
 

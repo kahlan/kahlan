@@ -65,10 +65,14 @@ class Spec extends Scope
 
         try {
             $this->_specStart();
-            $this->run();
+            try {
+                $this->run();
+            } catch (Exception $exception) {
+                $this->_exception($exception);
+            }
             $this->_specEnd();
         } catch (Exception $exception) {
-            $this->_exception($exception);
+            $this->_exception($exception, true);
             try {
                 $this->_specEnd();
             } catch (Exception $exception) {}
@@ -89,9 +93,9 @@ class Spec extends Scope
      */
     protected function _specEnd()
     {
-        $this->_parent->autoclear();
         $this->_parent->runCallbacks('afterEach');
         $this->emitReport('specEnd', $this->report());
+        $this->_parent->autoclear();
     }
 
     /**

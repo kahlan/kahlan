@@ -578,6 +578,7 @@ EOT;
     {
         if ($reference === null) {
             static::$_registered = [];
+            Suite::clear();
             return;
         }
         unset(static::$_registered[Suite::hash($reference)]);

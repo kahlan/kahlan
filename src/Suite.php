@@ -558,7 +558,6 @@ class Suite extends Scope
                 is_object($plugin) ? $plugin->clear() : $plugin::clear();
             }
         }
-        static::clear();
     }
 
     /**

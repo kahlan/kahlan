@@ -8,19 +8,19 @@ use kahlan\analysis\Debugger;
 class Scope
 {
     /**
+     * Instances stack.
+     *
+     * @var array
+     */
+    protected static $_instances = [];
+
+    /**
      * A regexp pattern used to removes useless traces to focus on the one
      * related to a spec file.
      *
      * @var string
      */
     protected $_backtraceFocus = null;
-
-    /**
-     * Instances stack.
-     *
-     * @var array
-     */
-    protected static $_instances = [];
 
     /**
      * The scope backtrace.
@@ -298,7 +298,6 @@ class Scope
             return;
         }
         $exception = new SkipException();
-        $this->_skipChilds($exception);
         throw $exception;
     }
 
@@ -327,13 +326,19 @@ class Scope
     /**
      * Manages catched exception.
      *
-     * @param Exception $exception The catched exception.
+     * @param Exception $exception  The catched exception.
+     * @param boolean   $inEachHook Indicates if the exception occurs in a beforeEach/afterEach hook.
      */
-    protected function _exception($exception)
+    protected function _exception($exception, $inEachHook = false)
     {
         $data = compact('exception');
         switch(get_class($exception)) {
             case 'kahlan\SkipException':
+                if ($inEachHook) {
+                    $this->report()->add('skip', $data);
+                } else {
+                    $this->_skipChilds($exception);
+                }
             break;
             case 'kahlan\IncompleteException':
                 $this->report()->add('incomplete', $data);
