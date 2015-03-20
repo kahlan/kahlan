@@ -1,7 +1,6 @@
 <?php
 namespace kahlan\reporter;
 
-use set\Set;
 use string\String;
 use kahlan\cli\Cli;
 use kahlan\analysis\Debugger;

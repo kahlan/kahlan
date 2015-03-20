@@ -1,7 +1,6 @@
 <?php
 namespace kahlan\reporter;
 
-use set\Set;
 use string\String;
 
 class Bar extends Terminal
@@ -63,7 +62,9 @@ class Bar extends Terminal
             ],
             'format' => '[{:b}{:i}] {:p}%'
         ];
-        $config = Set::merge($defaults, $config);
+        $config += $defaults;
+        $config['chars'] += $defaults['chars'];
+        $config['preferences'] += $defaults['preferences'];
 
         foreach ($config as $key => $value) {
             $_key = "_{$key}";

@@ -3,7 +3,6 @@ namespace kahlan;
 
 use Exception;
 use InvalidArgumentException;
-use set\Set;
 use kahlan\PhpErrorException;
 use kahlan\analysis\Debugger;
 
