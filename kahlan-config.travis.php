@@ -9,6 +9,9 @@ $args = $this->args();
 $args->argument('coverage', 'default', 3);
 
 Filter::register('kahlan.coverage', function($chain) {
+    if (!extension_loaded('xdebug')) {
+        return;
+    }
     $reporters = $this->reporters();
     $coverage = new Coverage([
         'verbosity' => $this->args()->get('coverage'),
