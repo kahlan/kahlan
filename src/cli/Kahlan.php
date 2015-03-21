@@ -32,6 +32,8 @@ class Kahlan {
 
     use Filterable;
 
+    const VERSION = '1.1.3';
+
     /**
      * Starting time.
      *
@@ -232,7 +234,7 @@ class Kahlan {
         }
 
         $terminal->write("version ");
-        $terminal->write("1.1.3" , 'green');
+        $terminal->write(static::VERSION , 'green');
         $terminal->write("\n\n");
         $terminal->write("For additional help you must use ");
         $terminal->write("--help" , 'green');

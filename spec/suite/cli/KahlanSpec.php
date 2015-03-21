@@ -102,7 +102,9 @@ describe("Kahlan", function() {
 
         it("echoes version if --version if provided", function() {
 
-            $version = <<<EOD
+            $version = Kahlan::VERSION;
+
+            $expected = <<<EOD
             _     _
   /\ /\__ _| |__ | | __ _ _ __
  / //_/ _` | '_ \| |/ _` | '_ \
@@ -111,7 +113,7 @@ describe("Kahlan", function() {
 
 \033[2;39;49mThe Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.\033[0m
 
-version \033[0;32;49m1.1.2\033[0m
+version \033[0;32;49m{$version}\033[0m
 
 For additional help you must use \033[0;32;49m--help\033[0m
 
@@ -125,7 +127,7 @@ EOD;
             };
 
             Quit::disable();
-            expect($closure)->toEcho($version);
+            expect($closure)->toEcho($expected);
 
         });
 
@@ -206,8 +208,10 @@ EOD;
 
         it("doesn't display header with --no-header", function() {
 
-            $version = <<<EOD
-version \033[0;32;49m1.1.2\033[0m
+            $version = Kahlan::VERSION;
+
+            $message = <<<EOD
+version \033[0;32;49m{$version}\033[0m
 
 For additional help you must use \033[0;32;49m--help\033[0m
 
@@ -221,7 +225,7 @@ EOD;
             };
 
             Quit::disable();
-            expect($closure)->toEcho($version);
+            expect($closure)->toEcho($message);
 
         });
 
