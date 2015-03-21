@@ -232,7 +232,7 @@ class Kahlan {
         }
 
         $terminal->write("version ");
-        $terminal->write("1.1.2" , 'green');
+        $terminal->write("1.1.3" , 'green');
         $terminal->write("\n\n");
         $terminal->write("For additional help you must use ");
         $terminal->write("--help" , 'green');

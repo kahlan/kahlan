@@ -10,10 +10,10 @@
     ],
     "require": {
         "php": ">=5.4",
-        "crysalead/jit": "dev-master",
-        "crysalead/box": "dev-master",
-        "crysalead/filter": "dev-master",
-        "crysalead/dir": "dev-master"
+        "crysalead/jit": "~1.0",
+        "crysalead/box": "~1.0",
+        "crysalead/filter": "~1.0",
+        "crysalead/dir": "~1.0"
     },
     "autoload": {
         "psr-4": {
@@ -27,6 +27,5 @@
             "kahlan\\cli\\Kahlan::composerPostUpdate"
         ]
     },
-    "bin": ["bin/kahlan"],
-    "minimum-stability": "dev"
+    "bin": ["bin/kahlan"]
 }
