@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.1.3 (2015-03-21)
+
+  * **Add:** remove composer minimum stability requirement.
+
 ## 1.1.2 (2015-03-20)
 
   * **Add:** adds the command line --cc option to clear the cache.
