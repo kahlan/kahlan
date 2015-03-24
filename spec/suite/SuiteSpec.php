@@ -1046,6 +1046,31 @@ describe("Suite", function() {
 
         });
 
+        it("uses default error reporting settings", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->describe("->fdescribe()", function() {
+
+                    $this->it("ignores E_NOTICE", function() {
+                        $closure = function() {
+                            $a = $b;
+                        };
+                        $this->expect($closure)->not->toThrow();
+                    });
+
+                });
+
+            });
+
+            error_reporting(E_ALL ^ E_NOTICE);
+            $this->suite->run();
+            error_reporting(E_ALL);
+
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
     });
 
     describe("->reporters()", function() {

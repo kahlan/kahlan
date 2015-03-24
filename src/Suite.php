@@ -386,7 +386,7 @@ class Suite extends Scope
             throw new PhpErrorException($exception);
         };
         $options['handler'] = $options['handler'] ?: $handler;
-        set_error_handler($options['handler']);
+        set_error_handler($options['handler'], error_reporting());
     }
 
     /**
