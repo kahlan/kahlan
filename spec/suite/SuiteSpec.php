@@ -1050,7 +1050,7 @@ describe("Suite", function() {
 
             $describe = $this->suite->describe("", function() {
 
-                $this->describe("->fdescribe()", function() {
+                $this->describe("->_errorHandler()", function() {
 
                     $this->it("ignores E_NOTICE", function() {
                         $closure = function() {
