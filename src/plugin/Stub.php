@@ -64,8 +64,8 @@ class Stub
     /**
      * Getd/Setd stubs for methods or get stubbed methods array.
      *
-     * @param  array $name An array of method names.
-     * @return mixed       Return the array of stubbed methods.
+     * @param  array    $name   An array of method names.
+     * @return stub\Method[]    Return the array of stubbed methods.
      */
     public function methods($name = [])
     {
@@ -88,10 +88,10 @@ class Stub
     /**
      * Stubs a method.
      *
-     * @param  string $name    Method name or array of stubs where key are method names and
-     *                         values the stubs.
-     * @param  string $closure The stub implementation.
-     * @return object          The subbed method instance.
+     * @param  string $name     Method name or array of stubs where key are method names and
+     *                          values the stubs.
+     * @param  string $closure  The stub implementation.
+     * @return stub\Method      The subbed method instance.
      */
     public function method($name, $closure = null)
     {
@@ -124,7 +124,7 @@ class Stub
      * Stubs class methods.
      *
      * @param  object|string $reference An instance or a fully-namespaced class name.
-     * @return object                   The Stub instance.
+     * @return $this      The Stub instance.
      */
     public static function on($reference)
     {
@@ -138,11 +138,11 @@ class Stub
     /**
      * Finds a stub.
      *
-     * @param  mixed       $references An instance or a fully namespaced class name.
+     * @param  mixed            $references An instance or a fully namespaced class name.
      *                                 or an array of that.
-     * @param  string      $method     The method name.
-     * @param  array       $params     The required arguments.
-     * @return object|null             Return the subbed method or `null` if not founded.
+     * @param  string           $method     The method name.
+     * @param  array            $params     The required arguments.
+     * @return stub\Method|null Return the subbed method or `null` if not founded.
      */
     public static function find($references, $method = null, $params = [])
     {
