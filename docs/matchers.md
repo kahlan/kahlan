@@ -225,6 +225,7 @@ it("passes if $actual matches the $expected closure logic", function() {
     });
 
 });
+```
 
 ### <a name="method"></a>Method invocation matchers
 
