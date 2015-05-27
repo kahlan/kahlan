@@ -3,6 +3,7 @@
 One of PHP's assumptions is that once you define a function/constant/class it stays defined forever. Although this assumption is not really problematic when you are building an application, things get a bit more complicated if you want your application to be easily testable.
 
 **The main test frameworks for PHP are:**
+
 * [PHPUnit](https://phpunit.de) _(which reaches just [23.80% of code coverage after > 10 years of experience in tests](assets/phpunit_4.4_code_coverage.png) by the way)_
 * [phpspec](http://phpspec.net)
 * [atoum](http://docs.atoum.org)
