@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.1.4 (2015-06-04)
+
+  * **Bugfix:** makes report backtrace more accurate on exceptions.
+
 ## 1.1.3 (2015-03-21)
 
   * **Add:** remove composer minimum stability requirement.
@@ -17,8 +21,8 @@
 
 ## 1.1.1 (2015-03-17)
 
-  * **Bug:** fixes a double open tag issue with the `Layer` patcher.
-  * **Bug:** fixes missing pointcut patching in the `Layer` patcher.
+  * **Bugfix:** fixes a double open tag issue with the `Layer` patcher.
+  * **Bugfix:** fixes missing pointcut patching in the `Layer` patcher.
 
 ## 1.1.0 (2015-02-25)
 
