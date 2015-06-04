@@ -277,7 +277,7 @@ class Report
     public function _backtrace($data)
     {
         if (isset($data['exception'])) {
-            $data['backtrace'] = Debugger::backtrace(['trace' => $data['exception']]);
+            return Debugger::backtrace(['trace' => $data['exception']]);
         }
         if (!isset($data['backtrace'])) {
             $data['backtrace'] = Debugger::backtrace();
