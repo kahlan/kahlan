@@ -20,7 +20,7 @@ use kahlan\analysis\Inspector;
  * @method Matcher toBeCloseTo(float $expected, int $precision) passes if actual is close to expected in some precision
  * @method Matcher toBeGreaterThan(mixed $expected) passes if actual if greater than expected
  * @method Matcher toBeLessThan(mixed $expected) passes if actual is less than expected
- * @method Matcher toThrow(mixed $expected) passes if actual throws the expeted exception
+ * @method Matcher toThrow(mixed $expected = null) passes if actual throws the expected exception
  * @method Matcher toMatch(string $expected) passes if actual matches the expected regexp
  * @method Matcher toEcho(string $expected) passes if actual echoes the expected string
  * @method Matcher toMatchEcho(string $expected) passes if actual echoes matches the expected string
