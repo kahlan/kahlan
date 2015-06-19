@@ -324,6 +324,8 @@ EOD;
         Matcher::register('toBeNull', 'kahlan\matcher\ToBeNull');
         Matcher::register('toBeTruthy', 'kahlan\matcher\ToBeTruthy');
         Matcher::register('toContain', 'kahlan\matcher\ToContain');
+        Matcher::register('toContainKey', 'kahlan\matcher\ToContainKey');
+        Matcher::register('toContainKeys', 'kahlan\matcher\ToContainKey');
         Matcher::register('toEcho', 'kahlan\matcher\ToEcho');
         Matcher::register('toEqual', 'kahlan\matcher\ToEqual');
         Matcher::register('toHaveLength', 'kahlan\matcher\ToHaveLength');
