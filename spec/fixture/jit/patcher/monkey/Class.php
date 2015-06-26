@@ -164,6 +164,8 @@ rand();
             default:
         }
         unset($a);
-        while(false){}
+        while(false){};
+        true or(true);
+        false and(false);
     }
 }
