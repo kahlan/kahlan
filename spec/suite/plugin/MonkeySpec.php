@@ -115,6 +115,14 @@ describe("Monkey", function() {
 
         });
 
+        it ("can handle 'or' and 'and' statements", function() {
+
+            $foo = new Foo();
+            Monkey::patch('time', 'kahlan\spec\suite\plugin\mytime');
+            expect($foo->stamp())->toBe(date('Y-m-d H:i:s', 245026800));
+
+        });
+
     });
 
 });

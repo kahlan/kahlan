@@ -28,4 +28,13 @@ class Foo
     {
         return Str::dump($value);
     }
+
+    public function stamp($condition1 = 'condition1', $condition2 = 'condition2', $condition3 = 'condition3')
+    {
+      if ($condition1 == 'condition1' or ($condition2 == 'condition2' and $condition3 == 'condition2')) {
+        return date('Y-m-d H:i:s', time());
+      } else {
+        return date('Y', time());
+      }
+    }
 }

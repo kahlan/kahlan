@@ -62,7 +62,9 @@ class Monkey
         'static' => true,
         'switch' => true,
         'unset' => true,
-        'while' => true
+        'while' => true,
+        'and' => true,
+        'or' => true
     ];
 
     /**
