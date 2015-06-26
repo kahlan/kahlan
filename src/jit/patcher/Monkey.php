@@ -33,6 +33,7 @@ class Monkey
      */
     protected $_blacklist = [
         '__halt_compiler' => true,
+        'and' => true,
         'array' => true,
         'catch' => true,
         'case' => true,
@@ -53,6 +54,7 @@ class Monkey
         'include_once' => true,
         'isset' => true,
         'list' => true,
+        'or' => true,
         'parent' => true,
         'print' => true,
         'require' => true,
@@ -62,7 +64,8 @@ class Monkey
         'static' => true,
         'switch' => true,
         'unset' => true,
-        'while' => true
+        'while' => true,
+        'xor' => true
     ];
 
     /**

@@ -133,6 +133,7 @@ $__KMONKEY__12();
     public function ignoreControlStructure()
     {
         array();
+        true and(true);
         try{} catch (\Exception $e) {};
         compact();
         declare(ticks=1);
@@ -151,6 +152,7 @@ $__KMONKEY__12();
         if(false){} elseif(true) {}
         isset($a);
         list($a, $b) = ['A', 'B'];
+        true or(true);
         new self();
         new static();
         parent::hello();
@@ -164,6 +166,7 @@ $__KMONKEY__12();
             default:
         }
         unset($a);
-        while(false){}
+        while(false){};
+        true xor(true);
     }
 }
