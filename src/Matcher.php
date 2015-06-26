@@ -17,6 +17,8 @@ use kahlan\analysis\Inspector;
  * @method Matcher toBeAnInstanceOf(string $expected) passes if actual is an instance of expected
  * @method Matcher toHaveLength(int $expected) passes if actual has the expected length
  * @method Matcher toContain(mixed $expected) passes if actual contain the expected value
+ * @method Matcher toContainKey(mixed $expected) passes if actual contain the expected key
+ * @method Matcher toContainKeys(mixed $expected) passes if actual contain the expected keys
  * @method Matcher toBeCloseTo(float $expected, int $precision) passes if actual is close to expected in some precision
  * @method Matcher toBeGreaterThan(mixed $expected) passes if actual if greater than expected
  * @method Matcher toBeLessThan(mixed $expected) passes if actual is less than expected
