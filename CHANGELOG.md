@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 1.1.5 (2015-06-26)
+
+  * **Add:** adds the `toContainKey()` matcher.
+  * **Bugfix:** monkey patching now supports `or`, `and` && `xor` alternative syntax.
+
 ## 1.1.4 (2015-06-04)
 
   * **Bugfix:** makes report backtrace more accurate on exceptions.
