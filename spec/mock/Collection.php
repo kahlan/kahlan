@@ -1,8 +1,6 @@
 <?php
 namespace kahlan\spec\mock;
 
-use InvalidArgumentException;
-
 /**
  * `Collection` class.
  *

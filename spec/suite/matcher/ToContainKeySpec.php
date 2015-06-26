@@ -3,6 +3,7 @@ namespace kahlan\spec\suite\matcher;
 
 use stdClass;
 use kahlan\spec\mock\Collection;
+use kahlan\spec\mock\Traversable;
 use kahlan\matcher\ToContainKey;
 
 describe("toContainKey", function() {
@@ -25,13 +26,13 @@ describe("toContainKey", function() {
 
             it("passes when we expect a array ['a', 'b'] key is in ['a', 'b', 'c']", function() {
 
-                expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainKey(['a', 'b']);
+                expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainKeys(['a', 'b']);
 
             });
 
             it("passes when we pass a function args 'a', 'b' key is in ['a', 'b', 'c']", function() {
 
-                expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainKey('a', 'b');
+                expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainKeys('a', 'b');
 
             });
 
@@ -43,19 +44,19 @@ describe("toContainKey", function() {
 
             it("passes if ['a', 'b', 'd'] keys is not in ['a', 'b', 'c']", function() {
 
-                expect(['a' => 1, 'b' => 2, 'c' => 3])->not->toContainKey(['a', 'b', 'd']);
+                expect(['a' => 1, 'b' => 2, 'c' => 3])->not->toContainKeys(['a', 'b', 'd']);
 
             });
 
             it("passes if 'a', 'b', 'd' params keys is not in ['a', 'b', 'c']", function() {
 
-                expect(['a' => 1, 'b' => 2, 'c' => 3])->not->toContainKey('a', 'b', 'd');
+                expect(['a' => 1, 'b' => 2, 'c' => 3])->not->toContainKeys('a', 'b', 'd');
 
             });
 
         });
 
-        context("with a traversable instance", function() {
+        context("with a collection instance", function() {
 
             it("passes if 2 key is in [1, 2, 3]", function() {
 
@@ -77,19 +78,53 @@ describe("toContainKey", function() {
 
             it("passes if ['a', 'd'] key is not in ['a', 'b', 'c']", function() {
 
-                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKey(['a', 'd']);
+                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys(['a', 'd']);
 
             });
 
             it("passes if 'a', 'd' params is not in ['a', 'b', 'c']", function() {
 
-                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKey('a', 'd');
+                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys('a', 'd');
 
             });
 
         });
 
-        it("fails with non array/traversable", function() {
+        context("with a traversable instance", function() {
+
+            it("passes if 2 key is in [1, 2, 3]", function() {
+
+                expect(new Traversable(['data' => [1, 2, 3]]))->toContainKey(2);
+
+            });
+
+            it("passes if 'a' key is in ['a', 'b', 'c']", function() {
+
+                expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->toContainKey('a');
+
+            });
+
+            it("passes if 'd' key is not in ['a', 'b', 'c']", function() {
+
+                expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKey('d');
+
+            });
+
+            it("passes if ['a', 'd'] key is not in ['a', 'b', 'c']", function() {
+
+                expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys(['a', 'd']);
+
+            });
+
+            it("passes if 'a', 'd' params is not in ['a', 'b', 'c']", function() {
+
+                expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys('a', 'd');
+
+            });
+
+        });
+
+        it("fails with non array/collection/traversable", function() {
 
             expect(new stdClass())->not->toContainKey('key');
             expect(false)->not->toContainKey('0');

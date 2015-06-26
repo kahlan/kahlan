@@ -83,7 +83,7 @@ it("passes if $actual is of a specific type", function() {
 });
 ```
 
-*Supported types:* 
+*Supported types:*
 * string
 * integer
 * float (floating point numbers - also called double)
@@ -120,6 +120,18 @@ it("passes if $actual has the correct length", function() {
 it("passes if $actual contain $expected", function() {
 
     expect([1, 2, 3])->toContain(3);
+
+});
+```
+
+**toContainKey($expected)**
+
+```php
+it("passes if $actual contain $expected key(s)", function() {
+
+    expect([ 'a' =>1, 'b' => 2, 'c' => 3])->toContainKey(a);
+    expect([ 'a' =>1, 'b' => 2, 'c' => 3])->toContainKey(a, b);
+    expect([ 'a' =>1, 'b' => 2, 'c' => 3])->toContainKey([a, b]);
 
 });
 ```

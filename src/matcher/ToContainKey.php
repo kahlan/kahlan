@@ -17,18 +17,27 @@ class ToContainKey
     {
         $params   = func_get_args();
         $expected = count($params) > 2 ? array_slice($params, 1) : $expected;
-        $expected = is_array($expected) ? $expected : (array)$expected;
+        $expected = (array) $expected;
 
-        if (is_array($actual) || $actual instanceof ArrayAccess || $actual instanceof Traversable) {
+        if (is_array($actual) || $actual instanceof ArrayAccess) {
             foreach($expected as $key) {
                 if (!isset($actual[$key])) {
                     return false;
                 }
             }
-
+            return true;
+        } elseif ($actual instanceof Traversable) {
+            foreach ($expected as $key) {
+                foreach ($actual as $k => $v) {
+                    if ($key === $k) {
+                        continue 2;
+                    }
+                }
+                return false;
+            }
             return true;
         }
-        
+
         return false;
     }
 
