@@ -123,9 +123,9 @@ class Scope
      * @var array
      */
     protected $_results = [
-        'passed' => [],
-        'failed' => [],
-        'skipped' => [],
+        'passed'     => [],
+        'failed'     => [],
+        'skipped'    => [],
         'exceptions' => [],
         'incomplete' => []
     ];
@@ -136,10 +136,10 @@ class Scope
      * @var array
      */
     protected $_resultTypes = [
-        'pass' => 'passed',
-        'fail' => 'failed',
-        'skip' => 'skipped',
-        'exception' => 'exceptions',
+        'pass'       => 'passed',
+        'fail'       => 'failed',
+        'skip'       => 'skipped',
+        'exception'  => 'exceptions',
         'incomplete' => 'incomplete'
     ];
 
@@ -188,10 +188,10 @@ class Scope
         $options += $defaults;
         extract($options);
 
-        $this->_message = $message;
-        $this->_parent = $parent;
-        $this->_root = $parent ? $parent->_root : $this;
-        $this->_report = new Report(['scope' => $this]);
+        $this->_message   = $message;
+        $this->_parent    = $parent;
+        $this->_root      = $parent ? $parent->_root : $this;
+        $this->_report    = new Report(['scope' => $this]);
         $this->_backtrace = Debugger::focus($this->backtraceFocus(), Debugger::backtrace(), 1);
     }
 
@@ -358,10 +358,11 @@ class Scope
     protected function _parents($current = false)
     {
         $instances = [];
-        $instance = $current ? $this : $this->_parent;
+        $instance  = $current ? $this : $this->_parent;
+
         while ($instance !== null) {
             $instances[] = $instance;
-            $instance = $instance->_parent;
+            $instance    = $instance->_parent;
         }
         return array_reverse($instances);
     }
@@ -424,7 +425,8 @@ class Scope
     protected function _emitFocus()
     {
         $this->_root->_focuses[] = Debugger::focus($this->backtraceFocus(), Debugger::backtrace());
-        $instances = $this->_parents(true);
+        $instances               = $this->_parents(true);
+
         foreach ($instances as $instance) {
             $instance->focus();
         }
@@ -479,8 +481,9 @@ class Scope
      */
     public function log($report)
     {
-        $resultType = $this->_resultTypes[$report->type()];
+        $resultType                           = $this->_resultTypes[$report->type()];
         $this->_root->_results[$resultType][] = $report;
+
         $this->emitReport($report->type(), $report);
     }
 

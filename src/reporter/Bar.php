@@ -51,19 +51,19 @@ class Bar extends Terminal
         $defaults = [
             'size' => 50,
             'preferences' => [
-                'pass' => 'green',
-                'fail' => 'red',
+                'pass'       => 'green',
+                'fail'       => 'red',
                 'incomplete' => 'yellow',
-                'exception' => 'magenta'
+                'exception'  => 'magenta'
             ],
             'chars' => [
-                'bar' => '=',
+                'bar'       => '=',
                 'indicator' => '>'
             ],
             'format' => '[{:b}{:i}] {:p}%'
         ];
-        $config += $defaults;
-        $config['chars'] += $defaults['chars'];
+        $config                += $defaults;
+        $config['chars']       += $defaults['chars'];
         $config['preferences'] += $defaults['preferences'];
 
         foreach ($config as $key => $value) {

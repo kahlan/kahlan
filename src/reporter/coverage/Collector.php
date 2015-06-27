@@ -110,8 +110,8 @@ class Collector
         }
 
         $this->_driver = $options['driver'];
-        $this->_paths = (array) $options['path'];
-        $this->_base = $options['base'];
+        $this->_paths  = (array) $options['path'];
+        $this->_base   = $options['base'];
         $this->_prefix = $options['prefix'];
 
         $files = Dir::scan($this->_paths, $options);

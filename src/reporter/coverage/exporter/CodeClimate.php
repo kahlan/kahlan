@@ -50,12 +50,12 @@ class CodeClimate
     public static function export($options)
     {
         $defaults = [
-            'collector'   => null,
-            'head' => null,
-            'branch' => null,
+            'collector'    => null,
+            'head'         => null,
+            'branch'       => null,
             'committed_at' => null,
-            'repo_token'  => null,
-            'environment' => [
+            'repo_token'   => null,
+            'environment'  => [
                 'pwd' => getcwd()
             ],
             'ci_service'  => [],

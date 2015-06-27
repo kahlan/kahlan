@@ -80,11 +80,11 @@ class ToReceive
         if (preg_match('/^::.*/', $expected)) {
             $actual = is_object($actual) ? get_class($actual) : $actual;
         }
-        $this->_actual = $actual;
-        $this->_expected = $expected;
-        $call = $this->_classes['call'];
-        $this->_call = new $call($actual);
-        $this->_message = $this->_call->method($expected);
+        $this->_actual    = $actual;
+        $this->_expected  = $expected;
+        $call             = $this->_classes['call'];
+        $this->_call      = new $call($actual);
+        $this->_message   = $this->_call->method($expected);
         $this->_backtrace = Debugger::backtrace();
     }
 
@@ -107,7 +107,7 @@ class ToReceive
      */
     public function resolve()
     {
-        $call = $this->_classes['call'];
+        $call    = $this->_classes['call'];
         $success = !!$call::find($this->_actual, $this->_message);
         $this->_buildDescription();
         return $success;

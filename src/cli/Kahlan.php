@@ -312,28 +312,28 @@ EOD;
      * Regiter built-in matchers.
      */
     public static function registerMatchers() {
-        Matcher::register('toBe', 'kahlan\matcher\ToBe');
-        Matcher::register('toBeA', 'kahlan\matcher\ToBeA');
-        Matcher::register('toBeAn', 'kahlan\matcher\ToBeA');
+        Matcher::register('toBe',             'kahlan\matcher\ToBe');
+        Matcher::register('toBeA',            'kahlan\matcher\ToBeA');
+        Matcher::register('toBeAn',           'kahlan\matcher\ToBeA');
         Matcher::register('toBeAnInstanceOf', 'kahlan\matcher\ToBeAnInstanceOf');
-        Matcher::register('toBeCloseTo', 'kahlan\matcher\ToBeCloseTo');
-        Matcher::register('toBeEmpty', 'kahlan\matcher\ToBeFalsy');
-        Matcher::register('toBeFalsy', 'kahlan\matcher\ToBeFalsy');
-        Matcher::register('toBeGreaterThan', 'kahlan\matcher\ToBeGreaterThan');
-        Matcher::register('toBeLessThan', 'kahlan\matcher\ToBeLessThan');
-        Matcher::register('toBeNull', 'kahlan\matcher\ToBeNull');
-        Matcher::register('toBeTruthy', 'kahlan\matcher\ToBeTruthy');
-        Matcher::register('toContain', 'kahlan\matcher\ToContain');
-        Matcher::register('toContainKey', 'kahlan\matcher\ToContainKey');
-        Matcher::register('toContainKeys', 'kahlan\matcher\ToContainKey');
-        Matcher::register('toEcho', 'kahlan\matcher\ToEcho');
-        Matcher::register('toEqual', 'kahlan\matcher\ToEqual');
-        Matcher::register('toHaveLength', 'kahlan\matcher\ToHaveLength');
-        Matcher::register('toMatch', 'kahlan\matcher\ToMatch');
-        Matcher::register('toReceive', 'kahlan\matcher\ToReceive');
-        Matcher::register('toReceiveNext', 'kahlan\matcher\ToReceiveNext');
-        Matcher::register('toThrow', 'kahlan\matcher\ToThrow');
-        Matcher::register('toMatchEcho', 'kahlan\matcher\ToMatchEcho');
+        Matcher::register('toBeCloseTo',      'kahlan\matcher\ToBeCloseTo');
+        Matcher::register('toBeEmpty',        'kahlan\matcher\ToBeFalsy');
+        Matcher::register('toBeFalsy',        'kahlan\matcher\ToBeFalsy');
+        Matcher::register('toBeGreaterThan',  'kahlan\matcher\ToBeGreaterThan');
+        Matcher::register('toBeLessThan',     'kahlan\matcher\ToBeLessThan');
+        Matcher::register('toBeNull',         'kahlan\matcher\ToBeNull');
+        Matcher::register('toBeTruthy',       'kahlan\matcher\ToBeTruthy');
+        Matcher::register('toContain',        'kahlan\matcher\ToContain');
+        Matcher::register('toContainKey',     'kahlan\matcher\ToContainKey');
+        Matcher::register('toContainKeys',    'kahlan\matcher\ToContainKey');
+        Matcher::register('toEcho',           'kahlan\matcher\ToEcho');
+        Matcher::register('toEqual',          'kahlan\matcher\ToEqual');
+        Matcher::register('toHaveLength',     'kahlan\matcher\ToHaveLength');
+        Matcher::register('toMatch',          'kahlan\matcher\ToMatch');
+        Matcher::register('toReceive',        'kahlan\matcher\ToReceive');
+        Matcher::register('toReceiveNext',    'kahlan\matcher\ToReceiveNext');
+        Matcher::register('toThrow',          'kahlan\matcher\ToThrow');
+        Matcher::register('toMatchEcho',      'kahlan\matcher\ToMatchEcho');
     }
 
     /**
@@ -365,6 +365,7 @@ EOD;
             $this->_stop();
 
             $this->_quit();
+
         });
     }
 
@@ -433,11 +434,11 @@ EOD;
                 return;
             }
             $patchers = $interceptor->patchers();
-            $patchers->add('substitute', new DummyClass(['namespaces' => ['spec\\']]));
-            $patchers->add('pointcut', new Pointcut());
-            $patchers->add('monkey', new Monkey());
-            $patchers->add('rebase', new Rebase());
-            $patchers->add('quit', new Quit());
+            $patchers->add('substitute',  new DummyClass(['namespaces' => ['spec\\']]));
+            $patchers->add('pointcut',    new Pointcut());
+            $patchers->add('monkey',      new Monkey());
+            $patchers->add('rebase',      new Rebase());
+            $patchers->add('quit',        new Quit());
         });
     }
 

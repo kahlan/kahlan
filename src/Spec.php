@@ -24,7 +24,7 @@ class Spec extends Scope
     {
         $defaults = [
             'closure' => null,
-            'scope' => 'normal',
+            'scope'   => 'normal',
             'matcher' => null
         ];
         $options += $defaults;
@@ -33,9 +33,10 @@ class Spec extends Scope
 
         extract($options);
 
-        $closure = $this->_bind($closure, 'it');
+        $closure        = $this->_bind($closure, 'it');
         $this->_closure = $closure;
         $this->_matcher = $options['matcher'];
+
         if ($scope === 'focus') {
             $this->_emitFocus();
         }
