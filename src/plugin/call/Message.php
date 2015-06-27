@@ -43,10 +43,10 @@ class Message
      */
     public function __construct($config = [])
     {
-        $defaults = ['name' => null, 'params' => [], 'static' => false];
-        $config += $defaults;
+        $defaults  = ['name' => null, 'params' => [], 'static' => false];
+        $config   += $defaults;
 
-        $this->_name = $config['name'];
+        $this->_name   = $config['name'];
         $this->_params = $config['params'];
         $this->_static = $config['static'];
     }

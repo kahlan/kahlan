@@ -29,8 +29,7 @@ class Metrics
      *
      * @var array The metrics:
      *            - `'loc'`      _integer_ : the number of line of code.
-     *            - `'lloc'`     _integer_ : the number of logical line of code (i.e code statements or
-                                             those lines which end in a semicolon)
+     *            - `'lloc'`     _integer_ : the number of logical line of code (i.e code statements or those lines which end in a semicolon)
      *            - `'nlloc'`    _integer_ : the number of non logical line of code (i.e uncoverable).
      *            - `'cloc'`     _integer_ : the number of covered line of code
      *            - `'methods'`  _integer_ : the number of methods.

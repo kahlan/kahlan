@@ -49,7 +49,7 @@ class PhpErrorException extends \Exception
     {
         if (is_string($config)) {
             $this->message = $config;
-            $this->code = $code;
+            $this->code    = $code;
         }
         if (!is_array($config)) {
             return;

@@ -33,39 +33,39 @@ class Monkey
      */
     protected $_blacklist = [
         '__halt_compiler' => true,
-        'and' => true,
-        'array' => true,
-        'catch' => true,
-        'case' => true,
-        'compact' => true,
-        'declare' => true,
-        'die' => true,
-        'echo' => true,
-        'elseif' => true,
-        'empty' => true,
-        'eval' => true,
-        'exit' => true,
-        'extract' => true,
-        'for' => true,
-        'foreach' => true,
-        'function' => true,
-        'if' => true,
-        'include' => true,
-        'include_once' => true,
-        'isset' => true,
-        'list' => true,
-        'or' => true,
-        'parent' => true,
-        'print' => true,
-        'require' => true,
-        'require_once' => true,
-        'return' => true,
-        'self' => true,
-        'static' => true,
-        'switch' => true,
-        'unset' => true,
-        'while' => true,
-        'xor' => true
+        'and'             => true,
+        'array'           => true,
+        'catch'           => true,
+        'case'            => true,
+        'compact'         => true,
+        'declare'         => true,
+        'die'             => true,
+        'echo'            => true,
+        'elseif'          => true,
+        'empty'           => true,
+        'eval'            => true,
+        'exit'            => true,
+        'extract'         => true,
+        'for'             => true,
+        'foreach'         => true,
+        'function'        => true,
+        'if'              => true,
+        'include'         => true,
+        'include_once'    => true,
+        'isset'           => true,
+        'list'            => true,
+        'or'              => true,
+        'parent'          => true,
+        'print'           => true,
+        'require'         => true,
+        'require_once'    => true,
+        'return'          => true,
+        'self'            => true,
+        'static'          => true,
+        'switch'          => true,
+        'unset'           => true,
+        'while'           => true,
+        'xor'             => true
     ];
 
     /**
@@ -123,9 +123,9 @@ class Monkey
             $this->_variables = [];
             if ($node->processable && $node->type === 'code') {
                 $this->_uses = $node->namespace ? $node->namespace->uses : [];
-                $node->body = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
-                $code = $this->_classes['node'];
-                $body = '';
+                $node->body  = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
+                $code        = $this->_classes['node'];
+                $body        = '';
                 if ($this->_variables) {
                     foreach ($this->_variables as $variable) {
                         $body .= $variable['name'] . $variable['patch'];
@@ -134,9 +134,10 @@ class Monkey
                     if (!$parent->inPhp) {
                         $body = '<?php ' . $body . ' ?>';
                     }
-                    $patch = new $code($body, 'code');
-                    $patch->parent = $parent;
-                    $patch->function = $node->function;
+                    
+                    $patch            = new $code($body, 'code');
+                    $patch->parent    = $parent;
+                    $patch->function  = $node->function;
                     $patch->namespace = $node->namespace;
                     array_unshift($parent->tree, $patch);
                 }

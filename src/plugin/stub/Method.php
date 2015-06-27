@@ -38,8 +38,8 @@ class Method extends \kahlan\plugin\call\Message
      */
     public function __construct($config = [])
     {
-        $defaults = ['closure' => null, 'params' => [], 'returns' => [], 'static' => false];
-        $config += $defaults;
+        $defaults  = ['closure' => null, 'params' => [], 'returns' => [], 'static' => false];
+        $config   += $defaults;
         parent::__construct($config);
         $this->_closure = $config['closure'];
         $this->_returns = $config['returns'];
