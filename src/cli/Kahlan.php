@@ -106,17 +106,17 @@ class Kahlan {
         $this->_reporters = new Reporters();
         $this->_args = $args = new Args();
 
-        $args->argument('src',        ['array'   => 'true', 'default' => ['src']]);
-        $args->argument('spec',       ['array'   => 'true', 'default' => ['spec']]);
-        $args->argument('pattern',    ['default' => '*Spec.php']);
-        $args->argument('reporter',   ['default' => 'dot']);
-        $args->argument('coverage',   ['type'    => 'string']);
-        $args->argument('config',     ['default' => 'kahlan-config.php']);
-        $args->argument('ff',         ['type'    => 'numeric', 'default' => 0]);
-        $args->argument('cc',         ['type'    => 'boolean', 'default' => false]);
-        $args->argument('no-colors',  ['type'    => 'boolean', 'default' => false]);
-        $args->argument('no-header',  ['type'    => 'boolean', 'default' => false]);
-        $args->argument('include',    [
+        $args->argument('src',       ['array'   => 'true', 'default' => ['src']]);
+        $args->argument('spec',      ['array'   => 'true', 'default' => ['spec']]);
+        $args->argument('pattern',   ['default' => '*Spec.php']);
+        $args->argument('reporter',  ['default' => 'dot']);
+        $args->argument('coverage',  ['type'    => 'string']);
+        $args->argument('config',    ['default' => 'kahlan-config.php']);
+        $args->argument('ff',        ['type'    => 'numeric', 'default' => 0]);
+        $args->argument('cc',        ['type'    => 'boolean', 'default' => false]);
+        $args->argument('no-colors', ['type'    => 'boolean', 'default' => false]);
+        $args->argument('no-header', ['type'    => 'boolean', 'default' => false]);
+        $args->argument('include',   [
             'array' => 'true',
             'default' => ['*'],
             'value' => function($value) {
@@ -434,11 +434,11 @@ EOD;
                 return;
             }
             $patchers = $interceptor->patchers();
-            $patchers->add('substitute',  new DummyClass(['namespaces' => ['spec\\']]));
-            $patchers->add('pointcut',    new Pointcut());
-            $patchers->add('monkey',      new Monkey());
-            $patchers->add('rebase',      new Rebase());
-            $patchers->add('quit',        new Quit());
+            $patchers->add('substitute', new DummyClass(['namespaces' => ['spec\\']]));
+            $patchers->add('pointcut',   new Pointcut());
+            $patchers->add('monkey',     new Monkey());
+            $patchers->add('rebase',     new Rebase());
+            $patchers->add('quit',       new Quit());
         });
     }
 

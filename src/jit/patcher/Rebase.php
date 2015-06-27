@@ -38,7 +38,7 @@ class Rebase {
     protected function _processTree($nodes, $path)
     {
         $path = addcslashes($path, "'");
-        $dir  = "'" . dirname($path) . "'";
+        $dir = "'" . dirname($path) . "'";
         $file = "'" . $path . "'";
 
         $alphanum  = '[\\\a-zA-Z0-9_\\x7f-\\xff]';

@@ -78,12 +78,12 @@ class Pointcut
                 !isset($child->visibility['abstract'])
             );
             if ($process) {
-                $code                = $this->_classes['node'];
-                $before              = new $code($this->_before(), 'code');
-                $before->parent      = $child;
-                $before->function    = $child;
+                $code = $this->_classes['node'];
+                $before = new $code($this->_before(), 'code');
+                $before->parent = $child;
+                $before->function = $child;
                 $before->processable = false;
-                $before->namespace   = $child->namespace;
+                $before->namespace = $child->namespace;
                 array_unshift($child->tree, $before);
             }
         }

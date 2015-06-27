@@ -126,8 +126,9 @@ class Str
             ]
         ];
 
-        $options           += $defaults;
-        $options['array']  += $defaults['array'];
+        $options += $defaults;
+
+        $options['array'] += $defaults['array'];
         $options['object'] += $defaults['object'];
 
         if ($value instanceof Closure) {

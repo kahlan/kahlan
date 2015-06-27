@@ -186,7 +186,7 @@ class Matcher
      */
     protected function _result($boolean, $data = [])
     {
-        $not  = $this->_not;
+        $not = $this->_not;
         $pass = $not ? !$boolean : $boolean;
         $type = $pass ? 'pass' : 'fail';
 

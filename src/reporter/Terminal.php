@@ -72,6 +72,7 @@ class Terminal extends Reporter
             'output' => fopen('php://output', 'r')
         ];
         $config += $defaults;
+
         $this->_colors = $config['colors'];
         $this->_header = $config['header'];
         $this->_output = $config['output'];

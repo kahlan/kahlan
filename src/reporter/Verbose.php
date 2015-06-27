@@ -25,7 +25,7 @@ class Verbose extends Terminal
     public function suiteStart($report = null)
     {
         $messages = $report->messages();
-        $message  = end($messages);
+        $message = end($messages);
         $this->write("{$message}\n", "b;");
         $this->_indent++;
     }

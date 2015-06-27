@@ -42,8 +42,9 @@ class Clover
             'time'      => time(),
             'base_path' => getcwd()
         ];
-        $options   += $defaults;
-        $collector  = $options['collector'];
+        $options += $defaults;
+
+        $collector = $options['collector'];
 
         $xmlDocument = new DOMDocument('1.0', 'UTF-8');
         $xmlDocument->formatOutput = true;

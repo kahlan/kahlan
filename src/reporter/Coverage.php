@@ -56,15 +56,16 @@ class Coverage extends Terminal
     public function __construct($config = [])
     {
         parent::__construct($config);
-        $defaults          = ['verbosity' => 1];
-        $config           += $defaults;
-        $verbosity         = $config['verbosity'];
+        $defaults = ['verbosity' => 1];
+        $config += $defaults;
+
+        $verbosity = $config['verbosity'];
         $this->_verbosity  = is_numeric($verbosity) ? (integer) $verbosity : (string) $verbosity;
 
         if (is_string($this->_verbosity)) {
-            $class       = preg_replace('/(::)?\w+\(\)$/', '', $this->_verbosity);
+            $class = preg_replace('/(::)?\w+\(\)$/', '', $this->_verbosity);
             $interceptor = static::$_classes['interceptor'];
-            $loader      = $interceptor::instance();
+            $loader = $interceptor::instance();
 
             if ($loader && $path = $loader->findPath($class)) {
                 $config['path'] = $path;
@@ -146,7 +147,7 @@ class Coverage extends Terminal
     public function metrics()
     {
         $this->_start = microtime(true);
-        $result       = $this->_collector->metrics();
+        $result = $this->_collector->metrics();
         $this->_time  = microtime(true) - $this->_start;
         return $result;
     }
@@ -172,10 +173,10 @@ class Coverage extends Terminal
         if ($verbosity === 3 && ($type === 'function' || $type === 'method')) {
             return;
         }
-        $name    = $metrics->name();
-        $stats   = $metrics->data();
+        $name = $metrics->name();
+        $stats = $metrics->data();
         $percent = number_format($stats['percent'], 2);
-        $style   = $this->_style($percent);
+        $style = $this->_style($percent);
         $this->write(str_pad("Lines: {$percent}%", 15), $style);
         $this->write(trim(str_pad("({$stats['cloc']}/{$stats['lloc']})", 20) . "{$name}"));
         $this->write("\n");

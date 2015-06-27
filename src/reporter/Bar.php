@@ -62,8 +62,9 @@ class Bar extends Terminal
             ],
             'format' => '[{:b}{:i}] {:p}%'
         ];
-        $config                += $defaults;
-        $config['chars']       += $defaults['chars'];
+        $config += $defaults;
+
+        $config['chars'] += $defaults['chars'];
         $config['preferences'] += $defaults['preferences'];
 
         foreach ($config as $key => $value) {

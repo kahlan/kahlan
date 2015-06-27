@@ -20,8 +20,9 @@ class DummyClass {
      */
     public function __construct($config = [])
     {
-        $defaults           = ['namespaces' => []];
-        $config            += $defaults;
+        $defaults = ['namespaces' => []];
+        $config += $defaults;
+
         $this->_namespaces  = (array) $config['namespaces'];
     }
 

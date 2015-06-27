@@ -123,9 +123,10 @@ class Monkey
             $this->_variables = [];
             if ($node->processable && $node->type === 'code') {
                 $this->_uses = $node->namespace ? $node->namespace->uses : [];
-                $node->body  = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
-                $code        = $this->_classes['node'];
-                $body        = '';
+                $node->body = preg_replace_callback($regex, [$this, '_patchNode'], $node->body);
+                $code = $this->_classes['node'];
+                $body = '';
+
                 if ($this->_variables) {
                     foreach ($this->_variables as $variable) {
                         $body .= $variable['name'] . $variable['patch'];
@@ -134,10 +135,10 @@ class Monkey
                     if (!$parent->inPhp) {
                         $body = '<?php ' . $body . ' ?>';
                     }
-                    
-                    $patch            = new $code($body, 'code');
-                    $patch->parent    = $parent;
-                    $patch->function  = $node->function;
+
+                    $patch = new $code($body, 'code');
+                    $patch->parent = $parent;
+                    $patch->function = $node->function;
                     $patch->namespace = $node->namespace;
                     array_unshift($parent->tree, $patch);
                 }

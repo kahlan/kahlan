@@ -49,13 +49,14 @@ class Layer {
             'suffix'   => 'KLAYER',
             'override' => []
         ];
+        $config += $defaults;
 
-        $config          += $defaults;
+        $pointcut = $this->_classes['pointcut'];
+
         $this->_override  = array_fill_keys($config['override'], true);
         $this->_suffix    = $config['suffix'];
         $this->_classes  += $config['classes'];
-        $pointcut         = $this->_classes['pointcut'];
-        $this->_pointcut  = new $pointcut();
+        $this->_pointcut = new $pointcut();
     }
 
     /**
@@ -97,26 +98,27 @@ class Layer {
         foreach ($nodes as $node) {
             if ($node->processable && $node->type === 'class' && $node->extends) {
                 $namespace = $node->namespace->name . '\\';
-                $parent    = $node->extends;
-                $extends   = ltrim($parent[0] === '\\' ? $parent : $namespace . $parent, '\\');
+                $parent = $node->extends;
+                $extends = ltrim($parent[0] === '\\' ? $parent : $namespace . $parent, '\\');
+
                 if (!isset($this->_override[$extends])) {
                     continue;
                 }
-                $layerClass    = $node->name . $this->_suffix;
+                $layerClass = $node->name . $this->_suffix;
                 $node->extends = $layerClass;
-                $pattern       = preg_quote($parent);
-                $node->body    = preg_replace("~(extends\s+){$pattern}~", "\\1{$layerClass}", $node->body);
+                $pattern = preg_quote($parent);
+                $node->body = preg_replace("~(extends\s+){$pattern}~", "\\1{$layerClass}", $node->body);
 
                 $code = Stub::generate([
-                    'class'     => $layerClass,
-                    'extends'   => $extends,
-                    'openTag'   => false,
-                    'closeTag'  => false,
-                    'layer'     => true
+                    'class'    => $layerClass,
+                    'extends'  => $extends,
+                    'openTag'  => false,
+                    'closeTag' => false,
+                    'layer'    => true
                 ]);
 
-                $parser       = $this->_classes['parser'];
-                $nodes        = $parser::parse($code, ['php' => true]);
+                $parser = $this->_classes['parser'];
+                $nodes = $parser::parse($code, ['php' => true]);
                 $node->close .= str_replace("\n", '', $parser::unparse($this->_pointcut->process($nodes)));
 
             } elseif (count($node->tree)) {

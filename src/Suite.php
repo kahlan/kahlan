@@ -155,10 +155,10 @@ class Suite extends Scope
             $closure = $message;
             $message = "spec #" . $inc++;
         }
-        $parent          = $this;
-        $root            = $this->_root;
-        $matcher         = $this->_root->_matcher;
-        $spec            = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'matcher'));
+        $parent = $this;
+        $root = $this->_root;
+        $matcher = $this->_root->_matcher;
+        $spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'matcher'));
         $this->_childs[] = $spec;
         return $this;
     }

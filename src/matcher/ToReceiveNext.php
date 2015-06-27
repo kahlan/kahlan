@@ -10,9 +10,9 @@ class ToReceiveNext extends ToReceive
      */
     public function resolve()
     {
-        $call       = $this->_classes['call'];
+        $call = $this->_classes['call'];
         $startIndex = $call::lastFindIndex();
-        $success    = !!$call::find($this->_actual, $this->_message, $startIndex);
+        $success = !!$call::find($this->_actual, $this->_message, $startIndex);
         $this->_buildDescription($startIndex);
         return $success;
     }

@@ -33,8 +33,7 @@ class Spec extends Scope
 
         extract($options);
 
-        $closure        = $this->_bind($closure, 'it');
-        $this->_closure = $closure;
+        $this->_closure = $this->_bind($closure, 'it');
         $this->_matcher = $options['matcher'];
 
         if ($scope === 'focus') {

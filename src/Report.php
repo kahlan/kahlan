@@ -91,15 +91,15 @@ class Report
     public function __construct($config = [])
     {
         $defaults = [
-            'scope'        => null,
-            'type'         => 'pass',
-            'not'          => false,
-            'description'  => null,
-            'matcher'      => null,
-            'matcherName'  => null,
-            'params'       => [],
-            'backtrace'    => [],
-            'exception'    => null
+            'scope'       => null,
+            'type'        => 'pass',
+            'not'         => false,
+            'description' => null,
+            'matcher'     => null,
+            'matcherName' => null,
+            'params'      => [],
+            'backtrace'   => [],
+            'exception'   => null
         ];
         $config += $defaults;
 
@@ -263,9 +263,9 @@ class Report
         }
 
         $data['backtrace'] = $this->_backtrace($data);
-        $this->_type       = ($data['type'] !== 'pass') ? $data['type'] : 'pass';
-        $child             = new static($data + ['scope' => $this->_scope]);
-        $this->_childs[]   = $child;
+        $this->_type = ($data['type'] !== 'pass') ? $data['type'] : 'pass';
+        $child = new static($data + ['scope' => $this->_scope]);
+        $this->_childs[] = $child;
         $this->scope()->log($child);
     }
 

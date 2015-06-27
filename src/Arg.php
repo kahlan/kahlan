@@ -45,11 +45,12 @@ class Arg
      */
     public function __construct($options = [])
     {
-        $defaults        = ['not' => false, 'matcher' => '', 'params' => []];
-        $options        += $defaults;
-        $this->_not      = $options['not'];
-        $this->_matcher  = $options['matcher'];
-        $this->_params   = $options['params'];
+        $defaults = ['not' => false, 'matcher' => '', 'params' => []];
+        $options += $defaults;
+
+        $this->_not     = $options['not'];
+        $this->_matcher = $options['matcher'];
+        $this->_params  = $options['params'];
     }
 
     /**
@@ -83,7 +84,7 @@ class Arg
      */
     public function match($actual)
     {
-        $class  = $this->_matcher;
+        $class = $this->_matcher;
         $params = $this->_params;
         array_unshift($params, $actual);
         $boolean = call_user_func_array($class . '::match', $params);

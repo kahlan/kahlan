@@ -39,7 +39,7 @@ class Debugger
         $backtrace = static::backtrace($options);
 
         foreach ($backtrace as $trace) {
-            $back[] =  static::_traceToString($trace);
+            $back[] = static::_traceToString($trace);
         }
         return $options['array'] ? $back : join("\n", $back);
     }
@@ -197,10 +197,10 @@ class Debugger
      */
     protected static function _findPos($file, $callLine)
     {
-        $len  = strlen($file);
+        $len = strlen($file);
         $line = 1;
-        $i    = 0;
-        
+        $i = 0;
+
         while ($i < $len) {
             if ($file[$i] === "\n") {
                 $line++;
