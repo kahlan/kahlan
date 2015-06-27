@@ -40,11 +40,11 @@ class Coveralls
     public static function export($options)
     {
         $defaults = [
-            'collector' => null,
-            'service_name' => '',
+            'collector'      => null,
+            'service_name'   => '',
             'service_job_id' => null,
-            'repo_token' => null,
-            'run_at' => date('Y-m-d H:i:s O')
+            'repo_token'     => null,
+            'run_at'         => date('Y-m-d H:i:s O')
         ];
         $options += $defaults;
 

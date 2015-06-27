@@ -245,14 +245,14 @@ class Stub
     public static function generate($options = [])
     {
         $defaults = [
-            'class' => 'spec\plugin\stub\Stub' . static::$_index++,
-            'extends' => '',
+            'class'      => 'spec\plugin\stub\Stub' . static::$_index++,
+            'extends'    => '',
             'implements' => [],
-            'uses' => [],
-            'methods' => [],
-            'layer' => false,
-            'openTag' => true,
-            'closeTag' => true
+            'uses'       => [],
+            'methods'    => [],
+            'layer'      => false,
+            'openTag'    => true,
+            'closeTag'   => true
         ];
         $options += $defaults;
 

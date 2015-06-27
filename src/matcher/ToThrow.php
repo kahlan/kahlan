@@ -26,11 +26,9 @@ class ToThrow
     public static function match($actual, $expected = null, $code = 0)
     {
         $exception = static::expected($expected, $code);
-
-        $a = static::actual($actual);
+        $a         = static::actual($actual);
 
         static::_buildDescription($a, $exception);
-
         return static::_matchException($a, $exception);
     }
 
@@ -118,9 +116,10 @@ class ToThrow
      */
     public static function _buildDescription($actual, $expected)
     {
-        $description = "throw a compatible exception.";
-        $params['actual'] = $actual;
+        $description        = "throw a compatible exception.";
+        $params['actual']   = $actual;
         $params['expected'] = $expected;
+        
         static::$_description = compact('description', 'params');
     }
 

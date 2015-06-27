@@ -12,8 +12,9 @@ class ToEqual
      */
     public static function match($actual, $expected)
     {
-        $actual = static::_nl($actual);
+        $actual   = static::_nl($actual);
         $expected = static::_nl($expected);
+        
         return $actual == $expected;
     }
 

@@ -157,8 +157,8 @@ class Cli
         }
 
         $options += [
-            'style' => 'default',
-            'color' => 'default',
+            'style'      => 'default',
+            'color'      => 'default',
             'background' => 'default'
         ];
 

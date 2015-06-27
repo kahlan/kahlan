@@ -68,7 +68,7 @@ class Terminal extends Reporter
         parent::__construct($config);
         $defaults = [
             'colors' => true,
-            'header'  => true,
+            'header' => true,
             'output' => fopen('php://output', 'r')
         ];
         $config += $defaults;
@@ -384,7 +384,7 @@ EOD;
         foreach ([
             'exceptions' => 'exception',
             'incomplete' => 'incomplete',
-            'failed' => 'fail'
+            'failed'     => 'fail'
         ] as $key => $value) {
             ${$value} = count($results[$key]);
             $failed += ${$value};

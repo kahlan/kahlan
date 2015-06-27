@@ -94,9 +94,9 @@ class Debugger
         $backtrace = static::normalise($options['trace'] ?: debug_backtrace($mask));
 
         $traceDefaults = [
-            'line' => '?',
-            'file' => '[internal]',
-            'class' => null,
+            'line'     => '?',
+            'file'     => '[internal]',
+            'class'    => null,
             'function' => '[NA]'
         ];
 
@@ -128,9 +128,9 @@ class Debugger
         }
         return array_merge([[
             'function' => '[NA]',
-            'file' => $backtrace->getFile(),
-            'line' => $backtrace->getLine(),
-            'args' => []
+            'file'     => $backtrace->getFile(),
+            'line'     => $backtrace->getLine(),
+            'args'     => []
         ]], $backtrace->getTrace());
     }
 
@@ -197,9 +197,10 @@ class Debugger
      */
     protected static function _findPos($file, $callLine)
     {
-        $len = strlen($file);
+        $len  = strlen($file);
         $line = 1;
-        $i = 0;
+        $i    = 0;
+        
         while ($i < $len) {
             if ($file[$i] === "\n") {
                 $line++;

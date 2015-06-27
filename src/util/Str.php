@@ -70,11 +70,11 @@ class Str
     public static function clean($str, $options = [])
     {
         $options += [
-            'before' => '{:',
-            'after' => '}',
-            'escape' => '\\',
-            'word' => '[\w,.]+',
-            'gap' => '(\s*(?:(?:and|or|,)\s*)?)',
+            'before'      => '{:',
+            'after'       => '}',
+            'escape'      => '\\',
+            'word'        => '[\w,.]+',
+            'gap'         => '(\s*(?:(?:and|or|,)\s*)?)',
             'replacement' => ''
         ];
 
@@ -120,14 +120,14 @@ class Str
                 'method' => '__toString'
             ],
             'array'  => [
-                'indent' => 1,
-                'char' => ' ',
+                'indent'     => 1,
+                'char'       => ' ',
                 'multiplier' => 4
             ]
         ];
 
-        $options += $defaults;
-        $options['array'] += $defaults['array'];
+        $options           += $defaults;
+        $options['array']  += $defaults['array'];
         $options['object'] += $defaults['object'];
 
         if ($value instanceof Closure) {

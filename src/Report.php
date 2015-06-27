@@ -103,15 +103,15 @@ class Report
         ];
         $config += $defaults;
 
-        $this->_scope = $config['scope'];
-        $this->_type = $config['type'];
-        $this->_not = $config['not'];
+        $this->_scope       = $config['scope'];
+        $this->_type        = $config['type'];
+        $this->_not         = $config['not'];
         $this->_description = $config['description'];
-        $this->_matcher = $config['matcher'];
+        $this->_matcher     = $config['matcher'];
         $this->_matcherName = $config['matcherName'];
-        $this->_params = $config['params'];
-        $this->_backtrace = $config['backtrace'];
-        $this->_exception = $config['exception'];
+        $this->_params      = $config['params'];
+        $this->_backtrace   = $config['backtrace'];
+        $this->_exception   = $config['exception'];
 
         if ($this->_backtrace) {
             $trace = reset($this->_backtrace);
@@ -263,9 +263,9 @@ class Report
         }
 
         $data['backtrace'] = $this->_backtrace($data);
-        $this->_type = $data['type'] !== 'pass' ? $data['type'] : 'pass';
-        $child = new static($data + ['scope' => $this->_scope]);
-        $this->_childs[] = $child;
+        $this->_type       = ($data['type'] !== 'pass') ? $data['type'] : 'pass';
+        $child             = new static($data + ['scope' => $this->_scope]);
+        $this->_childs[]   = $child;
         $this->scope()->log($child);
     }
 

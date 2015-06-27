@@ -49,10 +49,10 @@ class Suite extends Scope
      * @var array
      */
     protected $_callbacks = [
-        'before' => [],
-        'after' => [],
+        'before'     => [],
+        'after'      => [],
         'beforeEach' => [],
-        'afterEach' => []
+        'afterEach'  => []
     ];
 
     /**
@@ -155,10 +155,10 @@ class Suite extends Scope
             $closure = $message;
             $message = "spec #" . $inc++;
         }
-        $parent = $this;
-        $root = $this->_root;
-        $matcher = $this->_root->_matcher;
-        $spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'matcher'));
+        $parent          = $this;
+        $root            = $this->_root;
+        $matcher         = $this->_root->_matcher;
+        $spec            = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'matcher'));
         $this->_childs[] = $spec;
         return $this;
     }
@@ -408,11 +408,10 @@ class Suite extends Scope
             throw new Exception('Method not allowed in this context.');
         }
 
-        $this->_locked = true;
-
+        $this->_locked    = true;
         $this->_reporters = $options['reporters'];
         $this->_autoclear = (array) $options['autoclear'];
-        $this->_ff = $options['ff'];
+        $this->_ff        = $options['ff'];
 
         $this->emitReport('start', ['total' => $this->enabled()]);
         $this->process();
