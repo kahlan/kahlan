@@ -15,7 +15,7 @@ class ToContain
     public static function match($actual, $expected)
     {
         if (is_string($actual)) {
-            return strpos($expected, $actual) !== false;
+            return strpos($actual, $expected) !== false;
         } elseif (is_array($actual) || $actual instanceof Traversable) {
             foreach ($actual as $key => $value) {
                 if ($value === $expected) {

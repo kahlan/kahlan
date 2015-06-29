@@ -57,14 +57,14 @@ describe("toContain", function() {
 
             it("passes if contained in expected", function() {
 
-                expect('World')->toContain('Hello World!');
+                expect('Hello World!')->toContain('World');
                 expect('World')->toContain('World');
 
             });
 
             it("fails if not contained in expected", function() {
 
-                expect('world')->not->toContain('Hello World!');
+                expect('Hello World!')->not->toContain('world');
 
             });
 
