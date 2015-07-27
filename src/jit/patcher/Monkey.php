@@ -161,7 +161,7 @@ class Monkey
 
         $static = preg_match('/^::/', $matches[5]);
 
-        if (isset($this->_blacklist[$name]) || (!$matches[1] && $matches[5] !== '(' && !$static)) {
+        if (isset($this->_blacklist[strtolower($name)]) || (!$matches[1] && $matches[5] !== '(' && !$static)) {
             return $matches[0];
         }
 

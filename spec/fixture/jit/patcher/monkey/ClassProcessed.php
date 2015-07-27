@@ -169,4 +169,44 @@ $__KMONKEY__12();
         while(false){};
         true xor(true);
     }
+
+    public function ignoreControlStructureInUpperCase()
+    {
+        ARRAY();
+        TRUE AND(TRUE);
+        TRY{} CATCH (\EXCEPTION $E) {};
+        COMPACT();
+        DECLARE(TICKS=1);
+        DIE();
+        ECHO('');
+        EMPTY($A);
+        EVAL('');
+        EXIT(-1);
+        EXTRACT();
+        FOR($I=0;$I<1;$I++) {};
+        FOREACH($ARRAY AS $KEY=>$VALUE) {}
+        FUNCTION(){};
+        IF(TRUE){}
+        INCLUDE('FILENAME');
+        INCLUDE_ONCE('FILENAME');
+        IF(FALSE){} ELSEIF(TRUE) {}
+        ISSET($A);
+        LIST($A, $B) = ['A', 'B'];
+        TRUE OR(TRUE);
+        NEW SELF();
+        NEW STATIC();
+        PARENT::HELLO();
+        PRINT('HELLO');
+        REQUIRE('FILENAME');
+        REQUIRE_ONCE('FILENAME');
+        RETURN($A);
+        SWITCH($CASE){
+            CASE (TRUE && TRUE):
+                BREAK;
+            DEFAULT:
+        }
+        UNSET($A);
+        WHILE(FALSE){};
+        TRUE XOR(TRUE);
+    }
 }
