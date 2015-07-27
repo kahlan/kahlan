@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.1.7 (2015-07-27)
+
+  * **Bugfix:** fixes a control structures issue when present in uppercase.
+
 ## 1.1.6 (2015-07-27)
 
   * **Bugfix:** fixes the order of `toContain()` matcher.
