@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.1.6 (2015-07-27)
+
+  * **Bugfix:** fixes the order of `toContain()` matcher.
+
 ## 1.1.5 (2015-06-26)
 
   * **Add:** adds the `toContainKey()` matcher.
