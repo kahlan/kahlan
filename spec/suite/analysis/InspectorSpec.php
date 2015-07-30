@@ -71,6 +71,9 @@ describe("Inspector", function() {
             $inspector = Inspector::parameters($this->class, 'parametersExample');
             expect(Inspector::typehint($inspector[0]))->toBe('');
 
+            $inspector = Inspector::parameters($this->class, 'parameterByReference');
+            expect(Inspector::typehint($inspector[0]))->toBe('');
+
         });
 
         it("returns parameter typehint", function() {

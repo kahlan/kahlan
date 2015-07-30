@@ -70,7 +70,7 @@ class Inspector
         $typehint = '';
         if ($parameter->getClass()) {
             $typehint = '\\' . $parameter->getClass()->getName();
-        } elseif (preg_match('/.*?\[ \<[^\>]+\> (\S+)(.*?)\$/', (string) $parameter, $match)) {
+        } elseif (preg_match('/.*?\[ \<[^\>]+\> (\w+)(.*?)\$/', (string) $parameter, $match)) {
             $typehint = $match[1];
         }
         return $typehint;
