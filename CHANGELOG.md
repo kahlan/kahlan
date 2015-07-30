@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.1.8 (2015-07-30)
+
+  * **Bugfix:** fixes an issue when stub needs to auto override methods where parameters are passed by reference.
+
 ## 1.1.7 (2015-07-27)
 
   * **Bugfix:** fixes a control structures issue when present in uppercase.
