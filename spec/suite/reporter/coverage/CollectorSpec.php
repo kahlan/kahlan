@@ -178,4 +178,20 @@ describe("Coverage", function() {
 
     });
 
+    describe("->realpath()", function() {
+
+        it("supports special chars", function() {
+
+            $collector = new Collector([
+                'driver' => new Xdebug(),
+                'path'   => $this->path,
+                'prefix' => '/a/weird~cache/path'
+            ]);
+
+            expect($collector->realpath('/a/weird~cache/path/home/user/project/src/filename.php'))->toBe('/home/user/project/src/filename.php');
+
+        });
+
+    });
+
 });

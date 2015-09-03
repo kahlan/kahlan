@@ -257,7 +257,8 @@ class Collector
      * @param   string  $file A file path.
      * @return  boolean
      */
-    public function collectable($file) {
+    public function collectable($file)
+    {
         $file = $this->realpath($file);
         if (preg_match("/eval\(\)'d code$/", $file) || !isset($this->_coverage[$file])) {
             return false;
@@ -271,8 +272,9 @@ class Collector
      * @param  string $file A file path or cached file path.
      * @return string       The original file path.
      */
-    public function realpath($file) {
-        $prefix = $this->_prefix;
+    public function realpath($file)
+    {
+        $prefix = preg_quote($this->_prefix, '~');
         return preg_replace("~^{$prefix}~", '', $file);
     }
 
@@ -283,17 +285,16 @@ class Collector
      */
     public function export($file = null)
     {
-        if (!$file) {
-            $result = [];
-            $base = $this->base();
-            foreach ($this->_coverage as $file => $coverage) {
-                $result[preg_replace("~^{$base}~", '', $file)] = $this->_coverage($file, $coverage);
-            }
-            return $result;
+        if ($file) {
+            return isset($this->_coverage[$file]) ? $this->_coverage($file, $this->_coverage[$file]) : [];
         }
-        return isset($this->_coverage[$file]) ? $this->_coverage($file, $this->_coverage[$file]) : [];
+        $result = [];
+        $base = preg_quote($this->base(), '~');
+        foreach ($this->_coverage as $file => $coverage) {
+            $result[preg_replace("~^{$base}~", '', $file)] = $this->_coverage($file, $coverage);
+        }
+        return $result;
     }
-
 
     /**
      * Gets the collected metrics from coverage data.
