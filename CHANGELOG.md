@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.1.9 (2015-09-03)
+
+  * **Bugfix:** escapes file path for coverage metrics.
+
 ## 1.1.8 (2015-07-30)
 
   * **Bugfix:** fixes an issue when stub needs to auto override methods where parameters are passed by reference.
