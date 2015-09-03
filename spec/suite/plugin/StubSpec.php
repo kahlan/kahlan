@@ -959,17 +959,13 @@ EOD;
 
             $expected = <<<EOD
 <?php
-namespace kahlan\\spec\\plugin\\stub;
+namespace kahlan\\\\spec\\\\plugin\\\\stub;
 
-class Stub extends \\LogicException {
+class Stub extends \\\\LogicException {
 
-    public function __construct(\$message = NULL, \$code = NULL, \$previous = NULL) {return parent::__construct(\$message, \$code, \$previous);}
-    public function __toString() {return parent::__toString();}
-
-}
-?>
+    public function __construct\\(\\\$message = NULL, \\\$code = NULL, \\\$previous = NULL\\)
 EOD;
-            expect($result)->toBe($expected);
+            expect($result)->toMatch('~' . $expected . '~i');
 
         });
 
