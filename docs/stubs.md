@@ -14,7 +14,7 @@ use kahlan\plugin\Stub;
 
 ### <a name="method-stubbing"></a>Method Stubbing
 
-`Subs::on()` can stub any existing methods on any class.
+`Stub::on()` can stub any existing methods on any class.
 
 ```php
 it("stubs a method", function() {
