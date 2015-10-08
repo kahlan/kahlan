@@ -1,7 +1,7 @@
 <?php
 namespace kahlan\reporter;
 
-use kahlan\util\Str;
+use kahlan\util\Text;
 
 class Bar extends Terminal
 {
@@ -154,7 +154,7 @@ class Bar extends Terminal
 
         $p = floor($percent * 100);
 
-        $string = Str::insert($this->_format, compact('p', 'b', 'i'));
+        $string = Text::insert($this->_format, compact('p', 'b', 'i'));
 
         $this->write("\r" . $string, $this->_color);
     }

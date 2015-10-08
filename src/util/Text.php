@@ -5,7 +5,7 @@ use Closure;
 use Exception;
 use InvalidArgumentException;
 
-class Str
+class Text
 {
     /**
      * Replaces variable placeholders inside a string with any given data. Each key
@@ -13,7 +13,7 @@ class Str
      *
      * Usage:
      * {{{
-     * Str::insert(
+     * Text::insert(
      *     'My name is {:name} and I am {:age} years old.', ['name' => 'Bob', 'age' => '65']
      * );
      * }}}
@@ -28,7 +28,7 @@ class Str
      *                           place-holder (defaults to `}`).
      *                         - `'escape'`: The character or string used to escape the before character or string
      *                           (defaults to `'\\'`).
-     *                         - `'clean'`: A boolean or array with instructions for `Str::clean()`.
+     *                         - `'clean'`: A boolean or array with instructions for `Text::clean()`.
      * @return string
      */
     public static function insert($str, $data, $options = [])
@@ -52,9 +52,9 @@ class Str
     }
 
     /**
-     * Cleans up a `Str::insert()` formatted string with given `$options` depending
+     * Cleans up a `Text::insert()` formatted string with given `$options` depending
      * on the `'clean'` option. The goal of this function is to replace all whitespace
-     * and unneeded mark-up around place-holders that did not get replaced by `Str::insert()`.
+     * and unneeded mark-up around place-holders that did not get replaced by `Text::insert()`.
      *
      * @param  string $str     The string to clean.
      * @param  array  $options Available options are:

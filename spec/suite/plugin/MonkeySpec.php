@@ -99,7 +99,7 @@ describe("Monkey", function() {
         it("patches a class", function() {
 
             $foo = new Foo();
-            Monkey::patch('kahlan\util\Str', 'kahlan\spec\suite\plugin\MyString');
+            Monkey::patch('kahlan\util\Text', 'kahlan\spec\suite\plugin\MyString');
             expect($foo->dump((object)'hello'))->toBe('myhashvalue');
 
         });

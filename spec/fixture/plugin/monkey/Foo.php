@@ -1,7 +1,7 @@
 <?php
 namespace kahlan\spec\fixture\plugin\monkey;
 
-use kahlan\util\Str;
+use kahlan\util\Text;
 
 function rand($min, $max) {
     return ($max - $min) / 2;
@@ -26,6 +26,6 @@ class Foo
 
     public function dump($value)
     {
-        return Str::dump($value);
+        return Text::dump($value);
     }
 }
