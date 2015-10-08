@@ -70,51 +70,58 @@ class Matcher
     /**
      * Registers a matcher.
      *
-     * @param string $name  The name of the matcher.
-     * @param string $class A fully-namespaced class name.
+     * @param string $name   The name of the matcher.
+     * @param string $target An optionnal target class name.
+     * @param string $class  A fully-namespaced class name.
      */
-    public static function register($name, $class)
+    public static function register($name, $class, $target = '')
     {
-        static::$_matchers[$name] = $class;
+        static::$_matchers[$name][$target] = $class;
     }
 
     /**
      * Returns registered matchers.
      *
-     * @param  string $name The name of the matcher.
-     * @return array        The registered matchers or a fully-namespaced class name if $name is not null.
+     * @param  string $name   The name of the matcher.
+     * @param  string $target An optionnal target class name.
+     * @return array          The registered matchers or a fully-namespaced class name if $name is not null.
      */
-    public static function get($name = null)
+    public static function get($name = null, $target = '')
     {
-        if ($name) {
-            return isset(static::$_matchers[$name]) ? static::$_matchers[$name] : null;
+        if (!$name) {
+            return static::$_matchers;
         }
-        return static::$_matchers;
+        if (isset(static::$_matchers[$name][$target])) {
+            return static::$_matchers[$name][$target];
+        } elseif (isset(static::$_matchers[$name][''])) {
+            return static::$_matchers[$name][''];
+        }
     }
 
     /**
      * Checks if a matcher is registered.
      *
-     * @param  string  $name The name of the matcher.
-     * @return boolean returns `true` if the matcher exists, `false` otherwise.
+     * @param  string  $name   The name of the matcher.
+     * @param  string  $target An optionnal target class name.
+     * @return boolean         Returns `true` if the matcher exists, `false` otherwise.
      */
-    public static function exists($name)
+    public static function exists($name, $target = '')
     {
-        return isset(static::$_matchers[$name]);
+        return isset(static::$_matchers[$name][$target]);
     }
 
     /**
      * Unregisters a matcher.
      *
-     * @param mixed $name The name of the matcher. If name is `true` unregister all
-     *        the matchers.
+     * @param mixed  $name   The name of the matcher. If name is `true` unregister all the matchers.
+     * @param string $target An optionnal target class name.
      */
-    public static function unregister($name)
+    public static function unregister($name, $target = '')
     {
         if ($name === true) {
             static::$_matchers = [];
         } else {
-            unset(static::$_matchers[$name]);
+            unset(static::$_matchers[$name][$target]);
         }
     }
 
@@ -142,10 +149,16 @@ class Matcher
      */
     public function __call($matcherName, $params)
     {
-        if (!isset(static::$_matchers[$matcherName])) {
-            throw new Exception("Error, undefined matcher `{$matcherName}`.");
+        $target = is_object($this->_actual) ? get_class($this->_actual) : '';
+
+        if (!isset(static::$_matchers[$matcherName][$target])) {
+            $target = '';
+            if (!isset(static::$_matchers[$matcherName][$target])) {
+                throw new Exception("Error, undefined matcher `{$matcherName}`.");
+            }
         }
-        $matcher = static::$_matchers[$matcherName];
+        $matcher = static::$_matchers[$matcherName][$target];
+
         array_unshift($params, $this->_actual);
         $result = call_user_func_array($matcher . '::match', $params);
         $params = Inspector::parameters($matcher, 'match', $params);
