@@ -118,7 +118,7 @@ describe("Matcher", function() {
 
             });
 
-            it('resets `not` to `false ` after any matcher call', function () {
+            it("resets `not` to `false ` after any matcher call", function () {
 
                 expect([])
                     ->not->toBeNull()
@@ -127,7 +127,18 @@ describe("Matcher", function() {
 
             });
 
-            it('loops until the timeout is reached on failure', function () {
+            it("doesn't wait when the spec passes", function () {
+
+                $start = microtime(true);
+                $matcher = new Matcher();
+                $result = $matcher->expect(true, $this->spec, 1000000)->toBe(true); // 1s
+                expect($this->spec->passed())->toBe(true);
+                $end = microtime(true);
+                expect($end - $start)->toBeLessThan(1);
+
+            });
+
+            it("loops until the timeout is reached on failure", function () {
 
                 $start = microtime(true);
                 $matcher = new Matcher();
@@ -297,6 +308,21 @@ describe("Matcher", function() {
         it("returns a registered matcher", function() {
 
             expect(Matcher::get('toBe'))->toBe('kahlan\matcher\ToBe');
+
+        });
+
+        it("returns the default registered matcher", function() {
+
+            expect(Matcher::get('toBe', 'stdClass'))->toBe('kahlan\matcher\ToBe');
+
+        });
+
+        it("returns a custom matcher when defined for a specific class", function() {
+
+            Matcher::register('toBe', 'kahlan\custom\ToBe', 'stdClass');
+
+            expect(Matcher::get('toBe', 'DateTime'))->toBe('kahlan\matcher\ToBe');
+            expect(Matcher::get('toBe', 'stdClass'))->toBe('kahlan\custom\ToBe');
 
         });
 
