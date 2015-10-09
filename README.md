@@ -97,7 +97,7 @@ Here is a sample composer.json to install Kahlan:
 Then install via:
 
 ```bash
-composer install --dev
+composer install
 ```
 
 Note:
