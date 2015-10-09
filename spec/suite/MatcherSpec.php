@@ -2,6 +2,7 @@
 namespace kahlan\spec\suite;
 
 use Exception;
+use RuntimeException;
 use stdClass;
 use DateTime;
 use kahlan\Spec;
@@ -261,7 +262,7 @@ describe("Matcher", function() {
                 $result = $matcher->expect([], $this->spec)->toEqualCustom(new stdClass());
             };
 
-            expect($closure)->toThrow(new Exception('Error, undefined matcher `toEqualCustom`.'));
+            expect($closure)->toThrow(new Exception('Error, undefined matcher `toEqualCustom` for `stdClass`.'));
 
         });
 
@@ -287,6 +288,16 @@ describe("Matcher", function() {
 
             expect(new stdClass())->toEqualCustom(new stdClass());
             expect(new stdClass())->not->toEqualCustom(new DateTime());
+
+        });
+
+        it("makes registered matchers for a specific class available for sub classes", function() {
+
+            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'kahlan\matcher\ToEqual']), 'Exception');
+            expect(Matcher::exists('toEqualCustom', 'Exception'))->toBe(true);
+            expect(Matcher::exists('toEqualCustom'))->toBe(false);
+
+            expect(new RuntimeException())->toEqualCustom(new RuntimeException());
 
         });
 
@@ -319,10 +330,10 @@ describe("Matcher", function() {
 
         it("returns a custom matcher when defined for a specific class", function() {
 
-            Matcher::register('toBe', 'kahlan\custom\ToBe', 'stdClass');
+            Matcher::register('toBe', 'kahlan\matcher\ToEqual', 'stdClass');
 
             expect(Matcher::get('toBe', 'DateTime'))->toBe('kahlan\matcher\ToBe');
-            expect(Matcher::get('toBe', 'stdClass'))->toBe('kahlan\custom\ToBe');
+            expect(Matcher::get('toBe', 'stdClass'))->toBe('kahlan\matcher\ToEqual');
 
         });
 

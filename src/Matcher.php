@@ -173,15 +173,26 @@ class Matcher
      */
     public function __call($matcherName, $params)
     {
-        $target = is_object($this->_actual) ? get_class($this->_actual) : '';
+        if (!isset(static::$_matchers[$matcherName])) {
+            throw new Exception("Error, undefined matcher `{$matcherName}`.");
+        }
 
-        if (!isset(static::$_matchers[$matcherName][$target])) {
-            $target = '';
-            if (!isset(static::$_matchers[$matcherName][$target])) {
-                throw new Exception("Error, undefined matcher `{$matcherName}`.");
+        $matcher = null;
+
+        foreach (static::$_matchers[$matcherName] as $target => $value) {
+            if ($target) {
+                if ($this->_actual instanceof $target) {
+                    $matcher = $value;
+                }
+            } else {
+                $matcher = $value;
             }
         }
-        $matcher = static::$_matchers[$matcherName][$target];
+
+        if (!$matcher) {
+            throw new Exception("Error, undefined matcher `{$matcherName}` for `{$target}`.");
+        }
+
         array_unshift($params, $this->_actual);
         $result = $this->_spin($matcher, $params);
 
