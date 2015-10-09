@@ -205,8 +205,8 @@ class Matcher
      * @param  array   $params  The parameters to pass to the matcher.
      * @return mixed
      */
-    protected function _spin($matcher, $params) {
-
+    protected function _spin($matcher, $params)
+    {
         if (!$timeout = $this->timeout()) {
             return call_user_func_array($matcher . '::match', $params);
         }
