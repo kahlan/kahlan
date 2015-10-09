@@ -83,13 +83,12 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
         return fit($message, $closure);
     }
 
-    /**
-     * @param $actual
-     *
-     * @return kahlan\Matcher
-     */
     function expect($actual) {
         return Spec::current()->expect($actual);
+    }
+
+    function wait($actual, $timeout = null) {
+        return Spec::current()->wait($actual, $timeout);
     }
 
     function skipIf($condition) {

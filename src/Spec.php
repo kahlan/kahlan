@@ -48,7 +48,18 @@ class Spec extends Scope
      */
     public function expect($actual)
     {
-        return $this->_matcher->expect($actual, $this, $this->timeout() * 1000000);
+        return $this->_matcher->expect($actual, $this);
+    }
+
+    /**
+     * The wait statement.
+     *
+     * @param mixed $actual The expression to check
+     */
+    public function wait($actual, $timeout = null)
+    {
+        $timeout = $timeout ?: $this->timeout();
+        return $this->_matcher->expect($actual, $this, $timeout * 1000000);
     }
 
     /**

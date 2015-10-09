@@ -65,6 +65,7 @@ describe("Scope", function() {
                 'run',
                 'skipIf',
                 'status',
+                'wait',
                 'fcontext',
                 'fdescribe',
                 'fit',

@@ -68,6 +68,7 @@ class Scope
         'skipIf'      => true,
         'status'      => true,
         'timeout'     => true,
+        'wait'        => true,
         'fdescribe'   => true,
         'fcontext'    => true,
         'fit'         => true,
