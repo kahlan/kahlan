@@ -151,6 +151,17 @@ describe("Matcher", function() {
 
             });
 
+            it("doesn't wait on failure when a negative expectation is expected", function () {
+
+                $start = microtime(true);
+                $matcher = new Matcher();
+                $result = $matcher->expect(true, $this->spec, 1000000)->not->toBe(false); // 1s
+                expect($this->spec->passed())->toBe(true);
+                $end = microtime(true);
+                expect($end - $start)->toBeLessThan(1);
+
+            });
+
         });
 
         context("when the matcher fails", function() {

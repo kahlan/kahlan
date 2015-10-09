@@ -228,7 +228,7 @@ class Matcher
 
         do {
             try {
-                if ($result = call_user_func_array($matcher . '::match', $params)) {
+                if (($result = call_user_func_array($matcher . '::match', $params)) == !$this->_not) {
                     return $result;
                 }
             } catch (Exception $e) {}
