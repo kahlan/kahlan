@@ -68,6 +68,13 @@ class Matcher
     protected $_deferred = [];
 
     /**
+     * The timeout value.
+     *
+     * @var integer
+     */
+    protected $_timeout = null;
+
+    /**
      * Registers a matcher.
      *
      * @param string $name   The name of the matcher.
@@ -126,16 +133,33 @@ class Matcher
     }
 
     /**
+     * Returns the spec instance.
+     */
+    public function spec()
+    {
+        return $this->_spec;
+    }
+
+    /**
+     * Returns the timeout value.
+     */
+    public function timeout()
+    {
+        return $this->_timeout;
+    }
+
+    /**
      * The expect statement.
      *
      * @param  mixed   $actual The expression to test.
      * @param  object  The spec context.
      * @return Matcher
      */
-    public function expect($actual, $spec)
+    public function expect($actual, $spec, $timeout = null)
     {
         $this->_not = false;
         $this->_spec = $spec;
+        $this->_timeout = $timeout;
         $this->_actual = $actual;
         return $this;
     }
@@ -158,9 +182,9 @@ class Matcher
             }
         }
         $matcher = static::$_matchers[$matcherName][$target];
-
         array_unshift($params, $this->_actual);
-        $result = call_user_func_array($matcher . '::match', $params);
+        $result = $this->_spin($matcher, $params);
+
         $params = Inspector::parameters($matcher, 'match', $params);
         if (!is_object($result)) {
             $data = compact('matcherName', 'matcher', 'params');
@@ -171,6 +195,35 @@ class Matcher
         $this->_deferred[] = compact('matcherName', 'matcher', 'params') + [
             'instance' => $result, 'not' => $this->_not
         ];
+        return $result;
+    }
+
+    /**
+     * Runs a matcher until it succeed or the timeout is reached.
+     *
+     * @param  string  $matcher The matcher class name.
+     * @param  array   $params  The parameters to pass to the matcher.
+     * @return mixed
+     */
+    protected function _spin($matcher, $params) {
+
+        if (!$timeout = $this->timeout()) {
+            return call_user_func_array($matcher . '::match', $params);
+        }
+
+        $timeout = ((float) $timeout) / 1000000;
+        $result = false;
+        $start = microtime(true);
+
+        do {
+            try {
+                if ($result = call_user_func_array($matcher . '::match', $params)) {
+                    return $result;
+                }
+            } catch (Exception $e) {}
+            $current = microtime(true);
+
+        } while ($current - $start < $timeout);
         return $result;
     }
 
@@ -209,7 +262,7 @@ class Matcher
             $data['params'] = $description['params'];
             $data['description'] = $description['description'];
         }
-        $this->_spec->report()->add($type, $data + compact('not'));
+        $this->spec()->report()->add($type, $data + compact('not'));
         $this->_not = false;
         return $boolean;
     }

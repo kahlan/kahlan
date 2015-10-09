@@ -127,6 +127,18 @@ describe("Matcher", function() {
 
             });
 
+            it('loops until the timeout is reached on failure', function () {
+
+                $start = microtime(true);
+                $matcher = new Matcher();
+                $result = $matcher->expect(true, $this->spec, 100000)->toBe(false); // 0.1s
+                expect($this->spec->passed())->toBe(false);
+                $end = microtime(true);
+                expect($end - $start)->toBeGreaterThan(0.1);
+                expect($end - $start)->toBeLessThan(0.2);
+
+            });
+
         });
 
         context("when the matcher fails", function() {
