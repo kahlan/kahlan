@@ -6,7 +6,6 @@ use InvalidArgumentException;
 
 use jit\Interceptor;
 use jit\Patchers;
-use jit\Parser;
 use kahlan\Arg;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\plugin\Stub;
@@ -14,7 +13,6 @@ use kahlan\IncompleteException;
 
 use kahlan\spec\fixture\plugin\pointcut\Foo;
 use kahlan\spec\fixture\plugin\pointcut\SubBar;
-use kahlan\spec\fixture\plugin\stub\AbstractDoz;
 
 describe("Stub", function() {
 

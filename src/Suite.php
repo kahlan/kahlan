@@ -4,7 +4,6 @@ namespace kahlan;
 use Exception;
 use Closure;
 use InvalidArgumentException;
-use kahlan\PhpErrorException;
 use kahlan\analysis\Debugger;
 
 class Suite extends Scope

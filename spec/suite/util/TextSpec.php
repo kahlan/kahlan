@@ -5,7 +5,6 @@ use stdClass;
 use Exception;
 use kahlan\util\Text;
 use kahlan\plugin\Stub;
-use InvalidArgumentException;
 
 describe("Text", function() {
 

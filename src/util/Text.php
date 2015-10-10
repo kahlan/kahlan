@@ -3,7 +3,6 @@ namespace kahlan\util;
 
 use Closure;
 use Exception;
-use InvalidArgumentException;
 
 class Text
 {

@@ -1,8 +1,6 @@
 <?php
 namespace kahlan\cli;
 
-use Exception;
-use box\Box;
 use dir\Dir;
 use jit\Interceptor;
 use jit\Patchers;
@@ -10,8 +8,6 @@ use filter\Filter;
 use filter\behavior\Filterable;
 use kahlan\Suite;
 use kahlan\Matcher;
-use kahlan\cli\Cli;
-use kahlan\cli\Args;
 use kahlan\jit\patcher\DummyClass;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\jit\patcher\Monkey;
@@ -24,7 +20,6 @@ use kahlan\reporter\Bar;
 use kahlan\reporter\Terminal;
 use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
-use kahlan\reporter\coverage\driver\HHVM;
 use kahlan\reporter\coverage\exporter\Clover;
 use Composer\Script\Event;
 

@@ -1,8 +1,6 @@
 <?php
 namespace kahlan\reporter;
 
-use kahlan\cli\Cli;
-use kahlan\analysis\Debugger;
 
 class Verbose extends Terminal
 {
