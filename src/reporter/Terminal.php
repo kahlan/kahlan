@@ -1,7 +1,7 @@
 <?php
 namespace kahlan\reporter;
 
-use kahlan\util\Str;
+use kahlan\util\Text;
 use kahlan\cli\Cli;
 use kahlan\analysis\Debugger;
 
@@ -273,7 +273,7 @@ EOD;
             $toString = function($instance) {
                 return 'an instance of `' . get_class($instance) . '`';
             };
-            $this->write("({$type}) " . Str::toString($value, ['object' => ['method' => $toString]]));
+            $this->write("({$type}) " . Text::toString($value, ['object' => ['method' => $toString]]));
             $this->prefix('');
             $this->write("\n");
         }
@@ -285,7 +285,7 @@ EOD;
         $msg = '`' . get_class($exception) .'` Code(' . $exception->getCode() . ') with ';
         $message = $exception->getMessage();
         if ($message) {
-            $msg .= 'message '. Str::dump($exception->getMessage());
+            $msg .= 'message '. Text::dump($exception->getMessage());
         } else {
             $msg .= 'no message';
         }

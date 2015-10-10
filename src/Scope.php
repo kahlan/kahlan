@@ -67,6 +67,8 @@ class Scope
         'run'         => true,
         'skipIf'      => true,
         'status'      => true,
+        'timeout'     => true,
+        'wait'        => true,
         'fdescribe'   => true,
         'fcontext'    => true,
         'fit'         => true,
@@ -171,6 +173,13 @@ class Scope
     protected $_locked = false;
 
     /**
+     * The timeout value.
+     *
+     * @var integer
+     */
+    protected $_timeout = null;
+
+    /**
      * The Constructor.
      *
      * @param array $options The Suite config array. Options are:
@@ -183,7 +192,8 @@ class Scope
         $defaults = [
             'message' => '',
             'parent'  => null,
-            'root'    => null
+            'root'    => null,
+            'timeout' => null
         ];
         $options += $defaults;
         extract($options);
@@ -192,6 +202,7 @@ class Scope
         $this->_parent    = $parent;
         $this->_root      = $parent ? $parent->_root : $this;
         $this->_report    = new Report(['scope' => $this]);
+        $this->_timeout   = $timeout;
         $this->_backtrace = Debugger::focus($this->backtraceFocus(), Debugger::backtrace(), 1);
     }
 
@@ -519,6 +530,19 @@ class Scope
     public function reporters()
     {
         return $this->_root->_reporters;
+    }
+
+    /**
+     * Gets/sets the timeout.
+     *
+     * @return integer
+     */
+    public function timeout($timeout = null)
+    {
+        if (func_num_args()) {
+            $this->_timeout = $timeout;
+        }
+        return $this->_timeout;
     }
 
 }

@@ -52,6 +52,17 @@ class Spec extends Scope
     }
 
     /**
+     * The wait statement.
+     *
+     * @param mixed $actual The expression to check
+     */
+    public function wait($actual, $timeout = null)
+    {
+        $timeout = $timeout ?: $this->timeout();
+        return $this->_matcher->expect($actual, $this, $timeout * 1000000);
+    }
+
+    /**
      * Processes a child specs.
      *
      * @see kahlan\Suite::process()

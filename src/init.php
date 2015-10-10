@@ -25,32 +25,32 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
         return Suite::current()->afterEach($closure);
     }
 
-    function describe($message, $closure, $scope = 'normal') {
+    function describe($message, $closure, $timeout = null, $scope = 'normal') {
         if (!Suite::current()) {
             $suite = box('kahlan')->get('suite.global');
-            return $suite->describe($message, $closure, $scope);
+            return $suite->describe($message, $closure, $timeout, $scope);
         }
-        return Suite::current()->describe($message, $closure, $scope);
+        return Suite::current()->describe($message, $closure, $timeout, $scope);
     }
 
-    function context($message, $closure, $scope = 'normal') {
-        return Suite::current()->context($message, $closure, $scope);
+    function context($message, $closure, $timeout = null, $scope = 'normal') {
+        return Suite::current()->context($message, $closure, $timeout, $scope);
     }
 
-    function it($message, $closure = null, $scope = 'normal') {
-        return Suite::current()->it($message, $closure, $scope);
+    function it($message, $closure, $timeout = null, $scope = 'normal') {
+        return Suite::current()->it($message, $closure, $timeout, $scope);
     }
 
-    function fdescribe($message, $closure) {
-        return describe($message, $closure, 'focus');
+    function fdescribe($message, $closure, $timeout = null) {
+        return describe($message, $closure, $timeout, 'focus');
     }
 
-    function fcontext($message, $closure) {
-        return context($message, $closure, 'focus');
+    function fcontext($message, $closure, $timeout = null) {
+        return context($message, $closure, $timeout, 'focus');
     }
 
-    function fit($message, $closure = null) {
-        return it($message, $closure, 'focus');
+    function fit($message, $closure = null, $timeout = null) {
+        return it($message, $closure, $timeout, 'focus');
     }
 
     function xdescribe($message, $closure) {
@@ -83,13 +83,12 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
         return fit($message, $closure);
     }
 
-    /**
-     * @param $actual
-     *
-     * @return kahlan\Matcher
-     */
     function expect($actual) {
         return Spec::current()->expect($actual);
+    }
+
+    function wait($actual, $timeout = null) {
+        return Spec::current()->wait($actual, $timeout);
     }
 
     function skipIf($condition) {

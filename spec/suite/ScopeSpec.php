@@ -65,6 +65,7 @@ describe("Scope", function() {
                 'run',
                 'skipIf',
                 'status',
+                'wait',
                 'fcontext',
                 'fdescribe',
                 'fit',
@@ -293,6 +294,20 @@ describe("Scope", function() {
             expect($report->type())->toBe('incomplete');
             expect($report->messages())->toBe(['it runs a spec']);
             expect($report->backtrace())->toBeAn('array');
+
+        });
+
+    });
+
+    describe("->timeout()", function() {
+
+        it("gets/sets the timeout value", function() {
+
+            $this->scope->timeout(5);
+            expect($this->scope->timeout())->toBe(5);
+
+            $this->scope->timeout(null);
+            expect($this->scope->timeout())->toBe(null);
 
         });
 

@@ -2,6 +2,7 @@
 namespace kahlan;
 
 use Exception;
+use Closure;
 use InvalidArgumentException;
 use kahlan\PhpErrorException;
 use kahlan\analysis\Debugger;
@@ -117,11 +118,12 @@ class Suite extends Scope
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function describe($message, $closure, $scope = 'normal')
+    public function describe($message, $closure, $timeout = null, $scope = 'normal')
     {
         $parent = $this;
         $name = 'describe';
-        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'scope'));
+        $timeout = $timeout !== null ? $timeout : $this->timeout();
+        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'timeout', 'scope'));
         return $this->_childs[] = $suite;
     }
 
@@ -132,11 +134,12 @@ class Suite extends Scope
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function context($message, $closure, $scope = 'normal')
+    public function context($message, $closure, $timeout = null, $scope = 'normal')
     {
         $parent = $this;
         $name = 'context';
-        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'scope'));
+        $timeout = $timeout !== null ? $timeout : $this->timeout();
+        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'timeout', 'scope'));
         return $this->_childs[] = $suite;
     }
 
@@ -144,21 +147,24 @@ class Suite extends Scope
      * Adds a spec.
      *
      * @param  string|Closure $message Description message or a test closure.
-     * @param  Closure|null   $closure A test case closure or `null`.
+     * @param  Closure        $closure A test case closure.
      * @param  string         $scope   The scope.
      * @return $this
      */
-    public function it($message, $closure = null, $scope = 'normal')
+    public function it($message, $closure = null, $timeout = null, $scope = 'normal')
     {
         static $inc = 1;
-        if ($closure === null) {
+        if ($message instanceof Closure) {
+            $scope = $timeout;
+            $timeout = $closure;
             $closure = $message;
             $message = "spec #" . $inc++;
         }
         $parent = $this;
         $root = $this->_root;
         $matcher = $this->_root->_matcher;
-        $spec = new Spec(compact('message', 'closure', 'parent', 'root', 'scope', 'matcher'));
+        $timeout = $timeout !== null ? $timeout : $this->timeout();
+        $spec = new Spec(compact('message', 'closure', 'parent', 'root', 'timeout', 'scope', 'matcher'));
         $this->_childs[] = $spec;
         return $this;
     }
@@ -203,9 +209,9 @@ class Suite extends Scope
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function fdescribe($message, $closure)
+    public function fdescribe($message, $closure, $timeout = null)
     {
-        return $this->describe($message, $closure, 'focus');
+        return $this->describe($message, $closure, $timeout, 'focus');
     }
 
     /**
@@ -215,9 +221,9 @@ class Suite extends Scope
      * @param  Closure $closure A test case closure.
      * @return $this
      */
-    public function fcontext($message, $closure)
+    public function fcontext($message, $closure, $timeout = null)
     {
-        return $this->context($message, $closure, 'focus');
+        return $this->context($message, $closure, $timeout, 'focus');
     }
 
     /**
@@ -227,9 +233,9 @@ class Suite extends Scope
      * @param  Closure|null   $closure A test case closure or `null`.
      * @return $this
      */
-    public function fit($message, $closure = null)
+    public function fit($message, $closure = null, $timeout = null)
     {
-        return $this->it($message, $closure, 'focus');
+        return $this->it($message, $closure, $timeout, 'focus');
     }
 
     /**
