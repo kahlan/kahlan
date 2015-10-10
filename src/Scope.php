@@ -177,7 +177,7 @@ class Scope
      *
      * @var integer
      */
-    protected $_timeout = null;
+    protected $_timeout = 0;
 
     /**
      * The Constructor.
@@ -193,7 +193,7 @@ class Scope
             'message' => '',
             'parent'  => null,
             'root'    => null,
-            'timeout' => null
+            'timeout' => 0
         ];
         $options += $defaults;
         extract($options);

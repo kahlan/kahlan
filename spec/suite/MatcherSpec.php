@@ -132,7 +132,7 @@ describe("Matcher", function() {
 
                 $start = microtime(true);
                 $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec, 1000000)->toBe(true); // 1s
+                $result = $matcher->expect(true, $this->spec, 1)->toBe(true);
                 expect($this->spec->passed())->toBe(true);
                 $end = microtime(true);
                 expect($end - $start)->toBeLessThan(1);
@@ -143,7 +143,7 @@ describe("Matcher", function() {
 
                 $start = microtime(true);
                 $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec, 100000)->toBe(false); // 0.1s
+                $result = $matcher->expect(true, $this->spec, 0.1)->toBe(false);
                 expect($this->spec->passed())->toBe(false);
                 $end = microtime(true);
                 expect($end - $start)->toBeGreaterThan(0.1);
@@ -155,7 +155,7 @@ describe("Matcher", function() {
 
                 $start = microtime(true);
                 $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec, 1000000)->not->toBe(false); // 1s
+                $result = $matcher->expect(true, $this->spec, 1)->not->toBe(false);
                 expect($this->spec->passed())->toBe(true);
                 $end = microtime(true);
                 expect($end - $start)->toBeLessThan(1);

@@ -51,7 +51,7 @@ describe("Spec", function() {
 
             $matcher = $this->spec->wait('actual', 10);
             expect($matcher)->toBeAnInstanceOf('kahlan\Matcher');
-            expect($matcher->timeout())->toBe(10000000);
+            expect($matcher->timeout())->toBe(10);
 
             $matcher = $this->spec->expect('actual');
             expect($matcher)->toBeAnInstanceOf('kahlan\Matcher');

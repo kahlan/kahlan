@@ -56,10 +56,10 @@ class Spec extends Scope
      *
      * @param mixed $actual The expression to check
      */
-    public function wait($actual, $timeout = null)
+    public function wait($actual, $timeout = 0)
     {
         $timeout = $timeout ?: $this->timeout();
-        return $this->_matcher->expect($actual, $this, $timeout * 1000000);
+        return $this->_matcher->expect($actual, $this, $timeout);
     }
 
     /**

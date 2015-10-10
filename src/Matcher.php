@@ -2,6 +2,7 @@
 namespace kahlan;
 
 use Exception;
+use kahlan\util\Timeout;
 use kahlan\analysis\Inspector;
 
 /**
@@ -194,7 +195,13 @@ class Matcher
         }
 
         array_unshift($params, $this->_actual);
-        $result = $this->_spin($matcher, $params);
+
+        try {
+            $result = $this->_spin($matcher, $params);
+        } catch (Exception $e) {
+            $result = $this->_not;
+            $actual['params']['timeout'] = $e->getMessage();
+        }
 
         $params = Inspector::parameters($matcher, 'match', $params);
         if (!is_object($result)) {
@@ -222,20 +229,16 @@ class Matcher
             return call_user_func_array($matcher . '::match', $params);
         }
 
-        $timeout = ((float) $timeout) / 1000000;
-        $result = false;
-        $start = microtime(true);
+        $not = $this->_not;
 
-        do {
-            try {
-                if (($result = call_user_func_array($matcher . '::match', $params)) == !$this->_not) {
-                    return $result;
-                }
-            } catch (Exception $e) {}
-            $current = microtime(true);
+        $closure = function() use ($matcher, $params, $not) {
+            $result = call_user_func_array($matcher . '::match', $params);
+            if ($result == !$this->_not) {
+                return $result;
+            }
+        };
 
-        } while ($current - $start < $timeout);
-        return $result;
+        return Timeout::spin($closure, $timeout);
     }
 
     /**
