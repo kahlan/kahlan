@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
+        "php": ">=5.5",
         "crysalead/jit": "~1.0",
         "crysalead/box": "~1.0",
         "crysalead/filter": "~1.0",

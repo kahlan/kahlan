@@ -29,7 +29,7 @@ See the whole [documentation here](http://kahlan.readthedocs.org/en/latest).
 
 ## Requirements
 
- * PHP 5.4+
+ * PHP 5.5+
  * Composer
  * [Xdebug](http://xdebug.org/) (if you want to perform code coverage analysis)
 
