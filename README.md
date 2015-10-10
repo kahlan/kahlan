@@ -36,7 +36,6 @@ See the whole [documentation here](http://kahlan.readthedocs.org/en/latest).
 ## Main Features
 
 * Simple API
-* Small code base (~10 times smaller than PHPUnit)
 * Fast Code Coverage metrics ([xdebug](http://xdebug.org) required)
 * Handy stubbing system ([mockery](https://github.com/padraic/mockery) or [prophecy](https://github.com/phpspec/prophecy) are no longer needed)
 * Set stubs on your class methods directly (i.e allows dynamic mocking)
@@ -44,6 +43,7 @@ See the whole [documentation here](http://kahlan.readthedocs.org/en/latest).
 * Check called methods on your class/instances
 * Built-in Reporters/Exporters (Terminal, Coveralls, Code Climate, Scrutinizer, Clover)
 * Extensible, customizable workflow
+* Small code base (~10 times smaller than PHPUnit)
 
 ## Syntax
 
@@ -69,11 +69,14 @@ describe("Example", function() {
 
 ## Screenshots
 
-Example of error reporting:
-![Kahlan](docs/assets/kahlan.png)
+### Example of default reporting:
+![dot_reporter](docs/assets/dot_reporter.png)
 
-Example of detailed code coverage on a specific scope:
-![code_coverage_example](docs/assets/code_coverage_example.png)
+### Example of verbose reporting:
+![verbose_reporter](docs/assets/verbose_reporter.png)
+
+### Example of code coverage on a specific scope:
+![code_coverage](docs/assets/code_coverage.png)
 
 ## Installation
 
