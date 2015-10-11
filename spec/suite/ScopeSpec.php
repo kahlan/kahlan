@@ -40,7 +40,6 @@ describe("Scope", function() {
                 'afterEach',
                 'before',
                 'beforeEach',
-                'clear',
                 'context',
                 'current',
                 'describe',

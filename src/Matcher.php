@@ -4,6 +4,7 @@ namespace kahlan;
 use Exception;
 use kahlan\util\Timeout;
 use kahlan\analysis\Inspector;
+use kahlan\analysis\Debugger;
 
 /**
  * Class Matcher
@@ -41,11 +42,18 @@ class Matcher
     protected static $_matchers = [];
 
     /**
-     * The spec context instance.
+     * Stores the success value.
      *
-     * @var object
+     * @var boolean
      */
-    protected $_spec = null;
+    protected $_passed = true;
+
+    /**
+     * The result logs.
+     *
+     * @var array
+     */
+    protected $_logs = [];
 
     /**
      * The current value to test.
@@ -134,11 +142,11 @@ class Matcher
     }
 
     /**
-     * Returns the spec instance.
+     * Returns the logs.
      */
-    public function spec()
+    public function logs()
     {
-        return $this->_spec;
+        return $this->_logs;
     }
 
     /**
@@ -152,14 +160,13 @@ class Matcher
     /**
      * The expect statement.
      *
-     * @param  mixed   $actual The expression to test.
-     * @param  object  The spec context.
+     * @param  mixed   $actual  The expression to test.
+     * @param  integer $timeout Some optionnal timeout.
      * @return Matcher
      */
-    public function expect($actual, $spec, $timeout = null)
+    public function expect($actual, $timeout = 0)
     {
         $this->_not = false;
-        $this->_spec = $spec;
         $this->_timeout = $timeout;
         $this->_actual = $actual;
         return $this;
@@ -269,16 +276,34 @@ class Matcher
     {
         $not = $this->_not;
         $pass = $not ? !$boolean : $boolean;
-        $type = $pass ? 'pass' : 'fail';
+        if ($pass) {
+            $data['type'] = 'pass';
+        } else {
+            $data['type'] ='fail';
+            $this->_passed = false;
+        }
 
         $description = $data['description'];
         if (is_array($description)) {
             $data['params'] = $description['params'];
             $data['description'] = $description['description'];
         }
-        $this->spec()->report()->add($type, $data + compact('not'));
+        $data['backtrace'] = Debugger::backtrace();
+        $data['not'] = $not;
+
+        $this->_logs[] = $data;
         $this->_not = false;
         return $boolean;
+    }
+
+    /**
+     * Checks if all test passed.
+     *
+     * @return boolean Returns `true` if no error occurred, `false` otherwise.
+     */
+    public function passed()
+    {
+        return $this->_passed;
     }
 
     /**
@@ -288,10 +313,19 @@ class Matcher
      */
     public function __get($name)
     {
-        if ($name === 'not') {
-            $this->_not = !$this->_not;
-            return $this;
+        if ($name !== 'not') {
+            return;
         }
+        $this->_not = !$this->_not;
+        return $this;
+    }
+
+    /**
+     * Clears the instance.
+     */
+    public function clear()
+    {
+        $this->_logs = [];
     }
 
     /**

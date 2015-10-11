@@ -428,7 +428,7 @@ describe("Stub", function() {
 
     });
 
-    describe("::clear()", function() {
+    describe("::reset()", function() {
 
         beforeEach(function() {
 
@@ -439,14 +439,14 @@ describe("Stub", function() {
 
         it("clears all stubs", function() {
 
-            Stub::clear();
+            Stub::reset();
             expect(Stub::registered())->toBe([]);
 
         });
 
         it("clears one stub", function() {
 
-            Stub::clear('kahlan\spec\fixture\plugin\pointcut\Foo');
+            Stub::reset('kahlan\spec\fixture\plugin\pointcut\Foo');
             expect(Stub::registered())->toBe([
                 'kahlan\spec\fixture\plugin\pointcut\Bar'
             ]);

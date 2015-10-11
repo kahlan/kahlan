@@ -91,16 +91,17 @@ class Suite extends Scope
         $defaults = [
             'closure' => null,
             'name'    => 'describe',
-            'scope'   => 'normal',
-            'matcher' => null
+            'scope'   => 'normal'
         ];
         $options += $defaults;
         parent::__construct($options);
 
+        $matcher = $this->_classes['matcher'];
+        $this->_matcher = new $matcher();
+
         extract($options);
 
         if ($this->_root === $this) {
-            $this->_matcher = $matcher;
             return;
         }
         $closure = $this->_bind($closure, $name);
@@ -161,7 +162,8 @@ class Suite extends Scope
         }
         $parent = $this;
         $root = $this->_root;
-        $matcher = $this->_root->_matcher;
+        $matcher = $this->_classes['matcher'];
+        $matcher = new $matcher();
         $timeout = $timeout !== null ? $timeout : $this->timeout();
         $spec = new Specification(compact('message', 'closure', 'parent', 'root', 'timeout', 'scope', 'matcher'));
         $this->_childs[] = $spec;
@@ -431,6 +433,19 @@ class Suite extends Scope
     }
 
     /**
+     * Checks if all test passed.
+     *
+     * @return boolean Returns `true` if no error occurred, `false` otherwise.
+     */
+    public function passed()
+    {
+        if (empty($this->_results['failed']) && empty($this->_results['exceptions']) && empty($this->_results['incomplete'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Gets number of total specs.
      *
      * @return integer
@@ -558,8 +573,12 @@ class Suite extends Scope
     public function autoclear()
     {
         foreach ($this->_root->_autoclear as $plugin) {
-            if (method_exists($plugin, 'clear')) {
-                is_object($plugin) ? $plugin->clear() : $plugin::clear();
+            if (is_object($plugin)) {
+                if (method_exists($plugin, 'clear')) {
+                    $plugin->clear();
+                }
+            } elseif (method_exists($plugin, 'reset')) {
+                $plugin::reset();
             }
         }
     }
@@ -621,7 +640,7 @@ class Suite extends Scope
     /**
      * Clears the registered hash.
      */
-    public static function clear()
+    public static function reset()
     {
         static::$_registered = [];
     }

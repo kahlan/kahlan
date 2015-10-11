@@ -43,7 +43,7 @@ class Monkey
      *
       * @param string $source A fully-namespaced reference string or `null` to clear all.
      */
-    public static function clear($source = null)
+    public static function reset($source = null)
     {
         if ($source === null) {
             static::$_registered = [];

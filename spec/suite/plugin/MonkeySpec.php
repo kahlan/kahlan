@@ -109,7 +109,7 @@ describe("Monkey", function() {
             Monkey::patch('kahlan\spec\fixture\plugin\monkey\rand', 'kahlan\spec\suite\plugin\myrand');
             expect($foo->rand(0, 100))->toBe(101);
 
-            Monkey::clear('kahlan\spec\fixture\plugin\monkey\rand');
+            Monkey::reset('kahlan\spec\fixture\plugin\monkey\rand');
             expect($foo->rand(0, 100))->toBe(50);
 
         });

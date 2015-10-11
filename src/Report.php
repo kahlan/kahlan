@@ -279,11 +279,11 @@ class Report
         if (isset($data['exception'])) {
             return Debugger::backtrace(['trace' => $data['exception']]);
         }
-        if (!isset($data['backtrace'])) {
-            $data['backtrace'] = Debugger::backtrace();
-        }
         $type = $data['type'];
         $depth = ($type === 'pass' || $type === 'fail' | $type === 'skip') ? 1 : null;
+        if (!isset($data['backtrace'])) {
+            $data['backtrace'] = [];
+        }
         return Debugger::focus($this->scope()->backtraceFocus(), $data['backtrace'], $depth);
     }
 }

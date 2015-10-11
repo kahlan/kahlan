@@ -7,6 +7,15 @@ use kahlan\analysis\Debugger;
 class Scope
 {
     /**
+     * Class dependencies.
+     *
+     * @var array
+     */
+    protected $_classes = [
+        'matcher' => 'kahlan\Matcher'
+    ];
+
+    /**
      * Instances stack.
      *
      * @var array
@@ -42,7 +51,6 @@ class Scope
         'afterEach'   => true,
         'before'      => true,
         'beforeEach'  => true,
-        'clear'       => true,
         'context'     => true,
         'current'     => true,
         'describe'    => true,
@@ -192,9 +200,11 @@ class Scope
             'message' => '',
             'parent'  => null,
             'root'    => null,
-            'timeout' => 0
+            'timeout' => 0,
+            'classes' => []
         ];
         $options += $defaults;
+        $this->_classes += $options['classes'];
         extract($options);
 
         $this->_message   = $message;
@@ -450,19 +460,6 @@ class Scope
     public function results()
     {
         return $this->_results;
-    }
-
-    /**
-     * Checks if all test passed.
-     *
-     * @return boolean Returns `true` if no error occurred, `false` otherwise.
-     */
-    public function passed()
-    {
-        if (empty($this->_results['failed']) && empty($this->_results['exceptions']) && empty($this->_results['incomplete'])) {
-            return true;
-        }
-        return false;
     }
 
     /**

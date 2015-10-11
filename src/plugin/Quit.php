@@ -53,7 +53,7 @@ class Quit
     /**
      * Clear class to default values.
      */
-    public static function clear()
+    public static function reset()
     {
         static::$_enabled = true;
     }

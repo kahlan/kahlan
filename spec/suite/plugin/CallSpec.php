@@ -6,7 +6,7 @@ use kahlan\plugin\Call;
 describe("Call", function() {
 
     beforeEach(function() {
-        Call::clear();
+        Call::reset();
     });
 
     describe("::log()", function() {

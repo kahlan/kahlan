@@ -808,7 +808,7 @@ describe("Suite", function() {
 
     });
 
-    describe("::clear()", function() {
+    describe("::reset()", function() {
 
         it("clears registered hashes", function() {
 
@@ -819,7 +819,7 @@ describe("Suite", function() {
 
             expect(Suite::registered($hash))->toBe(true);
 
-            Suite::clear();
+            Suite::reset();
 
             expect(Suite::registered($hash))->toBe(false);
 

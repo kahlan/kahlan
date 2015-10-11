@@ -199,10 +199,10 @@ class Call
     /**
      * Clears the registered references & logs.
      */
-    public static function clear()
+    public static function reset()
     {
         static::$_logs = [];
         static::$_index = 0;
-        Suite::clear();
+        Suite::reset();
     }
 }

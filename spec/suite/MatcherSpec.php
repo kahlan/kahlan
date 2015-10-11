@@ -12,252 +12,24 @@ use kahlan\plugin\Stub;
 describe("Matcher", function() {
 
     beforeEach(function() {
-
-        $this->spec = new Specification([
-            'message' => 'runs a spec',
-            'closure' => function() {}
-        ]);
-
         $this->matchers = Matcher::get();
-
     });
 
     afterEach(function() {
-
         foreach ($this->matchers as $name => $value) {
             foreach ($value as $for => $class) {
                 Matcher::register($name, $class, $for);
             }
         }
-
     });
 
     describe("->__call()", function() {
-
-        context("when the matcher passes", function() {
-
-            it("logs a pass", function() {
-
-                $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec)->toBe(true);
-                expect($this->spec->passed())->toBe(true);
-
-                $passed = $this->spec->results()['passed'];
-                expect($passed)->toHaveLength(1);
-
-                $pass = reset($passed);
-
-                expect($pass->matcher())->toBe('kahlan\matcher\ToBe');
-                expect($pass->matcherName())->toBe('toBe');
-                expect($pass->not())->toBe(false);
-                expect($pass->type())->toBe('pass');
-                expect($pass->params())->toBe([
-                    'actual'   => true,
-                    'expected' => true
-                ]);
-                expect($pass->messages())->toBe(['it runs a spec']);
-
-            });
-
-            it("logs a pass with a deferred matcher", function() {
-
-                $matcher = new Matcher();
-                $stub = Stub::create();
-                $result = $matcher->expect($stub, $this->spec)->toReceive('methodName');
-                $stub->methodName();
-                $matcher->resolve();
-
-                expect($this->spec->passed())->toBe(true);
-
-                $passes = $this->spec->results()['passed'];
-                expect($passes)->toHaveLength(1);
-
-                $pass = reset($passes);
-
-                expect($pass->matcher())->toBe('kahlan\matcher\ToReceive');
-                expect($pass->matcherName())->toBe('toReceive');
-                expect($pass->not())->toBe(false);
-                expect($pass->type())->toBe('pass');
-                expect($pass->params())->toBe([
-                    'actual with'   => [],
-                    'expected with' => []
-                ]);
-                expect($pass->messages())->toBe(['it runs a spec']);
-
-            });
-
-            it("logs the not attribute", function() {
-
-                $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec)->not->toBe(false);
-                expect($this->spec->passed())->toBe(true);
-
-                $passes = $this->spec->results()['passed'];
-                expect($passes)->toHaveLength(1);
-
-                $pass = reset($passes);
-
-                expect($pass->not())->toBe(true);
-
-            });
-
-            it("logs the not attribute with a deferred matcher", function() {
-
-                $matcher = new Matcher();
-                $stub = Stub::create();
-                $result = $matcher->expect($stub, $this->spec)->not->toReceive('methodName');
-                $matcher->resolve();
-
-                expect($this->spec->passed())->toBe(true);
-
-                $passes = $this->spec->results()['passed'];
-                expect($passes)->toHaveLength(1);
-
-                $pass = reset($passes);
-
-                expect($pass->not())->toBe(true);
-
-            });
-
-            it("resets `not` to `false ` after any matcher call", function () {
-
-                expect([])
-                    ->not->toBeNull()
-                    ->toBeA('array')
-                    ->toBeEmpty();
-
-            });
-
-            it("doesn't wait when the spec passes", function () {
-
-                $start = microtime(true);
-                $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec, 1)->toBe(true);
-                expect($this->spec->passed())->toBe(true);
-                $end = microtime(true);
-                expect($end - $start)->toBeLessThan(1);
-
-            });
-
-            it("loops until the timeout is reached on failure", function () {
-
-                $start = microtime(true);
-                $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec, 0.1)->toBe(false);
-                expect($this->spec->passed())->toBe(false);
-                $end = microtime(true);
-                expect($end - $start)->toBeGreaterThan(0.1);
-                expect($end - $start)->toBeLessThan(0.2);
-
-            });
-
-            it("doesn't wait on failure when a negative expectation is expected", function () {
-
-                $start = microtime(true);
-                $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec, 1)->not->toBe(false);
-                expect($this->spec->passed())->toBe(true);
-                $end = microtime(true);
-                expect($end - $start)->toBeLessThan(1);
-
-            });
-
-        });
-
-        context("when the matcher fails", function() {
-
-            it("logs a fail", function() {
-
-                $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec)->toBe(false);
-                expect($this->spec->passed())->toBe(false);
-
-                $failured = $this->spec->results()['failed'];
-                expect($failured)->toHaveLength(1);
-
-                $failure = reset($failured);
-
-                expect($failure->matcher())->toBe('kahlan\matcher\ToBe');
-                expect($failure->matcherName())->toBe('toBe');
-                expect($failure->not())->toBe(false);
-                expect($failure->type())->toBe('fail');
-                expect($failure->params())->toBe([
-                    'actual'   => true,
-                    'expected' => false
-                ]);
-                expect($failure->messages())->toBe(['it runs a spec']);
-                expect($failure->backtrace())->toBeAn('array');
-            });
-
-            it("logs a fail with a deferred matcher", function() {
-
-                $matcher = new Matcher();
-                $stub = Stub::create();
-                $result = $matcher->expect($stub, $this->spec)->toReceive('methodName');
-                $matcher->resolve();
-
-                expect($this->spec->passed())->toBe(false);
-
-                $failured = $this->spec->results()['failed'];
-                expect($failured)->toHaveLength(1);
-
-                $failure = reset($failured);
-
-                expect($failure->matcher())->toBe('kahlan\matcher\ToReceive');
-                expect($failure->matcherName())->toBe('toReceive');
-                expect($failure->not())->toBe(false);
-                expect($failure->type())->toBe('fail');
-                expect($failure->params())->toBe([
-                    'actual received' =>['__construct'],
-                    'expected' => 'methodName'
-                ]);
-                expect($failure->description())->toBe('receive the correct message.');
-                expect($failure->messages())->toBe(['it runs a spec']);
-                expect($failure->backtrace())->toBeAn('array');
-
-            });
-
-            it("logs the not attribute", function() {
-
-                $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec)->not->toBe(true);
-                expect($this->spec->passed())->toBe(false);
-
-                $failures = $this->spec->results()['failed'];
-                expect($failures)->toHaveLength(1);
-
-                $failure = reset($failures);
-
-                expect($failure->not())->toBe(true);
-
-            });
-
-            it("logs the not attribute with a deferred matcher", function() {
-
-                $matcher = new Matcher();
-                $stub = Stub::create();
-                $result = $matcher->expect($stub, $this->spec)->not->toReceive('methodName');
-                $stub->methodName();
-                $matcher->resolve();
-
-                expect($this->spec->passed())->toBe(false);
-
-                $failures = $this->spec->results()['failed'];
-                expect($failures)->toHaveLength(1);
-
-                $failure = reset($failures);
-
-                expect($failure->not())->toBe(true);
-
-            });
-
-        });
 
         it("throws an exception when using an undefined matcher name", function() {
 
             $closure = function() {
                 $matcher = new Matcher();
-                $result = $matcher->expect(true, $this->spec)->toHelloWorld(true);
+                $result = $matcher->expect(true)->toHelloWorld(true);
             };
 
             expect($closure)->toThrow(new Exception('Error, undefined matcher `toHelloWorld`.'));
@@ -270,10 +42,41 @@ describe("Matcher", function() {
 
             $closure = function() {
                 $matcher = new Matcher();
-                $result = $matcher->expect([], $this->spec)->toEqualCustom(new stdClass());
+                $result = $matcher->expect([])->toEqualCustom(new stdClass());
             };
 
             expect($closure)->toThrow(new Exception('Error, undefined matcher `toEqualCustom` for `stdClass`.'));
+
+        });
+
+        it("doesn't wait when the spec passes", function () {
+
+            $start = microtime(true);
+            $matcher = new Matcher();
+            $result = $matcher->expect(true, 1)->toBe(true);
+            $end = microtime(true);
+            expect($end - $start)->toBeLessThan(1);
+
+        });
+
+        it("loops until the timeout is reached on failure", function () {
+
+            $start = microtime(true);
+            $matcher = new Matcher();
+            $result = $matcher->expect(true, 0.1)->toBe(false);
+            $end = microtime(true);
+            expect($end - $start)->toBeGreaterThan(0.1);
+            expect($end - $start)->toBeLessThan(0.2);
+
+        });
+
+        it("doesn't wait on failure when a negative expectation is expected", function () {
+
+            $start = microtime(true);
+            $matcher = new Matcher();
+            $result = $matcher->expect(true, 1)->not->toBe(false);
+            $end = microtime(true);
+            expect($end - $start)->toBeLessThan(1);
 
         });
 

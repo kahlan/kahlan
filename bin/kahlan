@@ -24,16 +24,8 @@ use kahlan\cli\Kahlan;
 
 $box = box('kahlan', new Box());
 
-$box->factory('matcher', function() {
-    return new Matcher();
-});
-
-$box->factory('suite', function() {
-    return new Suite(['matcher' => $this->get('matcher')]);
-});
-
 $box->service('suite.global', function() {
-    return $this->get('suite');
+    return new Suite();
 });
 
 $specs = new Kahlan([

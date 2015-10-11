@@ -6,6 +6,13 @@ use Exception;
 class Specification extends Scope
 {
     /**
+     * Stores the success value.
+     *
+     * @var boolean
+     */
+    protected $_passed = true;
+
+    /**
      * The matcher instance.
      *
      * @var object
@@ -24,18 +31,18 @@ class Specification extends Scope
     {
         $defaults = [
             'closure' => null,
-            'scope'   => 'normal',
-            'matcher' => null
+            'scope'   => 'normal'
         ];
         $options += $defaults;
         $options['message'] = 'it ' . $options['message'];
         parent::__construct($options);
 
+        $matcher = $this->_classes['matcher'];
+        $this->_matcher = new $matcher();
+
         extract($options);
 
         $this->_closure = $this->_bind($closure, 'it');
-        $this->_matcher = $options['matcher'];
-
         if ($scope === 'focus') {
             $this->_emitFocus();
         }
@@ -48,7 +55,7 @@ class Specification extends Scope
      */
     public function expect($actual)
     {
-        return $this->_matcher->expect($actual, $this);
+        return $this->_matcher->expect($actual);
     }
 
     /**
@@ -59,7 +66,7 @@ class Specification extends Scope
     public function wait($actual, $timeout = 0)
     {
         $timeout = $timeout ?: $this->timeout();
-        return $this->_matcher->expect($actual, $this, $timeout);
+        return $this->_matcher->expect($actual, $timeout);
     }
 
     /**
@@ -74,12 +81,18 @@ class Specification extends Scope
             return;
         }
 
+        $result = null;
+
         try {
             $this->_specStart();
             try {
-                $this->run();
+                $result = $this->run();
             } catch (Exception $exception) {
                 $this->_exception($exception);
+            } finally {
+                foreach ($this->_matcher->logs() as $log) {
+                    $this->report()->add($log['type'], $log);
+                }
             }
             $this->_specEnd();
         } catch (Exception $exception) {
@@ -88,6 +101,8 @@ class Specification extends Scope
                 $this->_specEnd();
             } catch (Exception $exception) {}
         }
+
+        return $result;
     }
 
     /**
@@ -96,7 +111,9 @@ class Specification extends Scope
     protected function _specStart()
     {
         $this->emitReport('specStart', $this->report());
-        $this->_parent->runCallbacks('beforeEach');
+        if ($this->_parent) {
+            $this->_parent->runCallbacks('beforeEach');
+        }
     }
 
     /**
@@ -104,6 +121,10 @@ class Specification extends Scope
      */
     protected function _specEnd()
     {
+        if (!$this->_parent) {
+            $this->emitReport('specEnd', $this->report());
+            return;
+        }
         $this->_parent->runCallbacks('afterEach');
         $this->emitReport('specEnd', $this->report());
         $this->_parent->autoclear();
@@ -121,17 +142,31 @@ class Specification extends Scope
         $this->_locked = true;
         static::$_instances[] = $this;
 
+        $result = null;
         $closure = $this->_closure;
 
         try {
-            $closure($this);
+            $result = $closure($this);
             $this->_matcher->resolve();
-        } catch (Exception $exception) {
-            $this->_exception($exception);
+            $this->_passed = $this->_matcher->passed();
+        } catch (Exception $e) {
+            $this->_passed = false;
+            throw $e;
+        } finally {
+            array_pop(static::$_instances);
+            $this->_locked = false;
         }
 
-        array_pop(static::$_instances);
-        $this->_locked = false;
+        return $result;
     }
 
+    /**
+     * Checks if all test passed.
+     *
+     * @return boolean Returns `true` if no error occurred, `false` otherwise.
+     */
+    public function passed()
+    {
+        return $this->_passed;
+    }
 }

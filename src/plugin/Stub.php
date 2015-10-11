@@ -574,11 +574,11 @@ EOT;
      *
      * @param string $reference An instance or a fully namespaced class name or `null` to clear all.
      */
-    public static function clear($reference = null)
+    public static function reset($reference = null)
     {
         if ($reference === null) {
             static::$_registered = [];
-            Suite::clear();
+            Suite::reset();
             return;
         }
         unset(static::$_registered[Suite::hash($reference)]);
