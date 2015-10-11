@@ -5,7 +5,7 @@ use Exception;
 use RuntimeException;
 use stdClass;
 use DateTime;
-use kahlan\Spec;
+use kahlan\Specification;
 use kahlan\Matcher;
 use kahlan\plugin\Stub;
 
@@ -13,7 +13,7 @@ describe("Matcher", function() {
 
     beforeEach(function() {
 
-        $this->spec = new Spec([
+        $this->spec = new Specification([
             'message' => 'runs a spec',
             'closure' => function() {}
         ]);

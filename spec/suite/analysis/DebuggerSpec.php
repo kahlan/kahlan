@@ -56,7 +56,7 @@ describe("Debugger", function() {
             expect($backtrace)->toBeA('string');
 
             $trace = current(explode("\n", $backtrace));
-            expect($trace)->toMatch('/kahlan\/src\/Spec.php/');
+            expect($trace)->toMatch('/kahlan\/src\/Specification.php/');
 
         });
 

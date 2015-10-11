@@ -1,6 +1,6 @@
 <?php
 use kahlan\Suite;
-use kahlan\Spec;
+use kahlan\Specification;
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
@@ -84,15 +84,15 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
     }
 
     function expect($actual) {
-        return Spec::current()->expect($actual);
+        return Specification::current()->expect($actual);
     }
 
     function wait($actual, $timeout = null) {
-        return Spec::current()->wait($actual, $timeout);
+        return Specification::current()->wait($actual, $timeout);
     }
 
     function skipIf($condition) {
-        $current = Spec::current() ?: Suite::current();
+        $current = Specification::current() ?: Suite::current();
         return $current->skipIf($condition);
     }
 }

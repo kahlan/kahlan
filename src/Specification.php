@@ -3,7 +3,7 @@ namespace kahlan;
 
 use Exception;
 
-class Spec extends Scope
+class Specification extends Scope
 {
     /**
      * The matcher instance.

@@ -163,7 +163,7 @@ class Suite extends Scope
         $root = $this->_root;
         $matcher = $this->_root->_matcher;
         $timeout = $timeout !== null ? $timeout : $this->timeout();
-        $spec = new Spec(compact('message', 'closure', 'parent', 'root', 'timeout', 'scope', 'matcher'));
+        $spec = new Specification(compact('message', 'closure', 'parent', 'root', 'timeout', 'scope', 'matcher'));
         $this->_childs[] = $spec;
         return $this;
     }

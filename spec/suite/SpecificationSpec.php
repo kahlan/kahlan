@@ -2,14 +2,14 @@
 namespace kahlan\spec\suite;
 
 use Exception;
-use kahlan\Spec;
+use kahlan\Specification;
 use kahlan\Matcher;
 
-describe("Spec", function() {
+describe("Specification", function() {
 
     beforeEach(function() {
 
-        $this->spec = new Spec([
+        $this->spec = new Specification([
             'message' => 'runs a spec',
             'matcher' => new Matcher(),
             'closure' => function() {}
@@ -22,7 +22,7 @@ describe("Spec", function() {
         it("throws an exception with invalid closure", function() {
 
             $closure = function() {
-                $this->spec = new Spec([
+                $this->spec = new Specification([
                     'message' => 'runs a spec',
                     'closure' => null
                 ]);
