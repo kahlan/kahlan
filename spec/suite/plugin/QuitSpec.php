@@ -2,7 +2,6 @@
 namespace kahlan\spec\suite\plugin;
 
 use jit\Interceptor;
-use jit\Parser;
 use kahlan\QuitException;
 use kahlan\plugin\Quit;
 use kahlan\jit\patcher\Quit as QuitPatcher;

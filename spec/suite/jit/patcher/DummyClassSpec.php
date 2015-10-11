@@ -5,7 +5,6 @@ use jit\Interceptor;
 use kahlan\IncompleteException;
 use kahlan\jit\patcher\DummyClass as DummyClassPatcher;
 use kahlan\plugin\DummyClass;
-use kahlan\plugin\Stub;
 
 describe("DummyClass", function() {
 

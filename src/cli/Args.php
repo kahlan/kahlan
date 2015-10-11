@@ -1,7 +1,6 @@
 <?php
 namespace kahlan\cli;
 
-use Exception;
 
 class Args {
 

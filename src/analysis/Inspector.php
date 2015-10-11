@@ -1,8 +1,6 @@
 <?php
 namespace kahlan\analysis;
 
-use Exception;
-use SplFileObject;
 use ReflectionClass;
 
 class Inspector

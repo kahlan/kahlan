@@ -2,7 +2,6 @@
 namespace kahlan;
 
 use Exception;
-use kahlan\SkipException;
 use kahlan\analysis\Debugger;
 
 class Scope

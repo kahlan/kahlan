@@ -2,7 +2,6 @@
 namespace kahlan\spec\suite\matcher;
 
 use jit\Interceptor;
-use jit\Parser;
 use kahlan\Arg;
 use kahlan\plugin\Stub;
 use kahlan\jit\patcher\Pointcut;

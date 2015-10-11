@@ -4,7 +4,6 @@ namespace kahlan\spec\suite;
 use Exception;
 use kahlan\SkipException;
 use kahlan\IncompleteException;
-use kahlan\Arg;
 use kahlan\Scope;
 
 describe("Scope", function() {

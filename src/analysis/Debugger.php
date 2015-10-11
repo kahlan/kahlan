@@ -2,7 +2,6 @@
 namespace kahlan\analysis;
 
 use Exception;
-use ReflectionClass;
 
 /**
  * The `Debugger` class provides basic facilities for generating and rendering meta-data about the

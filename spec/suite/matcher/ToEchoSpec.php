@@ -1,7 +1,6 @@
 <?php
 namespace kahlan\spec\suite\matcher;
 
-use stdClass;
 use kahlan\matcher\ToEcho;
 
 describe("toEcho", function() {

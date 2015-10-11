@@ -1,7 +1,6 @@
 <?php
 namespace kahlan\util;
 
-use Closure;
 use Exception;
 use InvalidArgumentException;
 

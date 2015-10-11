@@ -1,7 +1,6 @@
 <?php
 namespace kahlan\spec\suite\cli;
 
-use Exception;
 use kahlan\cli\Args;
 
 describe("Args", function() {

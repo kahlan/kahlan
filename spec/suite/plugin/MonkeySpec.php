@@ -3,7 +3,6 @@ namespace kahlan\spec\suite\plugin;
 
 use DateTime;
 use jit\Interceptor;
-use jit\Parser;
 use kahlan\plugin\Monkey;
 use kahlan\jit\patcher\Monkey as MonkeyPatcher;
 

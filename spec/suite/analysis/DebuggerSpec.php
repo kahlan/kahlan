@@ -4,7 +4,6 @@ namespace kahlan\spec\suite\analysis;
 use Exception;
 use kahlan\analysis\Debugger;
 use kahlan\plugin\Stub;
-use kahlan\spec\fixture\analysis\Evaluation;
 
 describe("Debugger", function() {
 
