@@ -2,9 +2,9 @@
 namespace kahlan\spec\suite;
 
 use Exception;
-use RuntimeException;
 use stdClass;
 use DateTime;
+use SplMaxHeap;
 use kahlan\Specification;
 use kahlan\Matcher;
 use kahlan\plugin\Stub;
@@ -49,11 +49,11 @@ describe("Matcher", function() {
 
         it("makes registered matchers for a specific class available for sub classes", function() {
 
-            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'kahlan\matcher\ToEqual']), 'Exception');
-            expect(Matcher::exists('toEqualCustom', 'Exception'))->toBe(true);
+            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'kahlan\matcher\ToEqual']), 'SplHeap');
+            expect(Matcher::exists('toEqualCustom', 'SplHeap'))->toBe(true);
             expect(Matcher::exists('toEqualCustom'))->toBe(false);
 
-            expect(new RuntimeException())->toEqualCustom(new RuntimeException());
+            expect(new SplMaxHeap())->toEqualCustom(new SplMaxHeap());
 
         });
 
