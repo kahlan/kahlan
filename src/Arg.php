@@ -15,11 +15,18 @@ class Arg
     ];
 
     /**
-     * The fully namespaced matcher classname.
+     * The matcher name.
      *
      * @var string
      */
-    protected $_matcher = '';
+    protected $_name = '';
+
+    /**
+     * The array of fully namespaced matcher classname.
+     *
+     * @var array
+     */
+    protected $_matchers = [];
 
     /**
      * The expected params.
@@ -45,12 +52,13 @@ class Arg
      */
     public function __construct($config = [])
     {
-        $defaults = ['not' => false, 'matchers' => [], 'params' => []];
+        $defaults = ['name' => '', 'not' => false, 'matchers' => [], 'params' => []];
         $config += $defaults;
 
-        $this->_not     = $config['not'];
+        $this->_name     = $config['name'];
+        $this->_not      = $config['not'];
         $this->_matchers = $config['matchers'];
-        $this->_params  = $config['params'];
+        $this->_params   = $config['params'];
     }
 
     /**
@@ -71,9 +79,8 @@ class Arg
         }
         $class = static::$_classes['matcher'];
         if ($matchers = $class::get($matcher, true)) {
-            return new static(compact('matchers', 'not', 'params'));
+            return new static(compact('name', 'matchers', 'not', 'params'));
         }
-        throw new Exception("Error, undefined matcher `{$name}`.");
     }
 
     /**
@@ -84,6 +91,7 @@ class Arg
      */
     public function match($actual)
     {
+        $matcher = null;
         foreach ($this->_matchers as $target => $value) {
             if (!$target) {
                 $matcher = $value;
@@ -94,7 +102,7 @@ class Arg
             }
         }
         if (!$matcher) {
-            throw new Exception("Error, undefined argument matcher for `{$target}`.");
+            throw new Exception("Unexisting matcher attached to `'{$this->_name}'` for `{$target}`.");
         }
         $params = $this->_params;
         array_unshift($params, $actual);

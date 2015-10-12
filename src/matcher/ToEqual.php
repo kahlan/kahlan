@@ -14,7 +14,6 @@ class ToEqual
     {
         $actual = static::_nl($actual);
         $expected = static::_nl($expected);
-
         return $actual == $expected;
     }
 
