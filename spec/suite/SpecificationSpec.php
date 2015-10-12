@@ -46,15 +46,15 @@ describe("Specification", function() {
 
     });
 
-    describe("->wait()", function() {
+    describe("->waitsFor()", function() {
 
         it("returns the matcher instance setted with the correct timeout", function() {
 
-            $matcher = $this->spec->wait('actual', 10);
+            $matcher = $this->spec->waitsFor(function(){}, 10);
             expect($matcher)->toBeAnInstanceOf('kahlan\Matcher');
             expect($matcher->timeout())->toBe(10);
 
-            $matcher = $this->spec->expect('actual');
+            $matcher = $this->spec->waitsFor(function(){});
             expect($matcher)->toBeAnInstanceOf('kahlan\Matcher');
             expect($matcher->timeout())->toBe(0);
 

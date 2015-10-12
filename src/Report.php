@@ -266,7 +266,7 @@ class Report
         $this->_type = ($data['type'] !== 'pass') ? $data['type'] : 'pass';
         $child = new static($data + ['scope' => $this->_scope]);
         $this->_childs[] = $child;
-        $this->scope()->log($child);
+        $this->scope()->dispatch($child);
     }
 
     /**

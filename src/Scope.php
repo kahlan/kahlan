@@ -54,6 +54,7 @@ class Scope
         'context'     => true,
         'current'     => true,
         'describe'    => true,
+        'dispatch'    => true,
         'emitReport'  => true,
         'focus'       => true,
         'focused'     => true,
@@ -61,7 +62,8 @@ class Scope
         'failfast'    => true,
         'hash'        => true,
         'it'          => true,
-        'log'         => true,
+        'logs'        => true,
+        'matcher'     => true,
         'message'     => true,
         'messages'    => true,
         'passed'      => true,
@@ -481,12 +483,12 @@ class Scope
     }
 
     /**
-     * Logs a report up to the root scope.
+     * Dispatches a report up to the root scope.
      * It only logs expectations report.
      *
      * @param object $report The report object to log.
      */
-    public function log($report)
+    public function dispatch($report)
     {
         $resultType = $this->_resultTypes[$report->type()];
         $this->_root->_results[$resultType][] = $report;

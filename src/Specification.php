@@ -1,6 +1,7 @@
 <?php
 namespace kahlan;
 
+use Closure;
 use Exception;
 
 class Specification extends Scope
@@ -31,6 +32,7 @@ class Specification extends Scope
     {
         $defaults = [
             'closure' => null,
+            'message' => 'passes',
             'scope'   => 'normal'
         ];
         $options += $defaults;
@@ -59,14 +61,16 @@ class Specification extends Scope
     }
 
     /**
-     * The wait statement.
+     * The waitsFor statement.
      *
      * @param mixed $actual The expression to check
      */
-    public function wait($actual, $timeout = 0)
+    public function waitsFor($actual, $timeout = 0)
     {
         $timeout = $timeout ?: $this->timeout();
-        return $this->_matcher->expect($actual, $timeout);
+        $actual = $actual instanceof Closure ? $actual : function() {return $actual;};
+        $spec = new static(['closure' => $actual]);
+        return $this->_matcher->expect($spec, $timeout);
     }
 
     /**
@@ -90,7 +94,7 @@ class Specification extends Scope
             } catch (Exception $exception) {
                 $this->_exception($exception);
             } finally {
-                foreach ($this->_matcher->logs() as $log) {
+                foreach ($this->logs() as $log) {
                     $this->report()->add($log['type'], $log);
                 }
             }
@@ -146,6 +150,7 @@ class Specification extends Scope
         $closure = $this->_closure;
 
         try {
+            $this->_matcher->clear();
             $result = $closure($this);
             $this->_matcher->resolve();
             $this->_passed = $this->_matcher->passed();
@@ -169,4 +174,15 @@ class Specification extends Scope
     {
         return $this->_passed;
     }
+
+    /**
+     * Returns execution log.
+     *
+     * @return array
+     */
+    public function logs()
+    {
+        return $this->_matcher->logs();
+    }
+
 }

@@ -3,6 +3,7 @@ namespace kahlan;
 
 use Exception;
 use kahlan\util\Timeout;
+use kahlan\util\TimeoutException;
 use kahlan\analysis\Inspector;
 use kahlan\analysis\Debugger;
 
@@ -34,6 +35,15 @@ use kahlan\analysis\Debugger;
  */
 class Matcher
 {
+    /**
+     * Class dependencies.
+     *
+     * @var array
+     */
+    protected $_classes = [
+        'specification' => 'kahlan\Specification'
+    ];
+
     /**
      * The matchers list
      *
@@ -181,6 +191,28 @@ class Matcher
      */
     public function __call($matcherName, $params)
     {
+        $result = $this->_spin($matcherName, $params, $data);
+
+        if (!is_object($result)) {
+            $data['description'] = $data['matcher']::description();
+            $this->_result($result, $data);
+            return $this;
+        }
+        $this->_deferred[] = $data + [
+            'instance' => $result, 'not' => $this->_not
+        ];
+        return $result;
+    }
+
+    /**
+     * Returns a compatible matcher class name according to a passed actual value.
+     *
+     * @param  string $name   The name of the matcher.
+     * @param  string $actual The actual value.
+     * @return string         A matcher class name.
+     */
+    public function _matcher($matcherName, $actual)
+    {
         if (!isset(static::$_matchers[$matcherName])) {
             throw new Exception("Error, undefined matcher `{$matcherName}`.");
         }
@@ -188,11 +220,11 @@ class Matcher
         $matcher = null;
 
         foreach (static::$_matchers[$matcherName] as $target => $value) {
-            if ($target) {
-                if ($this->_actual instanceof $target) {
-                    $matcher = $value;
-                }
-            } else {
+            if (!$target) {
+                $matcher = $value;
+                continue;
+            }
+            if ($actual instanceof $target) {
                 $matcher = $value;
             }
         }
@@ -201,51 +233,57 @@ class Matcher
             throw new Exception("Error, undefined matcher `{$matcherName}` for `{$target}`.");
         }
 
-        array_unshift($params, $this->_actual);
-
-        try {
-            $result = $this->_spin($matcher, $params);
-        } catch (Exception $e) {
-            $result = $this->_not;
-            $actual['params']['timeout'] = $e->getMessage();
-        }
-
-        $params = Inspector::parameters($matcher, 'match', $params);
-        if (!is_object($result)) {
-            $data = compact('matcherName', 'matcher', 'params');
-            $data['description'] = $matcher::description();
-            $this->_result($result, $data);
-            return $this;
-        }
-        $this->_deferred[] = compact('matcherName', 'matcher', 'params') + [
-            'instance' => $result, 'not' => $this->_not
-        ];
-        return $result;
+        return $matcher;
     }
 
     /**
      * Runs a matcher until it succeed or the timeout is reached.
      *
      * @param  string  $matcher The matcher class name.
-     * @param  array   $params  The parameters to pass to the matcher.
+     * @param  array   $args  The parameters to pass to the matcher.
      * @return mixed
      */
-    protected function _spin($matcher, $params)
+    protected function _spin($matcherName, $args, &$data)
     {
-        if (!$timeout = $this->timeout()) {
-            return call_user_func_array($matcher . '::match', $params);
-        }
+        $result = true;
+        $spec = $this->_actual;
+        $specification = $this->_classes['specification'];
 
-        $not = $this->_not;
-
-        $closure = function() use ($matcher, $params, $not) {
-            $result = call_user_func_array($matcher . '::match', $params);
-            if ($result == !$this->_not) {
-                return $result;
+        $closure = function() use ($spec, $specification, $matcherName, $args, &$actual, &$result) {
+            if ($spec instanceof $specification) {
+                $actual = $spec->run();
+                if (!$spec->passed()) {
+                    return false;
+                }
+            } else {
+                $actual = $spec;
             }
+            array_unshift($args, $actual);
+            $matcher = $this->_matcher($matcherName, $actual);
+            $result = call_user_func_array($matcher . '::match', $args);
+            return is_object($result) || $result === !$this->_not;
         };
 
-        return Timeout::spin($closure, $timeout);
+        try {
+            if (!$timeout = $this->timeout()) {
+                $closure();
+            } else {
+                Timeout::spin($closure, $timeout);
+            }
+        } catch (TimeoutException $e) {
+            $data['params']['timeout'] = $e->getMessage();
+        } finally {
+            array_unshift($args, $actual);
+            $matcher = $this->_matcher($matcherName, $actual);
+            $params = Inspector::parameters($matcher, 'match', $args);
+            $data = compact('matcherName', 'matcher', 'params');
+            if ($spec instanceof $specification) {
+                foreach ($spec->logs() as $value) {
+                    $this->_logs[] = $value;
+                }
+            }
+        }
+        return $result;
     }
 
     /**
@@ -326,6 +364,7 @@ class Matcher
     public function clear()
     {
         $this->_logs = [];
+        $this->_passed = true;
     }
 
     /**

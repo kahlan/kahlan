@@ -87,8 +87,8 @@ if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
         return Specification::current()->expect($actual);
     }
 
-    function wait($actual, $timeout = null) {
-        return Specification::current()->wait($actual, $timeout);
+    function waitsFor($actual, $timeout = null) {
+        return Specification::current()->waitsFor($actual, $timeout);
     }
 
     function skipIf($condition) {
