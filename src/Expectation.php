@@ -2,8 +2,8 @@
 namespace kahlan;
 
 use Exception;
-use kahlan\util\Timeout;
-use kahlan\util\TimeoutException;
+use code\Code;
+use code\TimeoutException;
 use kahlan\analysis\Inspector;
 use kahlan\analysis\Debugger;
 
@@ -216,7 +216,7 @@ class Expectation
             if (!$timeout = $this->timeout()) {
                 $closure();
             } else {
-                Timeout::spin($closure, $timeout);
+                Code::spin($closure, $timeout, true);
             }
         } catch (TimeoutException $e) {
             $data['params']['timeout'] = $e->getMessage();
@@ -252,7 +252,7 @@ class Expectation
             if (!$timeout = $this->timeout()) {
                 $closure();
             } else {
-                Timeout::spin($closure, $timeout);
+                Code::spin($closure, $timeout, true);
             }
         } catch (TimeoutException $e) {
         } finally {
