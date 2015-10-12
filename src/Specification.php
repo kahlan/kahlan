@@ -21,28 +21,33 @@ class Specification extends Scope
     protected $_matcher = null;
 
     /**
+     * List of expectations.
+     */
+    protected $_expectations = [];
+
+    /**
      * Constructor.
      *
-     * @param array $options The Suite config array. Options are:
+     * @param array $config The Suite config array. Options are:
      *                       -`'closure'` _Closure_ : the closure of the test.
      *                       -`'scope'`   _string_  : supported scope are `'normal'` & `'focus'`.
      *                       -`'matcher'` _object_  : the matcher instance.
      */
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
         $defaults = [
             'closure' => null,
             'message' => 'passes',
             'scope'   => 'normal'
         ];
-        $options += $defaults;
-        $options['message'] = 'it ' . $options['message'];
-        parent::__construct($options);
+        $config += $defaults;
+        $config['message'] = 'it ' . $config['message'];
+        parent::__construct($config);
 
         $matcher = $this->_classes['matcher'];
         $this->_matcher = new $matcher();
 
-        extract($options);
+        extract($config);
 
         $this->_closure = $this->_bind($closure, 'it');
         if ($scope === 'focus') {

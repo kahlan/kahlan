@@ -81,13 +81,13 @@ class Collector
     /**
      * The Constructor.
      *
-     * @param array $options Possible options values are:
-     *                       - `'driver'` _object_: the driver instance which will log the coverage data.
-     *                       - `'path'`   _array_ : the path(s) which contain the code source files.
-     *                       - `'base'`   _string_: the base path of the repo (default: `getcwd`).
-     *                       - `'prefix'` _string_: some prefix to remove to get the real file path.
+     * @param array $config Possible options values are:
+     *                    - `'driver'` _object_: the driver instance which will log the coverage data.
+     *                    - `'path'`   _array_ : the path(s) which contain the code source files.
+     *                    - `'base'`   _string_: the base path of the repo (default: `getcwd`).
+     *                    - `'prefix'` _string_: some prefix to remove to get the real file path.
      */
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
         $defaults = [
             'driver'         => null,
@@ -101,20 +101,20 @@ class Collector
             'recursive'      => true,
             'base'           => str_replace(DIRECTORY_SEPARATOR, '/', getcwd())
         ];
-        $options += $defaults;
+        $config += $defaults;
 
         if (Interceptor::instance()) {
-            $options += ['prefix' => rtrim(Interceptor::instance()->cachePath(), DS)];
+            $config += ['prefix' => rtrim(Interceptor::instance()->cachePath(), DS)];
         } else {
-            $options += ['prefix' => ''];
+            $config += ['prefix' => ''];
         }
 
-        $this->_driver = $options['driver'];
-        $this->_paths  = (array) $options['path'];
-        $this->_base   = $options['base'];
-        $this->_prefix = $options['prefix'];
+        $this->_driver = $config['driver'];
+        $this->_paths  = (array) $config['path'];
+        $this->_base   = $config['base'];
+        $this->_prefix = $config['prefix'];
 
-        $files = Dir::scan($this->_paths, $options);
+        $files = Dir::scan($this->_paths, $config);
         foreach ($files as $file) {
             $this->_coverage[realpath($file)] = [];
         }

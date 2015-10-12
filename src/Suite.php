@@ -80,26 +80,26 @@ class Suite extends Scope
     /**
      * The Constructor.
      *
-     * @param array $options The Suite config array. Options are:
+     * @param array $config The Suite config array. Options are:
      *                       -`'closure'` _Closure_: the closure of the test.
      *                       -`'name'`    _string_ : the type of the suite.
      *                       -`'scope'`   _string_ : supported scope are `'normal'` & `'focus'`.
      *                       -`'matcher'` _object_ : the matcher instance.
      */
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
         $defaults = [
             'closure' => null,
             'name'    => 'describe',
             'scope'   => 'normal'
         ];
-        $options += $defaults;
-        parent::__construct($options);
+        $config += $defaults;
+        parent::__construct($config);
 
         $matcher = $this->_classes['matcher'];
         $this->_matcher = new $matcher();
 
-        extract($options);
+        extract($config);
 
         if ($this->_root === $this) {
             return;

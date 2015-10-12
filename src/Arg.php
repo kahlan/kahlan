@@ -38,19 +38,19 @@ class Arg
     /**
      * Constructor
      *
-     * @param array $options The argument matcher options. Possible values are:
-     *                       - `'not'`     _boolean_: indicate if the matcher is a negative matcher.
-     *                       - `'matcher'` _string_ : the fully namespaced matcher class name.
-     *                       - `'params'`  _string_ : the expected parameters.
+     * @param array $config The argument matcher options. Possible values are:
+     *                      - `'not'`     _boolean_: indicate if the matcher is a negative matcher.
+     *                      - `'matcher'` _string_ : the fully namespaced matcher class name.
+     *                      - `'params'`  _string_ : the expected parameters.
      */
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
         $defaults = ['not' => false, 'matcher' => '', 'params' => []];
-        $options += $defaults;
+        $config += $defaults;
 
-        $this->_not     = $options['not'];
-        $this->_matcher = $options['matcher'];
-        $this->_params  = $options['params'];
+        $this->_not     = $config['not'];
+        $this->_matcher = $config['matcher'];
+        $this->_params  = $config['params'];
     }
 
     /**

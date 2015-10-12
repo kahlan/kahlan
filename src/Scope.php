@@ -191,12 +191,12 @@ class Scope
     /**
      * The Constructor.
      *
-     * @param array $options The Suite config array. Options are:
+     * @param array $config The Suite config array. Options are:
      *                       -`'message'` _string_ : the description message.
      *                       -`'parent'`  _object_ : the parent scope.
      *                       -`'root'`    _object_ : the root scope.
      */
-    public function __construct($options = [])
+    public function __construct($config = [])
     {
         $defaults = [
             'message' => '',
@@ -205,9 +205,9 @@ class Scope
             'timeout' => 0,
             'classes' => []
         ];
-        $options += $defaults;
-        $this->_classes += $options['classes'];
-        extract($options);
+        $config += $defaults;
+        $this->_classes += $config['classes'];
+        extract($config);
 
         $this->_message   = $message;
         $this->_parent    = $parent;
