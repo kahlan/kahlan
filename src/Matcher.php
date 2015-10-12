@@ -2,10 +2,6 @@
 namespace kahlan;
 
 use Exception;
-use kahlan\util\Timeout;
-use kahlan\util\TimeoutException;
-use kahlan\analysis\Inspector;
-use kahlan\analysis\Debugger;
 
 /**
  * Class Matcher
@@ -52,48 +48,6 @@ class Matcher
     protected static $_matchers = [];
 
     /**
-     * Stores the success value.
-     *
-     * @var boolean
-     */
-    protected $_passed = true;
-
-    /**
-     * The result logs.
-     *
-     * @var array
-     */
-    protected $_logs = [];
-
-    /**
-     * The current value to test.
-     *
-     * @var mixed
-     */
-    protected $_actual = null;
-
-    /**
-     * If `true`, the result of the test will be inverted.
-     *
-     * @var boolean
-     */
-    protected $_not = false;
-
-    /**
-     * Deferred expectation.
-     *
-     * @var boolean
-     */
-    protected $_deferred = [];
-
-    /**
-     * The timeout value.
-     *
-     * @var integer
-     */
-    protected $_timeout = null;
-
-    /**
      * Registers a matcher.
      *
      * @param string $name   The name of the matcher.
@@ -114,14 +68,22 @@ class Matcher
      */
     public static function get($name = null, $target = '')
     {
-        if (!$name) {
+        if (!func_num_args()) {
             return static::$_matchers;
+        }
+        if ($target === true) {
+            if (isset(static::$_matchers[$name])) {
+                return static::$_matchers[$name];
+            } else {
+                throw new Exception("Unexisting matcher attached to `'{$name}'`.");
+            }
         }
         if (isset(static::$_matchers[$name][$target])) {
             return static::$_matchers[$name][$target];
         } elseif (isset(static::$_matchers[$name][''])) {
             return static::$_matchers[$name][''];
         }
+        throw new Exception("Unexisting matcher attached to `'{$name}'` for `'{target}'`.");
     }
 
     /**
@@ -133,6 +95,9 @@ class Matcher
      */
     public static function exists($name, $target = '')
     {
+        if ($target === true) {
+            return isset(static::$_matchers[$name]);
+        }
         return isset(static::$_matchers[$name][$target]);
     }
 
@@ -149,222 +114,6 @@ class Matcher
         } else {
             unset(static::$_matchers[$name][$target]);
         }
-    }
-
-    /**
-     * Returns the logs.
-     */
-    public function logs()
-    {
-        return $this->_logs;
-    }
-
-    /**
-     * Returns the timeout value.
-     */
-    public function timeout()
-    {
-        return $this->_timeout;
-    }
-
-    /**
-     * The expect statement.
-     *
-     * @param  mixed   $actual  The expression to test.
-     * @param  integer $timeout Some optionnal timeout.
-     * @return Matcher
-     */
-    public function expect($actual, $timeout = 0)
-    {
-        $this->_not = false;
-        $this->_timeout = $timeout;
-        $this->_actual = $actual;
-        return $this;
-    }
-
-    /**
-     * Calls a registered matcher.
-     *
-     * @param  string  $name   The name of the matcher.
-     * @param  array   $params The parameters to pass to the matcher.
-     * @return boolean
-     */
-    public function __call($matcherName, $params)
-    {
-        $result = $this->_spin($matcherName, $params, $data);
-
-        if (!is_object($result)) {
-            $data['description'] = $data['matcher']::description();
-            $this->_result($result, $data);
-            return $this;
-        }
-        $this->_deferred[] = $data + [
-            'instance' => $result, 'not' => $this->_not
-        ];
-        return $result;
-    }
-
-    /**
-     * Returns a compatible matcher class name according to a passed actual value.
-     *
-     * @param  string $name   The name of the matcher.
-     * @param  string $actual The actual value.
-     * @return string         A matcher class name.
-     */
-    public function _matcher($matcherName, $actual)
-    {
-        if (!isset(static::$_matchers[$matcherName])) {
-            throw new Exception("Error, undefined matcher `{$matcherName}`.");
-        }
-
-        $matcher = null;
-
-        foreach (static::$_matchers[$matcherName] as $target => $value) {
-            if (!$target) {
-                $matcher = $value;
-                continue;
-            }
-            if ($actual instanceof $target) {
-                $matcher = $value;
-            }
-        }
-
-        if (!$matcher) {
-            throw new Exception("Error, undefined matcher `{$matcherName}` for `{$target}`.");
-        }
-
-        return $matcher;
-    }
-
-    /**
-     * Runs a matcher until it succeed or the timeout is reached.
-     *
-     * @param  string  $matcher The matcher class name.
-     * @param  array   $args  The parameters to pass to the matcher.
-     * @return mixed
-     */
-    protected function _spin($matcherName, $args, &$data)
-    {
-        $result = true;
-        $spec = $this->_actual;
-        $specification = $this->_classes['specification'];
-
-        $closure = function() use ($spec, $specification, $matcherName, $args, &$actual, &$result) {
-            if ($spec instanceof $specification) {
-                $actual = $spec->run();
-                if (!$spec->passed()) {
-                    return false;
-                }
-            } else {
-                $actual = $spec;
-            }
-            array_unshift($args, $actual);
-            $matcher = $this->_matcher($matcherName, $actual);
-            $result = call_user_func_array($matcher . '::match', $args);
-            return is_object($result) || $result === !$this->_not;
-        };
-
-        try {
-            if (!$timeout = $this->timeout()) {
-                $closure();
-            } else {
-                Timeout::spin($closure, $timeout);
-            }
-        } catch (TimeoutException $e) {
-            $data['params']['timeout'] = $e->getMessage();
-        } finally {
-            array_unshift($args, $actual);
-            $matcher = $this->_matcher($matcherName, $actual);
-            $params = Inspector::parameters($matcher, 'match', $args);
-            $data = compact('matcherName', 'matcher', 'params');
-            if ($spec instanceof $specification) {
-                foreach ($spec->logs() as $value) {
-                    $this->_logs[] = $value;
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Resolves deferred matchers.
-     */
-    public function resolve()
-    {
-        foreach($this->_deferred as $data) {
-            $instance = $data['instance'];
-            $this->_not = $data['not'];
-            $boolean = $instance->resolve();
-            $data['description'] = $instance->description();
-            $data['backtrace'] = $instance->backtrace();
-            $this->_result($boolean, $data);
-        }
-        $this->_deferred = [];
-        $this->_not = false;
-    }
-
-    /**
-     * Sends the result to the callee & clear states.
-     *
-     * @param  boolean $boolean Set `true` for success and `false` for failure.
-     * @param  array   $data    Test details array.
-     * @return boolean
-     */
-    protected function _result($boolean, $data = [])
-    {
-        $not = $this->_not;
-        $pass = $not ? !$boolean : $boolean;
-        if ($pass) {
-            $data['type'] = 'pass';
-        } else {
-            $data['type'] ='fail';
-            $this->_passed = false;
-        }
-
-        $description = $data['description'];
-        if (is_array($description)) {
-            $data['params'] = $description['params'];
-            $data['description'] = $description['description'];
-        }
-        $data['backtrace'] = Debugger::backtrace();
-        $data['not'] = $not;
-
-        $this->_logs[] = $data;
-        $this->_not = false;
-        return $boolean;
-    }
-
-    /**
-     * Checks if all test passed.
-     *
-     * @return boolean Returns `true` if no error occurred, `false` otherwise.
-     */
-    public function passed()
-    {
-        return $this->_passed;
-    }
-
-    /**
-     * Magic getter, if called with `'not'` invert the `_not` attribute.
-     *
-     * @param string
-     */
-    public function __get($name)
-    {
-        if ($name !== 'not') {
-            return;
-        }
-        $this->_not = !$this->_not;
-        return $this;
-    }
-
-    /**
-     * Clears the instance.
-     */
-    public function clear()
-    {
-        $this->_logs = [];
-        $this->_passed = true;
     }
 
     /**

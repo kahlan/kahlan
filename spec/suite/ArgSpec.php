@@ -29,8 +29,7 @@ describe("Arg", function() {
             $closure = function() {
                 $arg = Arg::toHelloWorld(true);
             };
-
-            expect($closure)->toThrow(new Exception('Error, undefined matcher `toHelloWorld`.'));
+            expect($closure)->toThrow(new Exception("Unexisting matcher attached to `'toHelloWorld'`."));
 
         });
 

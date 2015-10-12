@@ -14,13 +14,6 @@ class Specification extends Scope
     protected $_passed = true;
 
     /**
-     * The matcher instance.
-     *
-     * @var object
-     */
-    protected $_matcher = null;
-
-    /**
      * List of expectations.
      */
     protected $_expectations = [];
@@ -44,8 +37,7 @@ class Specification extends Scope
         $config['message'] = 'it ' . $config['message'];
         parent::__construct($config);
 
-        $matcher = $this->_classes['matcher'];
-        $this->_matcher = new $matcher();
+
 
         extract($config);
 
@@ -60,9 +52,10 @@ class Specification extends Scope
      *
      * @param mixed $actual The expression to check
      */
-    public function expect($actual)
+    public function expect($actual, $timeout = 0)
     {
-        return $this->_matcher->expect($actual);
+        $expectation = $this->_classes['expectation'];
+        return $this->_expectations[] = new $expectation(compact('actual', 'timeout'));
     }
 
     /**
@@ -75,7 +68,7 @@ class Specification extends Scope
         $timeout = $timeout ?: $this->timeout();
         $actual = $actual instanceof Closure ? $actual : function() {return $actual;};
         $spec = new static(['closure' => $actual]);
-        return $this->_matcher->expect($spec, $timeout);
+        return $this->expect($spec, $timeout);
     }
 
     /**
@@ -153,12 +146,17 @@ class Specification extends Scope
 
         $result = null;
         $closure = $this->_closure;
+        $this->_expectations = [];
 
         try {
-            $this->_matcher->clear();
+            $this->_expectations = [];
             $result = $closure($this);
-            $this->_matcher->resolve();
-            $this->_passed = $this->_matcher->passed();
+            foreach ($this->_expectations as $expectation) {
+                if (!$expectation->runned()) {
+                    $expectation->run();
+                }
+                $this->_passed = $this->_passed && $expectation->passed();
+            }
         } catch (Exception $e) {
             $this->_passed = false;
             throw $e;
@@ -187,7 +185,13 @@ class Specification extends Scope
      */
     public function logs()
     {
-        return $this->_matcher->logs();
+        $logs = [];
+        foreach ($this->_expectations as $expectation) {
+            foreach ($expectation->logs() as $log) {
+                $logs[] = $log;
+            }
+        }
+        return $logs;
     }
 
 }

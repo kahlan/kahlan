@@ -45,11 +45,11 @@ class Arg
      */
     public function __construct($config = [])
     {
-        $defaults = ['not' => false, 'matcher' => '', 'params' => []];
+        $defaults = ['not' => false, 'matchers' => [], 'params' => []];
         $config += $defaults;
 
         $this->_not     = $config['not'];
-        $this->_matcher = $config['matcher'];
+        $this->_matchers = $config['matchers'];
         $this->_params  = $config['params'];
     }
 
@@ -69,9 +69,9 @@ class Arg
         } else {
             $matcher = $name;
         }
-        $matchers = static::$_classes['matcher'];
-        if ($matcher = $matchers::get($matcher)) {
-            return new static(compact('matcher', 'not', 'params'));
+        $class = static::$_classes['matcher'];
+        if ($matchers = $class::get($matcher, true)) {
+            return new static(compact('matchers', 'not', 'params'));
         }
         throw new Exception("Error, undefined matcher `{$name}`.");
     }
@@ -84,10 +84,21 @@ class Arg
      */
     public function match($actual)
     {
-        $class = $this->_matcher;
+        foreach ($this->_matchers as $target => $value) {
+            if (!$target) {
+                $matcher = $value;
+                continue;
+            }
+            if ($actual instanceof $target) {
+                $matcher = $value;
+            }
+        }
+        if (!$matcher) {
+            throw new Exception("Error, undefined argument matcher for `{$target}`.");
+        }
         $params = $this->_params;
         array_unshift($params, $actual);
-        $boolean = call_user_func_array($class . '::match', $params);
+        $boolean = call_user_func_array($matcher . '::match', $params);
         return $this->_not ? !$boolean : $boolean;
     }
 }

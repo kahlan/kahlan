@@ -23,13 +23,6 @@ class Suite extends Scope
     protected $_status = null;
 
     /**
-     * Matcher instance for the test suite
-     *
-     * @var array
-     */
-    protected $_matcher = null;
-
-    /**
      * The childs array.
      *
      * @var array
@@ -84,7 +77,6 @@ class Suite extends Scope
      *                       -`'closure'` _Closure_: the closure of the test.
      *                       -`'name'`    _string_ : the type of the suite.
      *                       -`'scope'`   _string_ : supported scope are `'normal'` & `'focus'`.
-     *                       -`'matcher'` _object_ : the matcher instance.
      */
     public function __construct($config = [])
     {
@@ -95,9 +87,6 @@ class Suite extends Scope
         ];
         $config += $defaults;
         parent::__construct($config);
-
-        $matcher = $this->_classes['matcher'];
-        $this->_matcher = new $matcher();
 
         extract($config);
 
@@ -162,10 +151,8 @@ class Suite extends Scope
         }
         $parent = $this;
         $root = $this->_root;
-        $matcher = $this->_classes['matcher'];
-        $matcher = new $matcher();
         $timeout = $timeout !== null ? $timeout : $this->timeout();
-        $spec = new Specification(compact('message', 'closure', 'parent', 'root', 'timeout', 'scope', 'matcher'));
+        $spec = new Specification(compact('message', 'closure', 'parent', 'root', 'timeout', 'scope'));
         $this->_childs[] = $spec;
         return $this;
     }

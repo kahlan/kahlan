@@ -12,7 +12,7 @@ class Scope
      * @var array
      */
     protected $_classes = [
-        'matcher' => 'kahlan\Matcher'
+        'expectation' => 'kahlan\Expectation'
     ];
 
     /**
