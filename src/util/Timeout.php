@@ -1,7 +1,6 @@
 <?php
 namespace kahlan\util;
 
-use Exception;
 use InvalidArgumentException;
 
 class Timeout
@@ -15,7 +14,7 @@ class Timeout
         $timeout = (integer) $timeout;
 
         pcntl_signal(SIGALRM, function($signal) use ($timeout) {
-            throw new Exception("Timeout reached, execution aborted after {$timeout} second(s).");
+            throw new TimeoutException("Timeout reached, execution aborted after {$timeout} second(s).");
         }, true);
 
         pcntl_alarm($timeout);
@@ -43,7 +42,7 @@ class Timeout
 
         do {
             try {
-                if (($result = $closure()) !== null) {
+                if ($result = $closure()) {
                     return $result;
                 }
             } catch (Exception $e) {}
@@ -51,6 +50,6 @@ class Timeout
 
         } while ($current - $start < $timeout);
 
-        throw new Exception("Timeout reached, execution aborted after {$timeout} second(s).");
+        throw new TimeoutException("Timeout reached, execution aborted after {$timeout} second(s).");
     }
 }

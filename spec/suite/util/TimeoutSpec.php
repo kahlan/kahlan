@@ -1,8 +1,8 @@
 <?php
 namespace kahlan\spec\suite\util;
 
-use Exception;
 use InvalidArgumentException;
+use kahlan\util\TimeoutException;
 use kahlan\util\Timeout;
 
 declare(ticks = 1);
@@ -42,7 +42,7 @@ describe("Timeout", function() {
                 }, 1);
             };
 
-            expect($closure)->toThrow(new Exception('Timeout reached, execution aborted after 1 second(s).'));
+            expect($closure)->toThrow(new TimeoutException('Timeout reached, execution aborted after 1 second(s).'));
 
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(1);
@@ -82,7 +82,7 @@ describe("Timeout", function() {
                 Timeout::spin(function() {}, 1);
             };
 
-            expect($closure)->toThrow(new Exception('Timeout reached, execution aborted after 1 second(s).'));
+            expect($closure)->toThrow(new TimeoutException('Timeout reached, execution aborted after 1 second(s).'));
 
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(1);
