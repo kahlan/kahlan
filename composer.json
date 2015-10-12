@@ -12,7 +12,7 @@
         "php": ">=5.5",
         "crysalead/jit": "~1.0",
         "crysalead/box": "~1.0",
-        "crysalead/filter": "~1.0",
+        "crysalead/filter": "~1.1",
         "crysalead/dir": "~1.0"
     },
     "autoload": {
