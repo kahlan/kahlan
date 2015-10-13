@@ -82,25 +82,8 @@ describe("Example", function() {
 
 ### via Composer
 
-Here is a sample composer.json to install Kahlan:
-
-```json
-{
-    "name": "example/kahlan",
-    "description": "Demonstration of installing Kahlan through Composer",
-    "require": {
-    },
-    "require-dev": {
-        "crysalead/kahlan": "~1.1"
-    },
-    "license": "MIT"
-}
-```
-
-Then install via:
-
 ```bash
-composer install
+$ composer require --dev crysalead/kahlan
 ```
 
 Note:
