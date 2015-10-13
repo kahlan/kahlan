@@ -68,7 +68,7 @@ describe("Arg", function() {
             $closure = function() {
                 $arg = Arg::toHelloWorld(true);
             };
-            expect($closure)->toThrow(new Exception("Unexisting matcher attached to `'toHelloWorld'`."));
+            expect($closure)->toThrow(new Exception("Unexisting matchers attached to `'toHelloWorld'`."));
 
         });
 

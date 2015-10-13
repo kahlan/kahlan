@@ -85,12 +85,12 @@ class Expectation
      *
      * @var integer
      */
-    protected $_timeout = null;
+    protected $_timeout = -1;
 
     /**
      * Factory method.
      */
-    public static function expect($actual, $timeout = 0)
+    public static function expect($actual, $timeout = -1)
     {
         return new static(compact('actual', 'timeout'));
     }
@@ -106,7 +106,7 @@ class Expectation
     {
         $defaults = [
             'actual'  => null,
-            'timeout' => 0
+            'timeout' => -1
         ];
         $config += $defaults;
 
@@ -115,11 +115,41 @@ class Expectation
     }
 
     /**
+     * Returns the actual value.
+     *
+     * @return boolean
+     */
+    public function actual()
+    {
+        return $this->_actual;
+    }
+
+    /**
+     * Returns the not value.
+     *
+     * @return boolean
+     */
+    public function not()
+    {
+        return $this->_not;
+    }
+
+    /**
      * Returns the logs.
      */
     public function logs()
     {
         return $this->_logs;
+    }
+
+    /**
+     * Returns the deferred expectations.
+     *
+     * @return boolean
+     */
+    public function deferred()
+    {
+        return $this->_deferred;
     }
 
     /**
@@ -139,7 +169,41 @@ class Expectation
      */
     public function __call($matcherName, $params)
     {
-        $result = $this->_spin($matcherName, $params, $data);
+        $result = true;
+        $spec = $this->_actual;
+        $specification = $this->_classes['specification'];
+
+        $closure = function() use ($spec, $specification, $matcherName, $params, &$actual, &$result) {
+            if ($spec instanceof $specification) {
+                $actual = $spec->run();
+                if (!$spec->passed()) {
+                    return false;
+                }
+            } else {
+                $actual = $spec;
+            }
+            array_unshift($params, $actual);
+            $matcher = $this->_matcher($matcherName, $actual);
+            $result = call_user_func_array($matcher . '::match', $params);
+            return is_object($result) || $result === !$this->_not;
+        };
+
+        try {
+            $this->_spin($closure);
+        } catch (TimeoutException $e) {
+            $data['params']['timeout'] = $e->getMessage();
+        } finally {
+            array_unshift($params, $actual);
+            $matcher = $this->_matcher($matcherName, $actual);
+            $params = Inspector::parameters($matcher, 'match', $params);
+            $data = compact('matcherName', 'matcher', 'params');
+            if ($spec instanceof $specification) {
+                foreach ($spec->logs() as $value) {
+                    $this->_logs[] = $value;
+                }
+                $this->_passed = $this->_passed && $spec->passed();
+            }
+        }
 
         if (!is_object($result)) {
             $data['description'] = $data['matcher']::description();
@@ -162,7 +226,7 @@ class Expectation
     public function _matcher($matcherName, $actual)
     {
         if (!Matcher::exists($matcherName, true)) {
-            throw new Exception("Unexisting matcher attached to `{$matcherName}`.");
+            throw new Exception("Unexisting matcher attached to `'{$matcherName}'`.");
         }
 
         $matcher = null;
@@ -178,62 +242,19 @@ class Expectation
         }
 
         if (!$matcher) {
-            throw new Exception("Unexisting matcher attached to `{$matcherName}` for `{$target}`.");
+            throw new Exception("Unexisting matcher attached to `'{$matcherName}'` for `{$target}`.");
         }
 
         return $matcher;
     }
 
     /**
-     * Runs a matcher until it succeed or the timeout is reached.
+     * Processes the expectation.
      *
      * @param  string  $matcher The matcher class name.
      * @param  array   $args  The parameters to pass to the matcher.
      * @return mixed
      */
-    protected function _spin($matcherName, $args, &$data)
-    {
-        $result = true;
-        $spec = $this->_actual;
-        $specification = $this->_classes['specification'];
-
-        $closure = function() use ($spec, $specification, $matcherName, $args, &$actual, &$result) {
-            if ($spec instanceof $specification) {
-                $actual = $spec->run();
-                if (!$spec->passed()) {
-                    return false;
-                }
-            } else {
-                $actual = $spec;
-            }
-            array_unshift($args, $actual);
-            $matcher = $this->_matcher($matcherName, $actual);
-            $result = call_user_func_array($matcher . '::match', $args);
-            return is_object($result) || $result === !$this->_not;
-        };
-
-        try {
-            if (!$timeout = $this->timeout()) {
-                $closure();
-            } else {
-                Code::spin($closure, $timeout, true);
-            }
-        } catch (TimeoutException $e) {
-            $data['params']['timeout'] = $e->getMessage();
-        } finally {
-            array_unshift($args, $actual);
-            $matcher = $this->_matcher($matcherName, $actual);
-            $params = Inspector::parameters($matcher, 'match', $args);
-            $data = compact('matcherName', 'matcher', 'params');
-            if ($spec instanceof $specification) {
-                foreach ($spec->logs() as $value) {
-                    $this->_logs[] = $value;
-                }
-            }
-        }
-        return $result;
-    }
-
     public function run()
     {
         $spec = $this->_actual;
@@ -249,11 +270,7 @@ class Expectation
         };
 
         try {
-            if (!$timeout = $this->timeout()) {
-                $closure();
-            } else {
-                Code::spin($closure, $timeout, true);
-            }
+            $this->_spin($closure);
         } catch (TimeoutException $e) {
         } finally {
             foreach ($spec->logs() as $value) {
@@ -262,6 +279,20 @@ class Expectation
             $this->_passed = $this->_passed && $spec->passed();
         }
         return $this;
+    }
+
+    /**
+     * Runs the expectation.
+     *
+     * @param Closure $closure The closure to run/spin.
+     */
+    protected function _spin($closure)
+    {
+        if (($timeout = $this->timeout()) < 0) {
+            $closure();
+        } else {
+            Code::spin($closure, $timeout, true);
+        }
     }
 
     /**
@@ -326,16 +357,6 @@ class Expectation
     }
 
     /**
-     * Returns the not value.
-     *
-     * @return boolean
-     */
-    public function not()
-    {
-        return $this->_not;
-    }
-
-    /**
      * Checks if all test passed.
      *
      * @return boolean Returns `true` if no error occurred, `false` otherwise.
@@ -366,7 +387,11 @@ class Expectation
      */
     public function clear()
     {
-        $this->_logs = [];
+        $this->_actual = null;
         $this->_passed = true;
+        $this->_not = false;
+        $this->_timeout = -1;
+        $this->_logs = [];
+        $this->_deferred = [];
     }
 }

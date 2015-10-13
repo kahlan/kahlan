@@ -33,7 +33,7 @@ describe("Expectation", function() {
                 $result = Expectation::expect(true)->toHelloWorld(true);
             };
 
-            expect($closure)->toThrow(new Exception('Unexisting matcher attached to `toHelloWorld`.'));
+            expect($closure)->toThrow(new Exception("Unexisting matcher attached to `'toHelloWorld'`."));
 
         });
 
@@ -45,7 +45,7 @@ describe("Expectation", function() {
                 $result = Expectation::expect([])->toEqualCustom(new stdClass());
             };
 
-            expect($closure)->toThrow(new Exception('Unexisting matcher attached to `toEqualCustom` for `stdClass`.'));
+            expect($closure)->toThrow(new Exception("Unexisting matcher attached to `'toEqualCustom'` for `stdClass`."));
 
         });
 
@@ -101,6 +101,16 @@ describe("Expectation", function() {
 
         });
 
+        it ("runs sub specs", function() {
+
+            $subspec = new Specification(['closure' => function() {
+                return true;
+            }]);
+            $result = Expectation::expect($subspec)->run();
+            expect($result)->toBeAnInstanceOf(Expectation::class);
+
+        });
+
         it("loops until the timeout is reached on failure using a sub spec", function () {
 
             $start = microtime(true);
@@ -135,6 +145,35 @@ describe("Expectation", function() {
                 $expectation->abc;
             };
             expect($closure)->toThrow(new Exception('Unsupported attribute `abc`.'));
+
+        });
+
+    });
+
+    describe("->clear()", function() {
+
+        it("clears an expectation", function() {
+
+            $actual = new stdClass();
+            $expectation = Expectation::expect($actual, 10);
+            $matcher = $expectation->not->toReceive('helloWorld');
+
+            expect($expectation->actual())->toBe($actual);
+            expect($expectation->deferred())->toHaveLength(1);
+            expect($expectation->timeout())->toBe(10);
+            expect($expectation->not())->toBe(true);
+            expect($expectation->passed())->toBe(true);
+            expect($expectation->logs())->toHaveLength(1);
+
+            $expectation->clear();
+
+            expect($expectation->actual())->toBe(null);
+            expect($expectation->deferred())->toHaveLength(0);
+            expect($expectation->timeout())->toBe(-1);
+            expect($expectation->not())->toBe(false);
+            expect($expectation->passed())->toBe(true);
+            expect($expectation->logs())->toHaveLength(0);
+
 
         });
 

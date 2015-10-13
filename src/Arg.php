@@ -81,6 +81,7 @@ class Arg
         if ($matchers = $class::get($matcher, true)) {
             return new static(compact('name', 'matchers', 'not', 'params'));
         }
+        throw new Exception("Unexisting matchers attached to `'{$name}'`.");
     }
 
     /**

@@ -72,18 +72,20 @@ class Matcher
             return static::$_matchers;
         }
         if ($target === true) {
-            if (isset(static::$_matchers[$name])) {
-                return static::$_matchers[$name];
-            } else {
-                throw new Exception("Unexisting matcher attached to `'{$name}'`.");
+            return isset(static::$_matchers[$name]) ? static::$_matchers[$name] : [];
+        }
+        if ($target === '') {
+            if (isset(static::$_matchers[$name][''])) {
+                return static::$_matchers[$name][''];
             }
+            throw new Exception("Unexisting default matcher attached to `'{$name}'`.");
         }
         if (isset(static::$_matchers[$name][$target])) {
             return static::$_matchers[$name][$target];
         } elseif (isset(static::$_matchers[$name][''])) {
             return static::$_matchers[$name][''];
         }
-        throw new Exception("Unexisting matcher attached to `'{$name}'` for `'{target}'`.");
+        throw new Exception("Unexisting matcher attached to `'{$name}'` for `{$target}`.");
     }
 
     /**

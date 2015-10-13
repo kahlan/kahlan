@@ -78,6 +78,17 @@ describe("Matcher", function() {
 
         });
 
+        it("returns all registered matchers for a specific matcher", function() {
+
+            Matcher::register('toBe', 'kahlan\matcher\ToEqual', 'stdClass');
+
+            expect(Matcher::get('toBe', true))->toBe([
+                ''         => 'kahlan\matcher\ToBe',
+                'stdClass' => 'kahlan\matcher\ToEqual'
+            ]);
+
+        });
+
         it("returns the default registered matcher", function() {
 
             expect(Matcher::get('toBe', 'stdClass'))->toBe('kahlan\matcher\ToBe');
@@ -90,6 +101,26 @@ describe("Matcher", function() {
 
             expect(Matcher::get('toBe', 'DateTime'))->toBe('kahlan\matcher\ToBe');
             expect(Matcher::get('toBe', 'stdClass'))->toBe('kahlan\matcher\ToEqual');
+
+        });
+
+        it("throws an exception when using an undefined matcher name", function() {
+
+            $closure = function() {
+                Matcher::get('toHelloWorld');
+            };
+
+            expect($closure)->toThrow(new Exception("Unexisting default matcher attached to `'toHelloWorld'`."));
+
+        });
+
+        it("throws an exception when using an undefined matcher name for a specific class", function() {
+
+            $closure = function() {
+                Matcher::get('toHelloWorld', 'stdClass');
+            };
+
+            expect($closure)->toThrow(new Exception("Unexisting matcher attached to `'toHelloWorld'` for `stdClass`."));
 
         });
 

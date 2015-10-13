@@ -52,7 +52,7 @@ class Specification extends Scope
      *
      * @param mixed $actual The expression to check
      */
-    public function expect($actual, $timeout = 0)
+    public function expect($actual, $timeout = -1)
     {
         $expectation = $this->_classes['expectation'];
         return $this->_expectations[] = new $expectation(compact('actual', 'timeout'));

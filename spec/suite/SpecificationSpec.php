@@ -320,6 +320,38 @@ describe("Specification", function() {
                 expect($failure->backtrace())->toBeAn('array');
             });
 
+            it("logs the first failing spec only", function() {
+
+                $this->spec = new Specification([
+                    'message' => 'runs a spec',
+                    'closure' => function() {
+                        $this->waitsFor(function(){
+                            $this->expect(true)->toBe(false);
+                            return true;
+                        })->toBe(false);
+                    }
+                ]);
+
+                expect($this->spec->process())->toBe(null);
+                expect($this->spec->passed())->toBe(false);
+
+                $failured = $this->spec->results()['failed'];
+                expect($failured)->toHaveLength(1);
+
+                $failure = reset($failured);
+
+                expect($failure->matcher())->toBe('kahlan\matcher\ToBe');
+                expect($failure->matcherName())->toBe('toBe');
+                expect($failure->not())->toBe(false);
+                expect($failure->type())->toBe('fail');
+                expect($failure->params())->toBe([
+                    'actual'   => true,
+                    'expected' => false
+                ]);
+                expect($failure->messages())->toBe(['it runs a spec']);
+                expect($failure->backtrace())->toBeAn('array');
+            });
+
         });
 
     });
