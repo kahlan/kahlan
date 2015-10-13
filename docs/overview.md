@@ -95,7 +95,7 @@ describe("Negative Expectation", function() {
 
 ### Asynchronous Expectations
 
-To perform some asynchronous tests it's possible to use the `waitsFor` statement. This statement runs the passed closure until it all contained expectations passes or a timeout is reached. This kind of asynchronous expectations can be useful to waits for elements to appear/disappear on a browser page during some functionnal testing for example.
+To perform some asynchronous tests it's possible to use the `waitsFor` statement. This statement runs a passed closure until all contained expectations passes or a timeout is reached. `waitsFor` can be useful to waits for elements to appear/disappear on a browser page during some functionnal testing for example.
 
 ```php
 describe("Asynchronous Expectations", function() {
@@ -119,7 +119,7 @@ describe("Asynchronous Expectations", function() {
 }, 10);
 ```
 
-In the example above, the timeout has been setted at the bottom of `describe()` statement but it can also be defined at a `context()/it()` level or simply by setting the second parameter of `waitsFor()`. If no timeout is defined, the default timeout will be set to `0`.
+In the example above, the timeout has been setted globally at the bottom of `describe()` statement. However it can also be overrided at a `context()/it()` level or simply by setting the second parameter of `waitsFor()`. If no timeout is defined, the default timeout will be set to `0`.
 
 ### Variable scope
 
