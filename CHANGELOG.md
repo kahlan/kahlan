@@ -2,6 +2,13 @@
 
 ## Last changes
 
+## 1.2.0 (2015-10-13)
+
+  * **Add:** Allows to set contextualized matchers.
+  * **Add:** Introduces the `waitsFor` statement.
+  * **BC break:** Drops PHP 5.4 support.
+  * **BC break:** Internal classes has been refactored/renamed.
+
 ## 1.1.9 (2015-09-03)
 
   * **Bugfix:** escapes file path for coverage metrics.

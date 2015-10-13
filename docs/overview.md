@@ -93,6 +93,34 @@ describe("Negative Expectation", function() {
 });
 ```
 
+### Asynchronous Expectations
+
+To perform some asynchronous tests it's possible to use the `waitsFor` statement. This statement runs the passed closure until it all contained expectations passes or a timeout is reached. This kind of asynchronous expectations can be useful to waits for elements to appear/disappear on a browser page during some functionnal testing for example.
+
+```php
+describe("Asynchronous Expectations", function() {
+
+    it("waits in vain", function() {
+
+        waitsFor(function() {
+            expect(false)->toBe(true);
+        });
+
+    });
+
+    it("waits to be lucky", function() {
+
+        waitsFor(function() {
+            return mt_rand(0, 10);
+        })->toBe(10);
+
+    });
+
+}, 10);
+```
+
+In the example above, the timeout has been setted at the bottom of `describe()` statement but it can also be defined at a `context()/it()` level or simply by setting the second parameter of `waitsFor()`. If no timeout is defined, the default timeout will be set to `0`.
+
 ### Variable scope
 
 You can use `$this` for making a variable **available** for a sub scope:

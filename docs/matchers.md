@@ -352,3 +352,11 @@ kahlan\Matcher::register('toBeZero', 'my\namespace\ToBeZero');
 ```
 
 **Note:** custom matcher should be reserved to frequently used matching. For other cases, just use the `toMatch` matcher using the matcher closure as parameter.
+
+It's also possible to register a matcher to work only for a specific class name to keep the API consistent.
+
+Example:
+
+```php
+kahlan\Matcher::register('toContain', 'my\namespace\ToContain', ' SplObjectStorage');
+```
