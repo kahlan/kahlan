@@ -92,7 +92,7 @@ Kahlan uses the [ferver](https://github.com/jonathanong/ferver) versioning so a 
 ### via Git clone
 
 ```
-git clone git@github.com:crysalead/kahlan.git
+git clone git://github.com/crysalead/kahlan.git
 cd kahlan
 composer install
 bin/kahlan              # to run specs or,
