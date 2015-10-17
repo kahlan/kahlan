@@ -99,7 +99,7 @@ class Collector
             'leavesOnly'     => false,
             'followSymlinks' => true,
             'recursive'      => true,
-            'base'           => str_replace(DIRECTORY_SEPARATOR, '/', getcwd())
+            'base'           => getcwd()
         ];
         $config += $defaults;
 

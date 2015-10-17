@@ -56,7 +56,7 @@ describe("Debugger", function() {
             expect($backtrace)->toBeA('string');
 
             $trace = current(explode("\n", $backtrace));
-            expect($trace)->toMatch('/kahlan\/src\/Specification.php/');
+            expect($trace)->toMatch('~kahlan[/|\\\]src[/|\\\]Specification.php~');
 
         });
 
@@ -78,7 +78,7 @@ describe("Debugger", function() {
                 $debugger = $this->debugger;
 
                 $trace = [
-                    'file' => '/some/none/existant/path/file.php',
+                    'file' => DS . 'some' . DS . 'none' . DS . 'existant' . DS . 'path' . DS . 'file.php',
                     'line' => null
                 ];
                 expect($debugger::line($trace))->toBe(null);
@@ -89,10 +89,10 @@ describe("Debugger", function() {
 
                 $debugger = $this->debugger;
 
-                $nbline = count(file('spec/suite/analysis/DebuggerSpec.php')) + 1;
+                $nbline = count(file('spec' . DS . 'suite' . DS . 'analysis' . DS . 'DebuggerSpec.php')) + 1;
 
                 $trace = [
-                    'file' => 'spec/suite/analysis/DebuggerSpec.php',
+                    'file' => 'spec' . DS . 'suite' . DS . 'analysis' . DS . 'DebuggerSpec.php',
                     'line' => $nbline + 1
                 ];
                 expect($debugger::line($trace))->toBe(null);

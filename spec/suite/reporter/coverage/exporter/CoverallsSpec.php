@@ -20,7 +20,7 @@ describe("Coveralls", function() {
 
         it("exports the coverage of a file with no extra end line", function() {
 
-            $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
+            $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'NoEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),
@@ -64,7 +64,7 @@ describe("Coveralls", function() {
 
         it("exports the coverage of a file with an extra line at the end", function() {
 
-            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
+            $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'ExtraEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),
@@ -119,7 +119,7 @@ describe("Coveralls", function() {
 
         it("writes the coverage to a file", function() {
 
-            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
+            $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'ExtraEmptyLine.php';
 
             $collector = new Collector([
                 'driver'    => new Xdebug(),

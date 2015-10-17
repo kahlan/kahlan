@@ -189,10 +189,10 @@ describe("Text", function() {
         it("exports an exception", function() {
 
             $dump = Text::toString(new Exception());
-            $this->expect($dump)->toMatch("/`Exception` Code\(0\) with no message in .*?\/TextSpec.php.*?$/");
+            $this->expect($dump)->toMatch("~`Exception` Code\(0\) with no message in .*?" . DS . "TextSpec.php.*?$~");
 
             $dump = Text::toString(new Exception('error', 500));
-            $this->expect($dump)->toMatch("/`Exception` Code\(500\) with message \"error\" in .*?\/TextSpec.php.*?$/");
+            $this->expect($dump)->toMatch("~`Exception` Code\(500\) with message \"error\" in .*?" . DS . "TextSpec.php.*?$~");
 
         });
 

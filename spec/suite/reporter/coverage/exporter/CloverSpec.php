@@ -20,7 +20,7 @@ describe("Clover", function() {
 
         it("exports the coverage of a file with no extra end line", function() {
 
-            $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
+            $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'NoEmptyLine.php';
 
             $collector = new Collector([
                 'driver' => new Xdebug(),
@@ -38,14 +38,15 @@ describe("Clover", function() {
             $xml = Clover::export([
                 'collector' => $collector,
                 'time'      => $time,
-                'base_path' => '/home/crysalead/kahlan'
+                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
             ]);
+            $ds = DS;
 
 $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="/home/crysalead/kahlan/spec/fixture/reporter/coverage/NoEmptyLine.php">
+    <file name="{$ds}home{$ds}crysalead{$ds}kahlan{$ds}spec{$ds}fixture{$ds}reporter{$ds}coverage{$ds}NoEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>
@@ -62,7 +63,7 @@ EOD;
 
         it("exports the coverage of a file with an extra line at the end", function() {
 
-            $path = 'spec/fixture/reporter/coverage/ExtraEmptyLine.php';
+            $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'ExtraEmptyLine.php';
 
             $collector = new Collector([
                 'driver' => new Xdebug(),
@@ -80,14 +81,15 @@ EOD;
             $xml = Clover::export([
                 'collector' => $collector,
                 'time'      => $time,
-                'base_path' => '/home/crysalead/kahlan'
+                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
             ]);
+            $ds = DS;
 
 $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="/home/crysalead/kahlan/spec/fixture/reporter/coverage/ExtraEmptyLine.php">
+    <file name="{$ds}home{$ds}crysalead{$ds}kahlan{$ds}spec{$ds}fixture{$ds}reporter{$ds}coverage{$ds}ExtraEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>
@@ -117,7 +119,7 @@ EOD;
 
         it("writes the coverage to a file", function() {
 
-            $path = 'spec/fixture/reporter/coverage/NoEmptyLine.php';
+            $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'NoEmptyLine.php';
 
             $collector = new Collector([
                 'driver' => new Xdebug(),
@@ -136,18 +138,19 @@ EOD;
                 'collector' => $collector,
                 'file'      => $this->output,
                 'time'      => $time,
-                'base_path' => '/home/crysalead/kahlan'
+                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
             ]);
 
             expect($success)->toBe(484);
 
             $xml = file_get_contents($this->output);
+            $ds = DS;
 
 $expected = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="{$time}">
   <project timestamp="{$time}">
-    <file name="/home/crysalead/kahlan/spec/fixture/reporter/coverage/NoEmptyLine.php">
+    <file name="{$ds}home{$ds}crysalead{$ds}kahlan{$ds}spec{$ds}fixture{$ds}reporter{$ds}coverage{$ds}NoEmptyLine.php">
       <line num="8" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
       <line num="12" type="stmt" count="1"/>
