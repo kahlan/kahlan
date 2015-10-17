@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.2.1 (2015-10-17)
+
+  * **Bugfix:** Fixes some Windows related issues.
+
 ## 1.2.0 (2015-10-13)
 
   * **Add:** Allows to set contextualized matchers.
