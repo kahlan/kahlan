@@ -115,7 +115,7 @@ class Report
 
         if ($this->_backtrace) {
             $trace = reset($this->_backtrace);
-            $this->_file = preg_replace('~' . getcwd() . '~', '', $trace['file']);
+            $this->_file = preg_replace('~' . preg_quote(getcwd(), '~') . '~', '', $trace['file']);
             $this->_line = $trace['line'];
         }
     }
