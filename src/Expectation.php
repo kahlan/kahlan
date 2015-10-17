@@ -265,7 +265,9 @@ class Expectation
         }
 
         $closure = function() use ($spec) {
-            $spec->run();
+            try {
+                $spec->run();
+            } catch (Exception $e) {}
             return $spec->passed();
         };
 
@@ -291,7 +293,7 @@ class Expectation
         if (($timeout = $this->timeout()) < 0) {
             $closure();
         } else {
-            Code::spin($closure, $timeout, true);
+            Code::spin($closure, $timeout);
         }
     }
 

@@ -14,7 +14,7 @@
         "crysalead/box": "~1.0",
         "crysalead/filter": "~1.1",
         "crysalead/dir": "~1.0",
-        "crysalead/code": "~1.0"
+        "crysalead/code": "~1.1"
     },
     "autoload": {
         "psr-4": {
