@@ -8,7 +8,6 @@ use filter\Filter;
 use filter\behavior\Filterable;
 use kahlan\Suite;
 use kahlan\Matcher;
-use kahlan\jit\patcher\DummyClass;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\jit\patcher\Monkey;
 use kahlan\jit\patcher\Rebase;
@@ -130,8 +129,7 @@ class Kahlan {
             'kahlan\plugin\Monkey',
             'kahlan\plugin\Call',
             'kahlan\plugin\Stub',
-            'kahlan\plugin\Quit',
-            'kahlan\plugin\DummyClass'
+            'kahlan\plugin\Quit'
         ]]);
     }
 
@@ -285,8 +283,7 @@ Test Execution Options:
                                           `'kahlan\plugin\Monkey'`,
                                           `'kahlan\plugin\Call'`,
                                           `'kahlan\plugin\Stub'`,
-                                          `'kahlan\plugin\Quit'`,
-                                          `'kahlan\plugin\DummyClass'`
+                                          `'kahlan\plugin\Quit'`
                                       ])
 
 Miscellaneous Options:
@@ -429,11 +426,10 @@ EOD;
                 return;
             }
             $patchers = $interceptor->patchers();
-            $patchers->add('substitute', new DummyClass(['namespaces' => ['spec\\']]));
-            $patchers->add('pointcut',   new Pointcut());
-            $patchers->add('monkey',     new Monkey());
-            $patchers->add('rebase',     new Rebase());
-            $patchers->add('quit',       new Quit());
+            $patchers->add('pointcut', new Pointcut());
+            $patchers->add('monkey',   new Monkey());
+            $patchers->add('rebase',   new Rebase());
+            $patchers->add('quit',     new Quit());
         });
     }
 

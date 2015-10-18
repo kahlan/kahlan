@@ -178,8 +178,7 @@ Test Execution Options:
                                           `'kahlan\plugin\Monkey'`,
                                           `'kahlan\plugin\Call'`,
                                           `'kahlan\plugin\Stub'`,
-                                          `'kahlan\plugin\Quit'`,
-                                          `'kahlan\plugin\DummyClass'`
+                                          `'kahlan\plugin\Quit'`
                                       ])
 
 Miscellaneous Options:
