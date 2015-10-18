@@ -17,7 +17,26 @@ class Pointcut
      *
      * @var string
      */
-    public static $prefix = 'KPOINTCUT';
+    protected $_prefix = '';
+
+
+    /**
+     * The constructor.
+     *
+     * @var array $config The config array. Possible values are:
+     *                    - `'prefix'` _string_: prefix to use for custom variable name..
+     */
+    public function __construct($config = [])
+    {
+        $defaults = [
+            'classes'  => [],
+            'prefix'   => 'KPOINTCUT'
+        ];
+        $config += $defaults;
+
+        $this->_classes += $config['classes'];
+        $this->_prefix   = $config['prefix'];
+    }
 
     /**
      * The JIT find file patcher.
@@ -96,7 +115,7 @@ class Pointcut
      */
     protected function _before()
     {
-        $prefix = static::$prefix;
+        $prefix = $this->_prefix;
         return "\$__{$prefix}_ARGS__ = func_get_args(); \$__{$prefix}_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__{$prefix}__ = \kahlan\plugin\Pointcut::before(__METHOD__, \$__{$prefix}_SELF__, \$__{$prefix}_ARGS__)) { \$r = \$__{$prefix}__(\$__{$prefix}_SELF__, \$__{$prefix}_ARGS__); return \$r; }";
     }
 

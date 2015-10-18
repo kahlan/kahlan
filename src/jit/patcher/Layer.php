@@ -53,9 +53,9 @@ class Layer {
 
         $pointcut = $this->_classes['pointcut'];
 
-        $this->_override  = array_fill_keys($config['override'], true);
-        $this->_suffix    = $config['suffix'];
         $this->_classes  += $config['classes'];
+        $this->_suffix    = $config['suffix'];
+        $this->_override  = array_fill_keys($config['override'], true);
         $this->_pointcut = new $pointcut();
     }
 

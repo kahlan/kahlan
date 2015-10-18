@@ -13,11 +13,11 @@ class Monkey
     ];
 
     /**
-     * Prefix to use for custom variable name
+     * Prefix to use for custom variable name.
      *
      * @var string
      */
-    public static $prefix = 'KMONKEY';
+    protected $_prefix = '';
 
     /**
      * Counter for building unique variable name.
@@ -81,6 +81,24 @@ class Monkey
      * @var array
      */
     protected $_variables = [];
+
+    /**
+     * The constructor.
+     *
+     * @var array $config The config array. Possible values are:
+     *                    - `'prefix'` _string_: prefix to use for custom variable name..
+     */
+    public function __construct($config = [])
+    {
+        $defaults = [
+            'classes'  => [],
+            'prefix'   => 'KMONKEY'
+        ];
+        $config += $defaults;
+
+        $this->_classes += $config['classes'];
+        $this->_prefix   = $config['prefix'];
+    }
 
     /**
      * The JIT find file patcher.
@@ -182,7 +200,7 @@ class Monkey
         }
 
         if (!isset($this->_variables[$name])) {
-            $variable = '$__' . static::$prefix . '__' . $this->_counter++;
+            $variable = '$__' . $this->_prefix . '__' . $this->_counter++;
             $this->_variables[$name]['name'] = $variable;
             $this->_variables[$name]['patch'] = " = \kahlan\plugin\Monkey::patched({$args});";
         } else {
