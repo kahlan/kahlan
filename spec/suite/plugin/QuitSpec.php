@@ -69,7 +69,7 @@ describe("Quit", function() {
                 $foo->exitStatement(-1);
             };
 
-            expect($closure)->toThrow(new QuitException('Exit statement occured', -1));
+            expect($closure)->toThrow(new QuitException('Exit statement occurred', -1));
 
         });
 
