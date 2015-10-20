@@ -47,7 +47,7 @@ class Quit
         if (static::enabled()) {
             exit($status);
         }
-        throw new QuitException('Exit statement occured', $status);
+        throw new QuitException('Exit statement occurred', $status);
     }
 
     /**
