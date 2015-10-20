@@ -183,7 +183,7 @@ class Stub
      *                         - `'extends'` _string_: the fully-namespaced parent class name.
      *                         - `'params'` _array_: params to pass to the constructor.
      *                         - `'constructor'` _boolean_: if set to `false` override to an empty function.
-     * @return string          The created instance.
+     * @return object          The created instance.
      */
     public static function create($options = [])
     {
