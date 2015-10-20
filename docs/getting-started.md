@@ -26,7 +26,7 @@ Here is the tree structure of this project:
 To start playing with it you'll need to:
 
 ```bash
-git clone git@github.com:crysalead/text.git
+git clone git://github.com/crysalead/text.git
 cd text
 composer install
 ```
