@@ -12,45 +12,26 @@ describe("toContainKey", function() {
 
         context("with an array", function() {
 
-            it("passes if 2 key is in [1, 2, 3]", function() {
+            it("passes when the key is contained", function() {
 
                 expect([1, 2, 3])->toContainKey(2);
-
-            });
-
-            it("passes if 'a' key is in ['a', 'b', 'c']", function() {
-
                 expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainKey('a');
+                expect(['a' => null])->toContainKey('a');
 
             });
 
-            it("passes when we expect a array ['a', 'b'] key is in ['a', 'b', 'c']", function() {
+            it("passes when the keys are contained", function() {
 
+                expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainKeys('a', 'b');
                 expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainKeys(['a', 'b']);
 
             });
 
-            it("passes when we pass a function args 'a', 'b' key is in ['a', 'b', 'c']", function() {
-
-                expect(['a' => 1, 'b' => 2, 'c' => 3])->toContainKeys('a', 'b');
-
-            });
-
-            it("passes if 'd' key is not in ['a', 'b', 'c']", function() {
+            it("returns `false` when a key is missing", function() {
 
                 expect(['a' => 1, 'b' => 2, 'c' => 3])->not->toContainKey('d');
-
-            });
-
-            it("passes if ['a', 'b', 'd'] keys is not in ['a', 'b', 'c']", function() {
-
-                expect(['a' => 1, 'b' => 2, 'c' => 3])->not->toContainKeys(['a', 'b', 'd']);
-
-            });
-
-            it("passes if 'a', 'b', 'd' params keys is not in ['a', 'b', 'c']", function() {
-
                 expect(['a' => 1, 'b' => 2, 'c' => 3])->not->toContainKeys('a', 'b', 'd');
+                expect(['a' => 1, 'b' => 2, 'c' => 3])->not->toContainKeys(['a', 'b', 'd']);
 
             });
 
@@ -58,33 +39,26 @@ describe("toContainKey", function() {
 
         context("with a collection instance", function() {
 
-            it("passes if 2 key is in [1, 2, 3]", function() {
+            it("passes when the key is contained", function() {
 
                 expect(new Collection(['data' => [1, 2, 3]]))->toContainKey(2);
-
-            });
-
-            it("passes if 'a' key is in ['a', 'b', 'c']", function() {
-
                 expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->toContainKey('a');
+                expect(new Collection(['data' => ['a' => null]]))->toContainKey('a');
 
             });
 
-            it("passes if 'd' key is not in ['a', 'b', 'c']", function() {
+            it("passes when the keys are contained", function() {
+
+                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->toContainKeys('a', 'b');
+                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->toContainKeys(['a', 'b']);
+
+            });
+
+            it("returns `false` when a key is missing", function() {
 
                 expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKey('d');
-
-            });
-
-            it("passes if ['a', 'd'] key is not in ['a', 'b', 'c']", function() {
-
-                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys(['a', 'd']);
-
-            });
-
-            it("passes if 'a', 'd' params is not in ['a', 'b', 'c']", function() {
-
-                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys('a', 'd');
+                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys('a', 'b', 'd');
+                expect(new Collection(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys(['a', 'b', 'd']);
 
             });
 
@@ -92,33 +66,26 @@ describe("toContainKey", function() {
 
         context("with a traversable instance", function() {
 
-            it("passes if 2 key is in [1, 2, 3]", function() {
+            it("passes when the key is contained", function() {
 
                 expect(new Traversable(['data' => [1, 2, 3]]))->toContainKey(2);
-
-            });
-
-            it("passes if 'a' key is in ['a', 'b', 'c']", function() {
-
                 expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->toContainKey('a');
+                expect(new Traversable(['data' => ['a' => null]]))->toContainKey('a');
 
             });
 
-            it("passes if 'd' key is not in ['a', 'b', 'c']", function() {
+            it("passes when the keys are contained", function() {
+
+                expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->toContainKeys('a', 'b');
+                expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->toContainKeys(['a', 'b']);
+
+            });
+
+            it("returns `false` when a key is missing", function() {
 
                 expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKey('d');
-
-            });
-
-            it("passes if ['a', 'd'] key is not in ['a', 'b', 'c']", function() {
-
-                expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys(['a', 'd']);
-
-            });
-
-            it("passes if 'a', 'd' params is not in ['a', 'b', 'c']", function() {
-
                 expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys('a', 'd');
+                expect(new Traversable(['data' => ['a' => 1, 'b' => 2, 'c' => 3]]))->not->toContainKeys(['a', 'd']);
 
             });
 

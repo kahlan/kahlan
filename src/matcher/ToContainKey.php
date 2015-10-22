@@ -19,7 +19,14 @@ class ToContainKey
         $expected = count($params) > 2 ? array_slice($params, 1) : $expected;
         $expected = (array) $expected;
 
-        if (is_array($actual) || $actual instanceof ArrayAccess) {
+        if (is_array($actual)) {
+            foreach($expected as $key) {
+                if (!array_key_exists($key, $actual)) {
+                    return false;
+                }
+            }
+            return true;
+        } elseif ($actual instanceof ArrayAccess) {
             foreach($expected as $key) {
                 if (!isset($actual[$key])) {
                     return false;
