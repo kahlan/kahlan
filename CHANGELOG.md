@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.2.2 (2015-10-22)
+
+  * **Bugfix:** Fixes `ToContainKey` when dealing with plain arrays and `null` values.
+
 ## 1.2.1 (2015-10-17)
 
   * **Bugfix:** Fixes some Windows related issues.
