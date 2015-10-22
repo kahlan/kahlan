@@ -1,6 +1,7 @@
 <?php
 namespace kahlan\spec\suite;
 
+use stdClass;
 use Exception;
 use kahlan\Specification;
 use kahlan\Matcher;
@@ -148,6 +149,26 @@ describe("Specification", function() {
                 $pass = reset($passes);
 
                 expect($pass->not())->toBe(true);
+
+            });
+
+            it("logs deferred matcher backtrace", function() {
+
+                $this->spec = new Specification([
+                    'closure' => function() {
+                        $this->expect(new stdClass())->not->toReceive('helloWorld');
+                    }
+                ]);
+
+                expect($this->spec->process())->toBe(null);
+                expect($this->spec->passed())->toBe(true);
+
+                $passes = $this->spec->results()['passed'];
+                expect($passes)->toHaveLength(1);
+
+                $pass = reset($passes);
+                $backtrace = $pass->backtrace();
+                expect($backtrace[0]['file'])->toMatch('~ToReceive.php$~');
 
             });
 

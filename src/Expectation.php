@@ -336,7 +336,7 @@ class Expectation
             $data['params'] = $description['params'];
             $data['description'] = $description['description'];
         }
-        $data['backtrace'] = Debugger::backtrace();
+        $data += ['backtrace' => Debugger::backtrace()];
         $data['not'] = $not;
 
         $this->_logs[] = $data;
