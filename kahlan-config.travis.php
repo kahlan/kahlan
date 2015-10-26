@@ -33,8 +33,7 @@ Filter::register('kahlan.coverage', function($chain) {
             'src/reporter/Verbose.php',
             'src/reporter/Terminal.php',
             'src/reporter/Reporter.php',
-            'src/reporter/Coverage.php',
-            'src/reporter/Pretty.php',
+            'src/reporter/Coverage.php'
         ],
         'colors'    => !$this->args()->get('no-colors')
     ]);
