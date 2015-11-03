@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 1.2.3 (2015-11-03)
+
+  * **Add:** Added ability to disable Kahlan functions by environment variable.
+  * **Bugfix:** Fixes reported backtrace which was not accurate for deferred matchers.
+
 ## 1.2.2 (2015-10-22)
 
   * **Bugfix:** Fixes `ToContainKey` when dealing with plain arrays and `null` values.
