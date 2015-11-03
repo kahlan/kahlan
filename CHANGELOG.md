@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.2.4 (2015-11-03)
+
+  * **Bugfix:** Bugfix ability to disable Kahlan functions by environment variable.
+
 ## 1.2.3 (2015-11-03)
 
   * **Add:** Added ability to disable Kahlan functions by environment variable.
