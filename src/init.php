@@ -7,7 +7,7 @@ if (!defined('DS')) {
 }
 error_reporting(E_ALL);
 
-if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS) {
+if (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS || !getenv('KAHLAN_DISABLE_FUNCTIONS')) {
 
     function before($closure) {
         return Suite::current()->before($closure);
