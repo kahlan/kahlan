@@ -62,10 +62,6 @@ if (!(getenv('KAHLAN_DISABLE_FUNCTIONS') || (defined('KAHLAN_DISABLE_FUNCTIONS')
     function xit($message, $closure = null) {
     }
 
-    function expect($actual) {
-        return Specification::current()->expect($actual);
-    }
-
     function waitsFor($actual, $timeout = null) {
         return Specification::current()->waitsFor($actual, $timeout);
     }
@@ -73,5 +69,14 @@ if (!(getenv('KAHLAN_DISABLE_FUNCTIONS') || (defined('KAHLAN_DISABLE_FUNCTIONS')
     function skipIf($condition) {
         $current = Specification::current() ?: Suite::current();
         return $current->skipIf($condition);
+    }
+
+    /**
+     * @param $actual
+     *
+     * @return kahlan\Matcher
+     */
+    function expect($actual) {
+        return Specification::current()->expect($actual);
     }
 }
