@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 1.2.5 (2015-11-04)
+
+  * **Add:** Restores IDE autocomplete feature for `expect()`.
+  * **Bugfix:** Fixes `PointCut` patching with generators.
+
 ## 1.2.4 (2015-11-03)
 
   * **Bugfix:** Bugfix ability to disable Kahlan functions by environment variable.
