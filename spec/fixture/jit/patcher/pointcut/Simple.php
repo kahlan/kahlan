@@ -48,4 +48,8 @@ class Simple extends \kahlan\fixture\Parent
 
     abstract public function abstractMethod($param1, &$param2 = array());
 
+    public function generatorMethod($param1, &$param2, &$param2 = [])
+    {
+        yield rand(2, 5);
+    }
 }

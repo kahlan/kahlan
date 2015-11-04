@@ -48,4 +48,8 @@ class Simple extends \kahlan\fixture\Parent
 
     abstract public function abstractMethod($param1, &$param2 = array());
 
+    public function generatorMethod($param1, &$param2, &$param2 = [])
+    {$__KPOINTCUT_ARGS__ = func_get_args(); $__KPOINTCUT_SELF__ = isset($this) ? $this : get_called_class(); if ($__KPOINTCUT__ = \kahlan\plugin\Pointcut::before(__METHOD__, $__KPOINTCUT_SELF__, $__KPOINTCUT_ARGS__)) { $r = $__KPOINTCUT__($__KPOINTCUT_SELF__, $__KPOINTCUT_ARGS__); yield $r; }
+        yield rand(2, 5);
+    }
 }
