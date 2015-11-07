@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.2.6 (2015-11-07)
+
+  * **Add:** Adds an istanbul compatible exporter.
+
 ## 1.2.5 (2015-11-04)
 
   * **Add:** Restores IDE autocomplete feature for `expect()`.
