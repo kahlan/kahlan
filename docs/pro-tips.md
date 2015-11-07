@@ -49,6 +49,16 @@ istanbul report
 
 You'll find the HTML Code Coverage report in `coverage/lcov-report/index.html`.
 
+Or you can also use `genhtml` (from the [lcov](http://ltp.sourceforge.net/coverage/lcov.php) package):
+
+```bash
+sudo apt-get install lcov
+mkdir lcov
+./bin/kahlan --lcov="lcov/coverage.info"
+cd lcov
+genhtml coverage.info
+```
+
 ### Injecting variables in root scope
 
 To inject some variables to all scopes (e.g. database connection, helpers, etc.) and make it available in all you specs, one solution is to configure you `kahlan-config.php` file like the following:
