@@ -39,6 +39,16 @@ Will give you the detailed code coverage of the `Xdebug::stop()` method.
 **Note:**
 All available namespaces, classed or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
 
+You can also create an HTML Code Coverage report using istanbul like so:
+
+```bash
+npm install -g istanbul
+./bin/kahlan --istanbul="coverage.json"
+istanbul report
+```
+
+You'll find the HTML Code Coverage report in `coverage/lcov-report/index.html`.
+
 ### Injecting variables in root scope
 
 To inject some variables to all scopes (e.g. database connection, helpers, etc.) and make it available in all you specs, one solution is to configure you `kahlan-config.php` file like the following:
@@ -99,6 +109,6 @@ it("should not run on weekends", function() {
     skipIf(date("w") == 0 || date("w") == 6);
 
     expect(true)->toBe(true);
-     
+
 });
 ```

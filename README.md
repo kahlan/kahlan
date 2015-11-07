@@ -41,7 +41,8 @@ See the whole [documentation here](http://kahlan.readthedocs.org/en/latest).
 * Set stubs on your class methods directly (i.e allows dynamic mocking)
 * Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
 * Check called methods on your class/instances
-* Built-in Reporters/Exporters (Terminal, Coveralls, Code Climate, Scrutinizer, Clover)
+* Built-in Reporters (Terminal or HTML reporting through [istanbul](https://gotwarlost.github.io/istanbul/))
+* Built-in Exporters (Coveralls, Code Climate, Scrutinizer, Clover)
 * Extensible, customizable workflow
 * Small code base (~10 times smaller than PHPUnit)
 
