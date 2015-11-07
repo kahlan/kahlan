@@ -21,6 +21,7 @@ use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Clover;
 use kahlan\reporter\coverage\exporter\Istanbul;
+use kahlan\reporter\coverage\exporter\Lcov;
 use Composer\Script\Event;
 
 class Kahlan {
@@ -270,7 +271,8 @@ Code Coverage Options:
                                       method definition is provided, if will generate a detailled code
                                       coverage of this specific scope (default `''`).
   --clover=<file>                     Export code coverage report into a Clover XML format.
-  --istanbul=<file>                   Export code coverage report into a Istanbul compatible JSON format.
+  --istanbul=<file>                   Export code coverage report into an istanbul compatible JSON format.
+  --lcov=<file>                       Export code coverage report into a lcov compatible text format.
 
 Test Execution Options:
 
@@ -381,7 +383,7 @@ EOD;
         return Filter::on($this, 'bootstrap', [], function($chain) {
             $this->suite()->backtraceFocus($this->args()->get('pattern'));
             if (!$this->args()->exists('coverage')) {
-                if ($this->args()->exists('clover') || $this->args()->exists('istanbul')) {
+                if ($this->args()->exists('clover') || $this->args()->exists('istanbul') || $this->args()->exists('lcov')) {
                     $this->args()->set('coverage', 1);
                 }
             }
@@ -556,6 +558,12 @@ EOD;
                 Istanbul::write([
                     'collector' => $reporter,
                     'file' => $this->args()->get('istanbul')
+                ]);
+            }
+            if ($this->args()->exists('lcov')) {
+                Lcov::write([
+                    'collector' => $reporter,
+                    'file' => $this->args()->get('lcov')
                 ]);
             }
         });
