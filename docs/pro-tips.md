@@ -34,10 +34,12 @@ Example:
 
 Will give you the detailed code coverage of the `Xdebug::stop()` method.
 
-![code_coverage_example](assets/code_coverage_example.png)
+![code_coverage_example](assets/code_coverage.png)
 
 **Note:**
 All available namespaces, classed or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
+
+**`--istanbul=<file>`**
 
 You can also create an HTML Code Coverage report using istanbul like so:
 
@@ -49,7 +51,9 @@ istanbul report
 
 You'll find the HTML Code Coverage report in `coverage/lcov-report/index.html`.
 
-Or you can also use `genhtml` (from the [lcov](http://ltp.sourceforge.net/coverage/lcov.php) package):
+**`--lcov=<file>`**
+
+You can also use `genhtml` (from the [lcov](http://ltp.sourceforge.net/coverage/lcov.php) package):
 
 ```bash
 sudo apt-get install lcov
