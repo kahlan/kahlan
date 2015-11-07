@@ -78,7 +78,7 @@ class Istanbul
             $coverable = null;
             foreach ($content['nodes'] as $node) {
                 if ($node->type === 'function' && $node->lines['start'] === $num) {
-                    if ($node->isMethod || $node->isClosure) {
+                    if ($node->isMethod || !$node->isClosure) {
                         $f[$fnIndex] = 0;
                         $fnMap[$fnIndex] = [
                             'name' => $node->name,
