@@ -164,6 +164,7 @@ Code Coverage Options:
                                       method definition is provided, if will generate a detailled code
                                       coverage of this specific scope (default `''`).
   --clover=<file>                     Export code coverage report into a Clover XML format.
+  --istanbul=<file>                   Export code coverage report into a Istanbul compatible JSON format.
 
 Test Execution Options:
 

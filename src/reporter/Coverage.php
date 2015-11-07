@@ -123,22 +123,15 @@ class Coverage extends Terminal
     }
 
     /**
-     * Gets the base path used to compute relative paths.
+     * Delegates the call to the collector instance.
      *
-     * @return string
+     * @param  string  $name   The function name.
+     * @param  array   $params The parameters to pass to the function.
+     * @return mixed
      */
-    public function base() {
-        return $this->_collector->base();
-    }
-
-    /**
-     * Gets the coverage result.
-     *
-     * @return array
-     */
-    public function export()
+    public function __call($name, $params)
     {
-        return $this->_collector->export();
+        return call_user_func_array([$this->collector(), $name], $params);
     }
 
     /**

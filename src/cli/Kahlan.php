@@ -20,6 +20,7 @@ use kahlan\reporter\Terminal;
 use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Clover;
+use kahlan\reporter\coverage\exporter\Istanbul;
 use Composer\Script\Event;
 
 class Kahlan {
@@ -269,6 +270,7 @@ Code Coverage Options:
                                       method definition is provided, if will generate a detailled code
                                       coverage of this specific scope (default `''`).
   --clover=<file>                     Export code coverage report into a Clover XML format.
+  --istanbul=<file>                   Export code coverage report into a Istanbul compatible JSON format.
 
 Test Execution Options:
 
@@ -378,8 +380,10 @@ EOD;
     {
         return Filter::on($this, 'bootstrap', [], function($chain) {
             $this->suite()->backtraceFocus($this->args()->get('pattern'));
-            if ($this->args()->exists('clover') && !$this->args()->exists('coverage')) {
-                $this->args()->set('coverage', 1);
+            if (!$this->args()->exists('coverage')) {
+                if ($this->args()->exists('clover') || $this->args()->exists('istanbul')) {
+                    $this->args()->set('coverage', 1);
+                }
             }
         });
     }
@@ -539,13 +543,21 @@ EOD;
     {
         return Filter::on($this, 'reporting', [], function($chain) {
             $reporter = $this->reporters()->get('coverage');
-            if (!$reporter || !$this->args()->exists('clover')) {
+            if (!$reporter) {
                 return;
             }
-            Clover::write([
-                'collector' => $reporter,
-                'file' => $this->args()->get('clover')
-            ]);
+            if ($this->args()->exists('clover')) {
+                Clover::write([
+                    'collector' => $reporter,
+                    'file' => $this->args()->get('clover')
+                ]);
+            }
+            if ($this->args()->exists('istanbul')) {
+                Istanbul::write([
+                    'collector' => $reporter,
+                    'file' => $this->args()->get('istanbul')
+                ]);
+            }
         });
     }
 
