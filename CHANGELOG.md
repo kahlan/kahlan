@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 1.2.7 (2015-11-07)
+
+  * **Add:** Adds a lcov compatible exporter.
+  * **Bugfix:** Fixes a minor issue with the istanbul exporter.
+
 ## 1.2.6 (2015-11-07)
 
   * **Add:** Adds an istanbul compatible exporter.
