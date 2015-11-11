@@ -32,12 +32,14 @@ Example:
 ./bin/kahlan --coverage="kahlan\reporter\coverage\driver\Xdebug::stop()"
 ```
 
+![warning](assets/warning.png) don't forget to correctly set the `--src` option if your source directory is not `src/`.
+
 Will give you the detailed code coverage of the `Xdebug::stop()` method.
 
 ![code_coverage_example](assets/code_coverage.png)
 
 **Note:**
-All available namespaces, classed or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
+All available namespaces, classes or methods definitions can be extracted from a simple `--coverage=4` code coverage summary.
 
 **`--istanbul=<file>`**
 
