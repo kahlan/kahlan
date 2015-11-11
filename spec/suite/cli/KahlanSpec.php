@@ -230,6 +230,33 @@ EOD;
 
         });
 
+        it("isolates `kahlan-config.php` execution in a dedicated scope", function() {
+
+            $version = Kahlan::VERSION;
+
+            $message = <<<EOD
+version \033[0;32;49m{$version}\033[0m
+
+For additional help you must use \033[0;32;49m--help\033[0m
+
+
+EOD;
+
+            $closure = function() {
+                try {
+                    $this->specs->loadConfig([
+                        '--config=spec/fixture/kahlan/kahlan-config.php',
+                        '--version',
+                        '--no-header'
+                    ]);
+                } catch (Exception $e) {}
+            };
+
+            Quit::disable();
+            expect($closure)->toEcho($message);
+
+        });
+
         it("doesn't filter empty string from include & exclude", function() {
 
             $args = [

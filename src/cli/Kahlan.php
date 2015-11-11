@@ -188,10 +188,12 @@ class Kahlan {
         $args->argument('version', ['type'     => 'boolean']);
         $args->parse($argv);
 
-        if (file_exists($args->get('config'))) {
-            require $args->get('config');
-        }
-
+        $run = function($args) {
+            if (file_exists($args->get('config'))) {
+                require $args->get('config');
+            }
+        };
+        $run($args);
         $this->_args->parse($argv, false);
 
         if ($args->get('help')) {
