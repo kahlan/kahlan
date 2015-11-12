@@ -155,7 +155,7 @@ Configuration Options:
 Reporter Options:
 
   --reporter=<string>                 The name of the text reporter to use, the buit-in text reporters
-                                      are `'dot'` & `'bar'` (default: `'dot'`).
+                                      are `'dot'`, `'bar'` & `'verbose'` (default: `'dot'`).
 
 Code Coverage Options:
 
