@@ -18,10 +18,14 @@
     },
     "autoload": {
         "psr-4": {
-            "kahlan\\": "src/",
-            "kahlan\\spec\\": "spec/"
+            "kahlan\\": "src/"
         },
         "files": ["src/init.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "kahlan\\spec\\": "spec/"
+        }
     },
     "scripts": {
         "post-update-cmd": [
