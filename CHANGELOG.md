@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.2.8 (2015-11-22)
+
+  * **Bugfix:** Fixes a cwd issue when installed globally.
+
 ## 1.2.7 (2015-11-07)
 
   * **Add:** Adds a lcov compatible exporter.
