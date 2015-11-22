@@ -7,15 +7,6 @@ use kahlan\analysis\Debugger;
 class Scope
 {
     /**
-     * Class dependencies.
-     *
-     * @var array
-     */
-    protected $_classes = [
-        'expectation' => 'kahlan\Expectation'
-    ];
-
-    /**
      * Instances stack.
      *
      * @var array
@@ -23,26 +14,11 @@ class Scope
     protected static $_instances = [];
 
     /**
-     * A regexp pattern used to removes useless traces to focus on the one
-     * related to a spec file.
-     *
-     * @var string
-     */
-    protected $_backtraceFocus = null;
-
-    /**
-     * The scope backtrace.
-     *
-     * @var object
-     */
-    protected $_backtrace = null;
-
-    /**
      * List of reserved keywords which can't be used as scope variable.
      *
      * @var array
      */
-    protected static $_reserved = [
+    public static $blacklist = [
         '__construct' => true,
         '__call'      => true,
         '__get'       => true,
@@ -56,10 +32,11 @@ class Scope
         'describe'    => true,
         'dispatch'    => true,
         'emitReport'  => true,
+        'expect'      => true,
         'focus'       => true,
         'focused'     => true,
-        'expect'      => true,
         'failfast'    => true,
+        'given'       => true,
         'hash'        => true,
         'it'          => true,
         'logs'        => true,
@@ -84,6 +61,16 @@ class Scope
         'xdescribe'   => true,
         'xcontext'    => true,
         'xit'         => true
+    ];
+
+    /**
+     * Class dependencies.
+     *
+     * @var array
+     */
+    protected $_classes = [
+        'expectation' => 'kahlan\Expectation',
+        'given'       => 'kahlan\Given'
     ];
 
     /**
@@ -189,6 +176,21 @@ class Scope
     protected $_timeout = 0;
 
     /**
+     * A regexp pattern used to removes useless traces to focus on the one
+     * related to a spec file.
+     *
+     * @var string
+     */
+    protected $_backtraceFocus = null;
+
+    /**
+     * The scope backtrace.
+     *
+     * @var object
+     */
+    protected $_backtrace = null;
+
+    /**
      * The Constructor.
      *
      * @param array $config The Suite config array. Options are:
@@ -231,7 +233,7 @@ class Scope
         if ($this->_parent !== null) {
             return $this->_parent->__get($key);
         }
-        if (in_array($key, static::$_reserved)) {
+        if (in_array($key, static::$blacklist)) {
             if ($key == 'expect') {
                 throw new Exception("You can't use expect() inside of describe()");
             }
@@ -248,7 +250,7 @@ class Scope
      */
     public function __set($key, $value)
     {
-        if (isset(static::$_reserved[$key])) {
+        if (isset(static::$blacklist[$key])) {
             throw new Exception("Sorry `{$key}` is a reserved keyword, it can't be used as a scope variable.");
         }
         return $this->_data[$key] = $value;

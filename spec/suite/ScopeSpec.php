@@ -31,51 +31,7 @@ describe("Scope", function() {
 
         it("throw an new exception for reserved keywords", function() {
 
-            $reserved = [
-                '__construct',
-                '__call',
-                '__get',
-                '__set',
-                'after',
-                'afterEach',
-                'before',
-                'beforeEach',
-                'context',
-                'current',
-                'describe',
-                'dispatch',
-                'emitReport',
-                'focus',
-                'focused',
-                'expect',
-                'failfast',
-                'hash',
-                'it',
-                'logs',
-                'matcher',
-                'message',
-                'messages',
-                'passed',
-                'process',
-                'register',
-                'registered',
-                'report',
-                'reset',
-                'results',
-                'run',
-                'skipIf',
-                'status',
-                'timeout',
-                'wait',
-                'fdescribe',
-                'fcontext',
-                'fit',
-                'xdescribe',
-                'xcontext',
-                'xit'
-            ];
-
-            foreach ($reserved as $keyword) {
+            foreach (Scope::$blacklist as $keyword => $bool) {
                 $closure = function() use ($keyword) {
                     $this->{$keyword} = 'some value';
                 };
