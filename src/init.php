@@ -7,7 +7,18 @@ if (!defined('DS')) {
 }
 error_reporting(E_ALL);
 
-if (!(getenv('KAHLAN_DISABLE_FUNCTIONS') || (defined('KAHLAN_DISABLE_FUNCTIONS') && KAHLAN_DISABLE_FUNCTIONS))) {
+$defineFuctions = true;
+
+if (getenv('KAHLAN_DISABLE_FUNCTIONS') || (defined('KAHLAN_DISABLE_FUNCTIONS') && KAHLAN_DISABLE_FUNCTIONS)) {
+    $defineFuctions = false;
+}
+
+if (defined('KAHLAN_FUNCTIONS_EXIST') && KAHLAN_FUNCTIONS_EXIST) {
+    $defineFuctions = false;
+}
+
+if ($defineFuctions) {
+    define('KAHLAN_FUNCTIONS_EXIST', true);
 
     function before($closure) {
         return Suite::current()->before($closure);
