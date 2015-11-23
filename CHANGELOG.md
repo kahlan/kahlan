@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.2.9 (2015-11-23)
+
+  * **Bugfix:** Makes sure Kahlan's global function can't be includes twice.
+
 ## 1.2.8 (2015-11-22)
 
   * **Bugfix:** Fixes a cwd issue when installed globally.
