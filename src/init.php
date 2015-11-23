@@ -48,6 +48,10 @@ if ($defineFuctions) {
         return Suite::current()->context($message, $closure, $timeout, $scope);
     }
 
+    function given($name, $value) {
+        return Suite::current()->given($name, $value);
+    }
+
     function it($message, $closure, $timeout = null, $scope = 'normal') {
         return Suite::current()->it($message, $closure, $timeout, $scope);
     }

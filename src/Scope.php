@@ -109,6 +109,13 @@ class Scope
     protected $_data = [];
 
     /**
+     * The lazy loaded scope's data.
+     *
+     * @var array
+     */
+    protected $_given = [];
+
+    /**
      * The report result of executed spec.
      *
      * @var object
@@ -230,6 +237,11 @@ class Scope
         if (array_key_exists($key, $this->_data)) {
             return $this->_data[$key];
         }
+        if (array_key_exists($key, $this->_given)) {
+            $scope = static::current();
+            $scope->{$key} = $this->_given[$key]($scope);
+            return $scope->__get($key);
+        }
         if ($this->_parent !== null) {
             return $this->_parent->__get($key);
         }
@@ -273,6 +285,27 @@ class Scope
             return call_user_func_array($property, $params);
         }
         throw new Exception("Uncallable variable `{$name}`.");
+    }
+
+    /**
+     * Sets a lazy loaded data.
+     *
+     * @param  string  $name    The lazy loaded variable name.
+     * @param  Closure $closure The lazily executed closure.
+     * @return object
+     */
+    public function given($name, $closure)
+    {
+        if (isset(static::$blacklist[$name])) {
+            throw new Exception("Sorry `{$name}` is a reserved keyword, it can't be used as a scope variable.");
+        }
+        $class = $this->_classes['given'];
+        $given = new $class($closure);
+        if (array_key_exists($name, $this->_given)) {
+            $given->{$name} = $this->_given[$name](static::current());
+        }
+        $this->_given[$name] = $given;
+        return $this;
     }
 
     /**
