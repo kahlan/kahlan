@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.2.10 (2015-11-23)
+
+  * **Add:** Allows Kahlan's binary to deal with custom composer.json `"vendor-dir"` config.
+
 ## 1.2.9 (2015-11-23)
 
   * **Bugfix:** Makes sure Kahlan's global function can't be includes twice.
