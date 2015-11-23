@@ -2,10 +2,23 @@
 <?php
 $autoloader = null;
 
-if (file_exists($file = __DIR__ . '/../../../autoload.php')) {
-    $autoloader = include $file;
-} elseif (file_exists($file = __DIR__ . '/../vendor/autoload.php')) {
-    $autoloader = include $file;
+if ($absolute = realpath(__DIR__ . '/../../../autoload.php')) {
+    $autoloader = include $absolute;
+} elseif ($absolute = realpath(__DIR__ . '/../vendor/autoload.php')) {
+    $autoloader = include $absolute;
+}
+
+$vendorDir = 'vendor';
+
+if ($composerPath = realpath(getcwd() . '/composer.json')) {
+    $composerJson = json_decode(file_get_contents($composerPath), true);
+    $vendorDir = isset($composerJson['vendor-dir']) ? $composerJson['vendor-dir'] : $vendorDir;
+}
+
+$relative = realpath(getcwd() . "/{$vendorDir}/autoload.php");
+
+if ($relative && $relative !== $absolute) {
+    $autoloader = include $relative;
 }
 
 if (!$autoloader) {
