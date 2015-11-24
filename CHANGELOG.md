@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.2.11 (2015-11-24)
+
+  * **Add:** Adds `given()` function to set lazy loadable variables.
+
 ## 1.2.10 (2015-11-23)
 
   * **Add:** Allows Kahlan's binary to deal with custom composer.json `"vendor-dir"` config.
