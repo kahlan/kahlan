@@ -3,28 +3,30 @@ namespace kahlan\spec\suite\reporter\coverage;
 
 use kahlan\reporter\coverage\Collector;
 use kahlan\reporter\coverage\driver\Xdebug;
+use kahlan\reporter\coverage\driver\Phpdbg;
 use kahlan\spec\fixture\reporter\coverage\CodeCoverage;
 
 describe("Coverage", function() {
 
     beforeEach(function() {
-        if (!extension_loaded('xdebug')) {
+        if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
+        $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
     beforeEach(function() {
         $this->path = 'spec/fixture/reporter/coverage/CodeCoverage.php';
 
         $this->collector = new Collector([
-            'driver'    => new Xdebug(),
+            'driver'    => $this->driver,
             'path'      => $this->path
         ]);
 
         $this->parent = $this->collector;
 
         $this->child = new Collector([
-            'driver'    => new Xdebug(),
+            'driver'    => $this->driver,
             'path'      => $this->path
         ]);
 
@@ -183,7 +185,7 @@ describe("Coverage", function() {
         it("supports special chars", function() {
 
             $collector = new Collector([
-                'driver' => new Xdebug(),
+                'driver' => $this->driver,
                 'path'   => $this->path,
                 'prefix' => '/a/weird~cache/path'
             ]);

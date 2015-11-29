@@ -18,6 +18,7 @@ use kahlan\reporter\Dot;
 use kahlan\reporter\Bar;
 use kahlan\reporter\Terminal;
 use kahlan\reporter\Coverage;
+use kahlan\reporter\coverage\driver\Phpdbg;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Clover;
 use kahlan\reporter\coverage\exporter\Istanbul;
@@ -500,15 +501,21 @@ EOD;
             if (!$this->args()->exists('coverage')) {
                 return;
             }
-            if (!extension_loaded('xdebug')) {
+            $reporters = $this->reporters();
+            $driver = null;
+
+            if (PHP_SAPI === 'phpdbg') {
+                $driver = new Phpdbg();
+            } elseif (extension_loaded('xdebug')) {
+                $driver = new Xdebug();
+            } else {
                 $console = $this->reporters()->get('console');
-                $console->write("\nWARNING: Xdebug is not installed, code coverage has been disabled.\n", 'yellow');
+                $console->write("\nWARNING: PHPDBG SAPI has not been detected and Xdebug is not installed, code coverage has been disabled.\n", 'yellow');
                 return;
             }
-            $reporters = $this->reporters();
             $coverage = new Coverage([
                 'verbosity' => $this->args()->get('coverage') === null ? 1 : $this->args()->get('coverage'),
-                'driver' => new Xdebug(),
+                'driver' => $driver,
                 'path' => $this->args()->get('src'),
                 'colors' => !$this->args()->get('no-colors')
             ]);

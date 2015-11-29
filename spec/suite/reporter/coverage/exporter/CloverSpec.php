@@ -3,6 +3,7 @@ namespace kahlan\spec\suite\reporter\coverage;
 
 use kahlan\reporter\coverage\Collector;
 use kahlan\reporter\coverage\driver\Xdebug;
+use kahlan\reporter\coverage\driver\Phpdbg;
 use kahlan\reporter\coverage\exporter\Clover;
 use kahlan\spec\fixture\reporter\coverage\NoEmptyLine;
 use kahlan\spec\fixture\reporter\coverage\ExtraEmptyLine;
@@ -11,9 +12,10 @@ use RuntimeException;
 describe("Clover", function() {
 
     beforeEach(function() {
-        if (!extension_loaded('xdebug')) {
+        if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
+        $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
     describe("::export()", function() {
@@ -23,7 +25,7 @@ describe("Clover", function() {
             $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'NoEmptyLine.php';
 
             $collector = new Collector([
-                'driver' => new Xdebug(),
+                'driver' => $this->driver,
                 'path'   => $path
             ]);
 
@@ -66,7 +68,7 @@ EOD;
             $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'ExtraEmptyLine.php';
 
             $collector = new Collector([
-                'driver' => new Xdebug(),
+                'driver' => $this->driver,
                 'path'   => $path
             ]);
 
@@ -122,7 +124,7 @@ EOD;
             $path = 'spec' . DS . 'fixture' . DS . 'reporter' . DS . 'coverage' . DS . 'NoEmptyLine.php';
 
             $collector = new Collector([
-                'driver' => new Xdebug(),
+                'driver' => $this->driver,
                 'path'   => $path
             ]);
 

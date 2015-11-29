@@ -3,6 +3,7 @@ namespace kahlan\spec\suite\reporter\coverage;
 
 use kahlan\reporter\coverage\Collector;
 use kahlan\reporter\coverage\driver\Xdebug;
+use kahlan\reporter\coverage\driver\Phpdbg;
 use kahlan\spec\fixture\reporter\coverage\NoEmptyLine;
 use kahlan\spec\fixture\reporter\coverage\ExtraEmptyLine;
 use kahlan\spec\fixture\reporter\coverage\ImplementsCoverage;
@@ -10,9 +11,10 @@ use kahlan\spec\fixture\reporter\coverage\ImplementsCoverage;
 describe("Metrics", function() {
 
     beforeEach(function() {
-        if (!extension_loaded('xdebug')) {
+        if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
+        $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
     beforeEach(function() {
@@ -21,8 +23,10 @@ describe("Metrics", function() {
             'spec/fixture/reporter/coverage/NoEmptyLine.php'
         ];
 
+        $driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
+
         $this->collector = new Collector([
-            'driver'    => new Xdebug(),
+            'driver'    => $this->driver,
             'path'      => $this->path
         ]);
     });
@@ -176,7 +180,7 @@ describe("Metrics", function() {
             ];
 
             $collector = new Collector([
-                'driver'    => new Xdebug(),
+                'driver'    => $this->driver,
                 'path'      => $path
             ]);
 
