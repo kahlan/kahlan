@@ -8,8 +8,8 @@ Example of a config file:
 
 ```php
 <?php
-use Kahlan\Filter\Filter;
-use Kahlan\Reporter\Coverage\Exporter\Coveralls;
+use kahlan\filter\Filter;
+use kahlan\reporter\coverage\exporter\Coveralls;
 
 // It overrides some default option values.
 // Note that the values passed in command line will overwrite the ones below.

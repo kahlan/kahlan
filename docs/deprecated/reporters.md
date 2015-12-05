@@ -16,14 +16,14 @@ To use a reporter which looks like more a progress bar use the following option:
 
 You can easily roll you own if these reporters don't fit your needs.
 
-For example, if you want a console based reporter, create a PHP class which extends `Kahlan\Reporter\Terminal`. The `Terminal` class offers some useful methods like `write()` for doing some echos on the terminal. But if you wanted to create some kind of JSON reporter extending from `Kahlan\Reporter\Reporter` would be enough.
+For example, if you want a console based reporter, create a PHP class which extends `kahlan\reporter\Terminal`. The `Terminal` class offers some useful methods like `write()` for doing some echos on the terminal. But if you wanted to create some kind of JSON reporter extending from `kahlan\reporter\Reporter` would be enough.
 
 Example of a custom console reporter:
 ```php
 <?php
-namespace My\Namespace;
+namespace my\namespace;
 
-class MyReporter extends \Kahlan\Reporter\Terminal
+class MyReporter extends \kahlan\reporter\Terminal
 {
     /**
      * Callback called on successful expectation.
@@ -89,8 +89,8 @@ The next step is to register your new reporter so you'll need to create you own 
 Example of config file:
 ```php
 <?php
-use Kahlan\Filter\Filter;
-use My\Namespace\Reporter\MyReporter;
+use kahlan\filter\Filter;
+use my\namespace\reporter\MyReporter;
 
 // The logic to inlude into the workflow.
 Filter::register('kahlan.myconsole', function($chain) {

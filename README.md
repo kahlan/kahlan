@@ -25,7 +25,7 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 
 ## Documentation
 
-See the whole [documentation here](http://kahlan.readthedocs.org/en/latest).
+See the whole [documentation here](http://kahlan.readthedocs.org/en/latest) (documentation for Kahlan <= 1.3.0 [can still be found here](docs/deprecated))
 
 ## Requirements
 

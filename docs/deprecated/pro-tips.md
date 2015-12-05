@@ -29,7 +29,7 @@ However sometimes it's interesting to see in details all covered/uncovered lines
 Example:
 
 ```php
-./bin/kahlan --coverage="Kahlan\Reporter\Coverage\Driver\Xdebug::stop()"
+./bin/kahlan --coverage="kahlan\reporter\coverage\driver\Xdebug::stop()"
 ```
 
 ![warning](assets/warning.png) don't forget to correctly set the `--src` option if your source directory is not `src/`.

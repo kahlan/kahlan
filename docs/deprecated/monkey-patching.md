@@ -5,7 +5,7 @@
 To enable **Monkey Patching**, add the following `use` statement in the top of your specs:
 
 ```php
-use Kahlan\Plugin\Monkey;
+use kahlan\plugin\Monkey;
 ```
 
 Monkey Patching allows replacement of core functions and classes that can't be stubbed, for example [time()](http://php.net/manual/en/function.time.php), [DateTime](http://php.net/manual/en/class.datetime.php) or [MongoId](http://php.net/manual/en/class.mongoid.php) for example.
@@ -15,7 +15,7 @@ With Kahlan, you can patch anything you want using `Monkey::patch()`!
 For example, I have the following class which needs to be patched:
 
 ```php
-namespace Kahlan\Monkey;
+namespace kahlan\monkey;
 
 use DateTime;
 
@@ -38,7 +38,7 @@ You can patch the `time()` function on the fly like in the following spec:
 ```php
 namespace spec;
 
-use Kahlan\Monkey\Foo;
+use kahlan\monkey\Foo;
 
 function mytime() {
     return 245026800;
@@ -80,8 +80,8 @@ When a unit test exercises code that contains an `exit()` or a `die()` statement
 To enable **Monkey Patching on Quit Statements** add the following `use` statements in the top of your tests:
 
 ```php
-use Kahlan\QuitException;
-use Kahlan\Plugin\Quit;
+use kahlan\QuitException;
+use kahlan\plugin\Quit;
 ```
 
 And then use `Quit::disable()` like in the following:
