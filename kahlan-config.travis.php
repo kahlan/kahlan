@@ -1,5 +1,5 @@
 <?php
-use filter\Filter;
+use kahlan\filter\Filter;
 use kahlan\reporter\Coverage;
 use kahlan\reporter\coverage\driver\Xdebug;
 use kahlan\reporter\coverage\exporter\Coveralls;

@@ -4,8 +4,8 @@ namespace kahlan\kahlan\spec\suite\plugin;
 use ReflectionMethod;
 use InvalidArgumentException;
 
-use jit\Interceptor;
-use jit\Patchers;
+use kahlan\jit\Interceptor;
+use kahlan\jit\Patchers;
 use kahlan\Arg;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\plugin\Stub;

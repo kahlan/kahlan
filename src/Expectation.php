@@ -2,8 +2,8 @@
 namespace kahlan;
 
 use Exception;
-use code\Code;
-use code\TimeoutException;
+use kahlan\code\Code;
+use kahlan\code\TimeoutException;
 use kahlan\analysis\Inspector;
 use kahlan\analysis\Debugger;
 
@@ -192,17 +192,17 @@ class Expectation
             $this->_spin($closure);
         } catch (TimeoutException $e) {
             $data['params']['timeout'] = $e->getMessage();
-        } finally {
-            array_unshift($params, $actual);
-            $matcher = $this->_matcher($matcherName, $actual);
-            $params = Inspector::parameters($matcher, 'match', $params);
-            $data = compact('matcherName', 'matcher', 'params');
-            if ($spec instanceof $specification) {
-                foreach ($spec->logs() as $value) {
-                    $this->_logs[] = $value;
-                }
-                $this->_passed = $this->_passed && $spec->passed();
+        }
+
+        array_unshift($params, $actual);
+        $matcher = $this->_matcher($matcherName, $actual);
+        $params = Inspector::parameters($matcher, 'match', $params);
+        $data = compact('matcherName', 'matcher', 'params');
+        if ($spec instanceof $specification) {
+            foreach ($spec->logs() as $value) {
+                $this->_logs[] = $value;
             }
+            $this->_passed = $this->_passed && $spec->passed();
         }
 
         if (!is_object($result)) {
@@ -274,12 +274,12 @@ class Expectation
         try {
             $this->_spin($closure);
         } catch (TimeoutException $e) {
-        } finally {
-            foreach ($spec->logs() as $value) {
-                $this->_logs[] = $value;
-            }
-            $this->_passed = $this->_passed && $spec->passed();
         }
+        foreach ($spec->logs() as $value) {
+            $this->_logs[] = $value;
+        }
+        $this->_passed = $this->_passed && $spec->passed();
+
         return $this;
     }
 

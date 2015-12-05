@@ -1,8 +1,8 @@
 <?php
 namespace kahlan\reporter\coverage;
 
-use dir\Dir;
-use jit\Interceptor;
+use kahlan\dir\Dir;
+use kahlan\jit\Interceptor;
 
 class Collector
 {
@@ -19,7 +19,7 @@ class Collector
      * @var array
      */
     protected $_classes = [
-        'parser' => 'jit\Parser',
+        'parser' => 'kahlan\jit\Parser',
     ];
 
     /**

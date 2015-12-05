@@ -28,7 +28,7 @@ if (!$autoloader) {
     exit(1);
 }
 
-use box\Box;
+use kahlan\box\Box;
 use kahlan\Suite;
 use kahlan\Matcher;
 use kahlan\cli\Kahlan;

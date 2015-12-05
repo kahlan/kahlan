@@ -1,23 +1,24 @@
 <?php
 use kahlan\Suite;
 use kahlan\Specification;
+use kahlan\box\BoxException;
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
 }
 error_reporting(E_ALL);
 
-$defineFuctions = true;
+$kahlanFuctions = true;
 
 if (getenv('KAHLAN_DISABLE_FUNCTIONS') || (defined('KAHLAN_DISABLE_FUNCTIONS') && KAHLAN_DISABLE_FUNCTIONS)) {
-    $defineFuctions = false;
+    $kahlanFuctions = false;
 }
 
 if (defined('KAHLAN_FUNCTIONS_EXIST') && KAHLAN_FUNCTIONS_EXIST) {
-    $defineFuctions = false;
+    $kahlanFuctions = false;
 }
 
-if ($defineFuctions) {
+if ($kahlanFuctions) {
     define('KAHLAN_FUNCTIONS_EXIST', true);
 
     function before($closure) {
@@ -94,4 +95,38 @@ if ($defineFuctions) {
     function expect($actual) {
         return Specification::current()->expect($actual);
     }
+}
+
+$boxFuctions = true;
+
+if (getenv('BOX_DISABLE_FUNCTIONS') || (defined('BOX_DISABLE_FUNCTIONS') && BOX_DISABLE_FUNCTIONS)) {
+    $boxFuctions = false;
+}
+
+if (defined('BOX_FUNCTIONS_EXIST') && BOX_FUNCTIONS_EXIST) {
+    $boxFuctions = false;
+}
+
+if ($boxFuctions) {
+    define('BOX_FUNCTIONS_EXIST', true);
+
+    function box($name, $box = null) {
+        static $boxes = [];
+        if ($name === false) {
+            $boxes = [];
+            return;
+        }
+        if ($box === false) {
+            unset($boxes[$name]);
+            return;
+        }
+        if ($box) {
+            return $boxes[$name] = $box;
+        }
+        if (isset($boxes[$name])) {
+            return $boxes[$name];
+        }
+        throw new BoxException("Unexisting box `'{$name}'`.");
+    }
+
 }

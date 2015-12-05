@@ -2,8 +2,8 @@
 namespace kahlan\spec\suite\cli;
 
 use Exception;
-use jit\Interceptor;
-use filter\Filter;
+use kahlan\jit\Interceptor;
+use kahlan\filter\Filter;
 use kahlan\Suite;
 use kahlan\Matcher;
 use kahlan\cli\Kahlan;

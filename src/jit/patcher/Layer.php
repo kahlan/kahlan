@@ -11,7 +11,7 @@ class Layer {
      * @var array
      */
     protected $_classes = [
-        'parser'   => 'jit\Parser',
+        'parser'   => 'kahlan\jit\Parser',
         'pointcut' => 'kahlan\jit\patcher\Pointcut'
     ];
 

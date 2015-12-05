@@ -97,7 +97,7 @@ describe("Expectation", function() {
         it ("returns the matcher when called", function() {
 
             $result = Expectation::expect(true)->run();
-            expect($result)->toBeAnInstanceOf(Expectation::class);
+            expect($result)->toBeAnInstanceOf('kahlan\Expectation');
 
         });
 
@@ -107,7 +107,7 @@ describe("Expectation", function() {
                 return true;
             }]);
             $result = Expectation::expect($subspec)->run();
-            expect($result)->toBeAnInstanceOf(Expectation::class);
+            expect($result)->toBeAnInstanceOf('kahlan\Expectation');
 
         });
 
@@ -118,7 +118,7 @@ describe("Expectation", function() {
                 expect(true)->toBe(false);
             }]);
             $result = Expectation::expect($subspec, 0.1)->run();
-            expect($result)->toBeAnInstanceOf(Expectation::class);
+            expect($result)->toBeAnInstanceOf('kahlan\Expectation');
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
             expect($end - $start)->toBeLessThan(0.2);

@@ -1,7 +1,7 @@
 <?php
 namespace kahlan\spec\suite\matcher;
 
-use jit\Interceptor;
+use kahlan\jit\Interceptor;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\matcher\ToReceiveNext;
 

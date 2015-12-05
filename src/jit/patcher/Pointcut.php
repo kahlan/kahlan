@@ -9,7 +9,7 @@ class Pointcut
      * @var array
      */
     protected $_classes = [
-        'node' => 'jit\node\NodeDef',
+        'node' => 'kahlan\jit\node\NodeDef',
     ];
 
     /**

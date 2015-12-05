@@ -91,10 +91,9 @@ class Specification extends Scope
                 $result = $this->run();
             } catch (Exception $exception) {
                 $this->_exception($exception);
-            } finally {
-                foreach ($this->logs() as $log) {
-                    $this->report()->add($log['type'], $log);
-                }
+            }
+            foreach ($this->logs() as $log) {
+                $this->report()->add($log['type'], $log);
             }
             $this->_specEnd();
         } catch (Exception $exception) {
@@ -157,12 +156,13 @@ class Specification extends Scope
                 }
                 $this->_passed = $this->_passed && $expectation->passed();
             }
-        } catch (Exception $e) {
-            $this->_passed = false;
-            throw $e;
-        } finally {
             array_pop(static::$_instances);
             $this->_locked = false;
+        } catch (Exception $e) {
+            $this->_passed = false;
+            array_pop(static::$_instances);
+            $this->_locked = false;
+            throw $e;
         }
 
         return $result;

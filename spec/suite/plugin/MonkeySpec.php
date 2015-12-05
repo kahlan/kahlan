@@ -2,7 +2,7 @@
 namespace kahlan\spec\suite\plugin;
 
 use DateTime;
-use jit\Interceptor;
+use kahlan\jit\Interceptor;
 use kahlan\plugin\Monkey;
 use kahlan\jit\patcher\Monkey as MonkeyPatcher;
 

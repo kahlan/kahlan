@@ -1,7 +1,7 @@
 <?php
 namespace kahlan\spec\suite\jit\patcher;
 
-use jit\Parser;
+use kahlan\jit\Parser;
 use kahlan\jit\patcher\Layer;
 
 describe("Layer", function() {

@@ -2,7 +2,7 @@
 namespace kahlan\kahlan\spec\suite\plugin\stub;
 
 use Exception;
-use jit\Interceptor;
+use kahlan\jit\Interceptor;
 use kahlan\jit\patcher\Pointcut;
 use kahlan\plugin\Stub;
 

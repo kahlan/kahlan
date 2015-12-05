@@ -1,11 +1,11 @@
 <?php
 namespace kahlan\cli;
 
-use dir\Dir;
-use jit\Interceptor;
-use jit\Patchers;
-use filter\Filter;
-use filter\behavior\Filterable;
+use kahlan\dir\Dir;
+use kahlan\jit\Interceptor;
+use kahlan\jit\Patchers;
+use kahlan\filter\Filter;
+use kahlan\filter\behavior\Filterable;
 use kahlan\Suite;
 use kahlan\Matcher;
 use kahlan\jit\patcher\Pointcut;

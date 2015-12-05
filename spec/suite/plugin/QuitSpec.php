@@ -1,7 +1,7 @@
 <?php
 namespace kahlan\spec\suite\plugin;
 
-use jit\Interceptor;
+use kahlan\jit\Interceptor;
 use kahlan\QuitException;
 use kahlan\plugin\Quit;
 use kahlan\jit\patcher\Quit as QuitPatcher;
