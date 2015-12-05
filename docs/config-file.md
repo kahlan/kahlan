@@ -8,7 +8,7 @@ Example of a config file:
 
 ```php
 <?php
-use filter\Filter;
+use kahlan\filter\Filter;
 use kahlan\reporter\coverage\exporter\Coveralls;
 
 // It overrides some default option values.
@@ -50,8 +50,6 @@ Filter::apply($this, 'reporting', 'kahlan.coveralls');
 Above `'kahlan.coveralls'` is just a custom name and could be whatever as long as `Filter::register()` and `Filter::apply()` are consistent on the namings.
 
 `$this` refer to the Kahlan instance so `$this->reporters()->get('coverage')` will give you the instance of the coverage reporter. This coverage reporter will contain all raw data which is passed to the `Coveralls` exporter to be formatter.
-
-For more information about filters, take a look at [the documentation of the filter library](https://github.com/crysalead/filter).
 
 The filterable entry points are the following:
 

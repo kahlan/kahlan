@@ -89,7 +89,7 @@ The next step is to register your new reporter so you'll need to create you own 
 Example of config file:
 ```php
 <?php
-use filter\Filter;
+use kahlan\filter\Filter;
 use my\namespace\reporter\MyReporter;
 
 // The logic to inlude into the workflow.

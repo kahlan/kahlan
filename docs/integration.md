@@ -9,7 +9,7 @@ Hopefully It's easy and simple. Indeed almost all popular frameworks autoloaders
 Let's take a situation where you have the following directories: `app/models/` and  `app/controllers/` and each one are respectively attached to the `Api\Models` and `Api\Controllers` namespaces. To make them autoloaded with Kahlan you will need to manually add this **PSR-4** based namespaces in your **kahlan-config.php** config file:
 
 ```php
-use filter\Filter;
+use kahlan\filter\Filter;
 
 Filter::register('mycustom.namespaces', function($chain) {
 
@@ -98,8 +98,8 @@ The workaround here is to configure the Kahlan's `Layer` patcher in [the `kahlan
 For a Phalcon project, the `Layer` patcher can be configured like the following in the Kahlan config file:
 
 ```php
-use filter\Filter;
-use jit\Interceptor;
+use kahlan\filter\Filter;
+use kahlan\jit\Interceptor;
 use kahlan\plugin\Layer;
 
 Filter::register('api.patchers', function($chain) {
