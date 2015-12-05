@@ -2,6 +2,12 @@
 
 ## Last changes
 
+## 1.3.0 (2015-12-05)
+
+  * **Add:** Creates a standalone version.
+  * **Add:** Reintroduces PHP 5.4 support.
+  * **BC break:** `use filter\Filter` must now be `use kahlan\filter\Filter` in `kahlan-config.php`.
+
 ## 1.2.11 (2015-11-24)
 
   * **Add:** Adds `given()` function to set lazy loadable variables.
