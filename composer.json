@@ -13,18 +13,18 @@
     },
     "autoload": {
         "psr-4": {
-            "kahlan\\": "src/"
+            "Kahlan\\": "src/"
         },
         "files": ["src/init.php"]
     },
     "autoload-dev": {
         "psr-4": {
-            "kahlan\\spec\\": "spec/"
+            "Kahlan\\Spec\\": "spec/"
         }
     },
     "scripts": {
         "post-update-cmd": [
-            "kahlan\\cli\\Kahlan::composerPostUpdate"
+            "Kahlan\\Cli\\Kahlan::composerPostUpdate"
         ]
     },
     "bin": ["bin/kahlan"]

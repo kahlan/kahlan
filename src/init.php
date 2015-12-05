@@ -1,7 +1,7 @@
 <?php
-use kahlan\Suite;
-use kahlan\Specification;
-use kahlan\box\BoxException;
+use Kahlan\Suite;
+use Kahlan\Specification;
+use Kahlan\Box\BoxException;
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
@@ -90,7 +90,7 @@ if ($kahlanFuctions) {
     /**
      * @param $actual
      *
-     * @return kahlan\Matcher
+     * @return Kahlan\Matcher
      */
     function expect($actual) {
         return Specification::current()->expect($actual);

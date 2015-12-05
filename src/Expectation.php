@@ -1,11 +1,11 @@
 <?php
-namespace kahlan;
+namespace Kahlan;
 
 use Exception;
-use kahlan\code\Code;
-use kahlan\code\TimeoutException;
-use kahlan\analysis\Inspector;
-use kahlan\analysis\Debugger;
+use Kahlan\Code\Code;
+use Kahlan\Code\TimeoutException;
+use Kahlan\Analysis\Inspector;
+use Kahlan\Analysis\Debugger;
 
 /**
  * Class Expectation
@@ -41,7 +41,7 @@ class Expectation
      * @var array
      */
     protected $_classes = [
-        'specification' => 'kahlan\Specification',
+        'specification' => 'Kahlan\Specification',
         'matcher'       => 'matcher'
     ];
 

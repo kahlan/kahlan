@@ -1,5 +1,5 @@
 <?php
-namespace kahlan;
+namespace Kahlan;
 
 use Exception;
 

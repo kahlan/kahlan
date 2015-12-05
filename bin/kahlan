@@ -28,10 +28,10 @@ if (!$autoloader) {
     exit(1);
 }
 
-use kahlan\box\Box;
-use kahlan\Suite;
-use kahlan\Matcher;
-use kahlan\cli\Kahlan;
+use Kahlan\Box\Box;
+use Kahlan\Suite;
+use Kahlan\Matcher;
+use Kahlan\Cli\Kahlan;
 
 $box = box('kahlan', new Box());
 

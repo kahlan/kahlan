@@ -1,5 +1,5 @@
 <?php
-namespace kahlan;
+namespace Kahlan;
 
 use Exception;
 
@@ -37,7 +37,7 @@ class Matcher
      * @var array
      */
     protected $_classes = [
-        'specification' => 'kahlan\Specification'
+        'specification' => 'Kahlan\Specification'
     ];
 
     /**

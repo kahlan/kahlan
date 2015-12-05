@@ -1,8 +1,8 @@
 <?php
-namespace kahlan;
+namespace Kahlan;
 
 use Exception;
-use kahlan\analysis\Debugger;
+use Kahlan\Analysis\Debugger;
 
 class Scope
 {
@@ -69,8 +69,8 @@ class Scope
      * @var array
      */
     protected $_classes = [
-        'expectation' => 'kahlan\Expectation',
-        'given'       => 'kahlan\Given'
+        'expectation' => 'Kahlan\Expectation',
+        'given'       => 'Kahlan\Given'
     ];
 
     /**
@@ -390,14 +390,14 @@ class Scope
     {
         $data = compact('exception');
         switch(get_class($exception)) {
-            case 'kahlan\SkipException':
+            case 'Kahlan\SkipException':
                 if ($inEachHook) {
                     $this->report()->add('skip', $data);
                 } else {
                     $this->_skipChilds($exception);
                 }
             break;
-            case 'kahlan\IncompleteException':
+            case 'Kahlan\IncompleteException':
                 $this->report()->add('incomplete', $data);
             break;
             default:

@@ -1,10 +1,10 @@
 <?php
-namespace kahlan;
+namespace Kahlan;
 
 use Exception;
 use Closure;
 use InvalidArgumentException;
-use kahlan\analysis\Debugger;
+use Kahlan\Analysis\Debugger;
 
 class Suite extends Scope
 {

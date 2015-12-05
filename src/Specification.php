@@ -1,5 +1,5 @@
 <?php
-namespace kahlan;
+namespace Kahlan;
 
 use Closure;
 use Exception;
@@ -74,7 +74,7 @@ class Specification extends Scope
     /**
      * Processes a child specs.
      *
-     * @see kahlan\Suite::process()
+     * @see Kahlan\Suite::process()
      * @param object A child spec.
      */
     public function process()

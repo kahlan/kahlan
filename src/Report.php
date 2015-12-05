@@ -1,7 +1,7 @@
 <?php
-namespace kahlan;
+namespace Kahlan;
 
-use kahlan\analysis\Debugger;
+use Kahlan\Analysis\Debugger;
 
 class Report
 {

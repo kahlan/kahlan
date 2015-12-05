@@ -1,9 +1,9 @@
 <?php
-use kahlan\filter\Filter;
-use kahlan\reporter\Coverage;
-use kahlan\reporter\coverage\driver\Xdebug;
-use kahlan\reporter\coverage\exporter\Coveralls;
-use kahlan\reporter\coverage\exporter\CodeClimate;
+use Kahlan\Filter\Filter;
+use Kahlan\Reporter\Coverage;
+use Kahlan\Reporter\Coverage\Driver\Xdebug;
+use Kahlan\Reporter\Coverage\Exporter\Coveralls;
+use Kahlan\Reporter\Coverage\Exporter\CodeClimate;
 
 $args = $this->args();
 $args->argument('coverage', 'default', 3);
@@ -21,19 +21,19 @@ Filter::register('kahlan.coverage', function($chain) {
             //Exclude init script
             'src/init.php',
             //Exclude Workflow from code coverage reporting
-            'src/cli/Kahlan.php',
+            'src/Cli/Kahlan.php',
             //Exclude coverage classes from code coverage reporting (don't know how to test the tester)
-            'src/reporter/coverage/driver/Xdebug.php',
-            'src/reporter/coverage/Collector.php',
-            //Exclude HHVM because of HHVM_VERSION return
-            'src/reporter/coverage/driver/HHVM.php',
+            'src/Reporter/Coverage/Collector.php',
+            'src/Reporter/Coverage/Driver/Xdebug.php',
+            'src/Reporter/Coverage/Driver/HHVM.php',
+            'src/Reporter/Coverage/Driver/Phpdbg.php',
             //Exclude text based reporter classes from code coverage reporting (a bit useless)
-            'src/reporter/Dot.php',
-            'src/reporter/Bar.php',
-            'src/reporter/Verbose.php',
-            'src/reporter/Terminal.php',
-            'src/reporter/Reporter.php',
-            'src/reporter/Coverage.php'
+            'src/Reporter/Dot.php',
+            'src/Reporter/Bar.php',
+            'src/Reporter/Verbose.php',
+            'src/Reporter/Terminal.php',
+            'src/Reporter/Reporter.php',
+            'src/Reporter/Coverage.php'
         ],
         'colors'    => !$this->args()->get('no-colors')
     ]);
