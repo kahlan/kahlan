@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.0.0 (2015-12-05)
+
+  * **BC break:** Uses PascalCase conventions instead of lowercase for all namespaces.
+
 ## 1.3.0 (2015-12-05)
 
   * **Add:** Creates a standalone version.
