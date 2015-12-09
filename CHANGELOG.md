@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.3.1 (2015-12-09)
+
+  * **Bugfix:** Fixes a reporting issue related to the new repository structure.
+
 ## 1.3.0 (2015-12-05)
 
   * **Add:** Creates a standalone version.
