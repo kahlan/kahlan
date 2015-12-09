@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.0.1 (2015-12-09)
+
+  * **Bugfix:** Fixes a reporting issue related to the new repository structure.
+
 ## 2.0.0 (2015-12-05)
 
   * **BC break:** Uses PascalCase conventions instead of lowercase for all namespaces.
