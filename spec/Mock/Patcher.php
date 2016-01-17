@@ -24,6 +24,22 @@ class Patcher
     }
 
     /**
+     * The JIT patchable checker.
+     *
+     * @param  string  $class The fully-namespaced class name to check.
+     * @return boolean
+     */
+    public function patchable($class)
+    {
+        $args = func_get_args();
+        $self = isset($this) ? $this : get_called_class();
+        if ($pointcut = Pointcut::before(__METHOD__, $self, $args)) {
+            return $pointcut($self, $args);
+        }
+        return true;
+    }
+
+    /**
      * The JIT patcher.
      *
      * @param  NodeDef $node The node to patch.

@@ -114,6 +114,17 @@ class Monkey
     }
 
     /**
+     * The JIT patchable checker.
+     *
+     * @param  string  $class The fully-namespaced class name to check.
+     * @return boolean
+     */
+    public function patchable($class)
+    {
+        return true;
+    }
+
+    /**
      * The JIT patcher.
      *
      * @param  object $node The node instance to patch.

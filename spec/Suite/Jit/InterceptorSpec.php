@@ -409,7 +409,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("by passes the patching process if the class has been excluded from being patched", function() {
+        it("bails out the patching process if the class has been excluded from being patched", function() {
 
             $interceptor = Interceptor::patch([
                 'include' => ['allowed\\'],
@@ -419,6 +419,17 @@ describe("Interceptor", function() {
             $cached = $this->cachePath . realpath('spec/Fixture/Jit/Interceptor/ClassE.php');
             $interceptor->loadClass('Kahlan\Spec\Fixture\Jit\Interceptor\ClassE');
             expect(file_exists($cached))->toBe(false);
+
+        });
+
+        it("loads and proccess patchable class", function() {
+
+            $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
+            $patcher = new Patcher();
+            $interceptor->patchers()->add('patcher', $patcher);
+
+            expect($interceptor->loadClass('Kahlan\Spec\Fixture\Jit\Interceptor\ClassF'))->toBe(true);
+            expect(class_exists('Kahlan\Spec\Fixture\Jit\Interceptor\ClassF', false))->toBe(true);
 
         });
 
@@ -495,7 +506,7 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->patchable()", function() {
+    describe("->allowed()", function() {
 
         it("returns true by default", function() {
 
@@ -504,7 +515,7 @@ describe("Interceptor", function() {
                 'cachePath' => $this->cachePath
             ]);
 
-            $actual = $interceptor->patchable('anything\namespace\SomeClass');
+            $actual = $interceptor->allowed('anything\namespace\SomeClass');
             expect($actual)->toBe(true);
 
         });
@@ -516,8 +527,8 @@ describe("Interceptor", function() {
                 'cachePath' => $this->cachePath
             ]);
 
-            $allowed = $interceptor->patchable('allowed\namespace\SomeClass');
-            $notallowed = $interceptor->patchable('notallowed\namespace\SomeClass');
+            $allowed = $interceptor->allowed('allowed\namespace\SomeClass');
+            $notallowed = $interceptor->allowed('notallowed\namespace\SomeClass');
 
             expect($allowed)->toBe(true);
             expect($notallowed)->toBe(false);
@@ -532,8 +543,8 @@ describe("Interceptor", function() {
                 'cachePath' => $this->cachePath
             ]);
 
-            $allowed = $interceptor->patchable('namespace\allowed\SomeClass');
-            $notallowed = $interceptor->patchable('namespace\notallowed\SomeClass');
+            $allowed = $interceptor->allowed('namespace\allowed\SomeClass');
+            $notallowed = $interceptor->allowed('namespace\notallowed\SomeClass');
 
             expect($allowed)->toBe(true);
             expect($notallowed)->toBe(false);

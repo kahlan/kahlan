@@ -87,6 +87,22 @@ class Patchers {
     }
 
     /**
+     * Checks whether a class need to be patched or not.
+     *
+     * @param  string  $class The class to check.
+     * @return boolean
+     */
+    public function patchable($class)
+    {
+        foreach ($this->_patchers as $patcher) {
+            if ($patcher->patchable($class)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Runs file patchers.
      *
      * @param  string $code The source code to process.

@@ -336,7 +336,7 @@ class Interceptor {
     }
 
     /**
-     * Return the patchers container.
+     * Returns the patchers container.
      *
      * @return mixed
      */
@@ -364,12 +364,26 @@ class Interceptor {
     }
 
     /**
-     * Check if a class can be patched or not.
+     * Checks if a class can be patched or not.
      *
      * @param  string  $class The name of the class to check.
-     * @return boolean        Returns `true` if the class can be patched, `false` otherwise.
+     * @return boolean        Returns `true` if the class need to be patched, `false` otherwise.
      */
     public function patchable($class)
+    {
+        if (!$this->allowed($class)) {
+            return false;
+        }
+        return $this->patchers()->patchable($class);
+    }
+
+    /**
+     * Checks if a class is allowed to be patched.
+     *
+     * @param  string  $class The name of the class to check.
+     * @return boolean        Returns `true` if the class is allowed to be patched, `false` otherwise.
+     */
+    public function allowed($class)
     {
         foreach ($this->_exclude as $namespace) {
             if (strpos($class, $namespace) === 0) {
@@ -390,8 +404,8 @@ class Interceptor {
     /**
      * Loads a file.
      *
-     * @param  string       $class The name of the class.
-     * @return bool                Returns `true` if loaded, null otherwise.
+     * @param  string       $file  The path of the file.
+     * @return boolean             Returns `true` if loaded, null otherwise.
      * @throws JitException
      */
     public function loadFile($file)

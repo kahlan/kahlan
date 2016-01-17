@@ -102,6 +102,44 @@ describe("Patchers", function() {
 
     });
 
+    describe("->patchable()", function() {
+
+        it("runs `true` when at least one patcher consider a class as patchable", function() {
+
+            $stub1 = Stub::create();
+            Stub::on($stub1)->method('patchable')->andReturn(false);
+            $this->patchers->add('patcher1', $stub1);
+
+            $stub2 = Stub::create();
+            $this->patchers->add('patcher2', $stub2);
+            Stub::on($stub2)->method('patchable')->andReturn(true);
+
+            expect($stub1)->toReceive('patchable')->with('ClassName');
+            expect($stub2)->toReceive('patchable')->with('ClassName');
+
+            expect($this->patchers->patchable('ClassName'))->toBe(true);
+
+        });
+
+        it("runs `false` when at no patcher consider a class as patchable", function() {
+
+            $stub1 = Stub::create();
+            Stub::on($stub1)->method('patchable')->andReturn(false);
+            $this->patchers->add('patcher1', $stub1);
+
+            $stub2 = Stub::create();
+            $this->patchers->add('patcher2', $stub2);
+            Stub::on($stub2)->method('patchable')->andReturn(false);
+
+            expect($stub1)->toReceive('patchable')->with('ClassName');
+            expect($stub2)->toReceive('patchable')->with('ClassName');
+
+            expect($this->patchers->patchable('ClassName'))->toBe(false);
+
+        });
+
+    });
+
     describe("->process()", function() {
 
         it("runs a method on all patchers", function() {
