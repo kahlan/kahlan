@@ -170,6 +170,14 @@ class Interceptor {
             throw new JitException("The loader option need to be a valid autoloader.");
         }
         unset($options['loader']);
+
+        class_exists('Kahlan\Jit\JitException');
+        class_exists('Kahlan\Jit\Node\NodeDef');
+        class_exists('Kahlan\Jit\Node\FunctionDef');
+        class_exists('Kahlan\Jit\Node\BlockDef');
+        class_exists('Kahlan\Jit\TokenStream');
+        class_exists('Kahlan\Jit\Parser');
+
         $interceptor = new static($options);
         spl_autoload_unregister($loader);
         return static::load($interceptor) ? $interceptor : false;
