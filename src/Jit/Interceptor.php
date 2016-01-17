@@ -223,7 +223,7 @@ class Interceptor {
         }
 
         $original = $interceptor->originalLoader();
-        $success = spl_autoload_register($interceptor->loader());
+        $success = spl_autoload_register($interceptor->loader(), true, true);
         spl_autoload_unregister($original);
 
         static::$_interceptor = $interceptor;
@@ -242,7 +242,7 @@ class Interceptor {
         $interceptor = static::$_interceptor;
         $original = $interceptor->originalLoader();
 
-        spl_autoload_register($original);
+        spl_autoload_register($original, true, true);
         $success = spl_autoload_unregister($interceptor->loader());
 
         static::$_interceptor = null;
