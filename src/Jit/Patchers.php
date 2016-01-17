@@ -14,7 +14,7 @@ class Patchers {
     protected $_patchers = [];
 
     /**
-     * Add a patcher.
+     * Adds a patcher.
      *
      * @param  string         $name    The patcher name.
      * @param  object         $patcher A patcher.
@@ -29,7 +29,7 @@ class Patchers {
     }
 
     /**
-     * Get a patcher.
+     * Gets a patcher.
      *
      * @param  string|object  $patcher A patcher class name or an intance.
      * @return object|boolean          The patcher instance or `false` if not founded.
@@ -73,7 +73,7 @@ class Patchers {
     }
 
     /**
-     * Run file loader patchers.
+     * Runs file loader patchers.
      *
      * @param string $path The original path of the file.
      * @param string       The patched file path to load.
@@ -87,7 +87,7 @@ class Patchers {
     }
 
     /**
-     * Run file patchers.
+     * Runs file patchers.
      *
      * @param  string $code The source code to process.
      * @param  string $path The file path of the source code.
