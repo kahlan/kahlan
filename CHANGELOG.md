@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.1.0 (2016-01-17)
+
+  * **BC break:** Patchers can now be applied lazily.
+
 ## 2.0.1 (2015-12-09)
 
   * **Bugfix:** Fixes a reporting issue related to the new repository structure.
