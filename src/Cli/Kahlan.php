@@ -450,6 +450,7 @@ EOD;
         return Filter::on($this, 'load', [], function($chain) {
             $files = Dir::scan($this->args()->get('spec'), [
                 'include' => $this->args()->get('pattern'),
+                'exclude' => '*/.*',
                 'type' => 'file'
             ]);
             foreach($files as $file) {
