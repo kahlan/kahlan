@@ -211,6 +211,7 @@ class Parser
         $last = $alias = $use = '';
         $as = false;
         $stop = ';';
+        $prefix = '';
         while ($token[1] !== $stop) {
             $this->_states['body'] .= $token[1];
             if (!$token = $this->_stream->next(true)) {
@@ -218,7 +219,7 @@ class Parser
             }
             switch ($token[0]) {
                 case ',':
-                    $as ? $this->_states['uses'][$alias] = $use : $this->_states['uses'][$last] = $use;
+                    $as ? $this->_states['uses'][$alias] = $prefix . $use : $this->_states['uses'][$last] = $prefix . $use;
                     $last = $alias = $use = '';
                     $as = false;
                 break;
@@ -231,12 +232,14 @@ class Parser
                     $as = true;
                 break;
                 case '{':
+                    $prefix = $use;
+                    $use = '';
                     $stop = '}';
                 break;
             }
         }
         $this->_states['body'] .= $token[0];
-        $as ? $this->_states['uses'][$alias] = $use : $this->_states['uses'][$last] = $use;
+        $as ? $this->_states['uses'][$alias] = $prefix . $use : $this->_states['uses'][$last] = $prefix . $use;
         $this->_codeNode('use');
     }
 

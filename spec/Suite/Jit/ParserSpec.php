@@ -217,7 +217,10 @@ describe("Parser", function() {
                 'B' => 'Kahlan\B',
                 'C' => 'Kahlan\C',
                 'F' => 'Kahlan\E',
-                'StandardClass' => 'stdClass'
+                'StandardClass' => 'stdClass',
+                'ClassA' => 'Foo\Bar\Baz\ClassA',
+                'ClassB' => 'Foo\Bar\Baz\ClassB',
+                'ClassD' => 'Foo\Bar\Baz\Fuz\ClassC'
             ]);
 
             $parsed = Parser::parse($content);
