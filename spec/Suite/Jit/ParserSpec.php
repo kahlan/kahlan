@@ -241,6 +241,44 @@ describe("Parser", function() {
 
         });
 
+        it("parses extends", function() {
+
+            $sample = file_get_contents('spec/Fixture/Jit/Parser/Extends.php');
+            $root = Parser::parse($sample);
+
+            $check = 0;;
+
+            foreach ($root->tree as $node) {
+                if ($node->type !== 'namespace') {
+                    continue;
+                }
+                expect($node->name)->toBe('Test');
+                foreach ($node->tree as $node) {
+                    if ($node->type !== 'class') {
+                        continue;
+                    }
+                    if ($node->name === 'A') {
+                        expect($node->extends)->toBe('\Space\ParentA');
+                        $check++;
+                    }
+                    if ($node->name === 'B') {
+                        expect($node->extends)->toBe('\Some\Name\Space\ParentB');
+                        $check++;
+                    }
+                    if ($node->name === 'C') {
+                        expect($node->extends)->toBe('\Test\ParentC');
+                        $check++;
+                    }
+                    if ($node->name === 'D') {
+                        expect($node->extends)->toBe('');
+                        $check++;
+                    }
+                }
+            }
+
+            expect($check)->toBe(4);
+        });
+
     });
 
 });
