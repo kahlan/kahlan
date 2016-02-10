@@ -851,6 +851,31 @@ EOD;
 
         });
 
+        it("generates interface methods with return type", function() {
+
+            skipIf(PHP_MAJOR_VERSION < 7);
+
+            $result = Stub::generate([
+                'class'        => 'Kahlan\Spec\Plugin\Stub\Stub',
+                'implements'   => ['Kahlan\Spec\Fixture\Plugin\Stub\ReturnTypesInterface'],
+                'magicMethods' => false
+            ]);
+
+            $expected = <<<EOD
+<?php
+namespace Kahlan\\Spec\\Plugin\\Stub;
+
+class Stub implements \\Kahlan\\Spec\\Fixture\\Plugin\\Stub\\ReturnTypesInterface {
+
+    public function foo(array \$a) : bool {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
         it("manages methods inheritence", function() {
 
             $result = Stub::generate([

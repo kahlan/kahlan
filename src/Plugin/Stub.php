@@ -502,7 +502,13 @@ EOT;
         $result = preg_replace('/abstract\s*/', '', $result);
         $name = $method->getName();
         $parameters = static::_generateSignature($method);
-        $body = "{$result} function {$name}({$parameters}) {";
+        if (PHP_MAJOR_VERSION >= 7) {
+            $type = $method->getReturnType();
+            $type = $type ? ": {$type} " : '';
+        } else {
+            $type = '';
+        }
+        $body = "{$result} function {$name}({$parameters}) {$type}{";
         if ($callParent) {
             $parameters = static::_generateParameters($method);
             $body .= "return parent::{$name}({$parameters});";
