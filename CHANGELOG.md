@@ -2,10 +2,15 @@
 
 ## Last changes
 
+## 2.3.0 (2016-02-10)
+
+  * **Add:** Supports PHP7 variadic functions.
+  * **Add:** Supports PHP7 scalar typehints.
+
 ## 2.2.0 (2016-02-10)
 
-  * **Add:** Supports PHP7.0 return types.
-  * **Add:** Supports PHP7.0 group use declarations.
+  * **Add:** Supports PHP7 return types.
+  * **Add:** Supports PHP7 group use declarations.
   * **Bugfix:** Fixes a Layer patcher issue when extends is not an absolute class name.
 
 ## 2.1.0 (2016-01-17)
