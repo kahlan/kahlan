@@ -876,6 +876,31 @@ EOD;
 
         });
 
+        it("generates interface methods with variadic variable", function() {
+
+            skipIf(PHP_MAJOR_VERSION < 7);
+
+            $result = Stub::generate([
+                'class'        => 'Kahlan\Spec\Plugin\Stub\Stub',
+                'implements'   => ['Kahlan\Spec\Fixture\Plugin\Stub\VariadicInterface'],
+                'magicMethods' => false
+            ]);
+
+            $expected = <<<EOD
+<?php
+namespace Kahlan\\Spec\\Plugin\\Stub;
+
+class Stub implements \\Kahlan\\Spec\\Fixture\\Plugin\\Stub\\VariadicInterface {
+
+    public function foo(int ...\$integers) : int {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
         it("manages methods inheritence", function() {
 
             $result = Stub::generate([

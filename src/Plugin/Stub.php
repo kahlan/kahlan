@@ -525,6 +525,8 @@ EOT;
     protected static function _generateSignature($method)
     {
         $params = [];
+        $isVariadic = PHP_MAJOR_VERSION >= 7 ? $method->isVariadic() : false;
+
         foreach ($method->getParameters() as $num => $parameter) {
             $typehint = Inspector::typehint($parameter);
             $typehint = $typehint ? $typehint . ' ' : $typehint;
@@ -536,7 +538,12 @@ EOT;
                 $default = var_export($parameter->getDefaultValue(), true);
                 $default = ' = ' . preg_replace('/\s+/', '', $default);
             } elseif ($parameter->isOptional()) {
-                $default = ' = NULL';
+                if ($isVariadic && $parameter->isVariadic()) {
+                    $reference = '...';
+                    $default = '';
+                } else {
+                    $default = ' = NULL';
+                }
             }
 
             $params[] = "{$typehint}{$reference}\${$name}{$default}";

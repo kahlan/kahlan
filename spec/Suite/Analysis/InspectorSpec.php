@@ -95,6 +95,22 @@ describe("Inspector", function() {
 
         });
 
+        it("returns parameter typehint for scalar type hints", function() {
+
+            skipIf(PHP_MAJOR_VERSION < 7);
+
+            $inspector = Inspector::parameters('Kahlan\Spec\Fixture\Analysis\ScalarTypeHintsClass', 'intTypeHint');
+            $typehint = Inspector::typehint(current($inspector));
+            expect($typehint)->toBeA('string');
+            expect($typehint)->toBe('int');
+
+            $inspector = Inspector::parameters('Kahlan\Spec\Fixture\Analysis\ScalarTypeHintsClass', 'boolTypeHint');
+            $typehint = Inspector::typehint(current($inspector));
+            expect($typehint)->toBeA('string');
+            expect($typehint)->toBe('bool');
+
+        });
+
     });
 
 });

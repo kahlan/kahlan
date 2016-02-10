@@ -70,6 +70,11 @@ class Inspector
             $typehint = '\\' . $parameter->getClass()->getName();
         } elseif (preg_match('/.*?\[ \<[^\>]+\> (\w+)(.*?)\$/', (string) $parameter, $match)) {
             $typehint = $match[1];
+            if ($typehint === 'integer') {
+                $typehint = 'int';
+            } elseif ($typehint === 'boolean') {
+                $typehint = 'bool';
+            }
         }
         return $typehint;
     }
