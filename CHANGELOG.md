@@ -2,6 +2,12 @@
 
 ## Last changes
 
+## 2.2.0 (2016-02-10)
+
+  * **Add:** Supports PHP7.0 return types.
+  * **Add:** Supports PHP7.0 group use declarations.
+  * **Bugfix:** Fixes a Layer patcher issue when extends is not an absolute class name.
+
 ## 2.1.0 (2016-01-17)
 
   * **BC break:** Patchers can now be applied lazily.
