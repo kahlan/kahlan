@@ -34,8 +34,15 @@ class BlockDef extends NodeDef
     /**
      * The extended class (for class only)
      *
-     * @var array
+     * @var string
      */
     public $extends = '';
+
+    /**
+     * The implemented interfaces (for class only)
+     *
+     * @var array|null
+     */
+    public $implements = null;
 
 }

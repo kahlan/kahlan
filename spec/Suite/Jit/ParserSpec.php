@@ -241,6 +241,19 @@ describe("Parser", function() {
 
         });
 
+        it("parses anonymous class", function() {
+
+            $filename = 'spec/Fixture/Jit/Parser/AnonymousClass';
+            $content = file_get_contents($filename . '.php');
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+
+            $parsed = Parser::parse($content);
+            expect(Parser::unparse($parsed))->toBe($content);
+
+        });
+
         it("parses extends", function() {
 
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Extends.php');
@@ -277,6 +290,48 @@ describe("Parser", function() {
             }
 
             expect($check)->toBe(4);
+        });
+
+        it("parses implements", function() {
+
+            $sample = file_get_contents('spec/Fixture/Jit/Parser/Implements.php');
+            $root = Parser::parse($sample);
+
+            $check = 0;;
+
+            foreach ($root->tree as $node) {
+                if ($node->type !== 'namespace') {
+                    continue;
+                }
+                expect($node->name)->toBe('Test');
+                foreach ($node->tree as $node) {
+                    if ($node->type !== 'class') {
+                        continue;
+                    }
+                    if ($node->name === 'A') {
+                        expect($node->implements)->toBe(['\Space\ParentA']);
+                        $check++;
+                    }
+                    if ($node->name === 'B') {
+                        expect($node->implements)->toBe(['\Some\Name\Space\ParentB']);
+                        $check++;
+                    }
+                    if ($node->name === 'C') {
+                        expect($node->implements)->toBe(['\Test\ParentC']);
+                        $check++;
+                    }
+                    if ($node->name === 'D') {
+                        expect($node->implements)->toBe(['\Test\ParentD1', '\Test\ParentD2', '\Test\ParentD3']);
+                        $check++;
+                    }
+                    if ($node->name === 'E') {
+                        expect($node->implements)->toBe([]);
+                        $check++;
+                    }
+                }
+            }
+
+            expect($check)->toBe(5);
         });
 
     });
