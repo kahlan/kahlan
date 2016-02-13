@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.3.1 (2016-02-13)
+
+  * **Add:** Improves code coverage accuracy for unconsistant XDEBUG/PHPDBG code coverage result.
+
 ## 2.3.0 (2016-02-10)
 
   * **Add:** Supports PHP7 variadic functions.
