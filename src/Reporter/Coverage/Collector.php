@@ -244,6 +244,16 @@ class Collector
             }
             if (isset($coverage[$num])) {
                 $result[$num] = $coverage[$num];
+            } elseif (isset($coverable->lines['begin'])) {
+                for ($i = $coverable->lines['begin']; $i <= $num; $i++) {
+                    if (isset($coverage[$i])) {
+                        $result[$num] = $coverage[$i];
+                        break;
+                    }
+                }
+                if (!isset($result[$num])) {
+                    $result[$num] = 0;
+                }
             } else {
                 $result[$num] = 0;
             }

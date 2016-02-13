@@ -95,6 +95,7 @@ class Lcov
                 continue;
             }
             $value = isset($coverage[$num]) ? $coverage[$num] : 0;
+
             $statements[] = 'DA:' . ($num + 1) . ',' . $value;
 
             if ($fnCurr) {

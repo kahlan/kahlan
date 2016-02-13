@@ -35,9 +35,8 @@ class Parser
      *    'root'       => object, // Root node.
      *    'current'    => object, // Current node.
      *    'visibility' => []      // Store function visibility.
-     *    'uses'       => [],     // Maintain the uses dependencies
-     *    'body'       => '',     // Maintain the current parsed content
-     *    'brace'      => 0       // Depth level of opened braces
+     *    'uses'       => []      // Maintain the uses dependencies
+     *    'body'       => ''      // Maintain the current parsed content
      * ]
      *
      * @var array
@@ -57,8 +56,7 @@ class Parser
             'num'        => 0,
             'visibility' => [],
             'uses'       => [],
-            'body'       => '',
-            'brace'      => 0
+            'body'       => ''
         ];
         $this->_states = $config + $defaults;
         $node = new BlockDef('', 'file');
@@ -79,6 +77,9 @@ class Parser
         $this->_stream = new TokenStream(['source' => $content, 'wrap' => $this->_states['php']]);
 
         $T_YIELD = defined('HHVM_VERSION') ? 381 : 267;
+
+        $blockStartLines = [];
+        $blockStartLine = [];
 
         while ($token = $this->_stream->current(true)) {
             $current = $this->_states['current'];
@@ -117,9 +118,37 @@ class Parser
                 case '}':
                     $this->_closeCurly();
                 break;
+                case '(':
+                case '[':
+                    $this->_states['body'] .= $token[0];
+                    if ($this->_states['lines']) {
+                        $lines = explode("\n", $this->_states['body']);
+                        $blockStartLines[$token[0]][] = $this->_states['num'] + (count($lines) - 1);
+                    }
+                break;
+                case ')':
+                case ']':
+                    $this->_states['body'] .= $token[0];
+                    if ($this->_states['lines']) {
+                        $char = $token[0] === ']' ? '[' : '(';
+                        $blockStartLine[$token[0]] = array_pop($blockStartLines[$char]);
+                    }
+                break;
                 case ';':
                     $this->_states['body'] .= $token[1];
-                    $this->_codeNode(null, true);
+                    $node = $this->_codeNode(null, true);
+                    if ($this->_states['lines']) {
+                        $body = $node->body;
+                        $len = strlen($body);
+                        for ($i = $len - 1; $i >= 0; $i--) {
+                            if ($body[$i] === ']' || $body[$i] === ')') {
+                                if (isset($blockStartLine[$body[$i]])) {
+                                    $node->lines['begin'] = $blockStartLine[$body[$i]];
+                                }
+                                break;
+                            }
+                        }
+                    }
                 break;
                 case T_NAMESPACE:
                     $this->_namespaceNode();
