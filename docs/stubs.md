@@ -32,9 +32,9 @@ it("stubs a method with multiple return values", function() {
 
     $instance = new MyClass();
     Stub::on($instance)->method('sequential')->andReturn(1, 3, 2);
-    expect($instance->myMethod())->toBe(1);
-    expect($instance->myMethod())->toBe(3);
-    expect($instance->myMethod())->toBe(2);
+    expect($instance->sequential())->toBe(1);
+    expect($instance->sequential())->toBe(3);
+    expect($instance->sequential())->toBe(2);
 
 });
 ```
