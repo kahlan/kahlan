@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.3.2 (2016-02-18)
+
+  * **Change:** Internal dependency container function refactoring.
+
 ## 2.3.1 (2016-02-13)
 
   * **Add:** Improves code coverage accuracy for unconsistant XDEBUG/PHPDBG code coverage result.
