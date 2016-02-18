@@ -279,7 +279,7 @@ describe("box()", function() {
         box(false);
     });
 
-    it("adds aa box", function() {
+    it("adds a box", function() {
 
         $box = new Box();
         $actual = box('box.spec', $box);
@@ -294,6 +294,23 @@ describe("box()", function() {
         $actual = box('box.spec');
 
         expect($actual)->toBe($box);
+    });
+
+    it("adds a default box", function() {
+
+        $box = new Box();
+
+        expect(box($box))->toBe($box);
+        expect(box())->toBe($box);
+
+    });
+
+    it("gets a default box", function() {
+
+        $box = box();
+        expect($box)->toBeAnInstanceOf('Kahlan\Box\Box');
+        expect(box())->toBe($box);
+
     });
 
     it("removes a box", function() {
