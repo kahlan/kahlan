@@ -59,7 +59,7 @@ Setup and Teardown functions can be used at any `describe` or `context` level:
 * `afterEach`: Run after each spec of the same level.
 * `after`: Run once inside a `describe` or `context` after all contained specs.
 
-### Memoized Helper using `given()`
+### Memorized Helper using `given()`
 
 Since `beforeEach()` is runned before each spec, all defined variables are reinitialised on each specs even when not needed. So in this case it's possible to use `given()` instead. Given's blocks are only executed when referenced (i.e. lazy loading), which mean that ordering of these blocks are irrelevant.
 
