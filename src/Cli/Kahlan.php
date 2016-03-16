@@ -2,6 +2,7 @@
 namespace Kahlan\Cli;
 
 use Kahlan\Dir\Dir;
+use Kahlan\Cli;
 use Kahlan\Jit\Interceptor;
 use Kahlan\Jit\Patchers;
 use Kahlan\Filter\Filter;
@@ -106,7 +107,13 @@ class Kahlan {
         $args->argument('src',       ['array'   => 'true', 'default' => ['src']]);
         $args->argument('spec',      ['array'   => 'true', 'default' => ['spec']]);
         $args->argument('pattern',   ['default' => '*Spec.php']);
-        $args->argument('reporter',  ['default' => 'dot']);
+        $args->argument('reporter',  [
+            'array' => true,
+            'default' => ['dot'],
+            'value' => function($value) {
+                return array_filter($value);
+            }
+        ]);
         $args->argument('coverage',  ['type'    => 'string']);
         $args->argument('config',    ['default' => 'kahlan-config.php']);
         $args->argument('ff',        ['type'    => 'numeric', 'default' => 0]);
@@ -264,8 +271,10 @@ Configuration Options:
 
 Reporter Options:
 
-  --reporter=<string>                 The name of the text reporter to use, the buit-in text reporters
-                                      are `'dot'`, `'bar'` & `'verbose'` (default: `'dot'`).
+  --reporter=<name>:<output_file>     The name of the text reporter to use, the buit-in text reporters
+                                      are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
+                                      You can second optional parameter for echo reporter result into file.
+                                      Muliple reporters are supporter thought --reporter flag.
 
 Code Coverage Options:
 
@@ -478,18 +487,45 @@ EOD;
         return Filter::on($this, 'console', [], function($chain) {
             $reporters = $this->reporters();
 
-            $reporter = $this->args()->get('reporter');
-            if ($reporter === 'none') {
+            $reporterList = $this->args()->get('reporter');
+            if (empty($reporterList)) {
                 return;
             }
-            $class = 'Kahlan\Reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $reporter)));
 
-            $reporter = new $class([
-                'start'  => $this->_start,
-                'colors' => !$this->args()->get('no-colors'),
-                'header' => !$this->args()->get('no-header')
-            ]);
-            $reporters->add('console', $reporter);
+            foreach($reporterList as $reporter) {
+                $reporterParams = explode(":", $reporter);
+                $reporterName = isset($reporterParams[0]) ? $reporterParams[0] : null;
+                $reporterOutput = isset($reporterParams[1]) ? $reporterParams[1] : null;
+
+                if ($reporterName === null || $reporterName === 'none') {
+                    continue;
+                }
+
+                // Binding default set of params
+                $params = [
+                    'start'         => $this->_start,
+                    'colors'        => !$this->args()->get('no-colors'),
+                    'header'        => !$this->args()->get('no-header')
+                ];
+
+                // Checking if output not set, then spam into console
+                if (isset($reporterOutput) && strlen($reporterOutput) > 0) {
+                    if (file_exists($reporterOutput) && !is_writable($reporterOutput)) {
+                        fwrite(STDERR, "Error: please check that file '{$reporterOutput}' is writable\n");
+                    } else {
+                        $filePointer = @fopen($reporterOutput, 'w');
+                        if (!$filePointer) {
+                            fwrite(STDERR, "Error: can't create file '{$reporterOutput}' for write\n");
+                        } else {
+                            $params['output'] = $filePointer;
+                        }
+                    }
+                }
+
+                $class = 'Kahlan\Reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', trim($reporterName))));
+                $reporterClass = new $class($params);
+                $reporters->add($reporterName, $reporterClass);
+            }
         });
     }
 
