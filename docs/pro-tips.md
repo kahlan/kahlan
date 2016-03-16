@@ -79,7 +79,7 @@ genhtml coverage.info
 To inject some variables to all scopes (e.g. database connection, helpers, etc.) and make it available in all you specs, one solution is to configure you `kahlan-config.php` file like the following:
 
 ```php
-Filter::register('registering.globals', function($chain) {=
+Filter::register('registering.globals', function($chain) {
     $root = $this->suite(); // The top most suite.
     $root->global = 'MyVariable';
     return $chain->next();
