@@ -14,6 +14,16 @@ To use a reporter which looks like more a progress bar use the following option:
 ./bin/kahlan --reporter=verbose
 ```
 
+To use JSON reporter you must provide additional option flag in CLI:
+```php
+./bin/kahlan --reporter=json --output=/full/path/to/file.json
+```
+
+To use TAP reporter you must provide additional option flag in CLI:
+```php
+./bin/kahlan --reporter=tap --output=/full/path/to/file.tap
+```
+
 You can easily roll you own if these reporters don't fit your needs.
 
 For example, if you want a console based reporter, create a PHP class which extends `Kahlan\Reporter\Terminal`. The `Terminal` class offers some useful methods like `write()` for doing some echos on the terminal. But if you wanted to create some kind of JSON reporter extending from `Kahlan\Reporter\Reporter` would be enough.

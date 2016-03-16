@@ -485,9 +485,10 @@ EOD;
             $class = 'Kahlan\Reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $reporter)));
 
             $reporter = new $class([
-                'start'  => $this->_start,
-                'colors' => !$this->args()->get('no-colors'),
-                'header' => !$this->args()->get('no-header')
+                'start'         => $this->_start,
+                'colors'        => !$this->args()->get('no-colors'),
+                'header'        => !$this->args()->get('no-header'),
+                'outputFile'    => $this->args()->get('output')
             ]);
             $reporters->add('console', $reporter);
         });
