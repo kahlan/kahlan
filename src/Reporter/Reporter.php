@@ -25,6 +25,13 @@ class Reporter
     protected $_current = 0;
 
     /**
+     * Current output file
+     *
+     * @var string
+     */
+    protected $_outputFile;
+
+    /**
      * The Constructor.
      *
      * @param array $config The config array. Possible values are:
@@ -32,9 +39,10 @@ class Reporter
      */
     public function __construct($config = [])
     {
-        $defaults = ['start' => microtime(true)];
+        $defaults = ['start' => microtime(true), 'outputFile' => null];
         $config += $defaults;
         $this->_start = $config['start'];
+        $this->_outputFile = $config['outputFile'];
     }
 
     /**
