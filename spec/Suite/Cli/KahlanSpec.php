@@ -64,7 +64,9 @@ describe("Kahlan", function() {
                 'src'        => ['src'],
                 'spec'       => ['spec/Fixture/Kahlan/Spec'],
                 'pattern'    => "*MySpec.php",
-                'reporter'   => "verbose",
+                'reporter'   => [
+                    "verbose"
+                ],
                 'config'     => "spec/Fixture/Kahlan/kahlan-config.php",
                 'ff'         => 5,
                 'cc'         => true,
@@ -154,8 +156,10 @@ Configuration Options:
 
 Reporter Options:
 
-  --reporter=<string>                 The name of the text reporter to use, the buit-in text reporters
-                                      are `'dot'`, `'bar'` & `'verbose'` (default: `'dot'`).
+  --reporter=<name>:<output_file>     The name of the text reporter to use, the buit-in text reporters
+                                      are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
+                                      You can second optional parameter for echo reporter result into file.
+                                      Muliple reporters are supporter thought --reporter flag.
 
 Code Coverage Options:
 
