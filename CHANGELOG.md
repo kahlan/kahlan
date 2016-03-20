@@ -2,6 +2,13 @@
 
 ## Last changes
 
+## 2.4.0 (2016-03-20)
+
+  * **Add:** Adds a JSON reporter.
+  * **Add:** Adds a TAP reporter.
+  * **Add:** Allows to redirect reporter outputs to a file.
+  * **BC break:** the `--reporter` option is now managed as an array.
+
 ## 2.3.2 (2016-02-18)
 
   * **Change:** Internal dependency container function refactoring.
