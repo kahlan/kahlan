@@ -5,7 +5,7 @@ class Json extends Terminal
 {
     /**
      * Store the current number of dots.
-     * 
+     *
      * @var integer
      */
     protected $_counter = 0;
@@ -16,16 +16,14 @@ class Json extends Terminal
      * @var array
      */
     protected $_json = [
-        "errors" => [
-
-        ],
-        "summary" => [
-            "success" => 0,
-            "failed" => 0,
-            "skipped" => 0,
-            "error" => 0,
-            "passed" => 0,
-            "incomplete" => 0,
+        'errors'  => [],
+        'summary' => [
+            'success'    => 0,
+            'failed'     => 0,
+            'skipped'    => 0,
+            'error'      => 0,
+            'passed'     => 0,
+            'incomplete' => 0
         ]
     ];
 
@@ -47,7 +45,7 @@ class Json extends Terminal
      */
     public function pass($report = null)
     {
-        $this->_json["summary"]["passed"] += 1;
+        $this->_json['summary']['passed'] += 1;
     }
 
     /**
@@ -57,7 +55,7 @@ class Json extends Terminal
      */
     public function fail($report = null)
     {
-        $this->_json["summary"]["failed"] += 1;
+        $this->_json['summary']['failed'] += 1;
     }
 
     /**
@@ -67,7 +65,7 @@ class Json extends Terminal
      */
     public function exception($report = null)
     {
-        $this->_json["summary"]["failed"] += 1;
+        $this->_json['summary']['failed'] += 1;
     }
 
     /**
@@ -77,7 +75,7 @@ class Json extends Terminal
      */
     public function skip($report = null)
     {
-        $this->_json["summary"]["skipped"] += 1;
+        $this->_json['summary']['skipped'] += 1;
     }
 
     /**
@@ -87,43 +85,43 @@ class Json extends Terminal
      */
     public function incomplete($report = null)
     {
-        $this->_json["summary"]["incomplete"] += 1;
+        $this->_json['summary']['incomplete'] += 1;
     }
 
     /**
      * Callback called at the end of specs processing.
+     *
+     * @param array $results The results array of the execution.
      */
     public function end($results = [])
     {
         foreach ($results['specs'] as $type => $reports) {
             foreach ($reports as $report) {
                 if ($report->type() !== 'pass' && $report->type() !== 'skip') {
-                    // Saving error report into JSON structure
-                    switch($report->type()) {
-                        case "fail" : 
-                            $this->_json["errors"][] = [
-                                'spec' => trim(implode(" ", $report->messages())),
+                    switch ($report->type()) {
+                        case 'fail':
+                            $this->_json['errors'][] = [
+                                'spec' => trim(implode(' ', $report->messages())),
                                 'suite' => $report->file(),
-                                'actual' => $report->params()["actual"],
-                                'expected' => $report->params()["expected"]
+                                'actual' => $report->params()['actual'],
+                                'expected' => $report->params()['expected']
                             ];
-                            break;
-                        case "exception":
+                        break;
+                        case 'exception':
                             $exception = $report->exception();
 
-                            $this->_json["errors"][] = [
-                                'spec' => trim(implode(" ", $report->messages())),
+                            $this->_json['errors'][] = [
+                                'spec' => trim(implode(' ', $report->messages())),
                                 'suite' => $report->file(),
                                 'exception' => '`' . get_class($exception) .'` Code(' . $exception->getCode() . ')',
                                 'trace' => $exception->getMessage()
                             ];
-                            break;
+                        break;
                     }
 
                 }
             }
         }
-
         $this->write(json_encode($this->_json));
     }
 }

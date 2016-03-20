@@ -104,16 +104,10 @@ class Kahlan {
         $this->_reporters = new Reporters();
         $this->_args = $args = new Args();
 
-        $args->argument('src',       ['array'   => 'true', 'default' => ['src']]);
-        $args->argument('spec',      ['array'   => 'true', 'default' => ['spec']]);
+        $args->argument('src',       ['array'   => true, 'default' => ['src']]);
+        $args->argument('spec',      ['array'   => true, 'default' => ['spec']]);
+        $args->argument('reporter',  ['array'   => true, 'default' => ['dot']]);
         $args->argument('pattern',   ['default' => '*Spec.php']);
-        $args->argument('reporter',  [
-            'array' => true,
-            'default' => ['dot'],
-            'value' => function($value) {
-                return array_filter($value);
-            }
-        ]);
         $args->argument('coverage',  ['type'    => 'string']);
         $args->argument('config',    ['default' => 'kahlan-config.php']);
         $args->argument('ff',        ['type'    => 'numeric', 'default' => 0]);
@@ -121,21 +115,21 @@ class Kahlan {
         $args->argument('no-colors', ['type'    => 'boolean', 'default' => false]);
         $args->argument('no-header', ['type'    => 'boolean', 'default' => false]);
         $args->argument('include',   [
-            'array' => 'true',
+            'array' => true,
             'default' => ['*'],
             'value' => function($value) {
                 return array_filter($value);
             }
         ]);
         $args->argument('exclude',    [
-            'array' => 'true',
+            'array' => true,
             'default' => [],
             'value' => function($value) {
                 return array_filter($value);
             }
         ]);
         $args->argument('persistent', ['type'  => 'boolean', 'default' => true]);
-        $args->argument('autoclear',  ['array' => 'true', 'default' => [
+        $args->argument('autoclear',  ['array' => true, 'default' => [
             'Kahlan\Plugin\Monkey',
             'Kahlan\Plugin\Call',
             'Kahlan\Plugin\Stub',
@@ -271,10 +265,10 @@ Configuration Options:
 
 Reporter Options:
 
-  --reporter=<name>:<output_file>     The name of the text reporter to use, the buit-in text reporters
+  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the buit-in text reporters
                                       are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
-                                      You can second optional parameter for echo reporter result into file.
-                                      Muliple reporters are supporter thought --reporter flag.
+                                      You can optionnaly redirect the reporter output to a file by using the
+                                      colon syntax (muliple --reporter options are also supported).
 
 Code Coverage Options:
 
@@ -485,46 +479,43 @@ EOD;
     protected function _console()
     {
         return Filter::on($this, 'console', [], function($chain) {
-            $reporters = $this->reporters();
+            $collection = $this->reporters();
 
-            $reporterList = $this->args()->get('reporter');
-            if (empty($reporterList)) {
+            $reporters = $this->args()->get('reporter');
+            if (!$reporters) {
                 return;
             }
 
-            foreach($reporterList as $reporter) {
-                $reporterParams = explode(":", $reporter);
-                $reporterName = isset($reporterParams[0]) ? $reporterParams[0] : null;
-                $reporterOutput = isset($reporterParams[1]) ? $reporterParams[1] : null;
+            foreach($reporters as $reporter) {
+                $parts = explode(":", $reporter);
+                $name = $parts[0];
+                $output = isset($parts[1]) ? $parts[1] : null;
 
-                if ($reporterName === null || $reporterName === 'none') {
+                if (!$name === null || $name === 'none') {
                     continue;
                 }
 
-                // Binding default set of params
                 $params = [
-                    'start'         => $this->_start,
-                    'colors'        => !$this->args()->get('no-colors'),
-                    'header'        => !$this->args()->get('no-header')
+                    'start'  => $this->_start,
+                    'colors' => !$this->args()->get('no-colors'),
+                    'header' => !$this->args()->get('no-header')
                 ];
 
-                // Checking if output not set, then spam into console
-                if (isset($reporterOutput) && strlen($reporterOutput) > 0) {
-                    if (file_exists($reporterOutput) && !is_writable($reporterOutput)) {
-                        fwrite(STDERR, "Error: please check that file '{$reporterOutput}' is writable\n");
+                if (isset($output) && strlen($output) > 0) {
+                    if (file_exists($output) && !is_writable($output)) {
+                        fwrite(STDERR, "Error: please check that file '{$output}' is writable\n");
                     } else {
-                        $filePointer = @fopen($reporterOutput, 'w');
-                        if (!$filePointer) {
-                            fwrite(STDERR, "Error: can't create file '{$reporterOutput}' for write\n");
+                        $file = @fopen($output, 'w');
+                        if (!$file) {
+                            fwrite(STDERR, "Error: can't create file '{$output}' for write\n");
                         } else {
-                            $params['output'] = $filePointer;
+                            $params['output'] = $file;
                         }
                     }
                 }
 
-                $class = 'Kahlan\Reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', trim($reporterName))));
-                $reporterClass = new $class($params);
-                $reporters->add($reporterName, $reporterClass);
+                $class = 'Kahlan\Reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', trim($name))));
+                $collection->add($name, new $class($params));
             }
         });
     }

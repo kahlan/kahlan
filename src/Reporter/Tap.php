@@ -5,7 +5,7 @@ class Tap extends Terminal
 {
     /**
      * Store the current number of dots.
-     * 
+     *
      * @var integer
      */
     protected $_counter = 0;
@@ -109,21 +109,29 @@ class Tap extends Terminal
 
     /**
      * Callback called at the end of specs processing.
+     *
+     * @param array $results The results array of the execution.
      */
     public function end($results = [])
-    {   
+    {
         $this->write("1..{$this->_counters['total']}\n");
         foreach($this->_lines as $line) {
             $this->write($line . "\n");
         }
 
-        // Writing total information
         $this->write("# total {$this->_counters['total']}\n");
         $this->write("# pass {$this->_counters['success']}\n");
         $this->write("# fail {$this->_counters['failed']}\n");
         $this->write("# skip {$this->_counters['skipped']}\n");
     }
 
+    /**
+     * Export a report to its TAP representation.
+     *
+     * @param  boolean $success The success value.
+     * @param  object  $report  The report to export.
+     * @return                  The TAP string representation of the report.
+     */
     protected function _formatTap($success, $report)
     {
         $isOk = ($success) ? "ok" : "not ok";

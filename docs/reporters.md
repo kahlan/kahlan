@@ -8,17 +8,19 @@ There are three build-in reporters and the default is the dotted one:
 ./bin/kahlan --reporter=dot # Default value
 ```
 
-You can set reporter output to file
+You can optionally export reporter output to a file
 ```php
 ./bin/kahlan --reporter=dot:/some/file/path.txt
 ```
 
-Also you can use multiple instances of reporters in e.g.:
+You can also use multiple reporters e.g.:
 ```php
 ./bin/kahlan --reporter=dot --reporter=json:/some/file/path.json
 ```
-It can be pretty handy to do multiple reports at the same time.  
-Caution, if you set more than one reporter you must use only one reporter without file, and other with it. Otherwise it will be a messy console output.
+
+It can be pretty handy to do multiple reports at the same time.
+
+Note: don't use more than one reporter as console reporter otherwise the console outputs will be mixed altogether.
 
 To use a reporter which looks like more a progress bar use the following option:
 ```php

@@ -63,10 +63,10 @@ describe("Kahlan", function() {
             expect($this->specs->args()->get())->toBe([
                 'src'        => ['src'],
                 'spec'       => ['spec/Fixture/Kahlan/Spec'],
-                'pattern'    => "*MySpec.php",
                 'reporter'   => [
                     "verbose"
                 ],
+                'pattern'    => "*MySpec.php",
                 'config'     => "spec/Fixture/Kahlan/kahlan-config.php",
                 'ff'         => 5,
                 'cc'         => true,
@@ -156,10 +156,10 @@ Configuration Options:
 
 Reporter Options:
 
-  --reporter=<name>:<output_file>     The name of the text reporter to use, the buit-in text reporters
+  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the buit-in text reporters
                                       are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
-                                      You can second optional parameter for echo reporter result into file.
-                                      Muliple reporters are supporter thought --reporter flag.
+                                      You can optionnaly redirect the reporter output to a file by using the
+                                      colon syntax (muliple --reporter options are also supported).
 
 Code Coverage Options:
 
