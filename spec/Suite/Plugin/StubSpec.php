@@ -868,6 +868,7 @@ namespace Kahlan\\Spec\\Plugin\\Stub;
 class Stub implements \\Kahlan\\Spec\\Fixture\\Plugin\\Stub\\ReturnTypesInterface {
 
     public function foo(array \$a) : bool {}
+    public function bar() : \\Kahlan\\Spec\\Fixture\\Reporter\\Coverage\\ImplementsCoverageInterface {}
 
 }
 ?>
