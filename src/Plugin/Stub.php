@@ -504,6 +504,10 @@ EOT;
         $parameters = static::_generateSignature($method);
         if (PHP_MAJOR_VERSION >= 7) {
             $type = $method->getReturnType();
+            if ($type && !$type->isBuiltin()) {
+                $type = '\\' . $type;
+            }
+
             $type = $type ? ": {$type} " : '';
         } else {
             $type = '';
