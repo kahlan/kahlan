@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.4.1 (2016-03-23)
+
+  * **Bugfix:** Fixes stub generation for non-builtin PHP7 return types.
+
 ## 2.4.0 (2016-03-20)
 
   * **Add:** Adds a JSON reporter.
