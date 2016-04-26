@@ -166,6 +166,25 @@ class Coverage extends Terminal
         if ($verbosity === 3 && ($type === 'function' || $type === 'method')) {
             return;
         }
+        // If parent is null, this is the total so do not output as we will do this later
+        if (!is_null($metrics->parent())) {
+            $this->_outputMetric($metrics);
+        }
+        if ($verbosity === 1) {
+            return;
+        }
+        foreach ($metrics->childs() as $child) {
+            $this->_renderMetrics($child, $verbosity);
+        }
+    }
+
+    /**
+     * Outputs some metrics info for a given metric.
+     *
+     * @param Metrics $metrics A metrics instance.
+     */
+    protected function _outputMetric($metrics)
+    {
         $name = $metrics->name();
         $stats = $metrics->data();
         $percent = number_format($stats['percent'], 2);
@@ -173,12 +192,6 @@ class Coverage extends Terminal
         $this->write(str_pad("Lines: {$percent}%", 15), $style);
         $this->write(trim(str_pad("({$stats['cloc']}/{$stats['lloc']})", 20) . "{$name}"));
         $this->write("\n");
-        if ($verbosity === 1) {
-            return;
-        }
-        foreach ($metrics->childs() as $child) {
-            $this->_renderMetrics($child, $verbosity);
-        }
     }
 
     /**
@@ -249,7 +262,8 @@ class Coverage extends Terminal
     {
         $this->write("Coverage Summary\n----------------\n\n");
         if (is_numeric($this->_verbosity)) {
-            $this->_renderMetrics($this->metrics(), $this->_verbosity);
+            $metrics = $this->metrics();
+            $this->_renderMetrics($metrics, $this->_verbosity);
         } else {
             $metrics = $this->metrics()->get($this->_verbosity);
             if ($metrics) {
@@ -260,6 +274,10 @@ class Coverage extends Terminal
                 $this->write("\nUnexisting namespace: `{$this->_verbosity}`, coverage can't be generated.\n\n", "n;yellow");
             }
         }
+        // Output the original stored metrics object (the total coverage)
+        $this->write("Total:\n");
+        $this->_outputMetric($metrics);
+        // Output the time to collect coverage
         $time = number_format($this->_time, 3);
         $this->write("\nCollected in {$time} seconds\n\n\n");
     }
