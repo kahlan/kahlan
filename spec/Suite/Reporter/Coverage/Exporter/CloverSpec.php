@@ -15,6 +15,9 @@ describe("Clover", function() {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
+        if(!class_exists('DOMDocument', false)) {
+            skipIf(true);
+        }
         $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
