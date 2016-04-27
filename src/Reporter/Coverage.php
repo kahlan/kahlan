@@ -146,7 +146,7 @@ class Coverage extends Terminal
     }
 
     /**
-     * Outputs some metrics info.
+     * Outputs some metrics info where the metric is not the total coverage.
      *
      * @param Metrics $metrics A metrics instance.
      * @param array   $options The options for the reporter, the options are:
@@ -157,7 +157,7 @@ class Coverage extends Terminal
      *                           - 4      : overall coverage by methods and functions.
      *                           - string : coverage for a fully namespaced (class/method/namespace) string.
      */
-    protected function _renderMetrics($metrics, $verbosity = 1)
+    protected function _renderChildMetrics($metrics, $verbosity = 1)
     {
         $type = $metrics->type();
         if ($verbosity === 2 && ($type === 'class' || $type === 'function')) {
@@ -168,13 +168,13 @@ class Coverage extends Terminal
         }
         // If parent is null, this is the total so do not output as we will do this later
         if (!is_null($metrics->parent())) {
-            $this->_outputMetric($metrics);
+            $this->_renderMetric($metrics);
         }
         if ($verbosity === 1) {
             return;
         }
         foreach ($metrics->childs() as $child) {
-            $this->_renderMetrics($child, $verbosity);
+            $this->_renderChildMetrics($child, $verbosity);
         }
     }
 
@@ -183,7 +183,7 @@ class Coverage extends Terminal
      *
      * @param Metrics $metrics A metrics instance.
      */
-    protected function _outputMetric($metrics)
+    protected function _renderMetric($metrics)
     {
         $name = $metrics->name();
         $stats = $metrics->data();
@@ -263,11 +263,11 @@ class Coverage extends Terminal
         $this->write("Coverage Summary\n----------------\n\n");
         if (is_numeric($this->_verbosity)) {
             $metrics = $this->metrics();
-            $this->_renderMetrics($metrics, $this->_verbosity);
+            $this->_renderChildMetrics($metrics, $this->_verbosity);
         } else {
             $metrics = $this->metrics()->get($this->_verbosity);
             if ($metrics) {
-                $this->_renderMetrics($metrics);
+                $this->_renderChildMetrics($metrics);
                 $this->write("\n");
                 $this->_renderCoverage($metrics);
             } else {
@@ -276,7 +276,7 @@ class Coverage extends Terminal
         }
         // Output the original stored metrics object (the total coverage)
         $this->write("Total:\n");
-        $this->_outputMetric($metrics);
+        $this->_renderMetric($metrics);
         // Output the time to collect coverage
         $time = number_format($this->_time, 3);
         $this->write("\nCollected in {$time} seconds\n\n\n");
