@@ -22,7 +22,7 @@ class Code
         $timeout = (integer) $timeout;
 
         if (!function_exists('pcntl_signal')) {
-            throw new Exception("PCNTL threading is not supported on your OS.");
+            throw new Exception("PCNTL threading is not supported by your system.");
         }
 
         pcntl_signal(SIGALRM, function($signal) use ($timeout) {

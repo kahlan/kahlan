@@ -12,6 +12,12 @@ describe("Code", function() {
 
         describe("::run()", function() {
 
+            beforeEach(function() {
+                if (!function_exists('pcntl_signal')) {
+                    skipIf(true);
+                }
+            });
+
             it("runs the passed closure", function () {
 
                 $start = microtime(true);
