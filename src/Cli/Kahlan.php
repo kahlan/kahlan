@@ -537,9 +537,8 @@ EOD;
             } elseif (extension_loaded('xdebug')) {
                 $driver = new Xdebug();
             } else {
-                $console = $this->reporters()->get('console');
-                $console->write("\nWARNING: PHPDBG SAPI has not been detected and Xdebug is not installed, code coverage has been disabled.\n", 'yellow');
-                return;
+                fwrite(STDERR, "ERROR: PHPDBG SAPI has not been detected and Xdebug is not installed, code coverage can't be used.\n");
+                exit(-1);
             }
             $coverage = new Coverage([
                 'verbosity' => $this->args()->get('coverage') === null ? 1 : $this->args()->get('coverage'),
