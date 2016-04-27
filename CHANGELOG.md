@@ -2,6 +2,13 @@
 
 ## Last changes
 
+## 2.5.0 (2016-04-27)
+
+  * **Change:** Outputs the total coverage after per file coverage.
+  * **Bugfix:** Skips specs when related extentions are not available.
+  * **Bugfix:** Fixes return types of non-builtins types in Stubs generation.
+  * **BC break:** Exits and display an error message when `--coverage` is used but no driver are available.
+
 ## 2.4.1 (2016-03-23)
 
   * **Bugfix:** Fixes stub generation for non-builtin PHP7 return types.
