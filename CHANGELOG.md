@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 1.3.2 (2016-05-01)
+
+  * **Bugfix:** Fixes an issue related to a BC-break introduced by a composer optimization https://github.com/composer/composer/commit/fd2f51cea8e5f1ef978cd8f90b87b69dc1778976.
+
 ## 1.3.1 (2015-12-09)
 
   * **Bugfix:** Fixes a reporting issue related to the new repository structure.
