@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.5.1 (2016-05-01)
+
+  * **Bugfix:** Fixes the release number.
+
 ## 2.5.0 (2016-04-27)
 
   * **Change:** Outputs the total coverage after per file coverage.
