@@ -408,14 +408,15 @@ class Interceptor {
      * @return boolean             Returns `true` if loaded, null otherwise.
      * @throws JitException
      */
-    public function loadFile($file)
+    public function loadFile($filepath)
     {
+        $file = realpath($filepath);
+        if ($file === false) {
+            throw new JitException("Error, the file `'{$filepath}'` doesn't exist.");
+        }
         if ($cached = $this->cached($file)) {
             require $cached;
             return true;
-        }
-        if (!file_exists($file)) {
-            throw new JitException("Error, the file `'{$file}'` doesn't exist.");
         }
         $code = file_get_contents($file);
         $timestamp = filemtime($file);
