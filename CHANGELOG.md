@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.5.3 (2016-05-10)
+
+  * **Bugfix:** Fixes a parsing issue when a class extends statement matches a use definition.
+
 ## 2.5.2 (2016-05-01)
 
   * **Bugfix:** Fixes an issue related to a BC-break introduced by a composer optimization https://github.com/composer/composer/commit/fd2f51cea8e5f1ef978cd8f90b87b69dc1778976.
