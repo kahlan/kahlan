@@ -279,17 +279,21 @@ describe("Parser", function() {
                         $check++;
                     }
                     if ($node->name === 'C') {
-                        expect($node->extends)->toBe('\Test\ParentC');
+                        expect($node->extends)->toBe('\Some\Name\Space');
                         $check++;
                     }
                     if ($node->name === 'D') {
+                        expect($node->extends)->toBe('\Test\ParentD');
+                        $check++;
+                    }
+                    if ($node->name === 'E') {
                         expect($node->extends)->toBe('');
                         $check++;
                     }
                 }
             }
 
-            expect($check)->toBe(4);
+            expect($check)->toBe(5);
         });
 
         it("parses implements", function() {

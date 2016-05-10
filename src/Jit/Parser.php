@@ -394,9 +394,7 @@ class Parser
             $tokens = explode('\\', $name, 2);
             if (isset($this->_states['uses'][$tokens[0]])) {
                 $prefix = $this->_states['uses'][$tokens[0]];
-                if (count($tokens) === 2) {
-                    return '\\' . $prefix . '\\' . $tokens[1];
-                }
+                return count($tokens) === 2 ? '\\' . $prefix . '\\' . $tokens[1] : '\\' . $prefix;
             }
         }
         $current = $this->_states['current'];

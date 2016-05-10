@@ -11,10 +11,14 @@ class B extends Space\ParentB {
 
 }
 
-class C extends ParentC {
+class C extends Space {
 
 }
 
-class D {
+class D extends ParentD {
+
+}
+
+class E {
 
 }
