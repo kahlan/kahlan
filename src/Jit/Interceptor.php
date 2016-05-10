@@ -537,6 +537,9 @@ class Interceptor {
     {
         $findFile = $this->_findFile;
         $file = static::originalInstance()->{$findFile}($class);
+        if ($file !== false) {
+            $file = realpath($file);
+        }
         return $this->_patchers->findFile($this, $class, $file);
     }
 
@@ -598,7 +601,7 @@ class Interceptor {
                 $root = $dir . DIRECTORY_SEPARATOR . substr($logicalPath, strlen($prefix));
 
                 if ($path = $this->_path($root, $forceDir)) {
-                    return $path;
+                    return realpath($path);
                 }
             }
         }
