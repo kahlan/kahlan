@@ -1,4 +1,5 @@
-# Kahlan
+![Kahlan](docs/assets/logo.png "Kahlan")
+<hr/>
 
 ![Build Status](https://img.shields.io/badge/branch-master-blue.svg) [![Build Status](https://travis-ci.org/crysalead/kahlan.svg?branch=master)](https://travis-ci.org/crysalead/kahlan) [![HHVM Status](http://hhvm.h4cc.de/badge/crysalead/kahlan.svg?style=flat)](http://hhvm.h4cc.de/package/crysalead/kahlan) [![License](https://poser.pugx.org/crysalead/kahlan/license.svg)](https://packagist.org/packages/crysalead/kahlan)
 
