@@ -343,6 +343,11 @@ EOD;
      */
     public function run()
     {
+        if (!defined('KAHLAN_FUNCTIONS_EXIST') && (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS)) {
+            fwrite(STDERR, "Kahlan's global functions are missing because of some naming collisions with another library.\n");
+            exit(-1);
+        }
+
         $this->_start = microtime(true);
         return Filter::on($this, 'workflow', [], function($chain) {
 

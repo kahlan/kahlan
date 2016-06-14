@@ -19,7 +19,24 @@ if (defined('KAHLAN_FUNCTIONS_EXIST') && KAHLAN_FUNCTIONS_EXIST) {
     $kahlanFuctions = false;
 }
 
-if ($kahlanFuctions) {
+if ($kahlanFuctions &&
+    !function_exists('before') &&
+    !function_exists('after') &&
+    !function_exists('beforeEach') &&
+    !function_exists('afterEach') &&
+    !function_exists('describe') &&
+    !function_exists('context') &&
+    !function_exists('given') &&
+    !function_exists('it') &&
+    !function_exists('fdescribe') &&
+    !function_exists('fcontext') &&
+    !function_exists('fit') &&
+    !function_exists('xdescribe') &&
+    !function_exists('xcontext') &&
+    !function_exists('waitsFor') &&
+    !function_exists('skipIf') &&
+    !function_exists('expect')) {
+
     define('KAHLAN_FUNCTIONS_EXIST', true);
 
     function before($closure) {
@@ -108,7 +125,7 @@ if (defined('BOX_FUNCTIONS_EXIST') && BOX_FUNCTIONS_EXIST) {
     $boxFuctions = false;
 }
 
-if ($boxFuctions) {
+if ($boxFuctions && !function_exists('box')) {
     define('BOX_FUNCTIONS_EXIST', true);
 
     function box($name = '', $box = null) {
