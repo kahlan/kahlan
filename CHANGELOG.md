@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.5.4 (2016-06-15)
+
+  * **Bugfix:** Fixes naming collison conflicts with global functions.
+
 ## 2.5.3 (2016-05-10)
 
   * **Bugfix:** Fixes a parsing issue when a class extends statement matches a use definition.
