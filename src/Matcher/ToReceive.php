@@ -109,7 +109,7 @@ class ToReceive
     public function resolve()
     {
         $call = $this->_classes['call'];
-        $success = !!$call::find($this->_actual, $this->_message);
+        $success = !!$call::find($this->_actual, $this->_message, 0, $this->_message->times());
         $this->_buildDescription();
         return $success;
     }
@@ -146,7 +146,9 @@ class ToReceive
         $with = $this->_message->params();
         $this->_message->with();
 
-        if ($log = $call::find($this->_actual, $this->_message, $startIndex)) {
+        $times = $this->_message->times();
+
+        if ($log = $call::find($this->_actual, $this->_message, $startIndex, $times)) {
             $this->_description['description'] = 'receive correct parameters.';
             $this->_description['params']['actual with'] = $log['params'];
             $this->_description['params']['expected with'] = $with;
@@ -160,6 +162,9 @@ class ToReceive
         }
         $this->_description['params']['actual received'] = $called;
         $this->_description['params']['expected'] = $this->_expected;
+        if ($times) {
+            $this->_description['params']['called times'] = $times;
+        }
     }
 
     /**

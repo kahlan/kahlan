@@ -43,13 +43,53 @@ describe("toReceiveNext", function() {
 
         });
 
-        it("expects called methods to not be called in a different order", function() {
+        it("expects called methods to be called in a defined order only once", function() {
+
+            $foo = new Foo();
+            expect($foo)->toReceive('message')->once();
+            expect($foo)->toReceiveNext('::version')->once();
+            expect($foo)->toReceiveNext('bar')->once();
+            $foo->message();
+            $foo::version();
+            $foo->bar();
+
+        });
+
+        it("expects called methods to be called in a defined order a specific number of times", function() {
+
+            $foo = new Foo();
+            expect($foo)->toReceive('message')->times(1);
+            expect($foo)->toReceiveNext('::version')->times(2);
+            expect($foo)->toReceiveNext('bar')->times(3);
+            $foo->message();
+            $foo::version();
+            $foo::version();
+            $foo->bar();
+            $foo->bar();
+            $foo->bar();
+
+        });
+
+        it("expects called methods called in a different order to be uncalled", function() {
 
             $foo = new Foo();
             expect($foo)->toReceive('message');
             expect($foo)->not->toReceiveNext('bar');
             $foo->bar();
             $foo->message();
+
+        });
+
+        it("expects called methods called a specific number of times but in a different order to be uncalled", function() {
+
+            $foo = new Foo();
+            expect($foo)->toReceive('message')->times(1);
+            expect($foo)->toReceiveNext('::version')->times(2);
+            expect($foo)->not->toReceiveNext('bar')->times(1);
+            $foo->message();
+            $foo::version();
+            $foo->bar();
+            $foo::version();
 
         });
 

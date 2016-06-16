@@ -265,6 +265,27 @@ it("expects $foo to receive ::message() with the correct param", function() {
 });
 ```
 
+```php
+it("expects $foo to receive ::message() with the correct param only once", function() {
+
+    $foo = new Foo();
+    expect($foo)->toReceive('::message')->with('My Message')->once();
+    $foo::message('My Message');
+
+});
+```
+
+```php
+it("expects $foo to receive ::message() with the correct param a specified number of times", function() {
+
+    $foo = new Foo();
+    expect($foo)->toReceive('::message')->with('My Message')->time(2);
+    $foo::message('My Message');
+    $foo::message('My Message');
+
+});
+```
+
 **toReceiveNext($expected)**
 
 ```php

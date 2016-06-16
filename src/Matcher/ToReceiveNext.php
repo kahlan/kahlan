@@ -12,7 +12,7 @@ class ToReceiveNext extends ToReceive
     {
         $call = $this->_classes['call'];
         $startIndex = $call::lastFindIndex();
-        $success = !!$call::find($this->_actual, $this->_message, $startIndex);
+        $success = !!$call::find($this->_actual, $this->_message, $startIndex, $this->_message->times());
         $this->_buildDescription($startIndex);
         return $success;
     }

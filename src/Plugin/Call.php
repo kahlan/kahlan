@@ -136,19 +136,30 @@ class Call
      * @param  interger      $index     Start index.
      * @return array|false              Return founded log call.
      */
-    public static function find($reference, $call = null, $index = 0)
+    public static function find($reference, $call = null, $index = 0, $times = 0)
     {
         if ($call === null) {
             return static::_findAll($reference, $index);
         }
         $count = count(static::$_logs);
+
         for ($i = $index; $i < $count; $i++) {
             $logs = static::$_logs[$i];
             if (!$log = static::_matchReference($reference, $logs)) {
                 continue;
             }
 
-            if ($call->match($log)) {
+            if (!$call->match($log)) {
+                continue;
+            }
+            $times -= 1;
+            if ($times < 0) {
+                static::$_index = $i + 1;
+                return $log;
+            } elseif ($times === 0) {
+                if (!!static::find($reference, $call, $i + 1)) {
+                    return false;
+                }
                 static::$_index = $i + 1;
                 return $log;
             }

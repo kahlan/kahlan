@@ -44,6 +44,33 @@ describe("toReceive", function() {
 
             });
 
+            it("expects called method to be called exactly once", function() {
+
+                $foo = new Foo();
+                expect($foo)->toReceive('message')->once();
+                $foo->message();
+
+            });
+
+            it("expects called method to be called exactly a specified times", function() {
+
+                $foo = new Foo();
+                expect($foo)->toReceive('message')->times(3);
+                $foo->message();
+                $foo->message();
+                $foo->message();
+
+            });
+
+            it("expects called method not called exactly a specified times to be uncalled", function() {
+
+                $foo = new Foo();
+                expect($foo)->not->toReceive('message')->times(1);
+                $foo->message();
+                $foo->message();
+
+            });
+
             it("expects static method called using non-static way to still called (PHP behavior)", function() {
 
                 $foo = new Foo();
@@ -135,6 +162,33 @@ describe("toReceive", function() {
 
                 });
 
+                it("expects called method to be called exactly once", function() {
+
+                    $foo = new Foo();
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->once();
+                    $foo->message();
+
+                });
+
+                it("expects called method to be called exactly a specified times", function() {
+
+                    $foo = new Foo();
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->times(3);
+                    $foo->message();
+                    $foo->message();
+                    $foo->message();
+
+                });
+
+                it("expects called method not called exactly a specified times to be uncalled", function() {
+
+                    $foo = new Foo();
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('message')->times(1);
+                    $foo->message();
+                    $foo->message();
+
+                });
+
                 it("expects uncalled method to be uncalled", function() {
 
                     $foo = new Foo();
@@ -176,6 +230,30 @@ describe("toReceive", function() {
             it("expects called method to be called", function() {
 
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::version');
+                Foo::version();
+
+            });
+
+            it("expects called method to be called exactly once", function() {
+
+                expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::version')->once();
+                Foo::version();
+
+            });
+
+            it("expects called method to be called exactly a specified times", function() {
+
+                expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::version')->times(3);
+                Foo::version();
+                Foo::version();
+                Foo::version();
+
+            });
+
+            it("expects called method not called exactly a specified times to be uncalled", function() {
+
+                expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::version')->times(1);
+                Foo::version();
                 Foo::version();
 
             });
@@ -246,7 +324,33 @@ describe("toReceive", function() {
             expect($actual['description'])->toBe('receive the correct message.');
             expect($actual['params'])->toBe([
                 'actual received' => ['__construct'],
-                'expected' => 'method'
+                'expected'        => 'method'
+            ]);
+
+        });
+
+        it("returns the description message for not received call the specified number of times", function() {
+
+            $stub = Stub::create();
+            $matcher = new ToReceive($stub, 'method');
+            $matcher->times(2);
+
+            $matcher->resolve([
+                'instance' => $matcher,
+                'params'   => [
+                    'actual'   => $stub,
+                    'expected' => 'method',
+                    'logs'     => []
+                ]
+            ]);
+
+            $actual = $matcher->description();
+
+            expect($actual['description'])->toBe('receive the correct message.');
+            expect($actual['params'])->toBe([
+                'actual received' => ['__construct'],
+                'expected'        => 'method',
+                'called times'    => 2
             ]);
 
         });
