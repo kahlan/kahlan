@@ -15,13 +15,14 @@ class Specification extends Scope
 
     /**
      * List of expectations.
+     * @var Expectation[]
      */
     protected $_expectations = [];
 
     /**
      * Constructor.
      *
-     * @param array $config The Suite config array. Options are:
+     * @param array $config  The Suite config array. Options are:
      *                       -`'closure'` _Closure_ : the closure of the test.
      *                       -`'scope'`   _string_  : supported scope are `'normal'` & `'focus'`.
      *                       -`'matcher'` _object_  : the matcher instance.
@@ -31,14 +32,17 @@ class Specification extends Scope
         $defaults = [
             'closure' => null,
             'message' => 'passes',
-            'scope'   => 'normal'
+            'scope' => 'normal',
         ];
         $config += $defaults;
         $config['message'] = 'it ' . $config['message'];
         parent::__construct($config);
 
 
-
+        /**
+         * @var \Closure $closure
+         * @var string   $scope
+         */
         extract($config);
 
         $this->_closure = $this->_bind($closure, 'it');
@@ -50,24 +54,32 @@ class Specification extends Scope
     /**
      * The expect statement.
      *
-     * @param mixed $actual The expression to check
+     * @param Expectation $actual The expression to check
+     *
+     * @return Expectation[]
      */
     public function expect($actual, $timeout = -1)
     {
         $expectation = $this->_classes['expectation'];
+
         return $this->_expectations[] = new $expectation(compact('actual', 'timeout'));
     }
 
     /**
      * The waitsFor statement.
      *
-     * @param mixed $actual The expression to check
+     * @param Expectation $actual The expression to check
+     *
+     * @return mixed
      */
     public function waitsFor($actual, $timeout = 0)
     {
         $timeout = $timeout ?: $this->timeout();
-        $actual = $actual instanceof Closure ? $actual : function() {return $actual;};
+        $actual = $actual instanceof Closure ? $actual : function () {
+            return $actual;
+        };
         $spec = new static(['closure' => $actual]);
+
         return $this->expect($spec, $timeout);
     }
 
@@ -75,7 +87,6 @@ class Specification extends Scope
      * Processes a child specs.
      *
      * @see Kahlan\Suite::process()
-     * @param object A child spec.
      */
     public function process()
     {
@@ -100,7 +111,8 @@ class Specification extends Scope
             $this->_exception($exception, true);
             try {
                 $this->_specEnd();
-            } catch (Exception $exception) {}
+            } catch (Exception $exception) {
+            }
         }
 
         return $result;
@@ -124,6 +136,7 @@ class Specification extends Scope
     {
         if (!$this->_parent) {
             $this->emitReport('specEnd', $this->report());
+
             return;
         }
         $this->_parent->runCallbacks('afterEach');
@@ -191,6 +204,7 @@ class Specification extends Scope
                 $logs[] = $log;
             }
         }
+
         return $logs;
     }
 
