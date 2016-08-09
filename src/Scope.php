@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan;
 
+use Closure;
 use Exception;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Plugin\Call\Message;
@@ -98,7 +99,7 @@ class Scope
     /**
      * The spec closure.
      *
-     * @var \Closure
+     * @var Closure
      */
     protected $_closure = null;
 
@@ -219,7 +220,7 @@ class Scope
         $this->_classes += $config['classes'];
         /**
          * @var Message $message
-         * @var Scope $parent
+         * @var Scope   $parent
          * @var integer $timeout
          */
         extract($config);
@@ -297,7 +298,7 @@ class Scope
      * Sets a lazy loaded data.
      *
      * @param  string  $name    The lazy loaded variable name.
-     * @param  \Closure $closure The lazily executed closure.
+     * @param  Closure $closure The lazily executed closure.
      * @return object
      */
     public function given($name, $closure)
@@ -433,11 +434,11 @@ class Scope
     /**
      * Binds the closure to the current context.
      *
-     * @param  \Closure $closure The variable to check
-     * @param  string   $name    Name of the parent type (TODO: to use somewhere).
+     * @param  Closure $closure The variable to check
+     * @param  string  $name    Name of the parent type (TODO: to use somewhere).
      *
-     * @return \Closure
-     * @throws \Exception Throw an Exception if the passed parameter is not a closure
+     * @return Closure
+     * @throws Exception Throw an Exception if the passed parameter is not a closure
      */
     protected function _bind($closure, $name)
     {

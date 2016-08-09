@@ -25,7 +25,7 @@ class Suite extends Scope
     /**
      * The childs array.
      *
-     * @var Scope[]|Specification[]
+     * @var Suite[]|Specification[]
      */
     protected $_childs = [];
 
@@ -42,10 +42,10 @@ class Suite extends Scope
      * @var array
      */
     protected $_callbacks = [
-        'before' => [],
-        'after' => [],
+        'before'     => [],
+        'after'      => [],
         'beforeEach' => [],
-        'afterEach' => [],
+        'afterEach'  => [],
     ];
 
     /**
@@ -73,25 +73,25 @@ class Suite extends Scope
     /**
      * The Constructor.
      *
-     * @param array $config  The Suite config array. Options are:
-     *                       -`'closure'` _Closure_: the closure of the test.
-     *                       -`'name'`    _string_ : the type of the suite.
-     *                       -`'scope'`   _string_ : supported scope are `'normal'` & `'focus'`.
+     * @param array $config The Suite config array. Options are:
+     *                      -`'closure'` _Closure_: the closure of the test.
+     *                      -`'name'`    _string_ : the type of the suite.
+     *                      -`'scope'`   _string_ : supported scope are `'normal'` & `'focus'`.
      */
     public function __construct($config = [])
     {
         $defaults = [
             'closure' => null,
-            'name' => 'describe',
-            'scope' => 'normal',
+            'name'    => 'describe',
+            'scope'   => 'normal'
         ];
         $config += $defaults;
         parent::__construct($config);
 
         /**
-         * @var \Closure $closure
-         * @var string   $name
-         * @var string   $scope
+         * @var Closure $closure
+         * @var string  $name
+         * @var string  $scope
          */
         extract($config);
 
@@ -111,7 +111,7 @@ class Suite extends Scope
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
      *
-     * @return $this
+     * @return Suite
      */
     public function describe($message, $closure, $timeout = null, $scope = 'normal')
     {
@@ -128,10 +128,10 @@ class Suite extends Scope
      *
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
-     * @param null     $timeout
-     * @param string   $scope
+     * @param  null    $timeout
+     * @param  string  $scope
      *
-     * @return $this
+     * @return Suite
      */
     public function context($message, $closure, $timeout = null, $scope = 'normal')
     {
@@ -150,7 +150,7 @@ class Suite extends Scope
      * @param  Closure        $closure A test case closure.
      * @param  string         $scope   The scope.
      *
-     * @return $this
+     * @return Specification
      */
     public function it($message, $closure = null, $timeout = null, $scope = 'normal')
     {
@@ -176,7 +176,7 @@ class Suite extends Scope
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
      *
-     * @return $this
+     * @return
      */
     public function xdescribe($message, $closure)
     {
@@ -188,7 +188,7 @@ class Suite extends Scope
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
      *
-     * @return $this
+     * @return
      */
     public function xcontext($message, $closure)
     {
@@ -200,7 +200,7 @@ class Suite extends Scope
      * @param  string|Closure $message Description message or a test closure.
      * @param  Closure|null   $closure A test case closure or `null`.
      *
-     * @return $this
+     * @return
      */
     public function xit($message, $closure = null)
     {
@@ -212,7 +212,7 @@ class Suite extends Scope
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
      *
-     * @return $this
+     * @return Suite
      */
     public function fdescribe($message, $closure, $timeout = null)
     {
@@ -225,7 +225,7 @@ class Suite extends Scope
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
      *
-     * @return $this
+     * @return Suite
      */
     public function fcontext($message, $closure, $timeout = null)
     {
@@ -238,7 +238,7 @@ class Suite extends Scope
      * @param  string|Closure $message Description message or a test closure.
      * @param  Closure|null   $closure A test case closure or `null`.
      *
-     * @return $this
+     * @return Specification
      */
     public function fit($message, $closure = null, $timeout = null)
     {
@@ -250,7 +250,7 @@ class Suite extends Scope
      *
      * @param  Closure $closure A closure
      *
-     * @return $this
+     * @return self
      */
     public function before($closure)
     {
@@ -263,7 +263,9 @@ class Suite extends Scope
     /**
      * Executed after tests.
      *
-     * @param Closure $closure A closure
+     * @param  Closure $closure A closure
+     *
+     * @return self
      */
     public function after($closure)
     {
@@ -278,7 +280,7 @@ class Suite extends Scope
      *
      * @param  Closure $closure A closure
      *
-     * @return $this
+     * @return self
      */
     public function beforeEach($closure)
     {
@@ -291,7 +293,9 @@ class Suite extends Scope
     /**
      * Executed after each tests.
      *
-     * @param Closure $closure A closure
+     * @param  Closure $closure A closure
+     *
+     * @return self
      */
     public function afterEach($closure)
     {
@@ -304,7 +308,7 @@ class Suite extends Scope
     /**
      * Suite run.
      *
-     * @param array $options
+     * @param array $options Process options.
      */
     protected function process($options = [])
     {
@@ -413,9 +417,9 @@ class Suite extends Scope
     /**
      * Runs all specs.
      *
-     * @param  array $options Run options.
+     * @param  array     $options Run options.
      *
-     * @return boolean The result array.
+     * @return boolean            The result array.
      * @throws Exception
      */
     public function run($options = [])
@@ -423,7 +427,7 @@ class Suite extends Scope
         $defaults = [
             'reporters' => null,
             'autoclear' => [],
-            'ff' => 0,
+            'ff'        => 0
         ];
         $options += $defaults;
 
@@ -439,7 +443,7 @@ class Suite extends Scope
         $this->emitReport('start', ['total' => $this->enabled()]);
         $this->process();
         $this->emitReport('end', [
-            'specs' => $this->_results,
+            'specs'   => $this->_results,
             'focuses' => $this->_focuses,
         ]);
 
@@ -496,7 +500,7 @@ class Suite extends Scope
     public function stop()
     {
         $this->emitReport('stop', [
-            'specs' => $this->_results,
+            'specs'   => $this->_results,
             'focuses' => $this->_focuses,
         ]);
     }
@@ -641,7 +645,7 @@ class Suite extends Scope
     /**
      * Registers a hash. [Mainly used for optimization]
      *
-     * @param  mixed $hash A hash to register.
+     * @param mixed $hash A hash to register.
      */
     public static function register($hash)
     {
@@ -651,7 +655,7 @@ class Suite extends Scope
     /**
      * Gets registered hashes. [Mainly used for optimizations]
      *
-     * @param  string $hash The hash to look up. If `null` return all registered hashes.
+     * @param  string     $hash The hash to look up. If `null` return all registered hashes.
      *
      * @return array|bool
      */

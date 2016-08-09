@@ -47,7 +47,7 @@ class Stub
     /**
      * Stub index counter.
      *
-     * @var int
+     * @var integer
      */
     protected static $_index = 0;
 
@@ -64,7 +64,7 @@ class Stub
     /**
      * Getd/Setd stubs for methods or get stubbed methods array.
      *
-     * @param  array $name An array of method names.
+     * @param  array    $name An array of method names.
      * @return Method[]       Return the array of stubbed methods.
      */
     public function methods($name = [])
@@ -124,7 +124,7 @@ class Stub
      * Stubs class methods.
      *
      * @param  object|string $reference An instance or a fully-namespaced class name.
-     * @return self                   The Stub instance.
+     * @return self                     The Stub instance.
      */
     public static function on($reference)
     {
@@ -446,9 +446,9 @@ EOT;
     /**
      * Creates method definitions from a class name.
      *
-     * @param  string $class A class name.
-     * @param  int    $mask  The method mask to filter.
-     * @return string        The generated methods.
+     * @param  string  $class A class name.
+     * @param  integer $mask  The method mask to filter.
+     * @return string         The generated methods.
      */
     protected static function _generateAbstractMethods($class)
     {
@@ -467,9 +467,9 @@ EOT;
     /**
      * Creates method definitions from an interface array.
      *
-     * @param  array  $interfaces A array on interfaces.
-     * @param  int    $mask       The method mask to filter.
-     * @return string             The generated methods.
+     * @param  array   $interfaces A array on interfaces.
+     * @param  integer $mask       The method mask to filter.
+     * @return string              The generated methods.
      */
     protected static function _generateInterfaceMethods($interfaces, $mask = 255)
     {

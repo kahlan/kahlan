@@ -61,8 +61,8 @@ class Message
     /**
      * Sets params requirement.
      *
-     * @param  mixed  ... <0,n> Parameter(s).
-     * @return self     $this.
+     * @param  mixed ... <0,n> Parameter(s).
+     * @return self
      */
     public function with()
     {

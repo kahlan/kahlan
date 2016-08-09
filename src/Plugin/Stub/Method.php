@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Plugin\Stub;
 
+use Closure;
 use Exception;
 
 class Method extends \Kahlan\Plugin\Call\Message
@@ -15,7 +16,7 @@ class Method extends \Kahlan\Plugin\Call\Message
     /**
      * Stub implementation.
      *
-     * @var \Closure
+     * @var Closure
      */
     protected $_closure = null;
 
@@ -72,7 +73,7 @@ class Method extends \Kahlan\Plugin\Call\Message
     /**
      * Sets the stub logic.
      *
-     * @param \Closure $closure The logic.
+     * @param Closure $closure The logic.
      */
     public function run($closure)
     {

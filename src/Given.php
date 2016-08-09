@@ -29,7 +29,7 @@ class Given
     /**
      * The Constructor.
      *
-     * @param array $closure A closure.
+     * @param  array $closure A closure.
      *
      * @throws Exception
      */
@@ -59,7 +59,7 @@ class Given
      *
      * @param  string $key The name of the variable.
      *
-     * @return mixed The value of the variable.
+     * @return mixed       The value of the variable.
      * @throws Exception
      */
     public function &__get($key)
@@ -78,7 +78,8 @@ class Given
      *
      * @param  string $key   The name of the variable.
      * @param  mixed  $value The value of the variable.
-     * @return mixed  The value of the variable.
+     *
+     * @return mixed         The value of the variable.
      */
     public function __set($key, $value)
     {

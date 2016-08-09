@@ -65,7 +65,7 @@ class Matcher
      * @param  string $name   The name of the matcher.
      * @param  string $target An optionnal target class name.
      *
-     * @return array The registered matchers or a fully-namespaced class name if $name is not null.
+     * @return array          The registered matchers or a fully-namespaced class name if $name is not null.
      * @throws Exception
      */
     public static function get($name = null, $target = '')

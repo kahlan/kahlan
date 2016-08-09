@@ -22,26 +22,25 @@ class Specification extends Scope
     /**
      * Constructor.
      *
-     * @param array $config  The Suite config array. Options are:
-     *                       -`'closure'` _Closure_ : the closure of the test.
-     *                       -`'scope'`   _string_  : supported scope are `'normal'` & `'focus'`.
-     *                       -`'matcher'` _object_  : the matcher instance.
+     * @param array $config The Suite config array. Options are:
+     *                      -`'closure'` _Closure_ : the closure of the test.
+     *                      -`'scope'`   _string_  : supported scope are `'normal'` & `'focus'`.
+     *                      -`'matcher'` _object_  : the matcher instance.
      */
     public function __construct($config = [])
     {
         $defaults = [
             'closure' => null,
             'message' => 'passes',
-            'scope' => 'normal',
+            'scope'   => 'normal'
         ];
         $config += $defaults;
         $config['message'] = 'it ' . $config['message'];
         parent::__construct($config);
 
-
         /**
-         * @var \Closure $closure
-         * @var string   $scope
+         * @var Closure $closure
+         * @var string  $scope
          */
         extract($config);
 
@@ -54,7 +53,7 @@ class Specification extends Scope
     /**
      * The expect statement.
      *
-     * @param Expectation $actual The expression to check
+     * @param  Expectation   $actual The expression to check
      *
      * @return Expectation[]
      */
@@ -68,7 +67,7 @@ class Specification extends Scope
     /**
      * The waitsFor statement.
      *
-     * @param Expectation $actual The expression to check
+     * @param  Expectation $actual The expression to check
      *
      * @return mixed
      */
