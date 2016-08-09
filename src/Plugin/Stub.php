@@ -40,14 +40,14 @@ class Stub
     /**
      * Stubbed methods.
      *
-     * @var array
+     * @var Method[]
      */
     protected $_stubs = [];
 
     /**
      * Stub index counter.
      *
-     * @var array
+     * @var int
      */
     protected static $_index = 0;
 
@@ -65,7 +65,7 @@ class Stub
      * Getd/Setd stubs for methods or get stubbed methods array.
      *
      * @param  array $name An array of method names.
-     * @return mixed       Return the array of stubbed methods.
+     * @return Method[]       Return the array of stubbed methods.
      */
     public function methods($name = [])
     {
@@ -91,7 +91,7 @@ class Stub
      * @param  string $name    Method name or array of stubs where key are method names and
      *                         values the stubs.
      * @param  string $closure The stub implementation.
-     * @return object          The subbed method instance.
+     * @return Method          The stubbed method instance.
      */
     public function method($name, $closure = null)
     {
@@ -124,11 +124,11 @@ class Stub
      * Stubs class methods.
      *
      * @param  object|string $reference An instance or a fully-namespaced class name.
-     * @return object                   The Stub instance.
+     * @return self                   The Stub instance.
      */
     public static function on($reference)
     {
-        $hash = Suite::hash($reference);;
+        $hash = Suite::hash($reference);
         if (isset(static::$_registered[$hash])) {
             return static::$_registered[$hash];
         }

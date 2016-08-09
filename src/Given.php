@@ -30,6 +30,8 @@ class Given
      * The Constructor.
      *
      * @param array $closure A closure.
+     *
+     * @throws Exception
      */
     public function __construct($closure)
     {
@@ -56,7 +58,9 @@ class Given
      * Getter.
      *
      * @param  string $key The name of the variable.
-     * @return mixed  The value of the variable.
+     *
+     * @return mixed The value of the variable.
+     * @throws Exception
      */
     public function &__get($key)
     {

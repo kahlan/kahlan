@@ -2,12 +2,9 @@
 namespace Kahlan\Cli;
 
 use Kahlan\Dir\Dir;
-use Kahlan\Cli;
 use Kahlan\Jit\Interceptor;
-use Kahlan\Jit\Patchers;
 use Kahlan\Filter\Filter;
 use Kahlan\Filter\Behavior\Filterable;
-use Kahlan\Suite;
 use Kahlan\Matcher;
 use Kahlan\Jit\Patcher\Pointcut;
 use Kahlan\Jit\Patcher\Monkey;
@@ -15,8 +12,6 @@ use Kahlan\Jit\Patcher\Rebase;
 use Kahlan\Jit\Patcher\Quit;
 use Kahlan\Plugin\Quit as QuitStatement;
 use Kahlan\Reporters;
-use Kahlan\Reporter\Dot;
-use Kahlan\Reporter\Bar;
 use Kahlan\Reporter\Terminal;
 use Kahlan\Reporter\Coverage;
 use Kahlan\Reporter\Coverage\Driver\Phpdbg;
