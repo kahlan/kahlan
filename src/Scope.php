@@ -3,13 +3,14 @@ namespace Kahlan;
 
 use Exception;
 use Kahlan\Analysis\Debugger;
+use Kahlan\Plugin\Call\Message;
 
 class Scope
 {
     /**
      * Instances stack.
      *
-     * @var array
+     * @var Scope[]
      */
     protected static $_instances = [];
 
@@ -83,7 +84,7 @@ class Scope
     /**
      * The parent instance.
      *
-     * @var object
+     * @var Scope
      */
     protected $_parent = null;
 
@@ -97,7 +98,7 @@ class Scope
     /**
      * The spec closure.
      *
-     * @var Closure
+     * @var \Closure
      */
     protected $_closure = null;
 
@@ -216,6 +217,11 @@ class Scope
         ];
         $config += $defaults;
         $this->_classes += $config['classes'];
+        /**
+         * @var Message $message
+         * @var Scope $parent
+         * @var integer $timeout
+         */
         extract($config);
 
         $this->_message   = $message;
@@ -291,7 +297,7 @@ class Scope
      * Sets a lazy loaded data.
      *
      * @param  string  $name    The lazy loaded variable name.
-     * @param  Closure $closure The lazily executed closure.
+     * @param  \Closure $closure The lazily executed closure.
      * @return object
      */
     public function given($name, $closure)
@@ -311,7 +317,7 @@ class Scope
     /**
      * Gets the parent instance.
      *
-     * @return array
+     * @return Scope
      */
     public function parent()
     {
@@ -427,9 +433,11 @@ class Scope
     /**
      * Binds the closure to the current context.
      *
-     * @param  Closure  $closure The variable to check
-     * @param  string   $name Name of the parent type (TODO: to use somewhere).
-     * @throws Throw an Exception if the passed parameter is not a closure
+     * @param  \Closure $closure The variable to check
+     * @param  string   $name    Name of the parent type (TODO: to use somewhere).
+     *
+     * @return \Closure
+     * @throws \Exception Throw an Exception if the passed parameter is not a closure
      */
     protected function _bind($closure, $name)
     {

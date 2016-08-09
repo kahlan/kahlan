@@ -8,14 +8,14 @@ class Method extends \Kahlan\Plugin\Call\Message
     /**
      * Index value in the `Method::$_returns` array.
      *
-     * @var array
+     * @var int
      */
     protected $_index = 0;
 
     /**
      * Stub implementation.
      *
-     * @var Closure
+     * @var \Closure
      */
     protected $_closure = null;
 
@@ -49,7 +49,7 @@ class Method extends \Kahlan\Plugin\Call\Message
     /**
      * Runs the stub.
      *
-     * @param  string $self   The context form which the stub need to be executed.
+     * @param  string $self   The context from which the stub need to be executed.
      * @param  array  $params The call parameters array.
      * @return mixed          The returned stub result.
      */
@@ -72,7 +72,7 @@ class Method extends \Kahlan\Plugin\Call\Message
     /**
      * Sets the stub logic.
      *
-     * @param Closure $closure The logic.
+     * @param \Closure $closure The logic.
      */
     public function run($closure)
     {

@@ -62,7 +62,7 @@ class Message
      * Sets params requirement.
      *
      * @param  mixed  ... <0,n> Parameter(s).
-     * @return object     $this.
+     * @return self     $this.
      */
     public function with()
     {
