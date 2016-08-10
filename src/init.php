@@ -1,4 +1,5 @@
 <?php
+use Kahlan\Expectation;
 use Kahlan\Suite;
 use Kahlan\Specification;
 use Kahlan\Box\BoxException;
@@ -108,7 +109,7 @@ if ($kahlanFuctions &&
     /**
      * @param $actual
      *
-     * @return Kahlan\Matcher
+     * @return Expectation
      */
     function expect($actual) {
         return Specification::current()->expect($actual);

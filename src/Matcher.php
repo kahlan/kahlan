@@ -93,8 +93,9 @@ class Matcher
     /**
      * Checks if a matcher is registered.
      *
-     * @param  string  $name   The name of the matcher.
-     * @param  string  $target An optionnal target class name.
+     * @param  string $name   The name of the matcher.
+     * @param  string $target An optional target class name.
+     *
      * @return boolean         Returns `true` if the matcher exists, `false` otherwise.
      */
     public static function exists($name, $target = '')
