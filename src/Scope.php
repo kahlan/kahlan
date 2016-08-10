@@ -153,7 +153,7 @@ class Scope
     /**
      * Focused scope detected.
      *
-     * @var array
+     * @var boolean
      */
     protected $_focused = false;
 
@@ -519,7 +519,7 @@ class Scope
     /**
      * Get the active scope instance.
      *
-     * @return object The object instance or `null` if there's no active instance.
+     * @return Scope The object instance or `null` if there's no active instance.
      */
     public static function current()
     {

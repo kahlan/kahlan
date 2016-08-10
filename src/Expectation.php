@@ -2,10 +2,11 @@
 namespace Kahlan;
 
 use Exception;
+use Kahlan\Analysis\Debugger;
+use Kahlan\Analysis\Inspector;
 use Kahlan\Code\Code;
 use Kahlan\Code\TimeoutException;
-use Kahlan\Analysis\Inspector;
-use Kahlan\Analysis\Debugger;
+use Closure;
 
 /**
  * Class Expectation
@@ -32,6 +33,8 @@ use Kahlan\Analysis\Debugger;
  * @method Expectation toMatchEcho(string $expected) passes if actual echoes matches the expected string
  * @method Expectation toReceive(string $expected) passes if the expected method as been called on actual
  * @method Expectation toReceiveNext(string $expected) passes if the expected method as been called on actual after some other method
+ *
+ * @property Expectation $not
  */
 class Expectation
 {
@@ -48,7 +51,7 @@ class Expectation
     /**
      * Deferred expectation.
      *
-     * @var boolean
+     * @var array
      */
     protected $_deferred = [];
 
@@ -145,7 +148,7 @@ class Expectation
     /**
      * Returns the deferred expectations.
      *
-     * @return boolean
+     * @return array
      */
     public function deferred()
     {
@@ -163,7 +166,7 @@ class Expectation
     /**
      * Calls a registered matcher.
      *
-     * @param  string  $name   The name of the matcher.
+     * @param  string  $matcherName   The name of the matcher.
      * @param  array   $params The parameters to pass to the matcher.
      * @return boolean
      */
@@ -173,7 +176,7 @@ class Expectation
         $spec = $this->_actual;
         $specification = $this->_classes['specification'];
 
-        $closure = function() use ($spec, $specification, $matcherName, $params, &$actual, &$result) {
+        $closure = function () use ($spec, $specification, $matcherName, $params, &$actual, &$result) {
             if ($spec instanceof $specification) {
                 $actual = $spec->run();
                 if (!$spec->passed()) {
@@ -208,18 +211,20 @@ class Expectation
         if (!is_object($result)) {
             $data['description'] = $data['matcher']::description();
             $this->_log($result, $data);
+
             return $this;
         }
         $this->_deferred[] = $data + [
-            'instance' => $result, 'not' => $this->_not
+            'instance' => $result, 'not' => $this->_not,
         ];
+
         return $result;
     }
 
     /**
      * Returns a compatible matcher class name according to a passed actual value.
      *
-     * @param  string $name   The name of the matcher.
+     * @param  string $matcherName   The name of the matcher.
      * @param  string $actual The actual value.
      * @return string         A matcher class name.
      */
@@ -251,8 +256,9 @@ class Expectation
     /**
      * Processes the expectation.
      *
-     * @param  string  $matcher The matcher class name.
-     * @param  array   $args  The parameters to pass to the matcher.
+     * @param  string $matcher The matcher class name.
+     * @param  array  $args    The parameters to pass to the matcher.
+     *
      * @return mixed
      */
     public function run()
@@ -261,13 +267,16 @@ class Expectation
         $specification = $this->_classes['specification'];
         if (!$spec instanceof $specification) {
             $this->_passed = false;
+
             return $this;
         }
 
-        $closure = function() use ($spec) {
+        $closure = function () use ($spec) {
             try {
                 $spec->run();
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+            }
+
             return $spec->passed();
         };
 
@@ -302,7 +311,7 @@ class Expectation
      */
     protected function _resolve()
     {
-        foreach($this->_deferred as $data) {
+        foreach ($this->_deferred as $data) {
             $instance = $data['instance'];
             $this->_not = $data['not'];
             $boolean = $instance->resolve();
@@ -327,7 +336,7 @@ class Expectation
         if ($pass) {
             $data['type'] = 'pass';
         } else {
-            $data['type'] ='fail';
+            $data['type'] = 'fail';
             $this->_passed = false;
         }
 
