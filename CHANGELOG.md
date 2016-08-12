@@ -2,6 +2,12 @@
 
 ## Last changes
 
+## 2.5.5 (2016-08-13)
+
+  * **Add:** Introduce the KAHLAN_VERSION constant.
+  * **Add:** Better support of IDE though autocomplete.
+  * **Add:** Implements call counting matcher on purpose.
+
 ## 2.5.4 (2016-06-15)
 
   * **Bugfix:** Fixes naming collison conflicts with global functions.
