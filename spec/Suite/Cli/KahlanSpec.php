@@ -278,6 +278,12 @@ EOD;
 
     describe("->run()", function() {
 
+        it("defines the KAHLAN_VERSION constant", function() {
+
+            expect(KAHLAN_VERSION)->toBe(Kahlan::VERSION);
+
+        });
+
         it("runs a spec which pass", function() {
 
             $this->specs->loadConfig([

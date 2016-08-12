@@ -342,6 +342,9 @@ EOD;
             fwrite(STDERR, "Kahlan's global functions are missing because of some naming collisions with another library.\n");
             exit(-1);
         }
+        if (!defined('KAHLAN_VERSION')) {
+            define('KAHLAN_VERSION', static::VERSION);
+        }
 
         $this->_start = microtime(true);
         return Filter::on($this, 'workflow', [], function($chain) {
