@@ -255,21 +255,21 @@ Configuration Options:
 
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
-  --spec=<path>                       Paths of specifications directories (default: `['spec']`).
+  --spec=<path>                       Paths of specification directories (default: `['spec']`).
   --pattern=<pattern>                 A shell wildcard pattern (default: `'*Spec.php'`).
 
 Reporter Options:
 
   --reporter=<name>[:<output_file>]   The name of the text reporter to use, the buit-in text reporters
                                       are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
-                                      You can optionnaly redirect the reporter output to a file by using the
+                                      You can optionally redirect the reporter output to a file by using the
                                       colon syntax (muliple --reporter options are also supported).
 
 Code Coverage Options:
 
   --coverage=<integer|string>         Generate code coverage report. The value specify the level of
-                                      detail for the code coverage report (0-4). If a namespace, class or
-                                      method definition is provided, if will generate a detailled code
+                                      detail for the code coverage report (0-4). If a namespace, class, or
+                                      method definition is provided, it will generate a detailed code
                                       coverage of this specific scope (default `''`).
   --clover=<file>                     Export code coverage report into a Clover XML format.
   --istanbul=<file>                   Export code coverage report into an istanbul compatible JSON format.
