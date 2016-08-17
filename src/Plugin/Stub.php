@@ -256,6 +256,8 @@ class Stub
         ];
         $options += $defaults;
 
+        $options['implements'] = (array) $options['implements'];
+
         if ($options['extends']) {
             $options += ['magicMethods' => false];
         } else {
@@ -372,7 +374,7 @@ EOT;
             return '';
         }
         $classes = [];
-        foreach ((array) $implements as $implement) {
+        foreach ($implements as $implement) {
             $classes[] = '\\' . ltrim($implement, '\\');
         }
         return ' implements ' . join(', ', $classes);

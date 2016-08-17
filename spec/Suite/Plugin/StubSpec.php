@@ -832,7 +832,7 @@ EOD;
 
             $result = Stub::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Stub\Stub',
-                'implements'   => ['Countable'],
+                'implements'   => 'Countable',
                 'magicMethods' => false
             ]);
 
