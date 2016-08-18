@@ -256,8 +256,6 @@ class Stub
         ];
         $options += $defaults;
 
-        $options['implements'] = (array) $options['implements'];
-
         if ($options['extends']) {
             $options += ['magicMethods' => false];
         } else {
@@ -374,7 +372,7 @@ EOT;
             return '';
         }
         $classes = [];
-        foreach ($implements as $implement) {
+        foreach ((array) $implements as $implement) {
             $classes[] = '\\' . ltrim($implement, '\\');
         }
         return ' implements ' . join(', ', $classes);
@@ -479,7 +477,7 @@ EOT;
             return [];
         }
         $result = [];
-        foreach ($interfaces as $interface) {
+        foreach ((array) $interfaces as $interface) {
             if (!interface_exists($interface)) {
                 throw new IncompleteException("Unexisting interface `{$interface}`");
             }

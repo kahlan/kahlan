@@ -851,6 +851,53 @@ EOD;
 
         });
 
+        it("generates interface methods for multiple insterfaces", function() {
+
+            $result = Stub::generate([
+                'class'        => 'Kahlan\Spec\Plugin\Stub\Stub',
+                'implements'   => ['Countable', 'SplObserver'],
+                'magicMethods' => false
+            ]);
+
+            $expected = <<<EOD
+<?php
+namespace Kahlan\\Spec\\Plugin\\Stub;
+
+class Stub implements \\Countable, \\SplObserver {
+
+    public function count() {}
+    public function update(\\SplSubject \$SplSubject) {}
+
+}
+?>
+EOD;
+            expect(str_replace('$subject', '$SplSubject', $result))->toBe($expected);
+
+        });
+
+        it("generates interface methods", function() {
+
+            $result = Stub::generate([
+                'class'        => 'Kahlan\Spec\Plugin\Stub\Stub',
+                'implements'   => null,
+                'magicMethods' => false
+            ]);
+
+            $expected = <<<EOD
+<?php
+namespace Kahlan\\Spec\\Plugin\\Stub;
+
+class Stub {
+
+
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
         it("generates interface methods with return type", function() {
 
             skipIf(PHP_MAJOR_VERSION < 7);
