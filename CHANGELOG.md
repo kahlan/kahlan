@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.5.6 (2016-08-18)
+
+  * **Bugfix:** Allow passing 'string' as Stub's implements option.
+
 ## 2.5.5 (2016-08-13)
 
   * **Add:** Introduce the KAHLAN_VERSION constant.
