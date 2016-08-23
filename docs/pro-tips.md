@@ -100,7 +100,7 @@ describe("My Spec", function() {
 
 ### Use the focused mode
 
-When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec by doubling the first letter like in the following example:
+When writing your tests sometimes you want to **only execute** the test(s) you are working on. For this, you can prefix your spec with an "f" like in the following example:
 
 ```php
 describe("test focused mode", function() {
