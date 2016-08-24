@@ -50,6 +50,7 @@ See the whole [documentation here](http://kahlan.readthedocs.org/en/latest) (doc
 ## Syntax
 
 ```php
+<?php
 
 describe("Example", function() {
 

@@ -37,6 +37,6 @@ And then run the tests (referred to as 'specs') with:
 ./bin/kahlan --coverage=4
 ```
 
-**Note:** the `--coverage=4` option is optional.
+**Note:** the `--coverage=4` option is optional (for all options you may see [CLI Options](cli-options.md) section).
 
 PS: If your library is not compatible with composer, check the [integration section](integration.md).

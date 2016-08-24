@@ -1,11 +1,14 @@
 # Kahlan
-— The Unit/BDD PHP Test Framework for Freedom, Truth, and Justice —
+> The Unit/BDD PHP Test Framework for Freedom, Truth, and Justice
 
 Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses a `describe-it` syntax and moves testing in PHP one step forward.
 
 Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and makes Unit & BDD testing fun again!
 
-**Killer feature:** Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.
+**Killer features:**
+- Kahlan allows to stub or monkey patch your code directly (Like in Ruby or JavaScript without any required PECL-extentions).
+- Kahlan allows you to stub/mock static method's out of the box, you don't need third-party extenstions.
+- Kahlan allows you to stub/mock PHP C-extenstions out of the box (in e.g. you may Stub Phalcon frameworkd classes).
 
 ## Video
 
@@ -20,10 +23,16 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 
 [Download Kahlan on Github](https://github.com/crysalead/kahlan)
 
+## Installation though Composer
+```
+composer require --dev crysalead/kahlan
+```
+
 ## Documentation
 
 * [Why This One?](why-this-one.md)
 * [Getting Started](getting-started.md)
+* [CLI Options](cli-options.md)
 * [Overview](overview.md)
 * [Matchers](matchers.md)
   * [Classic matchers](matchers.md#classic)
