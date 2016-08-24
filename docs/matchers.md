@@ -246,7 +246,7 @@ it("passes if $actual matches the $expected closure logic", function() {
 **toReceive($expected)**
 
 ```php
-it("expects $foo to receive message() with the correct param", function() {
+it('expects $foo to receive message() with the correct param', function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message')->with('My Message');
@@ -256,30 +256,27 @@ it("expects $foo to receive message() with the correct param", function() {
 ```
 
 ```php
-it("expects $foo to receive ::message() with the correct param", function() {
+it('expects Foo to receive ::message() with the correct param', function() {
 
-    $foo = new Foo();
-    expect($foo)->toReceive('::message')->with('My Message');
-    $foo::message('My Message');
-
-});
-```
-
-```php
-it("expects $foo to receive ::message() with the correct param only once", function() {
-
-    $foo = new Foo();
-    expect($foo)->toReceive('::message')->with('My Message')->once();
-    $foo::message('My Message');
+    expect(Foo::class)->toReceive('::message')->with('My Message');
+    Foo::message('My Message');
 
 });
 ```
 
 ```php
-it("expects $foo to receive ::message() with the correct param a specified number of times", function() {
+it('expects Foo to receive ::message() with the correct param only once', function() {
 
-    $foo = new Foo();
-    expect($foo)->toReceive('::message')->with('My Message')->time(2);
+    expect(Foo::class)->toReceive('::message')->with('My Message')->once();
+    Foo::message('My Message');
+
+});
+```
+
+```php
+it('expects Foo to receive ::message() with the correct param a specified number of times", function() {
+
+    expect(Foo::class)->toReceive('::message')->with('My Message')->time(2);
     $foo::message('My Message');
     $foo::message('My Message');
 
@@ -289,7 +286,7 @@ it("expects $foo to receive ::message() with the correct param a specified numbe
 **toReceiveNext($expected)**
 
 ```php
-it("expects $foo to receive message() followed by foo()", function() {
+it('expects $foo to receive message() followed by foo()", function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message');
@@ -300,7 +297,7 @@ it("expects $foo to receive message() followed by foo()", function() {
 });
 ```
 ```php
-it("expects $foo to receive message() but not followed by foo()", function() {
+it('expects $foo to receive message() but not followed by foo()", function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message');
