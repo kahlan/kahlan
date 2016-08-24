@@ -1,15 +1,38 @@
 ## Stubs
 
+> **Warning:** To enable **Method Stubbing** add the following `use` statement in the top of your specs:
+
+```php
+use Kahlan\Plugin\Stub;
+```
+
+### Table of content
+
+* [Overview](#overview)
 * [Method Stubbing](#method-stubbing)
 * [Instance Stubbing](#instance-stubbing)
 * [Class Stubbing](#class-stubbing)
 * [Custom Stubbing](#custom-stubbing)
 
-To enable **Method Stubbing** add the following `use` statement in the top of your specs:
+### <a name="overview"></a>Overview
+A method stub or simply stub in software development is a piece of code used to stand in for some other programming functionality. A stub may simulate the behavior of existing code (such as a procedure on a remote machine) or be a temporary substitute for yet-to-be-developed code. 
+Stubs are therefore most useful in porting, distributed computing as well as general software development and testing.
 
-```php
-use Kahlan\Plugin\Stub;
-```
+**Why do we need stubs?**  
+_It's really important to have Stubs when you write tests, it helps you override default function/class behavior to test some critical parts_
+
+**What critabl parts stub can help us to test?**  
+_In e.g. your function can throw some exception, when you SQL query failder to process, stub's can help you **fake** this failure of SQL query_
+
+**What difference between stub and mock?**
+
+**Mocks:**  
+> Mock objects are used to define expectations i.e: In this scenario I expect method A() to be called with such and such parameters. Mocks record and verify such expectations.  
+
+**Stubs:**
+> Stubs, on the other hand have a different purpose: they do not record or verify expectations, but rather allow us to “replace” the behavior, state of the “fake”object in order to utilize a test scenario.
+
+In different words in Kahlan all Stubs are Mocks also. You have 2 in 1, lucky you!
 
 ### <a name="method-stubbing"></a>Method Stubbing
 
