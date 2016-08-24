@@ -23,7 +23,7 @@ it("can chain up a lots of matchers", function() {
 **toBe($expected)**
 
 ```php
-it("passes if $actual === $expected", function() {
+it("passes if \$actual === \$expected", function() {
 
     expect(true)->toBe(true);
 
@@ -33,7 +33,7 @@ it("passes if $actual === $expected", function() {
 **toEqual($expected)**
 
 ```php
-it("passes if $actual == $expected", function() {
+it("passes if \$actual == \$expected", function() {
 
     expect(true)->toEqual(1);
 
@@ -43,7 +43,7 @@ it("passes if $actual == $expected", function() {
 **toBeTruthy()**
 
 ```php
-it("passes if $actual is truthy", function() {
+it("passes if \$actual is truthy", function() {
 
     expect(1)->toBeTruthy();
 
@@ -53,7 +53,7 @@ it("passes if $actual is truthy", function() {
 **toBeFalsy() / toBeEmpty()**
 
 ```php
-it("passes if $actual is falsy", function() {
+it("passes if \$actual is falsy", function() {
 
     expect(0)->toBeFalsy();
     expect(0)->toBeEmpty();
@@ -64,7 +64,7 @@ it("passes if $actual is falsy", function() {
 **toBeNull()**
 
 ```php
-it("passes if $actual is null", function() {
+it("passes if \$actual is null", function() {
 
     expect(null)->toBeNull();
 
@@ -74,7 +74,7 @@ it("passes if $actual is null", function() {
 **toBeA($expected)**
 
 ```php
-it("passes if $actual is of a specific type", function() {
+it("passes if \$actual is of a specific type", function() {
 
     expect('Hello World!')->toBeA('string');
     expect(false)->toBeA('boolean');
@@ -96,7 +96,7 @@ it("passes if $actual is of a specific type", function() {
 **toBeAnInstanceOf($expected)**
 
 ```php
-it("passes if $actual is an instance of stdObject", function() {
+it("passes if \$actual is an instance of stdObject", function() {
 
     expect(new stdClass())->toBeAnInstanceOf('stdObject');
 
@@ -106,7 +106,7 @@ it("passes if $actual is an instance of stdObject", function() {
 **toHaveLength($expected)**
 
 ```php
-it("passes if $actual has the correct length", function() {
+it("passes if \$actual has the correct length", function() {
 
     expect('Hello World!')->toHaveLength(12);
     expect(['a', 'b', 'c'])->toHaveLength(3);
@@ -117,7 +117,7 @@ it("passes if $actual has the correct length", function() {
 **toContain($expected)**
 
 ```php
-it("passes if $actual contain $expected", function() {
+it("passes if \$actual contain \$expected", function() {
 
     expect([1, 2, 3])->toContain(3);
 
@@ -127,7 +127,7 @@ it("passes if $actual contain $expected", function() {
 **toContainKey($expected)**
 
 ```php
-it("passes if $actual contain $expected key(s)", function() {
+it("passes if \$actual contain \$expected key(s)", function() {
 
     expect([ 'a' =>1, 'b' => 2, 'c' => 3])->toContainKey(a);
     expect([ 'a' =>1, 'b' => 2, 'c' => 3])->toContainKey(a, b);
@@ -139,7 +139,7 @@ it("passes if $actual contain $expected key(s)", function() {
 **toBeCloseTo($expected, $precision)**
 
 ```php
-it("passes if abs($actual - $expected)*2 < 0.01", function() {
+it("passes if abs(\$actual - \$expected)*2 < 0.01", function() {
 
     expect(1.23)->toBeCloseTo(1.225, 2);
     expect(1.23)->not->toBeCloseTo(1.2249999, 2);
@@ -150,7 +150,7 @@ it("passes if abs($actual - $expected)*2 < 0.01", function() {
 **toBeGreaterThan($expected)**
 
 ```php
-it("passes if $actual > $expected", function() {
+it("passes if \$actual > \$expected", function() {
 
     expect(1)->toBeGreaterThan(0.999);
 
@@ -160,7 +160,7 @@ it("passes if $actual > $expected", function() {
 **toBeLessThan($expected)**
 
 ```php
-it("passes if $actual < $expected", function() {
+it("passes if \$actual < \$expected", function() {
 
     expect(0.999)->toBeLessThan(1);
 
@@ -170,7 +170,7 @@ it("passes if $actual < $expected", function() {
 **toThrow($expected)**
 
 ```php
-it("passes if $closure throws the $expected exception", function() {
+it("passes if \$closure throws the \$expected exception", function() {
 
     $closure = function() {
         // place the code that you expect to throw an exception in a closure, like so
@@ -186,7 +186,7 @@ it("passes if $closure throws the $expected exception", function() {
 **toMatch($expected)**
 
 ```php
-it("passes if $actual matches the $expected regexp", function() {
+it("passes if \$actual matches the \$expected regexp", function() {
 
     expect('Hello World!')->toMatch('/^H(.*?)!$/');
 
@@ -194,7 +194,7 @@ it("passes if $actual matches the $expected regexp", function() {
 ```
 
 ```php
-it("passes if $actual matches the $expected closure logic", function() {
+it("passes if \$actual matches the \$expected closure logic", function() {
 
     expect('Hello World!')->toMatch(function($actual) {
         return $actual === 'Hello World!';
@@ -206,7 +206,7 @@ it("passes if $actual matches the $expected closure logic", function() {
 **toEcho($expected)**
 
 ```php
-it("passes if $closure echoes the expected output", function() {
+it("passes if \$closure echoes the expected output", function() {
 
     $closure = function() {
         echo "Hello World!";
@@ -219,7 +219,7 @@ it("passes if $closure echoes the expected output", function() {
 **toMatchEcho($expected)**
 
 ```php
-it("passes if $closure echoes the expected regex output", function() {
+it("passes if \$closure echoes the expected regex output", function() {
 
     $closure = function() {
         echo "Hello World!";
@@ -230,7 +230,7 @@ it("passes if $closure echoes the expected regex output", function() {
 ```
 
 ```php
-it("passes if $actual matches the $expected closure logic", function() {
+it("passes if \$actual matches the \$expected closure logic", function() {
 
     expect('Hello World!')->toMatchEcho(function($actual) {
         return $actual === 'Hello World!';
@@ -246,7 +246,7 @@ it("passes if $actual matches the $expected closure logic", function() {
 **toReceive($expected)**
 
 ```php
-it('expects $foo to receive message() with the correct param', function() {
+it("expects \$foo to receive message() with the correct param", function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message')->with('My Message');
@@ -256,7 +256,7 @@ it('expects $foo to receive message() with the correct param', function() {
 ```
 
 ```php
-it('expects Foo to receive ::message() with the correct param', function() {
+it("expects Foo to receive ::message() with the correct param", function() {
 
     expect(Foo::class)->toReceive('::message')->with('My Message');
     Foo::message('My Message');
@@ -265,7 +265,7 @@ it('expects Foo to receive ::message() with the correct param', function() {
 ```
 
 ```php
-it('expects Foo to receive ::message() with the correct param only once', function() {
+it("expects Foo to receive ::message() with the correct param only once", function() {
 
     expect(Foo::class)->toReceive('::message')->with('My Message')->once();
     Foo::message('My Message');
@@ -274,7 +274,7 @@ it('expects Foo to receive ::message() with the correct param only once', functi
 ```
 
 ```php
-it('expects Foo to receive ::message() with the correct param a specified number of times", function() {
+it("expects Foo to receive ::message() with the correct param a specified number of times", function() {
 
     expect(Foo::class)->toReceive('::message')->with('My Message')->time(2);
     $foo::message('My Message');
@@ -286,7 +286,7 @@ it('expects Foo to receive ::message() with the correct param a specified number
 **toReceiveNext($expected)**
 
 ```php
-it('expects $foo to receive message() followed by foo()", function() {
+it("expects \$foo to receive message() followed by foo()", function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message');
@@ -297,7 +297,7 @@ it('expects $foo to receive message() followed by foo()", function() {
 });
 ```
 ```php
-it('expects $foo to receive message() but not followed by foo()", function() {
+it("expects \$foo to receive message() but not followed by foo()", function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message');
