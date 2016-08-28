@@ -250,7 +250,7 @@ class Stub
             'implements' => [],
             'uses'       => [],
             'methods'    => [],
-            'layer'      => false,
+            'layer'      => null,
             'openTag'    => true,
             'closeTag'   => true
         ];
@@ -423,7 +423,7 @@ EOT;
      * @param  boolean $layer If `true`, all public methods are "overriden".
      * @return string         The generated methods.
      */
-    protected static function _generateClassMethods($class, $layer = false)
+    protected static function _generateClassMethods($class, $layer = null)
     {
         $result = [];
         if (!class_exists($class)) {
@@ -431,10 +431,16 @@ EOT;
         }
         $result = static::_generateAbstractMethods($class);
 
-        if (!$layer) {
+        if ($layer === false) {
             return $result;
         }
+
         $reflection = Inspector::inspect($class);
+
+        if (!$layer && !$reflection->isInternal()) {
+            return $result;
+        }
+
         $finals = $reflection->getMethods(ReflectionMethod::IS_FINAL);
         $methods = array_diff($reflection->getMethods(ReflectionMethod::IS_PUBLIC), $finals);
         foreach ($methods as $method) {
@@ -493,8 +499,8 @@ EOT;
     /**
      * Creates a method definition from a `ReflectionMethod` instance.
      *
-     * @param  objedct $method A instance of `ReflectionMethod`.
-     * @return string          The generated method.
+     * @param  object $method A instance of `ReflectionMethod`.
+     * @return string         The generated method.
      */
     protected static function _generateMethod($method, $callParent = false)
     {
@@ -502,22 +508,40 @@ EOT;
         $result = preg_replace('/abstract\s*/', '', $result);
         $name = $method->getName();
         $parameters = static::_generateSignature($method);
-        if (PHP_MAJOR_VERSION >= 7) {
-            $type = $method->getReturnType();
-            if ($type && !$type->isBuiltin()) {
-                $type = '\\' . $type;
-            }
-
-            $type = $type ? ": {$type} " : '';
-        } else {
-            $type = '';
-        }
+        $type = static::_generateReturnType($method);
         $body = "{$result} function {$name}({$parameters}) {$type}{";
         if ($callParent) {
             $parameters = static::_generateParameters($method);
-            $body .= "return parent::{$name}({$parameters});";
+            $return = 'return ';
+            if ($method->isConstructor() || $method->isDestructor()) {
+                $return = '';
+            }
+            $body .= "{$return}parent::{$name}({$parameters});";
         }
         return $body . "}";
+    }
+
+    /**
+     * Extract the return type of a method.
+     *
+     * @param  objedct $method A instance of `ReflectionMethod`.
+     * @return string          The return type.
+     */
+    protected static function _generateReturnType($method)
+    {
+        if (PHP_MAJOR_VERSION < 7) {
+            return '';
+        }
+        $type = $method->getReturnType();
+        if ($type) {
+            if (!$type->isBuiltin()) {
+                $type = '\\' . $type;
+            }
+            if (defined('HHVM_VERSION')) {
+                $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type);
+            }
+        }
+        return $type ? ": {$type} " : '';
     }
 
     /**
@@ -533,7 +557,6 @@ EOT;
 
         foreach ($method->getParameters() as $num => $parameter) {
             $typehint = Inspector::typehint($parameter);
-            $typehint = $typehint ? $typehint . ' ' : $typehint;
             $name = $parameter->getName();
             $name = ($name && $name !== '...') ? $name : 'param' . $num;
             $reference = $parameter->isPassedByReference() ? '&' : '';
@@ -549,7 +572,7 @@ EOT;
                     $default = ' = NULL';
                 }
             }
-
+            $typehint = $typehint ? $typehint . ' ' : $typehint;
             $params[] = "{$typehint}{$reference}\${$name}{$default}";
         }
         return join(', ', $params);
