@@ -6,9 +6,7 @@ Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses 
 Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and makes Unit & BDD testing fun again!
 
 **Killer features:**
-- Kahlan allows to stub or monkey patch your code directly (Like in Ruby or JavaScript without any required PECL-extentions).
-- Kahlan allows you to stub/mock static method's out of the box, you don't need third-party extenstions.
-- Kahlan allows you to stub/mock PHP C-extenstions out of the box (in e.g. you may Stub Phalcon frameworkd classes).
+Kahlan is able to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions. You can stub classic or static methods of userland PHP code as well as internal PHP C-extenstions out of the box.
 
 ## Video
 
