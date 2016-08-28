@@ -1043,6 +1043,16 @@ EOD;
 
         });
 
+        it("overrides by default all parent class method of internal classes if the layer option is not defined", function() {
+
+            $stub = Stub::create(['extends' => 'DateTime']);
+
+            Stub::on($stub)->method('getTimestamp')->andReturn(12345678);
+
+            expect($stub->getTimestamp())->toBe(12345678);
+
+        });
+
         it("adds ` = NULL` to optional parameter in PHP core method", function() {
 
             skipIf(defined('HHVM_VERSION'));
