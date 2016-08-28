@@ -68,12 +68,14 @@ class Inspector
         $typehint = '';
         if ($parameter->getClass()) {
             $typehint = '\\' . $parameter->getClass()->getName();
-        } elseif (preg_match('/.*?\[ \<[^\>]+\> (\w+)(.*?)\$/', (string) $parameter, $match)) {
+        } elseif (preg_match('/.*?\[ \<[^\>]+\> (?:HH\\\)?(\w+)(.*?)\$/', (string) $parameter, $match)) {
             $typehint = $match[1];
             if ($typehint === 'integer') {
                 $typehint = 'int';
             } elseif ($typehint === 'boolean') {
                 $typehint = 'bool';
+            } elseif ($typehint === 'mixed') {
+                $typehint = '';
             }
         }
         return $typehint;
