@@ -41,7 +41,7 @@ Some projects like [AspectMock](https://github.com/Codeception/AspectMock) attem
 * Handy stubbing system ([mockery](https://github.com/padraic/mockery) or [prophecy](https://github.com/phpspec/prophecy) are no longer needed)
 * Set stubs on your class methods directly (i.e allows dynamic mocking)
 * Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
-* Ability to set stub on core classes through a Layer patcher (useful to set subs on Phalcon core classes for example and PHP C-extension modules)
+* Ability to set stub on core classes through a Layer patcher (useful to set subs for PHP C-extension modules like Phalcon for example)
 * Check called methods on your class/instances
 * Built-in Reporters/Exporters (Terminal, TAP, Coveralls, Code Climate, Scrutinizer, Clover)
 * Extensible, customizable workflow
