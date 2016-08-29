@@ -100,7 +100,7 @@ class ToThrow
      */
     public static function _sameMessage($actual, $expected)
     {
-        if (preg_match('~^(?P<char>\~|/|@|#).*?(?P=char)$~', $expected)) {
+        if (preg_match('~^(?P<char>\~|/|@|#).*?(?P=char)$~', (string) $expected)) {
             $same = preg_match($expected, $actual);
         } else {
             $same = $actual === $expected;
