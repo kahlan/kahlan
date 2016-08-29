@@ -926,7 +926,7 @@ EOD;
 
         it("generates interface methods with variadic variable", function() {
 
-            skipIf(PHP_MAJOR_VERSION < 7);
+            skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
 
             $result = Stub::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Stub\Stub',
