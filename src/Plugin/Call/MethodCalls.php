@@ -1,10 +1,10 @@
 <?php
-namespace Kahlan\Plugin;
+namespace Kahlan\Plugin\Call;
 
 use Kahlan\Suite;
-use Kahlan\Plugin\Call\Message;
+use Kahlan\Plugin\Call\Message\MethodMessage;
 
-class Call
+class MethodCalls
 {
     /**
      * Logged calls.
@@ -60,7 +60,7 @@ class Call
             $static = true;
             $name = substr($name, 2);
         }
-        return $this->_message = new Message([
+        return $this->_message = new MethodMessage([
             'reference' => $this->_reference,
             'static' => $static,
             'name' => $name
@@ -107,11 +107,26 @@ class Call
     }
 
     /**
-     * Returns Logged calls.
+     * Get all logs or all logs related to an instance or a fully-namespaced class name.
+     *
+     * @param  object|string $reference An instance or a fully-namespaced class name.
+     * @param  interger      $index     Start index.
+     * @return array                    The founded log calls.
      */
-    public static function logs()
+    public static function logs($reference = null, $index = 0)
     {
-        return static::$_logs;
+        if (!func_num_args()) {
+            return static::$_logs;
+        }
+        $result = [];
+        $count = count(static::$_logs);
+        for ($i = $index; $i < $count; $i++) {
+            $logs = static::$_logs[$i];
+            if ($log = static::_matchReference($reference, $logs)) {
+                $result[] = $log;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -132,15 +147,17 @@ class Call
      * Finds a logged call.
      *
      * @param  object|string $reference An instance or a fully-namespaced class name.
-     * @param  string        $method    The method name.
+     * @param  object        $message   The message method name.
      * @param  interger      $index     Start index.
      * @return array|false              Return founded log call.
      */
-    public static function find($reference, $call = null, $index = 0, $times = 0)
+    public static function find($reference, $message, $index = 0, $times = 0)
     {
-        if ($call === null) {
-            return static::_findAll($reference, $index);
-        }
+        $matches = 0;
+        $success = false;
+        $called = [];
+        $params = [];
+
         $count = count(static::$_logs);
 
         for ($i = $index; $i < $count; $i++) {
@@ -148,43 +165,36 @@ class Call
             if (!$log = static::_matchReference($reference, $logs)) {
                 continue;
             }
+            $called[] = $log;
 
-            if (!$call->match($log)) {
+            if (!$message->match($log)) {
                 continue;
             }
+            $params[] = $log['params'];
+
+            if (!$message->matchParams($log['params'])) {
+                continue;
+            }
+
             $times -= 1;
             if ($times < 0) {
                 static::$_index = $i + 1;
-                return $log;
+                $success = true;
+                break;
             } elseif ($times === 0) {
-                if (!!static::find($reference, $call, $i + 1)) {
-                    return false;
+                $next = static::find($reference, $message, $i + 1);
+                if ($next['success']) {
+                    $matches += $next['matches'];
+                    $success = false;
+                } else {
+                    $success = true;
+                    static::$_index = $i + 1;
                 }
-                static::$_index = $i + 1;
-                return $log;
+                break;
             }
         }
-        return false;
-    }
-
-    /**
-     * Helper for the `find()` method.
-     *
-     * @param  object|string $reference An instance or a fully-namespaced class name.
-     * @param  interger      $index     Start index.
-     * @return array                    The founded log calls.
-     */
-    protected static function _findAll($reference, $index)
-    {
-        $result = [];
-        $count = count(static::$_logs);
-        for ($i = $index; $i < $count; $i++) {
-            $logs = static::$_logs[$i];
-            if ($log = static::_matchReference($reference, $logs)) {
-                $result[] = $log;
-            }
-        }
-        return $result;
+        $index = static::$_index;
+        return compact('log', 'success', 'matches', 'params', 'called', 'index');
     }
 
     /**

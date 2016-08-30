@@ -4,7 +4,7 @@ namespace Kahlan\Plugin\Stub;
 use Closure;
 use Exception;
 
-class Method extends \Kahlan\Plugin\Call\Message
+class Method extends \Kahlan\Plugin\Call\Message\MethodMessage
 {
     /**
      * Index value in the `Method::$_returns` array.

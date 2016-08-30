@@ -126,9 +126,9 @@ class Kahlan {
         $args->argument('persistent', ['type'  => 'boolean', 'default' => true]);
         $args->argument('autoclear',  ['array' => true, 'default' => [
             'Kahlan\Plugin\Monkey',
-            'Kahlan\Plugin\Call',
             'Kahlan\Plugin\Stub',
-            'Kahlan\Plugin\Quit'
+            'Kahlan\Plugin\Quit',
+            'Kahlan\Plugin\Call\MethodCalls'
         ]]);
     }
 
