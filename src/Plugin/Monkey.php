@@ -1,6 +1,9 @@
 <?php
 namespace Kahlan\Plugin;
 
+use Kahlan\Suite;
+use Kahlan\Plugin\Call\FunctionCalls;
+
 class Monkey
 {
     /**
@@ -35,7 +38,18 @@ class Monkey
         if(!$isFunc || function_exists("{$namespace}\\{$ref}")) {
             $map = "{$namespace}\\{$ref}";
         }
-        return isset(static::$_registered[$map]) ? static::$_registered[$map] : $map;
+        $closure = isset(static::$_registered[$map]) ? static::$_registered[$map] : $map;
+        if (!$isFunc) {
+            return $closure;
+        }
+        if (!Suite::registered($map)) {
+            return $closure;
+        }
+        return function() use ($map, $closure) {
+            $params = func_get_args();
+            FunctionCalls::log($map, $params);
+            return call_user_func_array($closure, $params);
+        };
     }
 
     /**
