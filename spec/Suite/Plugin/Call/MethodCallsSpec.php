@@ -1,23 +1,23 @@
 <?php
-namespace Kahlan\Spec\Suite\Plugin;
+namespace Kahlan\Spec\Suite\Plugin\Call;
 
-use Kahlan\Plugin\Call;
+use Kahlan\Plugin\Call\MethodCalls;
 
-describe("Call", function() {
+describe("MethodCalls", function() {
 
     beforeEach(function() {
-        Call::reset();
+        MethodCalls::reset();
     });
 
     describe("::log()", function() {
 
         it("logs a dynamic call", function() {
 
-            Call::log('my\name\space\Class', [
+            MethodCalls::log('my\name\space\Class', [
                 'name' => 'methodName'
             ]);
 
-            $logs = Call::logs();
+            $logs = MethodCalls::logs();
 
             expect($logs[0][0])->toEqual([
                 'class'    => 'my\name\space\Class',
@@ -30,11 +30,11 @@ describe("Call", function() {
 
         it("logs a static call", function() {
 
-            Call::log('my\name\space\Class', [
+            MethodCalls::log('my\name\space\Class', [
                 'name' => '::methodName'
             ]);
 
-            $logs = Call::logs();
+            $logs = MethodCalls::logs();
 
             expect($logs[0][0])->toEqual([
                 'class'    => 'my\name\space\Class',
@@ -51,10 +51,10 @@ describe("Call", function() {
 
         it("gets/sets the last find index", function() {
 
-            $index = Call::lastFindIndex(100);
+            $index = MethodCalls::lastFindIndex(100);
             expect($index)->toBe(100);
 
-            $index = Call::lastFindIndex();
+            $index = MethodCalls::lastFindIndex();
             expect($index)->toBe(100);
 
         });

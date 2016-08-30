@@ -125,7 +125,7 @@ describe("Specification", function() {
                 expect($pass->not())->toBe(false);
                 expect($pass->type())->toBe('pass');
                 expect($pass->params())->toBe([
-                    'actual with'   => [],
+                    'actual with passed'   => [[]],
                     'expected with' => []
                 ]);
                 expect($pass->messages())->toBe(['it runs a spec']);
