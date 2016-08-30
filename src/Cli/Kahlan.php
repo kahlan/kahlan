@@ -128,7 +128,8 @@ class Kahlan {
             'Kahlan\Plugin\Monkey',
             'Kahlan\Plugin\Stub',
             'Kahlan\Plugin\Quit',
-            'Kahlan\Plugin\Call\MethodCalls'
+            'Kahlan\Plugin\Call\MethodCalls',
+            'Kahlan\Plugin\Call\FunctionCalls'
         ]]);
     }
 
@@ -329,6 +330,8 @@ EOD;
         Matcher::register('toMatch',          'Kahlan\Matcher\ToMatch');
         Matcher::register('toReceive',        'Kahlan\Matcher\ToReceive');
         Matcher::register('toReceiveNext',    'Kahlan\Matcher\ToReceiveNext');
+        Matcher::register('toBeCalled',       'Kahlan\Matcher\toBeCalled');
+        Matcher::register('toBeCalledNext',    'Kahlan\Matcher\toBeCalledNext');
         Matcher::register('toThrow',          'Kahlan\Matcher\ToThrow');
         Matcher::register('toMatchEcho',      'Kahlan\Matcher\ToMatchEcho');
     }
