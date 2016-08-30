@@ -2,18 +2,10 @@
 namespace Kahlan\Matcher;
 
 use Kahlan\Analysis\Debugger;
+use Kahlan\Plugin\Call\MethodCalls;
 
 class ToReceive
 {
-    /**
-     * Class dependencies.
-     *
-     * @var array
-     */
-    protected $_classes = [
-        'call' => 'Kahlan\Plugin\Call'
-    ];
-
     /**
      * A fully-namespaced class name or an object instance.
      *
@@ -40,7 +32,7 @@ class ToReceive
      *
      * @var object
      */
-    protected $_call = null;
+    protected $_calls = null;
 
     /**
      * The message instance.
@@ -48,6 +40,13 @@ class ToReceive
      * @var object
      */
     protected $_message = null;
+
+    /**
+     * The report.
+     *
+     * @var array
+     */
+    protected $_report = [];
 
     /**
      * The description report.
@@ -80,12 +79,11 @@ class ToReceive
         if (preg_match('/^::.*/', $expected)) {
             $actual = is_object($actual) ? get_class($actual) : $actual;
         }
-        $call = $this->_classes['call'];
 
         $this->_actual    = $actual;
         $this->_expected  = $expected;
-        $this->_call      = new $call($actual);
-        $this->_message   = $this->_call->method($expected);
+        $this->_calls      = new MethodCalls($actual);
+        $this->_message   = $this->_calls->method($expected);
         $this->_backtrace = Debugger::backtrace();
     }
 
@@ -108,10 +106,10 @@ class ToReceive
      */
     public function resolve()
     {
-        $call = $this->_classes['call'];
-        $success = !!$call::find($this->_actual, $this->_message, 0, $this->_message->times());
+        $report = MethodCalls::find($this->_actual, $this->_message, 0, $this->_message->times());
+        $this->_report = $report;
         $this->_buildDescription();
-        return $success;
+        return $report['success'];
     }
 
     /**
@@ -141,23 +139,22 @@ class ToReceive
      */
     public function _buildDescription($startIndex = 0)
     {
-        $call = $this->_classes['call'];
-
         $with = $this->_message->params();
         $this->_message->with();
 
         $times = $this->_message->times();
+        $report = MethodCalls::find($this->_actual, $this->_message, $startIndex, $times);
 
-        if ($log = $call::find($this->_actual, $this->_message, $startIndex, $times)) {
+        if ($report['success']) {
             $this->_description['description'] = 'receive correct parameters.';
-            $this->_description['params']['actual with'] = $log['params'];
+            $this->_description['params']['actual with passed'] = $report['params'];
             $this->_description['params']['expected with'] = $with;
             return;
         }
 
         $this->_description['description'] = 'receive the correct message.';
         $called = [];
-        foreach($call::find($this->_actual, null, $startIndex) as $log) {
+        foreach(MethodCalls::logs($this->_actual, $startIndex) as $log) {
             $called[] = $log['static'] ? '::' . $log['name'] : $log['name'];
         }
         $this->_description['params']['actual received'] = $called;

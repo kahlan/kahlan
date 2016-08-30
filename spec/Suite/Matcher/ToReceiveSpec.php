@@ -301,7 +301,7 @@ describe("toReceive", function() {
             $matcher = new ToReceive($stub, 'method');
             $message = $matcher->message();
 
-            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message');
+            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message\MethodMessage');
 
         });
 
@@ -376,7 +376,7 @@ describe("toReceive", function() {
 
             expect($actual['description'])->toBe('receive correct parameters.');
             expect($actual['params'])->toBe([
-                'actual with' => ['Good Bye!'],
+                'actual with passed' => [['Good Bye!']],
                 'expected with' => ['Hello World!']
             ]);
 

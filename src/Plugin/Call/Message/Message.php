@@ -1,5 +1,5 @@
 <?php
-namespace Kahlan\Plugin\Call;
+namespace Kahlan\Plugin\Call\Message;
 
 class Message
 {
@@ -27,36 +27,11 @@ class Message
     protected $_params = [];
 
     /**
-     * Static call.
-     *
-     * @var array
-     */
-    protected $_static = false;
-
-    /**
      * Number of occurences to match.
      *
      * @var integer
      */
     protected $_times = 0;
-
-    /**
-     * The Constructor.
-     *
-     * @param array $config Possible options are:
-     *                       - `'name'`   _string_ : The method name.
-     *                       - `'params'` _array_  : The method params.
-     *                       - `'static'` _boolean_: `true` if the method is static, `false` otherwise.
-     */
-    public function __construct($config = [])
-    {
-        $defaults = ['name' => null, 'params' => [], 'static' => false];
-        $config += $defaults;
-
-        $this->_name   = $config['name'];
-        $this->_params = $config['params'];
-        $this->_static = $config['static'];
-    }
 
     /**
      * Sets params requirement.
@@ -93,28 +68,6 @@ class Message
         }
         $this->_times = $times;
         return $this;
-    }
-
-    /**
-     * Checks if this message is compatible with passed call array.
-     *
-     * @param  array   $call A call array.
-     * @return boolean
-     */
-    public function match($call)
-    {
-        if ($call['static'] !== $this->_static) {
-            return false;
-        }
-
-        if ($call['name'] !== $this->_name) {
-            return false;
-        }
-
-        if (!$this->matchParams($call['params'])) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -160,15 +113,5 @@ class Message
     public function params()
     {
         return $this->_params;
-    }
-
-    /**
-     * Checks if the method is a static method.
-     *
-     * @return boolean
-     */
-    public function isStatic()
-    {
-        return $this->_static;
     }
 }
