@@ -259,12 +259,23 @@ EOD;
     protected function _reportDiff($report)
     {
         $params = $report->params();
+
+        $this->write("It expect actual ");
+
+        if ($report->not()) {
+            $this->write('NOT ', 'cyan');
+            $not = 'not ';
+        } else {
+            $not = '';
+        }
+        $this->write("to {$report->description()}\n\n");
+
         foreach ($params as $key => $value) {
             if (preg_match('~actual~', $key)) {
                 $this->write("{$key}:\n", 'yellow');
                 $this->prefix($this->format(' ', 'n;;91') . ' ');
             } elseif (preg_match('~expected~', $key)) {
-                $this->write("{$key}:\n", 'yellow');
+                $this->write("{$not}{$key}:\n", 'yellow');
                 $this->prefix($this->format(' ', 'n;;92') . ' ');
             } else {
                 $this->write("{$key}:\n", 'yellow');

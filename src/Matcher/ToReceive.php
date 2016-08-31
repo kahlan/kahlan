@@ -140,27 +140,40 @@ class ToReceive
     public function _buildDescription($startIndex = 0)
     {
         $with = $this->_message->params();
-        $this->_message->with();
-
         $times = $this->_message->times();
-        $report = MethodCalls::find($this->_actual, $this->_message, $startIndex, $times);
 
-        if ($report['success']) {
-            $this->_description['description'] = 'receive correct parameters.';
-            $this->_description['params']['actual with passed'] = $report['params'];
-            $this->_description['params']['expected with'] = $with;
-            return;
+        $report = $this->_report;
+
+        $expectedTimes = $times ? ' the expected times' : '';
+        $expectedParameters = $with ? ' with expected parameters' : '';
+
+        $this->_description['description'] = "receive the expected method{$expectedParameters}{$expectedTimes}.";
+
+        $calledTimes = count($report['params']);
+
+        if (!$calledTimes || ($calledTimes !== $times && $times)) {
+            $logged = [];
+            foreach(MethodCalls::logs($this->_actual, $startIndex) as $log) {
+                $logged[] = $log['static'] ? '::' . $log['name'] : $log['name'];
+            }
+
+            $this->_description['params']['actual received calls'] = $logged;
+        } elseif ($calledTimes) {
+            $this->_description['params']['actual received'] = $this->_expected;
+            $this->_description['params']['actual received times'] = $calledTimes;
+            if ($with !== null) {
+               $this->_description['params']['actual received parameters list'] = $report['params'];
+            }
         }
 
-        $this->_description['description'] = 'receive the correct message.';
-        $called = [];
-        foreach(MethodCalls::logs($this->_actual, $startIndex) as $log) {
-            $called[] = $log['static'] ? '::' . $log['name'] : $log['name'];
+        $this->_description['params']['expected to receive'] = $this->_expected;
+
+        if ($with !== null) {
+            $this->_description['params']['expected parameters'] = $with;
         }
-        $this->_description['params']['actual received'] = $called;
-        $this->_description['params']['expected'] = $this->_expected;
+
         if ($times) {
-            $this->_description['params']['called times'] = $times;
+            $this->_description['params']['expected received times'] = $times;
         }
     }
 
