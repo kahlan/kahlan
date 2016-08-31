@@ -2,10 +2,8 @@
 namespace Kahlan\Spec\Suite\Matcher;
 
 use Kahlan\Jit\Interceptor;
-use Kahlan\Arg;
-use Kahlan\Plugin\Stub;
 use Kahlan\Jit\Patcher\Monkey;
-use Kahlan\Matcher\ToReceive;
+use Kahlan\Matcher\ToBeCalled;
 
 use Kahlan\Spec\Fixture\Plugin\Monkey\Foo;
 
@@ -90,6 +88,103 @@ describe("toBeCalled", function() {
             expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->with(5, 10)->times(2);
             $foo->rand(5, 10);
             $foo->rand(10, 10);
+
+        });
+
+    });
+
+    describe("->description()", function() {
+
+        it("returns the description message", function() {
+
+            $foo = new Foo();
+            $matcher = new ToBeCalled('time');
+            $message = $matcher->message();
+
+            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message\FunctionMessage');
+
+        });
+
+        it("returns the description message for not received call", function() {
+
+            $foo = new Foo();
+            $matcher = new ToBeCalled('time');
+
+            $matcher->resolve([
+                'instance' => $matcher,
+                'params'   => [
+                    'actual' => 'time',
+                    'logs'   => []
+                ]
+            ]);
+
+            $actual = $matcher->description();
+
+            expect($actual['description'])->toBe('be called.');
+            expect($actual['params'])->toBe([
+                'actual' => 'time()',
+                'actual called times' => 0,
+                'expected to be called' => 'time()'
+            ]);
+
+        });
+
+        it("returns the description message for not received call the specified number of times", function() {
+
+            $foo = new Foo();
+            $matcher = new ToBeCalled('time');
+            $matcher->times(2);
+
+            $matcher->resolve([
+                'instance' => $matcher,
+                'params'   => [
+                    'actual' => 'time',
+                    'logs'   => []
+                ]
+            ]);
+
+            $actual = $matcher->description();
+
+            expect($actual['description'])->toBe('be called the expected times.');
+            expect($actual['params'])->toBe([
+                'actual' => 'time()',
+                'actual called times' => 0,
+                'expected to be called' => 'time()',
+                'expected called times' => 2
+            ]);
+
+        });
+
+        it("returns the description message for wrong passed arguments", function() {
+
+            $foo = new Foo();
+            $matcher = new ToBeCalled('time');
+            $matcher->with('Hello World!');
+
+            $foo->time();
+
+            $matcher->resolve([
+                'instance' => $matcher,
+                'params'   => [
+                    'actual' => 'time',
+                    'logs'   => []
+                ]
+            ]);
+
+            $actual = $matcher->description();
+
+            expect($actual['description'])->toBe('be called with expected parameters.');
+            expect($actual['params'])->toBe([
+                'actual' => 'time()',
+                'actual called times' => 1,
+                'actual called parameters list' => [
+                   []
+                ],
+                'expected to be called' => 'time()',
+                'expected parameters' => [
+                    'Hello World!'
+                ]
+            ]);
 
         });
 

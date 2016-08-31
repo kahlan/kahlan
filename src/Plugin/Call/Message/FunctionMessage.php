@@ -12,7 +12,7 @@ class FunctionMessage extends Message
      */
     public function __construct($config = [])
     {
-        $defaults = ['name' => null, 'params' => []];
+        $defaults = ['name' => null, 'params' => null];
         $config += $defaults;
 
         $this->_name   = $config['name'];

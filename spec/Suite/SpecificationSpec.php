@@ -125,9 +125,11 @@ describe("Specification", function() {
                 expect($pass->not())->toBe(false);
                 expect($pass->type())->toBe('pass');
                 expect($pass->params())->toBe([
-                    'actual with passed'   => [[]],
-                    'expected with' => []
+                    'actual received'       => 'methodName',
+                    "actual received times" => 1,
+                    'expected to receive'   => 'methodName'
                 ]);
+                expect($pass->description())->toBe('receive the expected method.');
                 expect($pass->messages())->toBe(['it runs a spec']);
 
             });
@@ -258,10 +260,10 @@ describe("Specification", function() {
                 expect($failure->not())->toBe(false);
                 expect($failure->type())->toBe('fail');
                 expect($failure->params())->toBe([
-                    'actual received' =>['__construct'],
-                    'expected' => 'methodName'
+                    'actual received calls' => ['__construct'],
+                    'expected to receive'   => 'methodName'
                 ]);
-                expect($failure->description())->toBe('receive the correct message.');
+                expect($failure->description())->toBe('receive the expected method.');
                 expect($failure->messages())->toBe(['it runs a spec']);
                 expect($failure->backtrace())->toBeAn('array');
 

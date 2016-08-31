@@ -153,9 +153,7 @@ class MethodCalls
      */
     public static function find($reference, $message, $index = 0, $times = 0)
     {
-        $matches = 0;
         $success = false;
-        $called = [];
         $params = [];
 
         $count = count(static::$_logs);
@@ -165,7 +163,6 @@ class MethodCalls
             if (!$log = static::_matchReference($reference, $logs)) {
                 continue;
             }
-            $called[] = $log;
 
             if (!$message->match($log)) {
                 continue;
@@ -184,7 +181,7 @@ class MethodCalls
             } elseif ($times === 0) {
                 $next = static::find($reference, $message, $i + 1);
                 if ($next['success']) {
-                    $matches += $next['matches'];
+                    $params = array_merge($params, $next['params']);
                     $success = false;
                 } else {
                     $success = true;
@@ -194,7 +191,7 @@ class MethodCalls
             }
         }
         $index = static::$_index;
-        return compact('log', 'success', 'matches', 'params', 'called', 'index');
+        return compact('log', 'success', 'params', 'index');
     }
 
     /**
