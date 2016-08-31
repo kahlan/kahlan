@@ -15,6 +15,7 @@ class ToBeCalledNext extends ToBeCalled
         $startIndex = FunctionCalls::lastFindIndex();
         $report = FunctionCalls::find($this->_message, $startIndex, $this->_message->times());
         $this->_report = $report;
+        $this->_buildDescription($startIndex);
         return $report['success'];
     }
 

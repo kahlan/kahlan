@@ -24,7 +24,7 @@ class Message
      *
      * @var array
      */
-    protected $_params = [];
+    protected $_params = null;
 
     /**
      * Number of occurences to match.

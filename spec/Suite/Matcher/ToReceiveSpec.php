@@ -321,10 +321,10 @@ describe("toReceive", function() {
 
             $actual = $matcher->description();
 
-            expect($actual['description'])->toBe('receive the correct message.');
+            expect($actual['description'])->toBe('receive the expected method.');
             expect($actual['params'])->toBe([
-                'actual received' => ['__construct'],
-                'expected'        => 'method'
+                'actual received calls' => ['__construct'],
+                'expected to receive'   => 'method'
             ]);
 
         });
@@ -346,11 +346,11 @@ describe("toReceive", function() {
 
             $actual = $matcher->description();
 
-            expect($actual['description'])->toBe('receive the correct message.');
+            expect($actual['description'])->toBe('receive the expected method the expected times.');
             expect($actual['params'])->toBe([
-                'actual received' => ['__construct'],
-                'expected'        => 'method',
-                'called times'    => 2
+                'actual received calls'   => ['__construct'],
+                'expected to receive'     => 'method',
+                'expected received times' => 2
             ]);
 
         });
@@ -374,10 +374,13 @@ describe("toReceive", function() {
 
             $actual = $matcher->description();
 
-            expect($actual['description'])->toBe('receive correct parameters.');
+            expect($actual['description'])->toBe('receive the expected method with expected parameters.');
             expect($actual['params'])->toBe([
-                'actual with passed' => [['Good Bye!']],
-                'expected with' => ['Hello World!']
+                'actual received'                 => 'method',
+                'actual received times'           => 1,
+                'actual received parameters list' => [['Good Bye!']],
+                'expected to receive'             => 'method',
+                'expected parameters'             => ['Hello World!']
             ]);
 
         });

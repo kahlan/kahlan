@@ -101,7 +101,6 @@ class FunctionCalls
      */
     public static function find($message, $index = 0, $times = 0)
     {
-        $matches = 0;
         $success = false;
         $params = [];
 
@@ -119,8 +118,6 @@ class FunctionCalls
                 continue;
             }
 
-            $matches++;
-
             $times -= 1;
             if ($times < 0) {
                 static::$_index = $i + 1;
@@ -129,7 +126,7 @@ class FunctionCalls
             } elseif ($times === 0) {
                 $next = static::find($message, $i + 1);
                 if ($next['success']) {
-                    $matches += $next['matches'];
+                    $params = array_merge($params, $next['params']);
                     $success = false;
                 } else {
                     $success = true;
@@ -139,7 +136,7 @@ class FunctionCalls
             }
         }
         $index = static::$_index;
-        return compact('log', 'success', 'matches', 'params', 'index');
+        return compact('log', 'success', 'params', 'index');
     }
 
     /**

@@ -20,7 +20,7 @@ class MethodMessage extends Message
      */
     public function __construct($config = [])
     {
-        $defaults = ['name' => null, 'params' => [], 'static' => false];
+        $defaults = ['name' => null, 'params' => null, 'static' => false];
         $config += $defaults;
 
         $this->_name   = $config['name'];

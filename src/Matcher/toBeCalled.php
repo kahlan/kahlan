@@ -104,6 +104,7 @@ class ToBeCalled
     {
         $report = FunctionCalls::find($this->_message, 0, $this->_message->times());
         $this->_report = $report;
+        $this->_buildDescription();
         return $report['success'];
     }
 
@@ -128,32 +129,47 @@ class ToBeCalled
     }
 
     /**
-     * Returns the description report.
+     * Build the description of the runned `::match()` call.
+     *
+     * @param mixed $startIndex The startIndex in calls log.
      */
-    public function description($not)
+    public function _buildDescription($startIndex = 0)
     {
-        $report = $this->_report;
-        $times = $this->_message->times();
         $with = $this->_message->params();
+        $times = $this->_message->times();
 
-        $this->_description['description'] = 'called with correct params.';
+        $report = $this->_report;
 
-        $this->_description['params']["actual number of times that `{$this->_actual}()` has been called with correct params"] = $report['matches'];
+        $expectedTimes = $times ? ' the expected times' : '';
+        $expectedParameters = $with ? ' with expected parameters' : '';
 
-        if ($with && count($report['params'])) {
-            $this->_description['params']['received params array'] = $report['params'];
+        $this->_description['description'] = "be called{$expectedParameters}{$expectedTimes}.";
+
+        $calledTimes = count($report['params']);
+
+        $this->_description['params']['actual'] = $this->_actual . '()';
+        $this->_description['params']['actual called times'] = $calledTimes;
+
+        if ($calledTimes && $with !== null) {
+            $this->_description['params']['actual called parameters list'] = $report['params'];
+        }
+
+        $this->_description['params']['expected to be called'] = $this->_actual . '()';
+
+        if ($with !== null) {
+            $this->_description['params']['expected parameters'] = $with;
         }
 
         if ($times) {
             $this->_description['params']['expected called times'] = $times;
-        } elseif ($not) {
-            $this->_description['params']['expected called times'] = $report['matches'];
         }
+    }
 
-        if ($with) {
-            $this->_description['params']['expected with'] = $with;
-        }
-
+    /**
+     * Returns the description report.
+     */
+    public function description()
+    {
         return $this->_description;
     }
 
