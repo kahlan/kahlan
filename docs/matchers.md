@@ -296,6 +296,7 @@ it("expects \$foo to receive message() followed by foo()", function() {
 
 });
 ```
+
 ```php
 it("expects \$foo to receive message() but not followed by foo()", function() {
 
@@ -304,6 +305,59 @@ it("expects \$foo to receive message() but not followed by foo()", function() {
     expect($foo)->not->toReceiveNext('foo');
     $foo->foo();
     $foo->message();
+
+});
+```
+
+### <a name="method"></a>Function invocation matchers
+
+**Note:** You should **always remember** to use `toBeCalled`, `toBeCalledNext` function **before** you call a method.
+
+**toBeCalled()**
+
+```php
+it("expects `time()` to be called", function() {
+
+    $foo = new Foo();
+    expect('time')->toBeCalled();
+    $foo->date();
+
+});
+```
+
+```php
+it("expects `time()` to be called with the correct param only once", function() {
+
+    $foo = new Foo();
+    expect('time')->toBeCalled()->with()->once();
+    $foo->date();
+
+});
+```
+
+**toBeCalledNext()**
+
+```php
+it("expects `time()` to be called and followed by `rand()`", function() {
+
+    $foo = new Foo();
+    expect('time')->toBeCalled();
+    expect('rand')->toBeCalledNext();
+    $foo->date();
+    $foo->random();
+
+});
+```
+
+```php
+it("expects `time()` to be called and followed by `rand()`", function() {
+
+    $foo = new Foo();
+    expect('time')->toBeCalled();
+    expect('rand')->toBeCalledNext();
+    $foo->random();
+    $foo->date();
+
 
 });
 ```
