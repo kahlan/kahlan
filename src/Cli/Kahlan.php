@@ -329,9 +329,7 @@ EOD;
         Matcher::register('toHaveLength',     'Kahlan\Matcher\ToHaveLength');
         Matcher::register('toMatch',          'Kahlan\Matcher\ToMatch');
         Matcher::register('toReceive',        'Kahlan\Matcher\ToReceive');
-        Matcher::register('toReceiveNext',    'Kahlan\Matcher\ToReceiveNext');
         Matcher::register('toBeCalled',       'Kahlan\Matcher\toBeCalled');
-        Matcher::register('toBeCalledNext',    'Kahlan\Matcher\toBeCalledNext');
         Matcher::register('toThrow',          'Kahlan\Matcher\ToThrow');
         Matcher::register('toMatchEcho',      'Kahlan\Matcher\ToMatchEcho');
     }

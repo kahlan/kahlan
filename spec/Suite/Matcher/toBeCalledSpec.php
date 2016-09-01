@@ -91,6 +91,43 @@ describe("toBeCalled", function() {
 
         });
 
+        context("with ordered enabled", function() {
+
+            describe("::match()", function() {
+
+                it("expects uncalled function to be uncalled in a defined order", function() {
+
+                    $foo = new Foo();
+                    expect('time')->toBeCalled()->ordered;
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->ordered;
+                    $foo->time();
+
+                });
+
+                it("expects called function to be called in a defined order", function() {
+
+                    $foo = new Foo();
+                    expect('time')->toBeCalled()->ordered;
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->ordered;
+                    $foo->time();
+                    $foo->rand(5, 10);
+
+                });
+
+                it("expects called function called in a different order to be uncalled", function() {
+
+                    $foo = new Foo();
+                    expect('time')->toBeCalled()->ordered;
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->ordered;
+                    $foo->rand(5, 10);
+                    $foo->time();
+
+                });
+
+            });
+
+        });
+
     });
 
     describe("->description()", function() {
