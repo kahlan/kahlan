@@ -3,7 +3,7 @@ namespace Kahlan\Plugin\Call;
 
 use Kahlan\Suite;
 use Kahlan\Plugin\Monkey;
-use Kahlan\Plugin\Call\Message\FunctionMessage;
+use Kahlan\Plugin\Call\Message;
 
 class FunctionCalls
 {
@@ -43,7 +43,7 @@ class FunctionCalls
     public function __construct($reference)
     {
         Suite::register(Suite::hash($reference));
-        $this->_message = new FunctionMessage(['name' => $reference]);
+        $this->_message = new Message(['name' => $reference]);
     }
 
     /**
@@ -109,7 +109,7 @@ class FunctionCalls
         for ($i = $index; $i < $count; $i++) {
             $log = static::$_logs[$i];
 
-            if (!$message->match($log)) {
+            if (!$message->match($log, false)) {
                 continue;
             }
             $params[] = $log['params'];

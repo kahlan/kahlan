@@ -1,15 +1,15 @@
 <?php
-namespace Kahlan\Spec\Suite\Plugin\Call\Message;
+namespace Kahlan\Spec\Suite\Plugin\Call;
 
-use Kahlan\Plugin\Call\Message\MethodMessage;
+use Kahlan\Plugin\Call\Message;
 
-describe("MethodMessage", function() {
+describe("Message", function() {
 
     describe("->name()", function() {
 
         it("Gets the message name", function() {
 
-            $message = new MethodMessage([
+            $message = new Message([
                 'name'    => 'message_name',
             ]);
             expect($message->name())->toBe('message_name');
@@ -22,7 +22,7 @@ describe("MethodMessage", function() {
 
         it('Gets the message params', function() {
 
-            $message = new MethodMessage([
+            $message = new Message([
                 'params'  => ['a', 'b', 'c'],
             ]);
             expect($message->params())->toBe(['a', 'b', 'c']);
@@ -35,12 +35,12 @@ describe("MethodMessage", function() {
 
         it('Checks if the message is static', function() {
 
-            $message = new MethodMessage([
+            $message = new Message([
                 'static'  => true
             ]);
             expect($message->isStatic())->toBe(true);
 
-            $message = new MethodMessage([
+            $message = new Message([
                 'static'  => false
             ]);
             expect($message->isStatic())->toBe(false);

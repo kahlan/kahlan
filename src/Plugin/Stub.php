@@ -167,7 +167,7 @@ class Stub
                 $call['name'] = $method;
                 $call['static'] = $static;
                 $call['params'] = $params;
-                if ($stub->match($call) && $stub->matchParams($params)) {
+                if ($stub->match($call)) {
                     return $stub;
                 }
             }
