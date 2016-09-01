@@ -68,7 +68,7 @@ The filterable entry points are the following:
   * `'quit`'             # For some additional post processing before quitting
 
 
-[You can see more details about how the workflow works here](https://github.com/kahlan/kahlan/blob/master/src/cli/Kahlan.php) (start reading with the `run()` method).
+[You can see more details about how the workflow works here](https://github.com/kahlan/kahlan/blob/master/src/Cli/Kahlan.php) (start reading with the `run()` method).
 
 ### Optimizations
 
