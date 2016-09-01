@@ -241,7 +241,7 @@ it("passes if \$actual matches the \$expected closure logic", function() {
 
 ### <a name="method"></a>Method invocation matchers
 
-**Note:** You should **always remember** to use `toReceive`, `toReceiveNext` function **before** you call a method.
+**Note:** You should **always remember** to use `toReceive`, `toBeCalled` function **before** you call a method.
 
 **toReceive($expected)**
 
@@ -283,14 +283,12 @@ it("expects Foo to receive ::message() with the correct param a specified number
 });
 ```
 
-**toReceiveNext($expected)**
-
 ```php
 it("expects \$foo to receive message() followed by foo()", function() {
 
     $foo = new Foo();
-    expect($foo)->toReceive('message');
-    expect($foo)->toReceiveNext('foo');
+    expect($foo)->toReceive('message')->ordered;
+    expect($foo)->toReceive('foo')->ordered;
     $foo->message();
     $foo->foo();
 
@@ -301,8 +299,8 @@ it("expects \$foo to receive message() followed by foo()", function() {
 it("expects \$foo to receive message() but not followed by foo()", function() {
 
     $foo = new Foo();
-    expect($foo)->toReceive('message');
-    expect($foo)->not->toReceiveNext('foo');
+    expect($foo)->toReceive('message')->ordered;
+    expect($foo)->not->toReceive('foo')->ordered;
     $foo->foo();
     $foo->message();
 
@@ -335,14 +333,12 @@ it("expects `time()` to be called with the correct param only once", function() 
 });
 ```
 
-**toBeCalledNext()**
-
 ```php
 it("expects `time()` to be called and followed by `rand()`", function() {
 
     $foo = new Foo();
-    expect('time')->toBeCalled();
-    expect('rand')->toBeCalledNext();
+    expect('time')->toBeCalled()->ordered;
+    expect('rand')->toBeCalled()->ordered;
     $foo->date();
     $foo->random();
 
@@ -353,11 +349,10 @@ it("expects `time()` to be called and followed by `rand()`", function() {
 it("expects `time()` to be called and followed by `rand()`", function() {
 
     $foo = new Foo();
-    expect('time')->toBeCalled();
-    expect('rand')->toBeCalledNext();
+    expect('time')->toBeCalled()->ordered;
+    expect('rand')->toBeCalled()->ordered;
     $foo->random();
     $foo->date();
-
 
 });
 ```
@@ -376,8 +371,8 @@ With the `Arg` class you can use any existing matchers to test arguments.
 it("expects params to match the argument matchers", function() {
 
     $foo = new Foo();
-    expect($foo)->toReceive('message')->with(Arg::toBeA('boolean'));
-    expect($foo)->toReceiveNext('message')->with(Arg::toBeA('string'));
+    expect($foo)->toReceive('message')->with(Arg::toBeA('boolean'))->ordered;
+    expect($foo)->toReceive('message')->with(Arg::toBeA('string'))->ordered;
     $foo->message(true);
     $foo->message('Hello World!');
 
