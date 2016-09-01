@@ -1,5 +1,5 @@
 <?php
-namespace Kahlan\Plugin\Call\Message;
+namespace Kahlan\Plugin\Call;
 
 class Message
 {
@@ -32,6 +32,37 @@ class Message
      * @var integer
      */
     protected $_times = 0;
+
+    /**
+     * Static call.
+     *
+     * @var array
+     */
+    protected $_static = false;
+
+    /**
+     * The Constructor.
+     *
+     * @param array $config Possible options are:
+     *                       - `'name'`   _string_ : The method name.
+     *                       - `'params'` _array_  : The method params.
+     *                       - `'static'` _boolean_: `true` if the method is static, `false` otherwise.
+     */
+    public function __construct($config = [])
+    {
+        $defaults = [
+            'reference' => null,
+            'name' => null,
+            'params' => null,
+            'static' => false
+        ];
+        $config += $defaults;
+
+        $this->_reference = $config['reference'];
+        $this->_name = $config['name'];
+        $this->_params = $config['params'];
+        $this->_static = $config['static'];
+    }
 
     /**
      * Sets params requirement.
@@ -68,6 +99,32 @@ class Message
         }
         $this->_times = $times;
         return $this;
+    }
+
+    /**
+     * Checks if this message is compatible with passed call array.
+     *
+     * @param  array   $call       A call array.
+     * @param  boolean $withParams Boolean indicating if matching should take parameters into account.
+     * @return boolean
+     */
+    public function match($call, $withParams = true)
+    {
+        if (isset($call['static'])) {
+            if ($call['static'] !== $this->_static) {
+                return false;
+            }
+        }
+
+        if ($call['name'] !== $this->_name) {
+            return false;
+        }
+
+        if ($withParams) {
+            return $this->matchParams($call['params']);
+        }
+
+        return true;
     }
 
     /**
@@ -113,5 +170,15 @@ class Message
     public function params()
     {
         return $this->_params;
+    }
+
+    /**
+     * Checks if the method is a static method.
+     *
+     * @return boolean
+     */
+    public function isStatic()
+    {
+        return $this->_static;
     }
 }
