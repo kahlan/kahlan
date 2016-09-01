@@ -681,16 +681,16 @@ describe("Suite", function() {
 
             $reporters = Stub::create();
 
-            expect($reporters)->toReceive('process')->with('start', ['total' => 2]);
-            expect($reporters)->toReceiveNext('process')->with('suiteStart', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('suiteEnd', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('end', Arg::toBeAn('array'));
+            expect($reporters)->toReceive('process')->with('start', ['total' => 2])->ordered;
+            expect($reporters)->toReceive('process')->with('suiteStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('suiteEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('end', Arg::toBeAn('array'))->ordered;
 
             $this->suite->run(['reporters' => $reporters]);
 
@@ -723,15 +723,15 @@ describe("Suite", function() {
 
             $reporters = Stub::create();
 
-            expect($reporters)->toReceive('process')->with('start', ['total' => 2]);
-            expect($reporters)->toReceiveNext('process')->with('suiteStart', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('suiteEnd', Arg::toBeAnInstanceOf('Kahlan\Report'));
-            expect($reporters)->toReceiveNext('process')->with('end', Arg::toBeAn('array'));
+            expect($reporters)->toReceive('process')->with('start', ['total' => 2])->ordered;
+            expect($reporters)->toReceive('process')->with('suiteStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('suiteEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
+            expect($reporters)->toReceive('process')->with('end', Arg::toBeAn('array'))->ordered;
 
             $this->suite->run(['reporters' => $reporters]);
 

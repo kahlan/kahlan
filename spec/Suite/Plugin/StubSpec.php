@@ -577,15 +577,15 @@ describe("Stub", function() {
 
             $stub = Stub::create();
 
-            expect($stub)->toReceive('__get');
-            expect($stub)->toReceiveNext('__set');
-            expect($stub)->toReceiveNext('__isset');
-            expect($stub)->toReceiveNext('__unset');
-            expect($stub)->toReceiveNext('__sleep');
-            expect($stub)->toReceiveNext('__toString');
-            expect($stub)->toReceiveNext('__invoke');
-            expect(get_class($stub))->toReceive('__wakeup');
-            expect(get_class($stub))->toReceiveNext('__clone');
+            expect($stub)->toReceive('__get')->ordered;
+            expect($stub)->toReceive('__set')->ordered;
+            expect($stub)->toReceive('__isset')->ordered;
+            expect($stub)->toReceive('__unset')->ordered;
+            expect($stub)->toReceive('__sleep')->ordered;
+            expect($stub)->toReceive('__toString')->ordered;
+            expect($stub)->toReceive('__invoke')->ordered;
+            expect(get_class($stub))->toReceive('__wakeup')->ordered;
+            expect(get_class($stub))->toReceive('__clone')->ordered;
 
             $prop = $stub->prop;
             $stub->prop = $prop;
@@ -593,9 +593,9 @@ describe("Stub", function() {
             expect(isset($stub->data))->toBe(false);
             unset($stub->data);
             $serialized = serialize($stub);
-            unserialize($serialized);
             $string = (string) $stub;
             $stub();
+            unserialize($serialized);
             $stub2 = clone $stub;
 
         });

@@ -136,7 +136,7 @@ describe("toReceive", function() {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->with(Arg::toBeA('boolean'));
-                    expect($foo)->toReceiveNext('message')->with(Arg::toBeA('string'));
+                    expect($foo)->toReceive('message')->with(Arg::toBeA('string'));
                     $foo->message(true);
                     $foo->message('Hello World');
 
@@ -286,6 +286,102 @@ describe("toReceive", function() {
                 $foo = new Foo();
                 expect($foo)->toReceive('::version');
                 $foo::version();
+
+            });
+
+        });
+
+        context("with ordered enabled", function() {
+
+            describe("::match()", function() {
+
+                it("expects called methods to be called in a defined order", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->ordered;
+                    expect($foo)->toReceive('::version')->ordered;
+                    expect($foo)->toReceive('bar')->ordered;
+                    $foo->message();
+                    $foo::version();
+                    $foo->bar();
+
+                });
+
+                it("expects called methods to be called in a defined order only once", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->ordered->once();
+                    expect($foo)->toReceive('::version')->ordered->once();
+                    expect($foo)->toReceive('bar')->ordered->once();
+                    $foo->message();
+                    $foo::version();
+                    $foo->bar();
+
+                });
+
+                it("expects called methods to be called in a defined order a specific number of times", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->ordered->times(1);
+                    expect($foo)->toReceive('::version')->ordered->times(2);
+                    expect($foo)->toReceive('bar')->ordered->times(3);
+                    $foo->message();
+                    $foo::version();
+                    $foo::version();
+                    $foo->bar();
+                    $foo->bar();
+                    $foo->bar();
+
+                });
+
+                it("expects called methods called in a different order to be uncalled", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->ordered;
+                    expect($foo)->not->toReceive('bar')->ordered;
+                    $foo->bar();
+                    $foo->message();
+
+                });
+
+                it("expects called methods called a specific number of times but in a different order to be uncalled", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->ordered->times(1);
+                    expect($foo)->toReceive('::version')->ordered->times(2);
+                    expect($foo)->not->toReceive('bar')->ordered->times(1);
+                    $foo->message();
+                    $foo::version();
+                    $foo->bar();
+                    $foo::version();
+
+                });
+
+                it("expects to work as `toReceive` for the first call", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message');
+                    $foo->message();
+
+                });
+
+                it("expects called methods are consumated", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->ordered;
+                    expect($foo)->not->toReceive('message')->ordered;
+                    $foo->message();
+
+                });
+
+                it("expects called methods are consumated using classname", function() {
+
+                    $foo = new Foo();
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->ordered;
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('message')->ordered;
+                    $foo->message();
+
+                });
 
             });
 
