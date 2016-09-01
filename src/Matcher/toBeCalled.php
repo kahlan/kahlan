@@ -57,6 +57,13 @@ class ToBeCalled
     protected $_description = [];
 
     /**
+     * If `true`, will take the calling order into account.
+     *
+     * @var boolean
+     */
+    protected $_ordered = false;
+
+    /**
      * Checks that `$actual` will be called.
      *
      * @param  mixed   $actual   The actual value.
@@ -92,7 +99,22 @@ class ToBeCalled
      */
     public function __call($method, $params)
     {
-        return call_user_func_array([$this->_message, $method], $params);
+        call_user_func_array([$this->_message, $method], $params);
+        return $this;
+    }
+
+    /**
+     * Magic getter, if called with `'ordered'` will set ordered to `true`.
+     *
+     * @param string
+     */
+    public function __get($name)
+    {
+        if ($name !== 'ordered') {
+            throw new Exception("Unsupported attribute `{$name}`.");
+        }
+        $this->_ordered = true;
+        return $this;
     }
 
     /**
@@ -102,9 +124,10 @@ class ToBeCalled
      */
     public function resolve()
     {
-        $report = FunctionCalls::find($this->_message, 0, $this->_message->times());
+        $startIndex = $this->_ordered ? FunctionCalls::lastFindIndex() : 0;
+        $report = FunctionCalls::find($this->_message, $startIndex, $this->_message->times());
         $this->_report = $report;
-        $this->_buildDescription();
+        $this->_buildDescription($startIndex);
         return $report['success'];
     }
 

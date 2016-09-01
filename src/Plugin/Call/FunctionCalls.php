@@ -145,6 +145,7 @@ class FunctionCalls
     public static function reset()
     {
         static::$_logs = [];
+        static::$_index = 0;
         Suite::reset();
     }
 }
