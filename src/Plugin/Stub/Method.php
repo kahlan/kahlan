@@ -4,7 +4,7 @@ namespace Kahlan\Plugin\Stub;
 use Closure;
 use Exception;
 
-class Method extends \Kahlan\Plugin\Call\Message\MethodMessage
+class Method extends \Kahlan\Plugin\Call\Message
 {
     /**
      * Index value in the `Method::$_returns` array.
@@ -96,9 +96,7 @@ class Method extends \Kahlan\Plugin\Call\Message\MethodMessage
         if ($this->_closure) {
             throw new Exception("Closure already set.");
         }
-        if (func_num_args()) {
-            $this->_returns = func_get_args();
-        }
+        $this->_returns = func_get_args();
     }
 
 }

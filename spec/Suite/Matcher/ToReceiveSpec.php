@@ -301,7 +301,7 @@ describe("toReceive", function() {
             $matcher = new ToReceive($stub, 'method');
             $message = $matcher->message();
 
-            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message\MethodMessage');
+            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message');
 
         });
 

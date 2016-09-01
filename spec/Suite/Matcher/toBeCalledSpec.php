@@ -101,7 +101,7 @@ describe("toBeCalled", function() {
             $matcher = new ToBeCalled('time');
             $message = $matcher->message();
 
-            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message\FunctionMessage');
+            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message');
 
         });
 

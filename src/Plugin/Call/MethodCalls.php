@@ -2,7 +2,7 @@
 namespace Kahlan\Plugin\Call;
 
 use Kahlan\Suite;
-use Kahlan\Plugin\Call\Message\MethodMessage;
+use Kahlan\Plugin\Call\Message;
 
 class MethodCalls
 {
@@ -60,7 +60,7 @@ class MethodCalls
             $static = true;
             $name = substr($name, 2);
         }
-        return $this->_message = new MethodMessage([
+        return $this->_message = new Message([
             'reference' => $this->_reference,
             'static' => $static,
             'name' => $name
@@ -164,7 +164,7 @@ class MethodCalls
                 continue;
             }
 
-            if (!$message->match($log)) {
+            if (!$message->match($log, false)) {
                 continue;
             }
             $params[] = $log['params'];
