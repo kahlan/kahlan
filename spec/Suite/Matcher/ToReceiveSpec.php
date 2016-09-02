@@ -44,33 +44,6 @@ describe("toReceive", function() {
 
             });
 
-            it("expects called method to be called exactly once", function() {
-
-                $foo = new Foo();
-                expect($foo)->toReceive('message')->once();
-                $foo->message();
-
-            });
-
-            it("expects called method to be called exactly a specified times", function() {
-
-                $foo = new Foo();
-                expect($foo)->toReceive('message')->times(3);
-                $foo->message();
-                $foo->message();
-                $foo->message();
-
-            });
-
-            it("expects called method not called exactly a specified times to be uncalled", function() {
-
-                $foo = new Foo();
-                expect($foo)->not->toReceive('message')->times(1);
-                $foo->message();
-                $foo->message();
-
-            });
-
             it("expects static method called using non-static way to still called (PHP behavior)", function() {
 
                 $foo = new Foo();
@@ -120,10 +93,6 @@ describe("toReceive", function() {
 
                 });
 
-            });
-
-            context("when using with() and matchers", function() {
-
                 it("expects params match the toContain argument matcher", function() {
 
                     $foo = new Foo();
@@ -147,6 +116,37 @@ describe("toReceive", function() {
                     $foo = new Foo();
                     expect($foo)->not->toReceive('message')->with(Arg::toContain('Message'));
                     $foo->message(['My Message', 'My Other Message']);
+
+                });
+
+            });
+
+            context("when using times()", function() {
+
+                it("expects called method to be called exactly once", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->once();
+                    $foo->message();
+
+                });
+
+                it("expects called method to be called exactly a specified times", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->times(3);
+                    $foo->message();
+                    $foo->message();
+                    $foo->message();
+
+                });
+
+                it("expects called method not called exactly a specified times to be uncalled", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->not->toReceive('message')->times(1);
+                    $foo->message();
+                    $foo->message();
 
                 });
 
@@ -219,6 +219,29 @@ describe("toReceive", function() {
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Bar')->not->toReceive('overrided');
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar')->toReceive('overrided');
                     $bar->overrided();
+
+                });
+
+            });
+
+            context("when using subbing", function() {
+
+                it("expects called method to be called and stubbed as expected", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->andReturn('Hello Boy!', 'Hello Man!');
+                    expect($foo->message())->toBe('Hello Boy!');
+                    expect($foo->message())->toBe('Hello Man!');
+
+                });
+
+                it("expects called method to be called and stubbed as expected", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->andRun(function() {
+                        return 'Hello Girl!';
+                    });
+                    expect($foo->message())->toBe('Hello Girl!');
 
                 });
 
