@@ -13,9 +13,16 @@ class Message
     ];
 
     /**
+     * Message reference.
+     *
+     * @var mixed
+     */
+    protected $_reference = null;
+
+    /**
      * Message name.
      *
-     * @var array
+     * @var string
      */
     protected $_name = null;
 
@@ -29,7 +36,7 @@ class Message
     /**
      * Static call.
      *
-     * @var array
+     * @var boolean
      */
     protected $_static = false;
 
@@ -37,19 +44,22 @@ class Message
      * The Constructor.
      *
      * @param array $config Possible options are:
-     *                       - `'name'`   _string_ : The message name.
-     *                       - `'args'`   _array_  : The message arguments.
-     *                       - `'static'` _boolean_: `true` if the method is static, `false` otherwise.
+     *                       - `'reference'` _mixed_  : The message reference.
+     *                       - `'name'`      _string_ : The message name.
+     *                       - `'args'`      _array_  : The message arguments.
+     *                       - `'static'`    _boolean_: `true` if the method is static, `false` otherwise.
      */
     public function __construct($config = [])
     {
         $defaults = [
+            'reference' => null,
             'name' => null,
             'args' => null,
             'static' => false
         ];
         $config += $defaults;
 
+        $this->_reference = $config['reference'];
         $this->_name = $config['name'];
         $this->_args = $config['args'];
         $this->_static = $config['static'];
@@ -116,6 +126,16 @@ class Message
             }
         }
         return true;
+    }
+
+    /**
+     * Gets message reference.
+     *
+     * @return mixed
+     */
+    public function reference()
+    {
+        return $this->_reference;
     }
 
     /**
