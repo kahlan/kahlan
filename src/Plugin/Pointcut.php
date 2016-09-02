@@ -10,7 +10,6 @@ class Pointcut
      *
      * @var array
      */
-
     protected static $_classes = [
         'calls' => 'Kahlan\Plugin\Call\MethodCalls',
         'stub'  => 'Kahlan\Plugin\Stub'
