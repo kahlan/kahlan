@@ -5,7 +5,7 @@ use Kahlan\Suite;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Plugin\Monkey;
 use Kahlan\Plugin\Call\Message;
-use Kahlan\Plugin\Call\FunctionCalls;
+use Kahlan\Plugin\Call\Calls;
 
 class ToBeCalled
 {
@@ -171,8 +171,8 @@ class ToBeCalled
      */
     public function resolve()
     {
-        $startIndex = $this->_ordered ? FunctionCalls::lastFindIndex() : 0;
-        $report = FunctionCalls::find($this->_message, $startIndex, $this->times());
+        $startIndex = $this->_ordered ? Calls::lastFindIndex() : 0;
+        $report = Calls::find($this->_message, $startIndex, $this->times());
         $this->_report = $report;
         $this->_buildDescription($startIndex);
         return $report['success'];

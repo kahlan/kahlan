@@ -4,7 +4,7 @@ namespace Kahlan\Matcher;
 use Kahlan\Suite;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Plugin\Call\Message;
-use Kahlan\Plugin\Call\MethodCalls;
+use Kahlan\Plugin\Call\Calls;
 use Kahlan\Plugin\Stub;
 
 class ToReceive
@@ -192,8 +192,8 @@ class ToReceive
      */
     public function resolve()
     {
-        $startIndex = $this->_ordered ? MethodCalls::lastFindIndex() : 0;
-        $report = MethodCalls::find($this->_actual, $this->_message, $startIndex, $this->times());
+        $startIndex = $this->_ordered ? Calls::lastFindIndex() : 0;
+        $report = Calls::find($this->_message, $startIndex, $this->times());
         $this->_report = $report;
         $this->_buildDescription($startIndex);
         return $report['success'];
@@ -230,7 +230,7 @@ class ToReceive
 
         if (!$calledTimes) {
             $logged = [];
-            foreach(MethodCalls::logs($this->_actual, $startIndex) as $log) {
+            foreach(Calls::logs($this->_actual, $startIndex) as $log) {
                 $logged[] = $log['static'] ? '::' . $log['name'] : $log['name'];
             }
 
