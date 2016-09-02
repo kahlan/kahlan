@@ -104,8 +104,9 @@ class ToReceive
             $expected = substr($expected, 2);
         }
         $this->_message = new Message([
-            'static' => $static,
-            'name' => $expected
+            'reference' => $actual,
+            'static'    => $static,
+            'name'      => $expected
         ]);
 
         $this->_backtrace = Debugger::backtrace();
