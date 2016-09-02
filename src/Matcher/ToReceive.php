@@ -99,12 +99,12 @@ class ToReceive
      * Delegates calls to the message instance.
      *
      * @param  string $method The method name.
-     * @param  array  $params The parameters to passe.
+     * @param  array  $args   The arguments to pass.
      * @return mixed          The message instance response.
      */
-    public function __call($method, $params)
+    public function __call($method, $args)
     {
-        call_user_func_array([$this->_message, $method], $params);
+        call_user_func_array([$this->_message, $method], $args);
         return $this;
     }
 
@@ -184,7 +184,7 @@ class ToReceive
      */
     public function _buildDescription($startIndex = 0)
     {
-        $with = $this->_message->params();
+        $with = $this->_message->args();
         $times = $this->_message->times();
 
         $report = $this->_report;
@@ -194,7 +194,7 @@ class ToReceive
 
         $this->_description['description'] = "receive the expected method{$expectedParameters}{$expectedTimes}.";
 
-        $calledTimes = count($report['params']);
+        $calledTimes = count($report['args']);
 
         if (!$calledTimes) {
             $logged = [];
@@ -207,7 +207,7 @@ class ToReceive
             $this->_description['params']['actual received'] = $this->_expected;
             $this->_description['params']['actual received times'] = $calledTimes;
             if ($with !== null) {
-               $this->_description['params']['actual received parameters list'] = $report['params'];
+               $this->_description['params']['actual received parameters list'] = $report['args'];
             }
         }
 

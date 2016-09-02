@@ -20,8 +20,8 @@ describe("FunctionCalls", function() {
             $logs = FunctionCalls::logs();
 
             expect($logs[0])->toEqual([
-                'name'   => 'my\name\space\function',
-                'params' => ['name' => 'value']
+                'name' => 'my\name\space\function',
+                'args' => ['name' => 'value']
             ]);
 
         });

@@ -25,8 +25,8 @@ class MyDateTime {
         $this->_datetime->setTimestamp(245026800);
     }
 
-    public function __call($name, $params) {
-        return call_user_func_array([$this->_datetime, $name], $params);
+    public function __call($name, $args) {
+        return call_user_func_array([$this->_datetime, $name], $args);
     }
 }
 

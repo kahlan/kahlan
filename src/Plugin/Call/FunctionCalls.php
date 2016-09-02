@@ -60,13 +60,13 @@ class FunctionCalls
      * Logs a call.
      *
      * @param mixed  $reference A fully-namespaced function name.
-     * @param string $params    The parameters name.
+     * @param string $args      The arguments.
      */
-    public static function log($reference, $params)
+    public static function log($reference, $args)
     {
         static::$_logs[] = [
             'name'   => $reference,
-            'params' => $params
+            'args' => $args
         ];
     }
 
@@ -102,7 +102,7 @@ class FunctionCalls
     public static function find($message, $index = 0, $times = 0)
     {
         $success = false;
-        $params = [];
+        $args = [];
 
         $count = count(static::$_logs);
 
@@ -112,9 +112,9 @@ class FunctionCalls
             if (!$message->match($log, false)) {
                 continue;
             }
-            $params[] = $log['params'];
+            $args[] = $log['args'];
 
-            if (!$message->matchParams($log['params'])) {
+            if (!$message->matchArgs($log['args'])) {
                 continue;
             }
 
@@ -126,7 +126,7 @@ class FunctionCalls
             } elseif ($times === 0) {
                 $next = static::find($message, $i + 1);
                 if ($next['success']) {
-                    $params = array_merge($params, $next['params']);
+                    $args = array_merge($args, $next['args']);
                     $success = false;
                 } else {
                     $success = true;
@@ -136,7 +136,7 @@ class FunctionCalls
             }
         }
         $index = static::$_index;
-        return compact('success', 'params', 'index');
+        return compact('success', 'args', 'index');
     }
 
     /**

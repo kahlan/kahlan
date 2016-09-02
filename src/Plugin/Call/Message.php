@@ -20,11 +20,11 @@ class Message
     protected $_name = null;
 
     /**
-     * Message params.
+     * Message arguments.
      *
      * @var array
      */
-    protected $_params = null;
+    protected $_args = null;
 
     /**
      * Number of occurences to match.
@@ -44,8 +44,8 @@ class Message
      * The Constructor.
      *
      * @param array $config Possible options are:
-     *                       - `'name'`   _string_ : The method name.
-     *                       - `'params'` _array_  : The method params.
+     *                       - `'name'`   _string_ : The message name.
+     *                       - `'args'`   _array_  : The message arguments.
      *                       - `'static'` _boolean_: `true` if the method is static, `false` otherwise.
      */
     public function __construct($config = [])
@@ -53,26 +53,26 @@ class Message
         $defaults = [
             'reference' => null,
             'name' => null,
-            'params' => null,
+            'args' => null,
             'static' => false
         ];
         $config += $defaults;
 
         $this->_reference = $config['reference'];
         $this->_name = $config['name'];
-        $this->_params = $config['params'];
+        $this->_args = $config['args'];
         $this->_static = $config['static'];
     }
 
     /**
-     * Sets params requirement.
+     * Sets arguments requirement.
      *
      * @param  mixed ... <0,n> Parameter(s).
      * @return self
      */
     public function with()
     {
-        $this->_params = func_get_args();
+        $this->_args = func_get_args();
         return $this;
     }
 
@@ -104,11 +104,11 @@ class Message
     /**
      * Checks if this message is compatible with passed call array.
      *
-     * @param  array   $call       A call array.
-     * @param  boolean $withParams Boolean indicating if matching should take parameters into account.
+     * @param  array   $call     A call array.
+     * @param  boolean $withArgs Boolean indicating if matching should take arguments into account.
      * @return boolean
      */
-    public function match($call, $withParams = true)
+    public function match($call, $withArgs = true)
     {
         if (isset($call['static'])) {
             if ($call['static'] !== $this->_static) {
@@ -120,8 +120,8 @@ class Message
             return false;
         }
 
-        if ($withParams) {
-            return $this->matchParams($call['params']);
+        if ($withArgs) {
+            return $this->matchArgs($call['args']);
         }
 
         return true;
@@ -130,17 +130,17 @@ class Message
     /**
      * Checks if this stub is compatible with passed args.
      *
-     * @param  array   $params The passed args.
+     * @param  array   $args The passed arguments.
      * @return boolean
      */
-    public function matchParams($params)
+    public function matchArgs($args)
     {
-        if (!$this->_params) {
+        if (!$this->_args) {
             return true;
         }
         $arg = $this->_classes['arg'];
-        foreach ($this->_params as $expected) {
-            $actual = array_shift($params);
+        foreach ($this->_args as $expected) {
+            $actual = array_shift($args);
             if ($expected instanceof $arg) {
                 if (!$expected->match($actual)) {
                     return false;
@@ -153,7 +153,7 @@ class Message
     }
 
     /**
-     * Gets the method name.
+     * Gets message name.
      *
      * @return string
      */
@@ -163,13 +163,13 @@ class Message
     }
 
     /**
-     * Gets the method params.
+     * Gets message arguments.
      *
      * @return array
      */
-    public function params()
+    public function args()
     {
-        return $this->_params;
+        return $this->_args;
     }
 
     /**

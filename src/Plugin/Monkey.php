@@ -46,9 +46,9 @@ class Monkey
             return $closure;
         }
         return function() use ($map, $closure) {
-            $params = func_get_args();
-            FunctionCalls::log($map, $params);
-            return call_user_func_array($closure, $params);
+            $args = func_get_args();
+            FunctionCalls::log($map, $args);
+            return call_user_func_array($closure, $args);
         };
     }
 

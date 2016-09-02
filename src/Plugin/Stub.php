@@ -141,10 +141,10 @@ class Stub
      * @param  mixed       $references An instance or a fully namespaced class name.
      *                                 or an array of that.
      * @param  string      $method     The method name.
-     * @param  array       $params     The required arguments.
+     * @param  array       $args       The required arguments.
      * @return object|null             Return the subbed method or `null` if not founded.
      */
-    public static function find($references, $method = null, $params = [])
+    public static function find($references, $method = null, $args = [])
     {
         $references = (array) $references;
         $stub = null;
@@ -166,7 +166,7 @@ class Stub
             foreach ($stubs[$method] as $stub) {
                 $call['name'] = $method;
                 $call['static'] = $static;
-                $call['params'] = $params;
+                $call['args'] = $args;
                 if ($stub->match($call)) {
                     return $stub;
                 }
@@ -179,9 +179,9 @@ class Stub
      * Creates a polyvalent instance.
      *
      * @param  array  $options Array of options. Options are:
-     *                         - `'class'`  _string_: the fully-namespaced class name.
+     *                         - `'class'`   _string_: the fully-namespaced class name.
      *                         - `'extends'` _string_: the fully-namespaced parent class name.
-     *                         - `'params'` _array_: params to pass to the constructor.
+     *                         - `'args'`    _array_:  arguments to pass to the constructor.
      *                         - `'methods'` _string_: override the method defined.
      * @return object          The created instance.
      */
@@ -189,9 +189,9 @@ class Stub
     {
         $class = static::classname($options);
 
-        if (isset($options['params'])) {
+        if (isset($options['args'])) {
             $refl = new ReflectionClass($class);
-            $instance = $refl->newInstanceArgs($options['params']);
+            $instance = $refl->newInstanceArgs($options['args']);
         } else {
             $instance = new $class();
         }
@@ -310,8 +310,8 @@ EOT;
         return [
             '__construct'    =>  "public function __construct() {}",
             '__destruct'     =>  "public function __destruct() {}",
-            '__call'         =>  "public function __call(\$name, \$params) { return new static(); }",
-            '::__callStatic' =>  "public static function __callStatic(\$name, \$params) {}",
+            '__call'         =>  "public function __call(\$name, \$args) { return new static(); }",
+            '::__callStatic' =>  "public static function __callStatic(\$name, \$args) {}",
             '__get'          =>  "public function __get(\$key){ return new static(); }",
             '__set'          =>  "public function __set(\$key, \$value) { \$this->{\$key} = \$value; }",
             '__isset'        =>  "public function __isset(\$key) { return isset(\$this->{\$key}); }",
