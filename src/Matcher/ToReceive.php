@@ -57,6 +57,13 @@ class ToReceive
     protected $_description = [];
 
     /**
+     * Number of occurences to match.
+     *
+     * @var integer
+     */
+    protected $_times = 0;
+
+    /**
      * If `true`, will take the calling order into account.
      *
      * @var boolean
@@ -96,15 +103,40 @@ class ToReceive
     }
 
     /**
-     * Delegates calls to the message instance.
+     * Sets arguments requirement.
      *
-     * @param  string $method The method name.
-     * @param  array  $args   The arguments to pass.
-     * @return mixed          The message instance response.
+     * @param  mixed ... <0,n> Argument(s).
+     * @return self
      */
-    public function __call($method, $args)
+    public function with()
     {
-        call_user_func_array([$this->_message, $method], $args);
+        call_user_func_array([$this->_message, 'with'], func_get_args());
+        return $this;
+    }
+
+    /**
+     * Sets the number of occurences.
+     *
+     * @return self
+     */
+    public function once()
+    {
+        $this->times(1);
+        return $this;
+    }
+
+    /**
+     * Gets/sets the number of occurences.
+     *
+     * @param  integer $times The number of occurences to set or none to get it.
+     * @return mixed          The number of occurences on get or `self` otherwise.
+     */
+    public function times($times = null)
+    {
+        if (!func_num_args()) {
+            return $this->_times;
+        }
+        $this->_times = $times;
         return $this;
     }
 
@@ -151,7 +183,7 @@ class ToReceive
     public function resolve()
     {
         $startIndex = $this->_ordered ? MethodCalls::lastFindIndex() : 0;
-        $report = MethodCalls::find($this->_actual, $this->_message, $startIndex, $this->_message->times());
+        $report = MethodCalls::find($this->_actual, $this->_message, $startIndex, $this->times());
         $this->_report = $report;
         $this->_buildDescription($startIndex);
         return $report['success'];
@@ -185,7 +217,7 @@ class ToReceive
     public function _buildDescription($startIndex = 0)
     {
         $with = $this->_message->args();
-        $times = $this->_message->times();
+        $times = $this->times();
 
         $report = $this->_report;
 
