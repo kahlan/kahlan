@@ -44,14 +44,12 @@ class Message
     public function __construct($config = [])
     {
         $defaults = [
-            'reference' => null,
             'name' => null,
             'args' => null,
             'static' => false
         ];
         $config += $defaults;
 
-        $this->_reference = $config['reference'];
         $this->_name = $config['name'];
         $this->_args = $config['args'];
         $this->_static = $config['static'];
