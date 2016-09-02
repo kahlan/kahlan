@@ -32,14 +32,14 @@ class Method extends \Kahlan\Plugin\Call\Message
      *
      * @param array $config The options array, possible options are:
      *                      - `'closure'`: the closure to execute for this stub.
-     *                      - `'params'`: the params required for exectuting this stub.
-     *                      - `'static'`: the type of call required for exectuting this stub.
+     *                      - `'args'`:    the arguments required for exectuting this stub.
+     *                      - `'static'`:  the type of call required for exectuting this stub.
      *                      - `'returns'`: the returns values for this stub (used only if
      *                        the `'closure'` option is missing).
      */
     public function __construct($config = [])
     {
-        $defaults = ['closure' => null, 'params' => [], 'returns' => [], 'static' => false];
+        $defaults = ['closure' => null, 'args' => [], 'returns' => [], 'static' => false];
         $config += $defaults;
 
         parent::__construct($config);
@@ -51,10 +51,10 @@ class Method extends \Kahlan\Plugin\Call\Message
      * Runs the stub.
      *
      * @param  string $self   The context from which the stub need to be executed.
-     * @param  array  $params The call parameters array.
+     * @param  array  $args   The call arguments array.
      * @return mixed          The returned stub result.
      */
-    public function __invoke($self, $params)
+    public function __invoke($self, $args)
     {
         if ($this->_closure) {
             if (is_string($self)) {
@@ -62,7 +62,7 @@ class Method extends \Kahlan\Plugin\Call\Message
             } else {
                 $closure = $this->_closure->bindTo($self, get_class($self));
             }
-            return call_user_func_array($closure, $params);
+            return call_user_func_array($closure, $args);
         }
         if (isset($this->_returns[$this->_index])) {
             return $this->_returns[$this->_index++];

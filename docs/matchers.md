@@ -368,7 +368,7 @@ use Kahlan\Arg;
 With the `Arg` class you can use any existing matchers to test arguments.
 
 ```php
-it("expects params to match the argument matchers", function() {
+it("expects args to match the argument matchers", function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message')->with(Arg::toBeA('boolean'))->ordered;
@@ -379,7 +379,7 @@ it("expects params to match the argument matchers", function() {
 });
 ```
 ```php
-it("expects params match the toContain argument matcher", function() {
+it("expects args match the toContain argument matcher", function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message')->with(Arg::toContain('My Message'));

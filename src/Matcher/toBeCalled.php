@@ -94,12 +94,12 @@ class ToBeCalled
      * Delegates calls to the message instance.
      *
      * @param  string $method The method name.
-     * @param  array  $params The parameters to passe.
+     * @param  array  $args   The arguments to pass.
      * @return mixed          The message instance response.
      */
-    public function __call($method, $params)
+    public function __call($method, $args)
     {
-        call_user_func_array([$this->_message, $method], $params);
+        call_user_func_array([$this->_message, $method], $args);
         return $this;
     }
 
@@ -185,7 +185,7 @@ class ToBeCalled
      */
     public function _buildDescription($startIndex = 0)
     {
-        $with = $this->_message->params();
+        $with = $this->_message->args();
         $times = $this->_message->times();
 
         $report = $this->_report;
@@ -195,13 +195,13 @@ class ToBeCalled
 
         $this->_description['description'] = "be called{$expectedParameters}{$expectedTimes}.";
 
-        $calledTimes = count($report['params']);
+        $calledTimes = count($report['args']);
 
         $this->_description['params']['actual'] = $this->_actual . '()';
         $this->_description['params']['actual called times'] = $calledTimes;
 
         if ($calledTimes && $with !== null) {
-            $this->_description['params']['actual called parameters list'] = $report['params'];
+            $this->_description['params']['actual called parameters list'] = $report['args'];
         }
 
         $this->_description['params']['expected to be called'] = $this->_actual . '()';
