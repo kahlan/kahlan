@@ -61,7 +61,6 @@ class MethodCalls
             $name = substr($name, 2);
         }
         return $this->_message = new Message([
-            'reference' => $this->_reference,
             'static' => $static,
             'name' => $name
         ]);
