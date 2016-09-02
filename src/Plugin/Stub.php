@@ -19,8 +19,7 @@ class Stub
      */
     protected static $_classes = [
         'parser'   => 'Kahlan\Jit\Parser',
-        'pointcut' => 'Kahlan\Jit\Patcher\Pointcut',
-        'calls'    => 'Kahlan\Plugin\Call\MethodCalls'
+        'pointcut' => 'Kahlan\Jit\Patcher\Pointcut'
     ];
 
     /**
@@ -195,8 +194,6 @@ class Stub
         } else {
             $instance = new $class();
         }
-        $calls = static::$_classes['calls'];
-        new $calls($instance);
         return $instance;
     }
 
@@ -225,8 +222,6 @@ class Stub
             $code = $parser::unparse(static::$_pointcut->process($nodes));
             eval('?>' . $code);
         }
-        $calls = static::$_classes['calls'];
-        new $calls($options['class']);
         return $options['class'];
     }
 

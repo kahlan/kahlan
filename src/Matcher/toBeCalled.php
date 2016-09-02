@@ -1,8 +1,10 @@
 <?php
 namespace Kahlan\Matcher;
 
+use Kahlan\Suite;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Plugin\Monkey;
+use Kahlan\Plugin\Call\Message;
 use Kahlan\Plugin\Call\FunctionCalls;
 
 class ToBeCalled
@@ -20,13 +22,6 @@ class ToBeCalled
      * @var array
      */
     protected $_backtrace = null;
-
-    /**
-     * The call instance.
-     *
-     * @var object
-     */
-    protected $_calls = null;
 
     /**
      * The message instance.
@@ -85,8 +80,8 @@ class ToBeCalled
     {
         $this->_actual = $actual;
 
-        $this->_calls = new FunctionCalls($actual);
-        $this->_message = $this->_calls->message();
+        Suite::register(Suite::hash($actual));
+        $this->_message = new Message(['name' => $actual]);
         $this->_backtrace = Debugger::backtrace();
     }
 
