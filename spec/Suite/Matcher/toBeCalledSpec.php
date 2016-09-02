@@ -163,16 +163,6 @@ describe("toBeCalled", function() {
 
     describe("->description()", function() {
 
-        it("returns the description message", function() {
-
-            $foo = new Foo();
-            $matcher = new ToBeCalled('time');
-            $message = $matcher->message();
-
-            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message');
-
-        });
-
         it("returns the description message for not received call", function() {
 
             $foo = new Foo();

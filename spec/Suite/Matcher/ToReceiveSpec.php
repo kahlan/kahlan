@@ -449,16 +449,6 @@ describe("toReceive", function() {
 
     describe("->description()", function() {
 
-        it("returns the description message", function() {
-
-            $stub = Stub::create();
-            $matcher = new ToReceive($stub, 'method');
-            $message = $matcher->message();
-
-            expect($message)->toBeAnInstanceOf('Kahlan\Plugin\Call\Message');
-
-        });
-
         it("returns the description message for not received call", function() {
 
             $stub = Stub::create();
