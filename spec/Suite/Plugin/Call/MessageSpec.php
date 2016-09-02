@@ -5,12 +5,25 @@ use Kahlan\Plugin\Call\Message;
 
 describe("Message", function() {
 
+    describe("->reference()", function() {
+
+        it("Gets the message reference", function() {
+
+            $message = new Message([
+                'reference' => 'reference',
+            ]);
+            expect($message->reference())->toBe('reference');
+
+        });
+
+    });
+
     describe("->name()", function() {
 
         it("Gets the message name", function() {
 
             $message = new Message([
-                'name'    => 'message_name',
+                'name' => 'message_name',
             ]);
             expect($message->name())->toBe('message_name');
 
