@@ -66,9 +66,9 @@ class ToBeA
     public static function _buildDescription($actual, $expected)
     {
         $description = "have the expected type.";
-        $params['actual'] = $actual;
-        $params['expected'] = $expected;
-        static::$_description = compact('description', 'params');
+        $data['actual'] = $actual;
+        $data['expected'] = $expected;
+        static::$_description = compact('description', 'data');
     }
 
     /**

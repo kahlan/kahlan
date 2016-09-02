@@ -38,10 +38,10 @@ class ToBeCloseTo
     public static function _buildDescription($actual, $expected, $precision)
     {
         $description = "be close to expected relying to a precision of {$precision}.";
-        $params['actual'] = $actual;
-        $params['expected'] = $expected;
-        $params['gap is >='] = pow(10, -$precision) / 2;
-        static::$_description = compact('description', 'params');
+        $data['actual'] = $actual;
+        $data['expected'] = $expected;
+        $data['gap is >='] = pow(10, -$precision) / 2;
+        static::$_description = compact('description', 'data');
     }
 
     /**

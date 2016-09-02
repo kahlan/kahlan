@@ -278,18 +278,18 @@ class Scope
     /**
      * Allow closures assigned to the scope property to be inkovable.
      *
-     * @param  string $name   Name of the method being called.
-     * @param  array  $params Enumerated array containing the passed parameters.
+     * @param  string $name Name of the method being called.
+     * @param  array  $args Enumerated array containing the passed arguments.
      * @return mixed
      * @throws Throw an Exception if the property doesn't exists / is not callable.
      */
-    public function __call($name, $params)
+    public function __call($name, $args)
     {
         $property = null;
         $property = $this->__get($name);
 
         if (is_callable($property)) {
-            return call_user_func_array($property, $params);
+            return call_user_func_array($property, $args);
         }
         throw new Exception("Uncallable variable `{$name}`.");
     }

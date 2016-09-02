@@ -15,8 +15,8 @@ class ToContainKey
      */
     public static function match($actual, $expected)
     {
-        $params   = func_get_args();
-        $expected = count($params) > 2 ? array_slice($params, 1) : $expected;
+        $args = func_get_args();
+        $expected = count($args) > 2 ? array_slice($args, 1) : $expected;
         $expected = (array) $expected;
 
         if (is_array($actual)) {

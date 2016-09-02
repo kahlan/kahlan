@@ -48,7 +48,7 @@ describe("toBeCalled", function() {
 
         context("when using with()", function() {
 
-            it("expects called function called with correct params to be called", function() {
+            it("expects called function called with correct arguments to be called", function() {
 
                 $foo = new Foo();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10);
@@ -56,7 +56,7 @@ describe("toBeCalled", function() {
 
             });
 
-            it("expects called function called with correct params exactly a specified times to be called", function() {
+            it("expects called function called with correct arguments exactly a specified times to be called", function() {
 
                 $foo = new Foo();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10)->times(2);
@@ -65,7 +65,7 @@ describe("toBeCalled", function() {
 
             });
 
-            it("expects called function called with correct params not exactly a specified times to be uncalled", function() {
+            it("expects called function called with correct arguments not exactly a specified times to be uncalled", function() {
 
                 $foo = new Foo();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->with(5, 10)->times(2);
@@ -180,7 +180,7 @@ describe("toBeCalled", function() {
 
             $matcher->resolve([
                 'instance' => $matcher,
-                'params'   => [
+                'data'     => [
                     'actual' => 'time',
                     'logs'   => []
                 ]
@@ -189,7 +189,7 @@ describe("toBeCalled", function() {
             $actual = $matcher->description();
 
             expect($actual['description'])->toBe('be called.');
-            expect($actual['params'])->toBe([
+            expect($actual['data'])->toBe([
                 'actual' => 'time()',
                 'actual called times' => 0,
                 'expected to be called' => 'time()'
@@ -205,7 +205,7 @@ describe("toBeCalled", function() {
 
             $matcher->resolve([
                 'instance' => $matcher,
-                'params'   => [
+                'data'     => [
                     'actual' => 'time',
                     'logs'   => []
                 ]
@@ -214,7 +214,7 @@ describe("toBeCalled", function() {
             $actual = $matcher->description();
 
             expect($actual['description'])->toBe('be called the expected times.');
-            expect($actual['params'])->toBe([
+            expect($actual['data'])->toBe([
                 'actual' => 'time()',
                 'actual called times' => 0,
                 'expected to be called' => 'time()',
@@ -233,7 +233,7 @@ describe("toBeCalled", function() {
 
             $matcher->resolve([
                 'instance' => $matcher,
-                'params'   => [
+                'data'     => [
                     'actual' => 'time',
                     'logs'   => []
                 ]
@@ -242,7 +242,7 @@ describe("toBeCalled", function() {
             $actual = $matcher->description();
 
             expect($actual['description'])->toBe('be called with expected parameters.');
-            expect($actual['params'])->toBe([
+            expect($actual['data'])->toBe([
                 'actual' => 'time()',
                 'actual called times' => 1,
                 'actual called parameters list' => [

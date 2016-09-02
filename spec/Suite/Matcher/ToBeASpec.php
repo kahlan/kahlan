@@ -90,8 +90,8 @@ describe("toBeA", function() {
             $actual = ToBeA::description();
 
             expect($actual['description'])->toBe('have the expected type.');
-            expect((string) $actual['params']['actual'])->toBe('integer');
-            expect((string) $actual['params']['expected'])->toBe('boolean');
+            expect((string) $actual['data']['actual'])->toBe('integer');
+            expect((string) $actual['data']['expected'])->toBe('boolean');
 
         });
 

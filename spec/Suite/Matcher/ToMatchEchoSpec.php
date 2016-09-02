@@ -42,7 +42,7 @@ describe("toMatchEcho", function() {
 
             expect($actual)->toBe([
                 'description' => 'matches expected regex in echoed string.',
-                'params'      => [
+                'data'        => [
                     "actual"   => "Hello",
                     "expected" => "/Bye/"
                 ]

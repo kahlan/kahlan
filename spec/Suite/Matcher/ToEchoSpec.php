@@ -30,7 +30,7 @@ describe("toEcho", function() {
 
             expect($actual)->toBe([
                 'description' => 'echo the expected string.',
-                'params'      => [
+                'data'        => [
                     "actual"   => "Hello",
                     "expected" => "Good Bye!"
                 ]
