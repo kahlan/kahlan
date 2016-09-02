@@ -3,6 +3,7 @@ namespace Kahlan\Matcher;
 
 use Kahlan\Analysis\Debugger;
 use Kahlan\Plugin\Call\MethodCalls;
+use Kahlan\Plugin\Stub;
 
 class ToReceive
 {
@@ -87,10 +88,10 @@ class ToReceive
             $actual = is_object($actual) ? get_class($actual) : $actual;
         }
 
-        $this->_actual    = $actual;
-        $this->_expected  = $expected;
-        $this->_calls      = new MethodCalls($actual);
-        $this->_message   = $this->_calls->method($expected);
+        $this->_actual = $actual;
+        $this->_expected = $expected;
+        $this->_calls = new MethodCalls($actual);
+        $this->_message = $this->_calls->method($expected);
         $this->_backtrace = Debugger::backtrace();
     }
 
@@ -105,6 +106,27 @@ class ToReceive
     {
         call_user_func_array([$this->_message, $method], $params);
         return $this;
+    }
+
+    /**
+     * Sets the stub logic.
+     *
+     * @param Closure $closure The logic.
+     */
+    public function andRun($closure)
+    {
+        Stub::on($this->_actual)->method($this->_expected, $closure);
+    }
+
+    /**
+     * Set. return values.
+     *
+     * @param mixed ... <0,n> Return value(s).
+     */
+    public function andReturn()
+    {
+        $method = Stub::on($this->_actual)->method($this->_expected);
+        call_user_func_array([$method, 'andReturn'], func_get_args());
     }
 
     /**
@@ -174,7 +196,7 @@ class ToReceive
 
         $calledTimes = count($report['params']);
 
-        if (!$calledTimes || ($calledTimes !== $times && $times)) {
+        if (!$calledTimes) {
             $logged = [];
             foreach(MethodCalls::logs($this->_actual, $startIndex) as $log) {
                 $logged[] = $log['static'] ? '::' . $log['name'] : $log['name'];

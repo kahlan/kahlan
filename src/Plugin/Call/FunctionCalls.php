@@ -136,7 +136,7 @@ class FunctionCalls
             }
         }
         $index = static::$_index;
-        return compact('log', 'success', 'params', 'index');
+        return compact('success', 'params', 'index');
     }
 
     /**
