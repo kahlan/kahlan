@@ -21,52 +21,6 @@ class MethodCalls
     protected static $_index = 0;
 
     /**
-     * Message invocation.
-     *
-     * @var array
-     */
-    protected $_message = [];
-
-    /**
-     * Reference.
-     *
-     * @var array
-     */
-    protected $_reference = null;
-
-    /**
-     * The Constructor.
-     *
-     * @param object|string $reference An instance or a fully-namespaced class name.
-     */
-    public function __construct($reference, $static = false)
-    {
-        $this->_reference = $reference;
-        if (is_object($reference)) {
-            Suite::register(get_class($reference));
-        }
-        Suite::register(Suite::hash($reference));
-    }
-
-    /**
-     * Enable logging for the passed method name.
-     *
-     * @param string $name The method name.
-     */
-    public function method($name)
-    {
-        $static = false;
-        if (preg_match('/^::.*/', $name)) {
-            $static = true;
-            $name = substr($name, 2);
-        }
-        return $this->_message = new Message([
-            'static' => $static,
-            'name' => $name
-        ]);
-    }
-
-    /**
      * Logs a call.
      *
      * @param mixed  $reference An instance or a fully-namespaced class name or an array of them.

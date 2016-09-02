@@ -44,6 +44,21 @@ describe("toReceive", function() {
 
             });
 
+            it("expects uncalled method to be uncalled", function() {
+
+                $foo = new Foo();
+                expect($foo)->not->toReceive('message');
+
+            });
+
+            it("expects method called in the past to be uncalled", function() {
+
+                $foo = new Foo();
+                $foo->message();
+                expect($foo)->not->toReceive('message');
+
+            });
+
             it("expects static method called using non-static way to still called (PHP behavior)", function() {
 
                 $foo = new Foo();
@@ -57,13 +72,6 @@ describe("toReceive", function() {
                 $foo = new Foo();
                 expect($foo)->not->toReceive('version');
                 $foo->version();
-
-            });
-
-            it("expects uncalled method to be uncalled", function() {
-
-                $foo = new Foo();
-                expect($foo)->not->toReceive('message');
 
             });
 
@@ -162,6 +170,20 @@ describe("toReceive", function() {
 
                 });
 
+                it("expects method called in the past to be called", function() {
+
+                    $foo = new Foo();
+                    $foo->message();
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('message');
+
+                });
+
+                it("expects uncalled method to be uncalled", function() {
+
+                    $foo = new Foo();
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('message');
+                });
+
                 it("expects called method to be called exactly once", function() {
 
                     $foo = new Foo();
@@ -254,6 +276,19 @@ describe("toReceive", function() {
 
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::version');
                 Foo::version();
+
+            });
+
+            it("expects method called in the past to be uncalled", function() {
+
+                Foo::version();
+                expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::version');
+
+            });
+
+            it("expects uncalled method to be uncalled", function() {
+
+                expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::version');
 
             });
 
@@ -442,7 +477,7 @@ describe("toReceive", function() {
 
             expect($actual['description'])->toBe('receive the expected method.');
             expect($actual['data'])->toBe([
-                'actual received calls' => ['__construct'],
+                'actual received calls' => [],
                 'expected to receive'   => 'method'
             ]);
 
@@ -467,7 +502,7 @@ describe("toReceive", function() {
 
             expect($actual['description'])->toBe('receive the expected method the expected times.');
             expect($actual['data'])->toBe([
-                'actual received calls'   => ['__construct'],
+                'actual received calls'   => [],
                 'expected to receive'     => 'method',
                 'expected received times' => 2
             ]);
