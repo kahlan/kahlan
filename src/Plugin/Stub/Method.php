@@ -75,7 +75,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      *
      * @param Closure $closure The logic.
      */
-    public function run($closure)
+    public function andRun($closure)
     {
         if ($this->_returns) {
             throw new Exception("Some return values are already set.");

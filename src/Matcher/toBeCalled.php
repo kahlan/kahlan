@@ -104,6 +104,33 @@ class ToBeCalled
     }
 
     /**
+     * Sets the stub logic.
+     *
+     * @param Closure $closure The logic.
+     */
+    public function andRun($closure)
+    {
+        Monkey::patch($this->_actual, $closure);
+    }
+
+    /**
+     * Set. return values.
+     *
+     * @param mixed ... <0,n> Return value(s).
+     */
+    public function andReturn()
+    {
+        $args = func_get_args();
+        Monkey::patch($this->_actual, function() use ($args) {
+            static $index = 0;
+            if (isset($args[$index])) {
+                return $args[$index++];
+            }
+            return $args ? end($args) : null;
+        });
+    }
+
+    /**
      * Magic getter, if called with `'ordered'` will set ordered to `true`.
      *
      * @param string

@@ -46,48 +46,79 @@ describe("toBeCalled", function() {
 
         });
 
-        it("expects called function to be called exactly a specified times", function() {
+        context("when using with()", function() {
 
-            $foo = new Foo();
-            expect('time')->toBeCalled()->times(3);
-            $foo->time();
-            $foo->time();
-            $foo->time();
+            it("expects called function called with correct params to be called", function() {
 
-        });
+                $foo = new Foo();
+                expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10);
+                $foo->rand(5, 10);
 
-        it("expects called function not called exactly a specified times to be uncalled", function() {
+            });
 
-            $foo = new Foo();
-            expect('time')->not->toBeCalled()->times(1);
-            $foo->time();
-            $foo->time();
+            it("expects called function called with correct params exactly a specified times to be called", function() {
 
-        });
+                $foo = new Foo();
+                expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10)->times(2);
+                $foo->rand(5, 10);
+                $foo->rand(5, 10);
 
-        it("expects called function called with correct params to be called", function() {
+            });
 
-            $foo = new Foo();
-            expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10);
-            $foo->rand(5, 10);
+            it("expects called function called with correct params not exactly a specified times to be uncalled", function() {
 
-        });
+                $foo = new Foo();
+                expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->with(5, 10)->times(2);
+                $foo->rand(5, 10);
+                $foo->rand(10, 10);
 
-        it("expects called function called with correct params exactly a specified times to be called", function() {
-
-            $foo = new Foo();
-            expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10)->times(2);
-            $foo->rand(5, 10);
-            $foo->rand(5, 10);
+            });
 
         });
 
-        it("expects called function called with correct params not exactly a specified times to be uncalled", function() {
+        context("when using times()", function() {
 
-            $foo = new Foo();
-            expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->with(5, 10)->times(2);
-            $foo->rand(5, 10);
-            $foo->rand(10, 10);
+            it("expects called function to be called exactly a specified times", function() {
+
+                $foo = new Foo();
+                expect('time')->toBeCalled()->times(3);
+                $foo->time();
+                $foo->time();
+                $foo->time();
+
+            });
+
+            it("expects called function not called exactly a specified times to be uncalled", function() {
+
+                $foo = new Foo();
+                expect('time')->not->toBeCalled()->times(1);
+                $foo->time();
+                $foo->time();
+
+            });
+
+        });
+
+        context("when using subbing", function() {
+
+            it("expects called method to be called and stubbed as expected", function() {
+
+                $foo = new Foo();
+                expect('time')->toBeCalled()->andReturn(123, 456);
+                expect($foo->time())->toBe(123);
+                expect($foo->time())->toBe(456);
+
+            });
+
+            it("expects called method to be called and stubbed as expected", function() {
+
+                $foo = new Foo();
+                expect('time')->toBeCalled()->andRun(function() {
+                    return 123;
+                });
+                expect($foo->time())->toBe(123);
+
+            });
 
         });
 
