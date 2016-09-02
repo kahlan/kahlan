@@ -2,6 +2,7 @@
 namespace Kahlan\Plugin;
 
 use Kahlan\Suite;
+use Kahlan\Plugin\Call\Calls;
 
 class Pointcut
 {
@@ -11,7 +12,6 @@ class Pointcut
      * @var array
      */
     protected static $_classes = [
-        'calls' => 'Kahlan\Plugin\Call\MethodCalls',
         'stub'  => 'Kahlan\Plugin\Stub'
     ];
 
@@ -61,10 +61,9 @@ class Pointcut
             $name = '::' . $name;
         }
 
-        $calls = static::$_classes['calls'];
         $stub = static::$_classes['stub'];
 
-        $calls::log($list, compact('name', 'args'));
+        Calls::log($list, compact('name', 'args'));
 
         if ($method = $stub::find($list, $name, $args)) {
             return $method;

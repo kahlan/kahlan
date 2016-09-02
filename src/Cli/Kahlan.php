@@ -128,8 +128,7 @@ class Kahlan {
             'Kahlan\Plugin\Monkey',
             'Kahlan\Plugin\Stub',
             'Kahlan\Plugin\Quit',
-            'Kahlan\Plugin\Call\MethodCalls',
-            'Kahlan\Plugin\Call\FunctionCalls'
+            'Kahlan\Plugin\Call\Calls'
         ]]);
     }
 
