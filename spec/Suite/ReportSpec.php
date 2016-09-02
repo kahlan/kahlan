@@ -18,7 +18,7 @@ describe("Report", function() {
             expect($report->description())->toBe(null);
             expect($report->matcher())->toBe(null);
             expect($report->matcherName())->toBe(null);
-            expect($report->params())->toBe([]);
+            expect($report->data())->toBe([]);
             expect($report->backtrace())->toBe([]);
             expect($report->exception())->toBe(null);
             expect($report->file())->toBe(null);

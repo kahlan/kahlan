@@ -166,17 +166,17 @@ class Expectation
     /**
      * Calls a registered matcher.
      *
-     * @param  string  $matcherName   The name of the matcher.
-     * @param  array   $params The parameters to pass to the matcher.
+     * @param  string  $matcherName The name of the matcher.
+     * @param  array   $args        The arguments to pass to the matcher.
      * @return boolean
      */
-    public function __call($matcherName, $params)
+    public function __call($matcherName, $args)
     {
         $result = true;
         $spec = $this->_actual;
         $specification = $this->_classes['specification'];
 
-        $closure = function () use ($spec, $specification, $matcherName, $params, &$actual, &$result) {
+        $closure = function () use ($spec, $specification, $matcherName, $args, &$actual, &$result) {
             if ($spec instanceof $specification) {
                 $actual = $spec->run();
                 if (!$spec->passed()) {
@@ -185,22 +185,22 @@ class Expectation
             } else {
                 $actual = $spec;
             }
-            array_unshift($params, $actual);
+            array_unshift($args, $actual);
             $matcher = $this->_matcher($matcherName, $actual);
-            $result = call_user_func_array($matcher . '::match', $params);
+            $result = call_user_func_array($matcher . '::match', $args);
             return is_object($result) || $result === !$this->_not;
         };
 
         try {
             $this->_spin($closure);
         } catch (TimeoutException $e) {
-            $data['params']['timeout'] = $e->getMessage();
+            $data['data']['timeout'] = $e->getMessage();
         }
 
-        array_unshift($params, $actual);
+        array_unshift($args, $actual);
         $matcher = $this->_matcher($matcherName, $actual);
-        $params = Inspector::parameters($matcher, 'match', $params);
-        $data = compact('matcherName', 'matcher', 'params');
+        $data = Inspector::parameters($matcher, 'match', $args);
+        $report = compact('matcherName', 'matcher', 'data');
         if ($spec instanceof $specification) {
             foreach ($spec->logs() as $value) {
                 $this->_logs[] = $value;
@@ -209,12 +209,12 @@ class Expectation
         }
 
         if (!is_object($result)) {
-            $data['description'] = $data['matcher']::description();
-            $this->_log($result, $data);
+            $report['description'] = $report['matcher']::description();
+            $this->_log($result, $report);
 
             return $this;
         }
-        $this->_deferred[] = $data + [
+        $this->_deferred[] = $report + [
             'instance' => $result, 'not' => $this->_not,
         ];
 
@@ -342,7 +342,7 @@ class Expectation
 
         $description = $data['description'];
         if (is_array($description)) {
-            $data['params'] = $description['params'];
+            $data['data'] = $description['data'];
             $data['description'] = $description['description'];
         }
         $data += ['backtrace' => Debugger::backtrace()];

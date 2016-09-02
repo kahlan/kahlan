@@ -36,13 +36,6 @@ class ToBeCalled
     protected $_message = null;
 
     /**
-     * Message params.
-     *
-     * @var array
-     */
-    protected $_params = [];
-
-    /**
      * The report.
      *
      * @var array
@@ -229,21 +222,21 @@ class ToBeCalled
 
         $calledTimes = count($report['args']);
 
-        $this->_description['params']['actual'] = $this->_actual . '()';
-        $this->_description['params']['actual called times'] = $calledTimes;
+        $this->_description['data']['actual'] = $this->_actual . '()';
+        $this->_description['data']['actual called times'] = $calledTimes;
 
         if ($calledTimes && $with !== null) {
-            $this->_description['params']['actual called parameters list'] = $report['args'];
+            $this->_description['data']['actual called parameters list'] = $report['args'];
         }
 
-        $this->_description['params']['expected to be called'] = $this->_actual . '()';
+        $this->_description['data']['expected to be called'] = $this->_actual . '()';
 
         if ($with !== null) {
-            $this->_description['params']['expected parameters'] = $with;
+            $this->_description['data']['expected parameters'] = $with;
         }
 
         if ($times) {
-            $this->_description['params']['expected called times'] = $times;
+            $this->_description['data']['expected called times'] = $times;
         }
     }
 

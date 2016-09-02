@@ -30,12 +30,12 @@ class Json extends Terminal
     /**
      * Callback called before any specs processing.
      *
-     * @param array $params The suite params array.
+     * @param array $args The suite arguments.
      */
-    public function start($params)
+    public function start($args)
     {
         $this->_header = false;
-        parent::start($params);
+        parent::start($args);
     }
 
     /**
@@ -103,8 +103,8 @@ class Json extends Terminal
                             $this->_json['errors'][] = [
                                 'spec' => trim(implode(' ', $report->messages())),
                                 'suite' => $report->file(),
-                                'actual' => $report->params()['actual'],
-                                'expected' => $report->params()['expected']
+                                'actual' => $report->data()['actual'],
+                                'expected' => $report->data()['expected']
                             ];
                         break;
                         case 'exception':

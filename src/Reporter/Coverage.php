@@ -78,9 +78,9 @@ class Coverage extends Terminal
     /**
      * Callback called before any specs processing.
      *
-     * @param array $params The suite params array.
+     * @param array $args The suite arguments.
      */
-    public function start($params)
+    public function start($args)
     {
     }
 
@@ -125,13 +125,13 @@ class Coverage extends Terminal
     /**
      * Delegates the call to the collector instance.
      *
-     * @param  string  $name   The function name.
-     * @param  array   $params The parameters to pass to the function.
+     * @param  string  $name The function name.
+     * @param  array   $args The arguments to pass to the function.
      * @return mixed
      */
-    public function __call($name, $params)
+    public function __call($name, $args)
     {
-        return call_user_func_array([$this->collector(), $name], $params);
+        return call_user_func_array([$this->collector(), $name], $args);
     }
 
     /**

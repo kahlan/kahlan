@@ -69,7 +69,7 @@ describe("toReceive", function() {
 
             context("when using with()", function() {
 
-                it("expects called method to be called with correct params", function() {
+                it("expects called method to be called with correct arguments", function() {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->with('My Message', 'My Other Message');
@@ -77,7 +77,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method with incorrect params to not be called", function() {
+                it("expects called method with incorrect arguments to not be called", function() {
 
                     $foo = new Foo();
                     expect($foo)->not->toReceive('message')->with('My Message');
@@ -85,7 +85,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method with missing params to not be called", function() {
+                it("expects called method with missing arguments to not be called", function() {
 
                     $foo = new Foo();
                     expect($foo)->not->toReceive('message')->with('My Message');
@@ -93,7 +93,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects params match the toContain argument matcher", function() {
+                it("expects arguments match the toContain argument matcher", function() {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->with(Arg::toContain('My Message'));
@@ -101,7 +101,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects params match the argument matchers", function() {
+                it("expects arguments match the argument matchers", function() {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->with(Arg::toBeA('boolean'));
@@ -111,7 +111,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects params to not match the toContain argument matcher", function() {
+                it("expects arguments to not match the toContain argument matcher", function() {
 
                     $foo = new Foo();
                     expect($foo)->not->toReceive('message')->with(Arg::toContain('Message'));
@@ -431,7 +431,7 @@ describe("toReceive", function() {
 
             $matcher->resolve([
                 'instance' => $matcher,
-                'params'   => [
+                'data'     => [
                     'actual'   => $stub,
                     'expected' => 'method',
                     'logs'     => []
@@ -441,7 +441,7 @@ describe("toReceive", function() {
             $actual = $matcher->description();
 
             expect($actual['description'])->toBe('receive the expected method.');
-            expect($actual['params'])->toBe([
+            expect($actual['data'])->toBe([
                 'actual received calls' => ['__construct'],
                 'expected to receive'   => 'method'
             ]);
@@ -456,7 +456,7 @@ describe("toReceive", function() {
 
             $matcher->resolve([
                 'instance' => $matcher,
-                'params'   => [
+                'data'     => [
                     'actual'   => $stub,
                     'expected' => 'method',
                     'logs'     => []
@@ -466,7 +466,7 @@ describe("toReceive", function() {
             $actual = $matcher->description();
 
             expect($actual['description'])->toBe('receive the expected method the expected times.');
-            expect($actual['params'])->toBe([
+            expect($actual['data'])->toBe([
                 'actual received calls'   => ['__construct'],
                 'expected to receive'     => 'method',
                 'expected received times' => 2
@@ -484,7 +484,7 @@ describe("toReceive", function() {
 
             $matcher->resolve([
                 'instance' => $matcher,
-                'params'   => [
+                'data'     => [
                     'actual'   => $stub,
                     'expected' => 'method',
                     'logs'     => []
@@ -494,7 +494,7 @@ describe("toReceive", function() {
             $actual = $matcher->description();
 
             expect($actual['description'])->toBe('receive the expected method with expected parameters.');
-            expect($actual['params'])->toBe([
+            expect($actual['data'])->toBe([
                 'actual received'                 => 'method',
                 'actual received times'           => 1,
                 'actual received parameters list' => [['Good Bye!']],

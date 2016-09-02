@@ -62,11 +62,11 @@ class Report
     protected $_matcherName = null;
 
     /**
-     * The matcher params.
+     * The matcher data.
      *
      * @var array
      */
-    protected $_params = [];
+    protected $_data = [];
 
     /**
      * The related exception.
@@ -97,7 +97,7 @@ class Report
             'description' => null,
             'matcher'     => null,
             'matcherName' => null,
-            'params'      => [],
+            'data'        => [],
             'backtrace'   => [],
             'exception'   => null
         ];
@@ -109,7 +109,7 @@ class Report
         $this->_description = $config['description'];
         $this->_matcher     = $config['matcher'];
         $this->_matcherName = $config['matcherName'];
-        $this->_params      = $config['params'];
+        $this->_data        = $config['data'];
         $this->_backtrace   = $config['backtrace'];
         $this->_exception   = $config['exception'];
 
@@ -181,13 +181,13 @@ class Report
     }
 
     /**
-     * Gets the matcher params.
+     * Gets the matcher data.
      *
      * @return array
      */
-    public function params()
+    public function data()
     {
-        return $this->_params;
+        return $this->_data;
     }
 
     /**

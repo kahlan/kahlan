@@ -93,7 +93,7 @@ describe("Specification", function() {
                 expect($pass->matcherName())->toBe('toBe');
                 expect($pass->not())->toBe(false);
                 expect($pass->type())->toBe('pass');
-                expect($pass->params())->toBe([
+                expect($pass->data())->toBe([
                     'actual'   => true,
                     'expected' => true
                 ]);
@@ -124,7 +124,7 @@ describe("Specification", function() {
                 expect($pass->matcherName())->toBe('toReceive');
                 expect($pass->not())->toBe(false);
                 expect($pass->type())->toBe('pass');
-                expect($pass->params())->toBe([
+                expect($pass->data())->toBe([
                     'actual received'       => 'methodName',
                     "actual received times" => 1,
                     'expected to receive'   => 'methodName'
@@ -229,7 +229,7 @@ describe("Specification", function() {
                 expect($failure->matcherName())->toBe('toBe');
                 expect($failure->not())->toBe(false);
                 expect($failure->type())->toBe('fail');
-                expect($failure->params())->toBe([
+                expect($failure->data())->toBe([
                     'actual'   => true,
                     'expected' => false
                 ]);
@@ -259,7 +259,7 @@ describe("Specification", function() {
                 expect($failure->matcherName())->toBe('toReceive');
                 expect($failure->not())->toBe(false);
                 expect($failure->type())->toBe('fail');
-                expect($failure->params())->toBe([
+                expect($failure->data())->toBe([
                     'actual received calls' => ['__construct'],
                     'expected to receive'   => 'methodName'
                 ]);
@@ -335,7 +335,7 @@ describe("Specification", function() {
                 expect($failure->matcherName())->toBe('toBe');
                 expect($failure->not())->toBe(false);
                 expect($failure->type())->toBe('fail');
-                expect($failure->params())->toBe([
+                expect($failure->data())->toBe([
                     'actual'   => true,
                     'expected' => false
                 ]);
@@ -367,7 +367,7 @@ describe("Specification", function() {
                 expect($failure->matcherName())->toBe('toBe');
                 expect($failure->not())->toBe(false);
                 expect($failure->type())->toBe('fail');
-                expect($failure->params())->toBe([
+                expect($failure->data())->toBe([
                     'actual'   => true,
                     'expected' => false
                 ]);

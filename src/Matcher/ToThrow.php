@@ -117,10 +117,10 @@ class ToThrow
     public static function _buildDescription($actual, $expected)
     {
         $description = "throw a compatible exception.";
-        $params['actual'] = $actual;
-        $params['expected'] = $expected;
+        $data['actual'] = $actual;
+        $data['expected'] = $expected;
 
-        static::$_description = compact('description', 'params');
+        static::$_description = compact('description', 'data');
     }
 
     /**
