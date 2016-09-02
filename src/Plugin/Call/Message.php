@@ -59,10 +59,17 @@ class Message
         ];
         $config += $defaults;
 
+        $static = $config['static'];
+        $name = $config['name'];
+        if (preg_match('/^::.*/', $name)) {
+            $static = true;
+            $name = substr($name, 2);
+        }
+
         $this->_reference = $config['reference'];
-        $this->_name = $config['name'];
+        $this->_name = $name;
         $this->_args = $config['args'];
-        $this->_static = $config['static'];
+        $this->_static = $static;
     }
 
     /**
@@ -145,7 +152,7 @@ class Message
      */
     public function name()
     {
-        return $this->_name;
+        return $this->isStatic() ? '::' . $this->_name : $this->_name;
     }
 
     /**

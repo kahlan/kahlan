@@ -107,8 +107,14 @@ class Calls
      */
     public static function find($message, $index = 0, $times = 0)
     {
-        $reference = $message->reference();
         $success = false;
+        $messages = !is_array($message) ? [$message] : $message;
+
+        $message = reset($messages);
+        $reference = $message->reference();
+        $reference = $message->isStatic() && is_object($reference) ? get_class($reference) : $reference;
+
+        $lastFound = null;
         $args = [];
 
         $count = count(static::$_logs);
@@ -128,13 +134,21 @@ class Calls
                 continue;
             }
 
+            if ($message = next($messages)) {
+                $lastFound = $message;
+                $reference = $message->reference();
+                $reference = $message->isStatic() && is_object($reference) ? get_class($reference) : $reference;
+                $args = [];
+                continue;
+            }
+
             $times -= 1;
             if ($times < 0) {
                 static::$_index = $i + 1;
                 $success = true;
                 break;
             } elseif ($times === 0) {
-                $next = static::find($message, $i + 1);
+                $next = static::find($messages, $i + 1);
                 if ($next['success']) {
                     $args = array_merge($args, $next['args']);
                     $success = false;
@@ -144,9 +158,11 @@ class Calls
                 }
                 break;
             }
+            return static::find($messages, $i + 1, $times);
         }
         $index = static::$_index;
-        return compact('success', 'args', 'index');
+        $message = $lastFound ?: reset($messages);
+        return compact('success', 'message', 'args', 'index');
     }
 
     /**
