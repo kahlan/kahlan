@@ -199,16 +199,6 @@ class ToReceive
     }
 
     /**
-     * Gets the message instance.
-     *
-     * @return object
-     */
-    public function message()
-    {
-        return $this->_message;
-    }
-
-    /**
      * Gets the backtrace reference.
      *
      * @return object
