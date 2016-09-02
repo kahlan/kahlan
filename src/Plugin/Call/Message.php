@@ -27,13 +27,6 @@ class Message
     protected $_args = null;
 
     /**
-     * Number of occurences to match.
-     *
-     * @var integer
-     */
-    protected $_times = 0;
-
-    /**
      * Static call.
      *
      * @var array
@@ -67,37 +60,12 @@ class Message
     /**
      * Sets arguments requirement.
      *
-     * @param  mixed ... <0,n> Parameter(s).
+     * @param  mixed ... <0,n> Argument(s).
      * @return self
      */
     public function with()
     {
         $this->_args = func_get_args();
-        return $this;
-    }
-
-    /**
-     * Sets the number of occurences.
-     *
-     * @return object $this.
-     */
-    public function once()
-    {
-        return $this->times(1);
-    }
-
-    /**
-     * Gets/sets the number of occurences.
-     *
-     * @param  integer $times The number of occurences to set or none to get it.
-     * @return mixed          The number of occurences on get or `$this` otherwise.
-     */
-    public function times($times = null)
-    {
-        if (!func_num_args()) {
-            return $this->_times;
-        }
-        $this->_times = $times;
         return $this;
     }
 
