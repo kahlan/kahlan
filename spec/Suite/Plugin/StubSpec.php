@@ -656,7 +656,7 @@ describe("Stub", function() {
 
             $stub = Stub::create([
                 'extends' => 'Kahlan\Spec\Fixture\Plugin\Stub\ConstrDoz',
-                'params' => ['a', 'b']
+                'args'    => ['a', 'b']
             ]);
 
             expect($stub->a)->toBe('a');

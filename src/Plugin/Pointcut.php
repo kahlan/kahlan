@@ -21,7 +21,7 @@ class Pointcut
      *
      * @return boolean If `true` is returned, the normal execution of the method is aborted.
      */
-    public static function before($method, $self, &$params)
+    public static function before($method, $self, &$args)
     {
         if (!Suite::registered()) {
             return false;
@@ -36,11 +36,11 @@ class Pointcut
         }
 
         if ($name === '__call' || $name === '__callStatic') {
-            $name = array_shift($params);
-            $params = array_shift($params);
+            $name = array_shift($args);
+            $args = array_shift($args);
         }
 
-        return static::_stubbedMethod($lsb, $self, $class, $name, $params);
+        return static::_stubbedMethod($lsb, $self, $class, $name, $args);
     }
 
     /**
@@ -50,10 +50,10 @@ class Pointcut
      * @param  object|string $self The object instance or a fully-namespaces class name.
      * @param  string $class       The class name.
      * @param  string $name        The method name.
-     * @param  string $params      The passed params.
+     * @param  string $args        The passed arguments.
      * @return boolean             Returns `true` if the method has been stubbed.
      */
-    protected static function _stubbedMethod($lsb, $self, $class, $name, $params)
+    protected static function _stubbedMethod($lsb, $self, $class, $name, $args)
     {
         if (is_object($self)) {
             $list = $lsb === $class ? [$self, $lsb] : [$self, $lsb, $class];
@@ -65,9 +65,9 @@ class Pointcut
         $calls = static::$_classes['calls'];
         $stub = static::$_classes['stub'];
 
-        $calls::log($list, compact('name', 'params'));
+        $calls::log($list, compact('name', 'args'));
 
-        if ($method = $stub::find($list, $name, $params)) {
+        if ($method = $stub::find($list, $name, $args)) {
             return $method;
         }
 

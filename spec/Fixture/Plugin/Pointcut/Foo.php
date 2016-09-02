@@ -48,11 +48,11 @@ class Foo
         return $bar->send();
     }
 
-    public function __call($name, $params)
+    public function __call($name, $args)
     {
     }
 
-    public static function __callStatic($name, $params)
+    public static function __callStatic($name, $args)
     {
     }
 

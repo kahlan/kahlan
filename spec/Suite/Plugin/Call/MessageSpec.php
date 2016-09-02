@@ -18,14 +18,14 @@ describe("Message", function() {
 
     });
 
-    describe("->params()", function() {
+    describe("->args()", function() {
 
-        it('Gets the message params', function() {
+        it('Gets the message args', function() {
 
             $message = new Message([
-                'params'  => ['a', 'b', 'c'],
+                'args'  => ['a', 'b', 'c'],
             ]);
-            expect($message->params())->toBe(['a', 'b', 'c']);
+            expect($message->args())->toBe(['a', 'b', 'c']);
 
         });
 
