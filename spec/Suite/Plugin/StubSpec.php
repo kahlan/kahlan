@@ -664,6 +664,14 @@ describe("Stub", function() {
 
         });
 
+        it("expects method called in the past to be uncalled", function() {
+
+            $stub = Stub::create();
+            $stub->message();
+            expect($stub)->not->toReceive('message');
+
+        });
+
     });
 
     describe("::classname()", function() {
@@ -728,6 +736,14 @@ describe("Stub", function() {
             $class = Stub::classname();
             expect($class)->toReceive('__construct');
             $stub = new $class();
+
+        });
+
+        it("expects method called in the past to be uncalled", function() {
+
+            $class = Stub::classname();
+            $class::message();
+            expect($class)->not->toReceive('::message');
 
         });
 

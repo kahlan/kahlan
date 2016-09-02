@@ -22,41 +22,6 @@ class FunctionCalls
     protected static $_index = 0;
 
     /**
-     * Message invocation.
-     *
-     * @var array
-     */
-    protected $_message = [];
-
-    /**
-     * Reference.
-     *
-     * @var array
-     */
-    protected $_reference = null;
-
-    /**
-     * The Constructor.
-     *
-     * @param string $reference A fully-namespaced function name.
-     */
-    public function __construct($reference)
-    {
-        Suite::register(Suite::hash($reference));
-        $this->_message = new Message(['name' => $reference]);
-    }
-
-    /**
-     * Return the message instance.
-     *
-     * @return object The message instance.
-     */
-    public function message()
-    {
-        return $this->_message;
-    }
-
-    /**
      * Logs a call.
      *
      * @param mixed  $reference A fully-namespaced function name.

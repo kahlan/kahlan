@@ -1,7 +1,9 @@
 <?php
 namespace Kahlan\Matcher;
 
+use Kahlan\Suite;
 use Kahlan\Analysis\Debugger;
+use Kahlan\Plugin\Call\Message;
 use Kahlan\Plugin\Call\MethodCalls;
 use Kahlan\Plugin\Stub;
 
@@ -27,13 +29,6 @@ class ToReceive
      * @var array
      */
     protected $_backtrace = null;
-
-    /**
-     * The call instance.
-     *
-     * @var object
-     */
-    protected $_calls = null;
 
     /**
      * The message instance.
@@ -97,8 +92,22 @@ class ToReceive
 
         $this->_actual = $actual;
         $this->_expected = $expected;
-        $this->_calls = new MethodCalls($actual);
-        $this->_message = $this->_calls->method($expected);
+
+        if (is_object($actual)) {
+            Suite::register(get_class($actual));
+        }
+        Suite::register(Suite::hash($actual));
+
+        $static = false;
+        if (preg_match('/^::.*/', $expected)) {
+            $static = true;
+            $expected = substr($expected, 2);
+        }
+        $this->_message = new Message([
+            'static' => $static,
+            'name' => $expected
+        ]);
+
         $this->_backtrace = Debugger::backtrace();
     }
 

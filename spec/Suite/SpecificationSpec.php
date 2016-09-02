@@ -260,7 +260,7 @@ describe("Specification", function() {
                 expect($failure->not())->toBe(false);
                 expect($failure->type())->toBe('fail');
                 expect($failure->data())->toBe([
-                    'actual received calls' => ['__construct'],
+                    'actual received calls' => [],
                     'expected to receive'   => 'methodName'
                 ]);
                 expect($failure->description())->toBe('receive the expected method.');
