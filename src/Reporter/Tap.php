@@ -27,12 +27,12 @@ class Tap extends Terminal
     /**
      * Callback called before any specs processing.
      *
-     * @param array $params The suite params array.
+     * @param array $args The suite arguments.
      */
-    public function start($params)
+    public function start($args)
     {
         $this->_header = false;
-        parent::start($params);
+        parent::start($args);
         $this->write("\n");
         $this->write("# Building report it can take some time, please be patient");
     }
@@ -61,8 +61,8 @@ class Tap extends Terminal
         $this->_counters['total'] += 1;
 
         $this->_formatTap(false, $report);
-        $this->_lines[] = "# Actual: {$report->params()["actual"]}";
-        $this->_lines[] = "# Expected: {$report->params()["expected"]}";
+        $this->_lines[] = "# Actual: {$report->data()["actual"]}";
+        $this->_lines[] = "# Expected: {$report->data()["expected"]}";
     }
 
     /**

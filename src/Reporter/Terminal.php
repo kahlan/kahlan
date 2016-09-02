@@ -81,11 +81,11 @@ class Terminal extends Reporter
     /**
      * Callback called before any specs processing.
      *
-     * @param array $params The suite params array.
+     * @param array $args The suite arguments.
      */
-    public function start($params)
+    public function start($args)
     {
-        parent::start($params);
+        parent::start($args);
         if (!$this->_header) {
             return;
         }
@@ -252,13 +252,13 @@ EOD;
     }
 
     /**
-     * Prints diff of spec's params.
+     * Prints diff of spec's data.
      *
      * @param array $report A report array.
      */
     protected function _reportDiff($report)
     {
-        $params = $report->params();
+        $data = $report->data();
 
         $this->write("It expect actual ");
 
@@ -270,7 +270,7 @@ EOD;
         }
         $this->write("to {$report->description()}\n\n");
 
-        foreach ($params as $key => $value) {
+        foreach ($data as $key => $value) {
             if (preg_match('~actual~', $key)) {
                 $this->write("{$key}:\n", 'yellow');
                 $this->prefix($this->format(' ', 'n;;91') . ' ');

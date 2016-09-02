@@ -52,11 +52,11 @@ class ToHaveLength
     public static function _buildDescription($actual, $length, $expected)
     {
         $description = "have the expected length.";
-        $params['actual'] = $actual;
-        $params['actual length'] = $length;
-        $params['expected length'] = $expected;
+        $data['actual'] = $actual;
+        $data['actual length'] = $length;
+        $data['expected length'] = $expected;
 
-        static::$_description = compact('description', 'params');
+        static::$_description = compact('description', 'data');
     }
 
     /**

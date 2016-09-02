@@ -234,23 +234,23 @@ class ToReceive
                 $logged[] = $log['static'] ? '::' . $log['name'] : $log['name'];
             }
 
-            $this->_description['params']['actual received calls'] = $logged;
+            $this->_description['data']['actual received calls'] = $logged;
         } elseif ($calledTimes) {
-            $this->_description['params']['actual received'] = $this->_expected;
-            $this->_description['params']['actual received times'] = $calledTimes;
+            $this->_description['data']['actual received'] = $this->_expected;
+            $this->_description['data']['actual received times'] = $calledTimes;
             if ($with !== null) {
-               $this->_description['params']['actual received parameters list'] = $report['args'];
+               $this->_description['data']['actual received parameters list'] = $report['args'];
             }
         }
 
-        $this->_description['params']['expected to receive'] = $this->_expected;
+        $this->_description['data']['expected to receive'] = $this->_expected;
 
         if ($with !== null) {
-            $this->_description['params']['expected parameters'] = $with;
+            $this->_description['data']['expected parameters'] = $with;
         }
 
         if ($times) {
-            $this->_description['params']['expected received times'] = $times;
+            $this->_description['data']['expected received times'] = $times;
         }
     }
 

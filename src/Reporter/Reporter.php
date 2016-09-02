@@ -40,12 +40,12 @@ class Reporter
     /**
      * Callback called before any specs processing.
      *
-     * @param array $params The suite params array.
+     * @param array $args The suite arguments.
      */
-    public function start($params)
+    public function start($args)
     {
         $this->_start = $this->_start ?: microtime(true);
-        $this->_total = max(1, $params['total']);
+        $this->_total = max(1, $args['total']);
     }
 
     /**

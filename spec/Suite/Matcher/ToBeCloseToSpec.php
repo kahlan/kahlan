@@ -61,9 +61,9 @@ describe("toBeCloseTo", function() {
             $actual = ToBeCloseTo::description();
 
             expect($actual['description'])->toBe('be close to expected relying to a precision of 2.');
-            expect((string) $actual['params']['actual'])->toBe((string) 1.23);
-            expect((string) $actual['params']['expected'])->toBe((string) 1.22499991);
-            expect((string) $actual['params']['gap is >='])->toBe((string) 0.005);
+            expect((string) $actual['data']['actual'])->toBe((string) 1.23);
+            expect((string) $actual['data']['expected'])->toBe((string) 1.22499991);
+            expect((string) $actual['data']['gap is >='])->toBe((string) 0.005);
 
         });
 

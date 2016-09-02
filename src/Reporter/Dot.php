@@ -13,18 +13,18 @@ class Dot extends Terminal
     /**
      * Callback called before any specs processing.
      *
-     * @param array $params The suite params array.
+     * @param array $args The suite arguments array.
      */
-    public function start($params)
+    public function start($args)
     {
-        parent::start($params);
+        parent::start($args);
         $this->write("\n");
     }
 
     /**
      * Callback called on successful expect.
      *
-     * @param object $report An expect report object.
+     * @param object $report An expect report.
      */
     public function pass($report = null)
     {

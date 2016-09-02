@@ -35,9 +35,9 @@ describe("toHaveLength", function() {
             $actual = ToHaveLength::description();
 
             expect($actual['description'])->toBe('have the expected length.');
-            expect($actual['params']['actual'])->toBe([1, 2, 3]);
-            expect($actual['params']['actual length'])->toBe(3);
-            expect($actual['params']['expected length'])->toBe(5);
+            expect($actual['data']['actual'])->toBe([1, 2, 3]);
+            expect($actual['data']['actual length'])->toBe(3);
+            expect($actual['data']['expected length'])->toBe(5);
 
         });
 

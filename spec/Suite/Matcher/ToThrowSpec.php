@@ -156,8 +156,8 @@ describe("toThrow", function() {
             $actual = ToThrow::description();
 
             expect($actual['description'])->toBe('throw a compatible exception.');
-            expect($actual['params']['actual'])->toBe($actualException);
-            expect($actual['params']['expected'])->toBe($expectedException);
+            expect($actual['data']['actual'])->toBe($actualException);
+            expect($actual['data']['expected'])->toBe($expectedException);
 
         });
 
@@ -169,8 +169,8 @@ describe("toThrow", function() {
             $actual = ToThrow::description();
 
             expect($actual['description'])->toBe('throw a compatible exception.');
-            expect($actual['params']['actual'])->toBe(null);
-            expect($actual['params']['expected'])->toBe($exception);
+            expect($actual['data']['actual'])->toBe(null);
+            expect($actual['data']['expected'])->toBe($exception);
 
         });
 
@@ -180,9 +180,9 @@ describe("toThrow", function() {
             $actual = ToThrow::description();
 
             expect($actual['description'])->toBe('throw a compatible exception.');
-            expect($actual['params']['actual'])->toBe(null);
-            expect($actual['params']['expected'])->toBeAnInstanceOf('Kahlan\Matcher\AnyException');
-            expect($actual['params']['expected']->getMessage())->toBe('Expected exception message');
+            expect($actual['data']['actual'])->toBe(null);
+            expect($actual['data']['expected'])->toBeAnInstanceOf('Kahlan\Matcher\AnyException');
+            expect($actual['data']['expected']->getMessage())->toBe('Expected exception message');
 
         });
 
