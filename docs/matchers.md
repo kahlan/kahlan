@@ -250,7 +250,27 @@ it("expects \$foo to receive message() with the correct param", function() {
 
     $foo = new Foo();
     expect($foo)->toReceive('message')->with('My Message');
-    $foo->message('My Message');
+    expect($foo->message('My Message'))->toBe($foo);
+
+});
+```
+
+```php
+it("expects \$foo to receive message() and bail out using a stub", function() {
+
+    $foo = new Foo();
+    expect($foo)->toReceive('message')->andReturn('bail out');
+    expect($foo->message('My Message'))->toBe('bail out');
+
+});
+```
+
+```php
+it("expects \$foo to receive message() and bail out using a closure for stub", function() {
+
+    $foo = new Foo();
+    expect($foo)->toReceive('message')->andRun(function() { return 'bail out'; });
+    expect($foo->message('My Message'))->toBe('bail out');
 
 });
 ```
@@ -306,6 +326,17 @@ it("expects \$foo to receive message() but not followed by foo()", function() {
 
 });
 ```
+
+```php
+it("expects \$foo to receive a chain of messages with a final stub", function() {
+
+    $foo = new Foo();
+    expect($foo)->toReceive('a->b->c')->andReturn('Hello World!');
+    expect($foo->a()->b()->c())->toBe('Hello World!');
+
+});
+```
+**Note:** You should pay attention that using such matchers will make your tests more "fragile" and can be identified as code smells even though not all code smells indicate real problems.
 
 ### <a name="method"></a>Function invocation matchers
 
