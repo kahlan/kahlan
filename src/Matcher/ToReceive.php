@@ -3,25 +3,27 @@ namespace Kahlan\Matcher;
 
 use Kahlan\Suite;
 use Kahlan\Analysis\Debugger;
+use Kahlan\Analysis\Inspector;
 use Kahlan\Plugin\Call\Message;
 use Kahlan\Plugin\Call\Calls;
 use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Monkey;
 
 class ToReceive
 {
     /**
-     * A fully-namespaced class name or an object instance.
+     * The messages instance.
      *
-     * @var string|object
+     * @var object
      */
-    protected $_actual = null;
+    protected $_messages = [];
 
     /**
      * The expected method method name to be called.
      *
-     * @var string
+     * @var array
      */
-    protected $_expected = null;
+    protected $_expected = [];
 
     /**
      * The expectation backtrace reference.
@@ -29,13 +31,6 @@ class ToReceive
      * @var array
      */
     protected $_backtrace = null;
-
-    /**
-     * The message instance.
-     *
-     * @var object
-     */
-    protected $_message = null;
 
     /**
      * The report.
@@ -90,26 +85,70 @@ class ToReceive
             $actual = is_object($actual) ? get_class($actual) : $actual;
         }
 
-        $this->_actual = $actual;
+        $parts = preg_split('~((?:->|::)[^-:]+)~', $expected, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+        $expected = [];
+        foreach ($parts as $name) {
+            $expected[] = isset($name[0]) && $name[0] === '-' ? substr($name, 2) : $name;
+        }
+
         $this->_expected = $expected;
 
+        $total = count($expected);
+
+        $actual = $this->_actual($actual);
+
+        foreach ($expected as $index => $method) {
+            $this->_messages[] = $this->_message($actual, $method);
+            if ($index < $total - 1) {
+                $stub = Stub::create();
+                Stub::on($actual)->method($method)->andReturn($stub);
+                $actual = $stub;
+            }
+        }
+
+        $this->_backtrace = Debugger::backtrace();
+    }
+
+    /**
+     * Replaces core classes using a dynamic stub when possible.
+     *
+     * @param  string|object $actual A fully-namespaced class name or an object instance.
+     * @return string                The actual value to use.
+     */
+    protected function _actual($actual)
+    {
+        if (!is_string($actual) || !class_exists($actual)) {
+            return $actual;
+        }
+        $reflection = Inspector::inspect($actual);
+
+        if (!$reflection->isInternal()) {
+            return $actual;
+        }
+        $layer = Stub::classname();
+        Monkey::patch($actual, $layer);
+
+        return $layer;
+    }
+
+    /**
+     * Build a message instance and make it watched.
+     *
+     * @param string|object $actual A fully-namespaced class name or an object instance.
+     * @param string        $method The expected method method name to be called.
+     * @param object                A message instance.
+     */
+    protected function _message($actual, $method)
+    {
         if (is_object($actual)) {
             Suite::register(get_class($actual));
         }
         Suite::register(Suite::hash($actual));
-
-        $static = false;
-        if (preg_match('/^::.*/', $expected)) {
-            $static = true;
-            $expected = substr($expected, 2);
-        }
-        $this->_message = new Message([
+        return new Message([
             'reference' => $actual,
-            'static'    => $static,
-            'name'      => $expected
+            'name'      => $method
         ]);
-
-        $this->_backtrace = Debugger::backtrace();
     }
 
     /**
@@ -120,7 +159,8 @@ class ToReceive
      */
     public function with()
     {
-        call_user_func_array([$this->_message, 'with'], func_get_args());
+        $message = end($this->_messages);
+        call_user_func_array([$message, 'with'], func_get_args());
         return $this;
     }
 
@@ -157,7 +197,10 @@ class ToReceive
      */
     public function andRun($closure)
     {
-        Stub::on($this->_actual)->method($this->_expected, $closure);
+        $message = end($this->_messages);
+        $reference = $message->reference();
+        $method = $message->name();
+        Stub::on($reference)->method($method, $closure);
     }
 
     /**
@@ -167,8 +210,11 @@ class ToReceive
      */
     public function andReturn()
     {
-        $method = Stub::on($this->_actual)->method($this->_expected);
-        call_user_func_array([$method, 'andReturn'], func_get_args());
+        $message = end($this->_messages);
+        $reference = $message->reference();
+        $method = $message->name();
+        $stub = Stub::on($reference)->method($method);
+        call_user_func_array([$stub, 'andReturn'], func_get_args());
     }
 
     /**
@@ -193,7 +239,7 @@ class ToReceive
     public function resolve()
     {
         $startIndex = $this->_ordered ? Calls::lastFindIndex() : 0;
-        $report = Calls::find($this->_message, $startIndex, $this->times());
+        $report = Calls::find($this->_messages, $startIndex, $this->times());
         $this->_report = $report;
         $this->_buildDescription($startIndex);
         return $report['success'];
@@ -216,10 +262,13 @@ class ToReceive
      */
     public function _buildDescription($startIndex = 0)
     {
-        $with = $this->_message->args();
         $times = $this->times();
 
         $report = $this->_report;
+        $reference = $report['message']->reference();
+        $expected = $report['message']->name();
+        $with = $report['message']->args();
+
 
         $expectedTimes = $times ? ' the expected times' : '';
         $expectedParameters = $with ? ' with expected parameters' : '';
@@ -230,20 +279,19 @@ class ToReceive
 
         if (!$calledTimes) {
             $logged = [];
-            foreach(Calls::logs($this->_actual, $startIndex) as $log) {
+            foreach(Calls::logs($reference, $startIndex) as $log) {
                 $logged[] = $log['static'] ? '::' . $log['name'] : $log['name'];
             }
-
             $this->_description['data']['actual received calls'] = $logged;
         } elseif ($calledTimes) {
-            $this->_description['data']['actual received'] = $this->_expected;
+            $this->_description['data']['actual received'] = $expected;
             $this->_description['data']['actual received times'] = $calledTimes;
             if ($with !== null) {
                $this->_description['data']['actual received parameters list'] = $report['args'];
             }
         }
 
-        $this->_description['data']['expected to receive'] = $this->_expected;
+        $this->_description['data']['expected to receive'] = $expected;
 
         if ($with !== null) {
             $this->_description['data']['expected parameters'] = $with;

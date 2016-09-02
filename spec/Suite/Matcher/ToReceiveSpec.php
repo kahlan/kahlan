@@ -1,14 +1,21 @@
 <?php
 namespace Kahlan\Spec\Suite\Matcher;
 
+use Exception;
+use InvalidArgumentException;
+use DateTime;
+
 use Kahlan\Jit\Interceptor;
 use Kahlan\Arg;
 use Kahlan\Plugin\Stub;
-use Kahlan\Jit\Patcher\Pointcut;
+use Kahlan\Plugin\Monkey;
+use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
+use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 use Kahlan\Matcher\ToReceive;
 
 use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar;
+use Kahlan\Spec\Fixture\Plugin\Monkey\User;
 
 describe("toReceive", function() {
 
@@ -24,7 +31,8 @@ describe("toReceive", function() {
             $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
             $include = ['Kahlan\Spec\\'];
             $interceptor = Interceptor::patch(compact('include', 'cachePath'));
-            $interceptor->patchers()->add('pointcut', new Pointcut());
+            $interceptor->patchers()->add('pointcut', new PointcutPatcher());
+            $interceptor->patchers()->add('monkey', new MonkeyPatcher());
         });
 
         /**
@@ -268,6 +276,48 @@ describe("toReceive", function() {
                 });
 
             });
+
+            context("with chain of methods", function() {
+
+                it("expects called chain to be called", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('a->b->c')->andReturn('something');
+                    $query = $foo->a();
+                    $select = $query->b();
+                    expect($select->c())->toBe('something');
+
+                });
+
+                it("expects not called chain to be uncalled", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->not->toReceive('a->c->b')->andReturn('something');
+                    $query = $foo->a();
+                    $select = $query->b();
+                    $select->c();
+
+                });
+
+                it('auto monkey patch core classes using a stub when possible', function() {
+
+                    expect('PDO')->toReceive('prepare->fetchAll')->andReturn([['name' => 'bob']]);
+                    $user = new User();
+                    expect($user->all())->toBe([['name' => 'bob']]);
+
+                });
+
+                it('allows to mix static/dynamic methods', function() {
+
+                    Monkey::patch('PDO', Stub::create());
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create->all')->andReturn([['name' => 'bob']]);
+                    $user = User::create();
+                    expect($user->all())->toBe([['name' => 'bob']]);
+
+                });
+
+            });
+
         });
 
         context("with static call", function() {
@@ -344,6 +394,28 @@ describe("toReceive", function() {
                 $foo = new Foo();
                 expect($foo)->toReceive('::version');
                 $foo::version();
+
+            });
+
+            context("with chain of methods", function() {
+
+                it("expects called chain to be called", function() {
+
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->andReturn('something');
+                    $query = Foo::getQuery();
+                    $select = $query::newQuery();
+                    expect($select::from())->toBe('something');
+
+                });
+
+                it("expects not called chain to be uncalled", function() {
+
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery::from::newQuery')->andReturn('something');
+                    $query = Foo::getQuery();
+                    $select = $query::newQuery();
+                    $select::from();
+
+                });
 
             });
 

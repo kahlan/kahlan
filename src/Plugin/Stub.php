@@ -306,7 +306,7 @@ EOT;
             '__construct'    =>  "public function __construct() {}",
             '__destruct'     =>  "public function __destruct() {}",
             '__call'         =>  "public function __call(\$name, \$args) { return new static(); }",
-            '::__callStatic' =>  "public static function __callStatic(\$name, \$args) {}",
+            '::__callStatic' =>  "public static function __callStatic(\$name, \$args) { return get_called_class(); }",
             '__get'          =>  "public function __get(\$key){ return new static(); }",
             '__set'          =>  "public function __set(\$key, \$value) { \$this->{\$key} = \$value; }",
             '__isset'        =>  "public function __isset(\$key) { return isset(\$this->{\$key}); }",
