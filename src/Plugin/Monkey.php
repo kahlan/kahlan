@@ -2,7 +2,7 @@
 namespace Kahlan\Plugin;
 
 use Kahlan\Suite;
-use Kahlan\Plugin\Call\FunctionCalls;
+use Kahlan\Plugin\Call\Calls;
 
 class Monkey
 {
@@ -34,20 +34,20 @@ class Monkey
      */
     public static function patched($namespace, $ref, $isFunc = true)
     {
-        $map = $ref;
+        $name = $ref;
         if(!$isFunc || function_exists("{$namespace}\\{$ref}")) {
-            $map = "{$namespace}\\{$ref}";
+            $name = "{$namespace}\\{$ref}";
         }
-        $closure = isset(static::$_registered[$map]) ? static::$_registered[$map] : $map;
+        $closure = isset(static::$_registered[$name]) ? static::$_registered[$name] : $name;
         if (!$isFunc) {
             return $closure;
         }
-        if (!Suite::registered($map)) {
+        if (!Suite::registered($name)) {
             return $closure;
         }
-        return function() use ($map, $closure) {
+        return function() use ($name, $closure) {
             $args = func_get_args();
-            FunctionCalls::log($map, $args);
+            Calls::log(null, compact('name', 'args'));
             return call_user_func_array($closure, $args);
         };
     }

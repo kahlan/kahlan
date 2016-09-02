@@ -4,7 +4,7 @@ namespace Kahlan\Plugin\Call;
 use Kahlan\Suite;
 use Kahlan\Plugin\Call\Message;
 
-class MethodCalls
+class Calls
 {
     /**
      * Logged calls.
@@ -53,8 +53,10 @@ class MethodCalls
         }
         if (is_object($reference)) {
             $call += ['instance' => $reference, 'class' => get_class($reference), 'static' => $static];
-        } else {
+        } elseif ($reference) {
             $call += ['instance' => null, 'class' => $reference, 'static' => $static];
+        } else {
+            $call += ['instance' => null, 'class' => null, 'static' => false];
         }
         return $call;
     }
@@ -99,13 +101,13 @@ class MethodCalls
     /**
      * Finds a logged call.
      *
-     * @param  object|string $reference An instance or a fully-namespaced class name.
      * @param  object        $message   The message method name.
      * @param  interger      $index     Start index.
      * @return array|false              Return founded log call.
      */
-    public static function find($reference, $message, $index = 0, $times = 0)
+    public static function find($message, $index = 0, $times = 0)
     {
+        $reference = $message->reference();
         $success = false;
         $args = [];
 
@@ -132,7 +134,7 @@ class MethodCalls
                 $success = true;
                 break;
             } elseif ($times === 0) {
-                $next = static::find($reference, $message, $i + 1);
+                $next = static::find($message, $i + 1);
                 if ($next['success']) {
                     $args = array_merge($args, $next['args']);
                     $success = false;
@@ -157,7 +159,11 @@ class MethodCalls
     protected static function _matchReference($reference, $logs = [])
     {
         foreach ($logs as $log) {
-            if (is_object($reference)) {
+            if (!$reference) {
+                if (empty($log['class']) && empty($log['instance'])) {
+                    return $log;
+                }
+            } elseif (is_object($reference)) {
                 if ($reference === $log['instance']) {
                     return $log;
                 }
