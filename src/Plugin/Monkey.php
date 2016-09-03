@@ -32,23 +32,30 @@ class Monkey
      * @param  boolean $isFunc    Boolean indicating if $ref is a function reference.
      * @return string             A fully namespaced reference.
      */
-    public static function patched($namespace, $ref, $isFunc = true)
+    public static function patched($namespace, $ref, $isFunc = true, &$substitute = null)
     {
         $name = $ref;
-        if(!$isFunc || function_exists("{$namespace}\\{$ref}")) {
-            $name = "{$namespace}\\{$ref}";
+
+        if ($namespace) {
+            if (!$isFunc || function_exists("{$namespace}\\{$ref}")) {
+                $name = "{$namespace}\\{$ref}";
+            }
         }
-        $closure = isset(static::$_registered[$name]) ? static::$_registered[$name] : $name;
+
+        $registered = isset(static::$_registered[$name]) ? static::$_registered[$name] : $name;
         if (!$isFunc) {
-            return $closure;
+            if (is_object($registered)) {
+                $substitute = $registered;
+            }
+            return $registered;
         }
         if (!Suite::registered($name)) {
-            return $closure;
+            return $registered;
         }
-        return function() use ($name, $closure) {
+        return function() use ($name, $registered) {
             $args = func_get_args();
             Calls::log(null, compact('name', 'args'));
-            return call_user_func_array($closure, $args);
+            return call_user_func_array($registered, $args);
         };
     }
 

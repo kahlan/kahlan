@@ -53,6 +53,15 @@ class Example extends \Kahlan\Fixture\Parent
         new stdClass;
     }
 
+    public function instantiateWithArguments()
+    {
+        $this->_db = new PDO(
+            "mysql:dbname=testdb;host=localhost",
+            'root',
+            ''
+        );
+    }
+
     public function instantiateRootBased()
     {
         new \stdClass;
