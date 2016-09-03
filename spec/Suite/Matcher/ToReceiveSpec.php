@@ -83,6 +83,15 @@ describe("toReceive", function() {
 
             });
 
+            it("throw an exception when trying to play with core instance", function() {
+
+                expect(function() {
+                    $date = new DateTime();
+                    expect($date)->toReceive('getTimestamp');
+                })->toThrow(new InvalidArgumentException("Can't Spy/Stub instances not from PHP userland, use `Stub::create()` to proxify your instance first."));
+
+            });
+
             context("when using with()", function() {
 
                 it("expects called method to be called with correct arguments", function() {
@@ -598,6 +607,27 @@ describe("toReceive", function() {
                 'expected to receive'             => 'method',
                 'expected parameters'             => ['Hello World!']
             ]);
+
+        });
+
+    });
+
+    describe("->resolve()", function() {
+
+        it("throw an exception when not explicitly defining the stub value", function() {
+
+            expect(function() {
+                $foo = new Foo();
+                $matcher = new ToReceive($foo, 'a->c->b');
+                $matcher->resolve([
+                    'instance' => $matcher,
+                    'data'     => [
+                        'actual'   => $foo,
+                        'expected' => 'a->c->b',
+                        'logs'     => []
+                    ]
+                ]);
+            })->toThrow(new Exception("Spying doesn't work with long chain syntax your must explicitly set the return value using `andReturn()`."));
 
         });
 
