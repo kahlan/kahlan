@@ -19,17 +19,17 @@ class Example extends \Kahlan\Fixture\Parent
     public $type = User::TYPE;
 
     public function classic()
-    {$__KMONKEY__0 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
+    {$__KMONKEY__0=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand');
         $__KMONKEY__0(2, 5);
     }
 
     public function rootBased()
-    {$__KMONKEY__1 = \Kahlan\Plugin\Monkey::patched(null , 'rand');
+    {$__KMONKEY__1=\Kahlan\Plugin\Monkey::patched(null , 'rand');
         $__KMONKEY__1(2, 5);
     }
 
     public function nested()
-    {$__KMONKEY__2 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
+    {$__KMONKEY__2=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand');
         return $__KMONKEY__2($__KMONKEY__2(2, 5), $__KMONKEY__2(6, 10));
     }
 
@@ -39,38 +39,47 @@ class Example extends \Kahlan\Fixture\Parent
     }
 
     public function namespaced()
-    {$__KMONKEY__3 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'time', true);
+    {$__KMONKEY__3=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'time');
         $__KMONKEY__3();
     }
 
     public function rootBasedInsteadOfNamespaced()
-    {$__KMONKEY__4 = \Kahlan\Plugin\Monkey::patched(null , 'time');
+    {$__KMONKEY__4=\Kahlan\Plugin\Monkey::patched(null , 'time');
         $__KMONKEY__4();
     }
 
     public function instantiate()
-    {$__KMONKEY__5 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'stdClass', false);
-        new $__KMONKEY__5;
+    {$__KMONKEY__5__=null;$__KMONKEY__5=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'stdClass', false, $__KMONKEY__5__);
+        ($__KMONKEY__5__?$__KMONKEY__5__:new $__KMONKEY__5);
+    }
+
+    public function instantiateWithArguments()
+    {$__KMONKEY__6__=null;$__KMONKEY__6=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'PDO', false, $__KMONKEY__6__);
+        $this->_db = ($__KMONKEY__6__?$__KMONKEY__6__:new $__KMONKEY__6(
+            "mysql:dbname=testdb;host=localhost",
+            'root',
+            ''
+        ));
     }
 
     public function instantiateRootBased()
-    {$__KMONKEY__6 = \Kahlan\Plugin\Monkey::patched(null , 'stdClass');
-        new $__KMONKEY__6;
+    {$__KMONKEY__7__=null;$__KMONKEY__7=\Kahlan\Plugin\Monkey::patched(null , 'stdClass', false, $__KMONKEY__7__);
+        ($__KMONKEY__7__?$__KMONKEY__7__:new $__KMONKEY__7);
     }
 
     public function instantiateFromUsed()
-    {$__KMONKEY__7 = \Kahlan\Plugin\Monkey::patched(null, 'Kahlan\MongoId');
-        new $__KMONKEY__7;
+    {$__KMONKEY__8__=null;$__KMONKEY__8=\Kahlan\Plugin\Monkey::patched(null, 'Kahlan\MongoId', false, $__KMONKEY__8__);
+        ($__KMONKEY__8__?$__KMONKEY__8__:new $__KMONKEY__8);
     }
 
     public function instantiateRootBasedFromUsed()
-    {$__KMONKEY__8 = \Kahlan\Plugin\Monkey::patched(null , 'MongoId');
-        new $__KMONKEY__8;
+    {$__KMONKEY__9__=null;$__KMONKEY__9=\Kahlan\Plugin\Monkey::patched(null , 'MongoId', false, $__KMONKEY__9__);
+        ($__KMONKEY__9__?$__KMONKEY__9__:new $__KMONKEY__9);
     }
 
     public function instantiateFromUsedSubnamespace()
-    {$__KMONKEY__9 = \Kahlan\Plugin\Monkey::patched(null, 'sub\name\space\MyClass');
-        new $__KMONKEY__9;
+    {$__KMONKEY__10__=null;$__KMONKEY__10=\Kahlan\Plugin\Monkey::patched(null, 'sub\name\space\MyClass', false, $__KMONKEY__10__);
+        ($__KMONKEY__10__?$__KMONKEY__10__:new $__KMONKEY__10);
     }
 
     public function instantiateVariable()
@@ -80,24 +89,24 @@ class Example extends \Kahlan\Fixture\Parent
     }
 
     public function staticCall()
-    {$__KMONKEY__10 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Debugger', false);
-        return $__KMONKEY__10::trace();
+    {$__KMONKEY__11=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Debugger', false);
+        return $__KMONKEY__11::trace();
     }
 
     public function staticCallFromUsed()
-    {$__KMONKEY__11 = \Kahlan\Plugin\Monkey::patched(null, 'Kahlan\Util\Text');
-        return $__KMONKEY__11::hash((object) 'hello');
+    {$__KMONKEY__12=\Kahlan\Plugin\Monkey::patched(null, 'Kahlan\Util\Text', false);
+        return $__KMONKEY__12::hash((object) 'hello');
     }
 
     public function noIndent()
-    {$__KMONKEY__12 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
-$__KMONKEY__12();
+    {$__KMONKEY__13=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand');
+$__KMONKEY__13();
     }
 
     public function closure()
     {
-        $func = function() {$__KMONKEY__13 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand', true);
-            $__KMONKEY__13(2.5);
+        $func = function() {$__KMONKEY__14=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand');
+            $__KMONKEY__14(2.5);
         };
         $func();
     }
@@ -110,23 +119,23 @@ $__KMONKEY__12();
     public function lambda()
     {
         $initializers = [
-            'name' => function($self) {$__KMONKEY__14 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'basename', true);$__KMONKEY__15 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'str_replace', true);
-                return $__KMONKEY__14($__KMONKEY__15('\\', '/', $self));
+            'name' => function($self) {$__KMONKEY__15=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'str_replace');$__KMONKEY__16=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'basename');
+                return $__KMONKEY__16($__KMONKEY__15('\\', '/', $self));
             },
-            'source' => function($self) {$__KMONKEY__16 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Inflector', false);
-                return $__KMONKEY__16::tableize($self::meta('name'));
+            'source' => function($self) {$__KMONKEY__17=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Inflector', false);
+                return $__KMONKEY__17::tableize($self::meta('name'));
             },
-            'title' => function($self) {$__KMONKEY__17 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'array_merge', true);
+            'title' => function($self) {$__KMONKEY__18=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'array_merge');
                 $titleKeys = array('title', 'name');
-                $titleKeys = $__KMONKEY__17($titleKeys, (array) $self::meta('key'));
+                $titleKeys = $__KMONKEY__18($titleKeys, (array) $self::meta('key'));
                 return $self::hasField($titleKeys);
             }
         ];
     }
 
-    public function subChild() {$__KMONKEY__18 = \Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'RecursiveIteratorIterator', false);
+    public function subChild() {$__KMONKEY__19__=null;$__KMONKEY__19=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'RecursiveIteratorIterator', false, $__KMONKEY__19__);
         if ($options['recursive']) {
-            $worker = new $__KMONKEY__18($worker, $iteratorFlags);
+            $worker = ($__KMONKEY__19__?$__KMONKEY__19__:new $__KMONKEY__19($worker, $iteratorFlags));
         }
     }
 
