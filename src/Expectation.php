@@ -224,9 +224,9 @@ class Expectation
     /**
      * Returns a compatible matcher class name according to a passed actual value.
      *
-     * @param  string $matcherName   The name of the matcher.
-     * @param  string $actual The actual value.
-     * @return string         A matcher class name.
+     * @param  string $matcherName The name of the matcher.
+     * @param  mixed  $actual      The actual value.
+     * @return string              A matcher class name.
      */
     public function _matcher($matcherName, $actual)
     {

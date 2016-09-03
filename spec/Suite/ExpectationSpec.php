@@ -154,7 +154,7 @@ describe("Expectation", function() {
 
         it("clears an expectation", function() {
 
-            $actual = new stdClass();
+            $actual = Stub::create();
             $expectation = Expectation::expect($actual, 10);
             $matcher = $expectation->not->toReceive('helloWorld');
 

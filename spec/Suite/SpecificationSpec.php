@@ -158,7 +158,7 @@ describe("Specification", function() {
 
                 $this->spec = new Specification([
                     'closure' => function() {
-                        $this->expect(new stdClass())->not->toReceive('helloWorld');
+                        $this->expect(Stub::create())->not->toReceive('helloWorld');
                     }
                 ]);
 
