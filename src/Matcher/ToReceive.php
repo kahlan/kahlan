@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan\Matcher;
 
+use Exception;
+use InvalidArgumentException;
 use Kahlan\Suite;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Analysis\Inspector;
@@ -61,6 +63,13 @@ class ToReceive
     protected $_ordered = false;
 
     /**
+     * Boolean indicating if the return has been stubbed.
+     *
+     * @var boolean
+     */
+    protected $_stubbed = false;
+
+    /**
      * Checks that `$actual` receive the `$expected` message.
      *
      * @param  mixed   $actual   The actual value.
@@ -111,24 +120,31 @@ class ToReceive
     }
 
     /**
-     * Replaces core classes using a dynamic stub when possible.
+     * Replaces core classes using a dynamic stub or when possible.
      *
      * @param  string|object $actual A fully-namespaced class name or an object instance.
      * @return string                The actual value to use.
      */
     protected function _actual($actual)
     {
-        if (!is_string($actual) || !class_exists($actual)) {
-            return $actual;
+        $isClass = is_string($actual);
+        if ($isClass) {
+            if (!class_exists($actual)) {
+                return $actual;
+            }
+            $reflection = Inspector::inspect($actual);
+        } else {
+            $reflection = Inspector::inspect(get_class($actual));
         }
-        $reflection = Inspector::inspect($actual);
 
         if (!$reflection->isInternal()) {
             return $actual;
         }
+        if (!$isClass) {
+            throw new InvalidArgumentException("Can't Spy/Stub instances not from PHP userland, use `Stub::create()` to proxify your instance first.");
+        }
         $layer = Stub::classname();
         Monkey::patch($actual, $layer);
-
         return $layer;
     }
 
@@ -197,6 +213,7 @@ class ToReceive
      */
     public function andRun($closure)
     {
+        $this->_stubbed = true;
         $message = end($this->_messages);
         $reference = $message->reference();
         $method = $message->name();
@@ -210,6 +227,7 @@ class ToReceive
      */
     public function andReturn()
     {
+        $this->_stubbed = true;
         $message = end($this->_messages);
         $reference = $message->reference();
         $method = $message->name();
@@ -238,6 +256,10 @@ class ToReceive
      */
     public function resolve()
     {
+        if (count($this->_messages) > 1 && !$this->_stubbed) {
+            throw new Exception("Spying doesn't work with long chain syntax your must explicitly set the return value using `andReturn()`.");
+        }
+
         $startIndex = $this->_ordered ? Calls::lastFindIndex() : 0;
         $report = Calls::find($this->_messages, $startIndex, $this->times());
         $this->_report = $report;
