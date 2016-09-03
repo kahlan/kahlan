@@ -451,7 +451,14 @@ EOD;
     protected function _load()
     {
         return Filter::on($this, 'load', [], function($chain) {
-            $files = Dir::scan($this->args()->get('spec'), [
+            $specDirs = $this->args()->get('spec');
+            foreach ($specDirs as $dir) {
+                if (!file_exists($dir)) {
+                    fwrite(STDERR, "ERROR: unexisting `{$dir}` directory, use --spec option to set a valid one (ex: --spec=tests).\n");
+                    exit(-1);
+                }
+            }
+            $files = Dir::scan($specDirs, [
                 'include' => $this->args()->get('pattern'),
                 'exclude' => '*/.*',
                 'type' => 'file'
@@ -540,10 +547,17 @@ EOD;
                 fwrite(STDERR, "ERROR: PHPDBG SAPI has not been detected and Xdebug is not installed, code coverage can't be used.\n");
                 exit(-1);
             }
+            $srcDirs = $this->args()->get('src');
+            foreach ($srcDirs as $dir) {
+                if (!file_exists($dir)) {
+                    fwrite(STDERR, "ERROR: unexisting `{$dir}` directory, use --src option to set a valid one (ex: --src=app).\n");
+                    exit(-1);
+                }
+            }
             $coverage = new Coverage([
                 'verbosity' => $this->args()->get('coverage') === null ? 1 : $this->args()->get('coverage'),
                 'driver' => $driver,
-                'path' => $this->args()->get('src'),
+                'path' => $srcDirs,
                 'colors' => !$this->args()->get('no-colors')
             ]);
             $reporters->add('coverage', $coverage);
