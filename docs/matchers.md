@@ -241,7 +241,7 @@ it("passes if \$actual matches the \$expected closure logic", function() {
 
 ### <a name="method"></a>Method invocation matchers
 
-**Note:** You should **always remember** to use `toReceive`, `toBeCalled` function **before** you call a method.
+**Note:** You should **always remember** to use `toReceive` function **before** you call a method.
 
 **toReceive($expected)**
 
@@ -259,18 +259,22 @@ it("expects \$foo to receive message() with the correct param", function() {
 it("expects \$foo to receive message() and bail out using a stub", function() {
 
     $foo = new Foo();
-    expect($foo)->toReceive('message')->andReturn('bail out');
-    expect($foo->message('My Message'))->toBe('bail out');
+    expect($foo)->toReceive('message')->andReturn('something');
+    expect($foo->message('My Message'))->toBe('something');
 
 });
 ```
+
+**Note:** When `andReturn()/andRun()` is not applied, `toReceive()` simply act as a "spy" and let the code execution flow to be unchanged. However when applied, the code execution will bail out with the stub value.
 
 ```php
 it("expects \$foo to receive message() and bail out using a closure for stub", function() {
 
     $foo = new Foo();
-    expect($foo)->toReceive('message')->andRun(function() { return 'bail out'; });
-    expect($foo->message('My Message'))->toBe('bail out');
+    expect($foo)->toReceive('message')->andRun(function() {
+        return 'something';
+    });
+    expect($foo->message('My Message'))->toBe('something');
 
 });
 ```
@@ -336,11 +340,12 @@ it("expects \$foo to receive a chain of messages with a final stub", function() 
 
 });
 ```
+
 **Note:** You should pay attention that using such matchers will make your tests more "fragile" and can be identified as code smells even though not all code smells indicate real problems.
 
 ### <a name="method"></a>Function invocation matchers
 
-**Note:** You should **always remember** to use `toBeCalled`, `toBeCalledNext` function **before** you call a method.
+**Note:** You should **always remember** to use `toBeCalled` function **before** you call a method.
 
 **toBeCalled()**
 
@@ -349,6 +354,30 @@ it("expects `time()` to be called", function() {
 
     $foo = new Foo();
     expect('time')->toBeCalled();
+    $foo->date();
+
+});
+```
+
+**Note:** When `andReturn()/andRun()` is not applied, `toBeCalled()` simply act as a "spy" and let the code execution flow to be unchanged. However when applied, the code execution will bail out with the stub value.
+
+```php
+it("expects `time()` to be called", function() {
+
+    $foo = new Foo();
+    expect('time')->toBeCalled()->andReturn(strtotime("now"));
+    $foo->date();
+
+});
+```
+
+```php
+it("expects `time()` to be called", function() {
+
+    $foo = new Foo();
+    expect('time')->toBeCalled()->andRun(function() {
+        return strtotime("now")
+    });
     $foo->date();
 
 });
