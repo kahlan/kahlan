@@ -12,10 +12,12 @@ Monkey Patching allows replacement of core functions and classes that can't be s
 
 With Kahlan, you can patch anything you want using `Monkey::patch()`!
 
-For example, I have the following class which needs to be patched:
+**Note:** Most of the time you won't use this directly and will use the `toReceive` and `toBeCalled` matchers instead.
+
+Let's take the following class as example:
 
 ```php
-namespace Kahlan\Monkey;
+namespace Spec\MonkeyTest;
 
 use DateTime;
 
@@ -33,37 +35,36 @@ class Foo
 }
 ```
 
-You can patch the `time()` function on the fly like in the following spec:
+You can patch the `time()` function on the fly like so:
 
 ```php
 namespace spec;
 
-use Kahlan\Monkey\Foo;
-
-function mytime() {
-    return 245026800;
-}
+use Spec\MonkeyTest\Foo;
 
 describe("Monkey patching", function() {
 
-    it("patches a core function", function() {
+    it("patches a core function with a closure", function() {
 
         $foo = new Foo();
-        Monkey::patch('time', 'spec\mytime');
-        expect($foo->time())->toBe(245026800);
+        Monkey::patch('time', function(){
+            return 123;
+        });
+        expect($foo->time())->toBe(123);
 
     });
 
 });
 ```
 
-Unbelievable, right? Moreover, you can also replace the `time()` function by a simple closure:
+Which could have been written with the `toBeCalled()` matcher:
 
 ```php
 it("patches a core function with a closure", function() {
 
+    expect('time')->toBeCalled()->andReturn(123);
+
     $foo = new Foo();
-    Monkey::patch('time', function(){return 123;});
     expect($foo->time())->toBe(123);
 
 });
