@@ -57,7 +57,26 @@ class Stub
      */
     public function __construct($reference)
     {
-        $this->_reference = $reference;
+        $isClass = is_string($reference);
+        if ($isClass) {
+            if (!class_exists($reference)) {
+                throw new InvalidArgumentException("Can't Stub the unexisting class `{$reference}`.");
+            }
+            $reflection = Inspector::inspect($reference);
+        } else {
+            $reflection = Inspector::inspect(get_class($reference));
+        }
+
+        if (!$reflection->isInternal()) {
+            $this->_reference = $reference;
+            return;
+        }
+        if (!$isClass) {
+            throw new InvalidArgumentException("Can't Stub built-in PHP instances, create a test double using `Stub::create()`.");
+        }
+        $layer = Stub::classname();
+        Monkey::patch($reference, $layer);
+        return $this->_reference = $layer;
     }
 
     /**
@@ -87,35 +106,62 @@ class Stub
     /**
      * Stubs a method.
      *
-     * @param  string $name    Method name or array of stubs where key are method names and
+     * @param  string $path    Method name or array of stubs where key are method names and
      *                         values the stubs.
      * @param  string $closure The stub implementation.
      * @return Method          The stubbed method instance.
      */
-    public function method($name, $closure = null)
+    public function method($path, $closure = null)
     {
-        $static = false;
         $reference = $this->_reference;
-        if (preg_match('/^::.*/', $name)) {
-            $static = true;
-            $reference = is_object($reference) ? get_class($reference) : $reference;
-            $name = substr($name, 2);
+
+        $parts = preg_split('~((?:->|::)[^-:]+)~', $path, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+        $names = [];
+        foreach ($parts as $part) {
+            $names[] = isset($part[0]) && $part[0] === '-' ? substr($part, 2) : $part;
         }
-        $hash = Suite::hash($reference);
-        if (!isset(static::$_registered[$hash])) {
-            static::$_registered[$hash] = new static($reference);
+
+        $total = count($names);
+        $methods = [];
+
+        foreach ($names as $index => $name) {
+            if (preg_match('/^::.*/', $name)) {
+                $reference = is_object($reference) ? get_class($reference) : $reference;
+            }
+
+            $hash = Suite::hash($reference);
+            if (!isset(static::$_registered[$hash])) {
+                static::$_registered[$hash] = new static($reference);
+            }
+
+            $instance = static::$_registered[$hash];
+            if (is_object($reference)) {
+                Suite::register(get_class($reference));
+            } else {
+                Suite::register($reference);
+            }
+            if (!isset($instance->_stubs[$name])) {
+                $instance->_stubs[$name] = [];
+            }
+
+            $method = new Method([
+                'reference' => $reference,
+                'name'      => $name
+            ]);
+            $methods[] = $method;
+            array_unshift($instance->_stubs[$name], $method);
+
+            if ($index < $total - 1) {
+                $reference = Stub::create();
+                $method->andReturn($reference);
+            }
         }
-        $instance = static::$_registered[$hash];
-        if (is_object($reference)) {
-            Suite::register(get_class($reference));
-        } else {
-            Suite::register($reference);
+
+        $method = end($methods);
+        if ($closure) {
+            $method->andRun($closure);
         }
-        if (!isset($instance->_stubs[$name])) {
-            $instance->_stubs[$name] = [];
-        }
-        $method = new Method(compact('name', 'static', 'closure'));
-        array_unshift($instance->_stubs[$name], $method);
         return $method;
     }
 
@@ -154,17 +200,13 @@ class Stub
                 continue;
             }
             $stubs = static::$_registered[$hash]->methods();
-            $static = false;
-            if (preg_match('/^::.*/', $method)) {
-                $static = true;
-                $method = substr($method, 2);
-            }
+
             if (!isset($stubs[$method])) {
                 continue;
             }
+
             foreach ($stubs[$method] as $stub) {
                 $call['name'] = $method;
-                $call['static'] = $static;
                 $call['args'] = $args;
                 if ($stub->match($call)) {
                     return $stub;
