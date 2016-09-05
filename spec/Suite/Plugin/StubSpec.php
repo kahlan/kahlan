@@ -4,14 +4,17 @@ namespace Kahlan\Kahlan\Spec\Suite\Plugin;
 use Exception;
 use ReflectionMethod;
 use InvalidArgumentException;
+use DateTime;
 
 use Kahlan\Jit\Interceptor;
 use Kahlan\Jit\Patchers;
 use Kahlan\Arg;
-use Kahlan\Jit\Patcher\Pointcut;
+use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
+use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 use Kahlan\Plugin\Stub;
 use Kahlan\IncompleteException;
 
+use Kahlan\Spec\Fixture\Plugin\Monkey\User;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar;
 
@@ -27,7 +30,8 @@ describe("Stub", function() {
         $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
         $include = ['Kahlan\Spec\\'];
         $interceptor = Interceptor::patch(compact('include', 'cachePath'));
-        $interceptor->patchers()->add('pointcut', new Pointcut());
+        $interceptor->patchers()->add('pointcut', new PointcutPatcher());
+        $interceptor->patchers()->add('monkey', new MonkeyPatcher());
     });
 
     /**
@@ -199,7 +203,6 @@ describe("Stub", function() {
 
             });
 
-
             context("with ->methods()", function() {
 
                 it("stubs methods using return values as an array", function() {
@@ -241,6 +244,55 @@ describe("Stub", function() {
                     };
                     $message = "Stubbed method definition for `bar` must be a closure or an array of returned value(s).";
                     expect($closure)->toThrow(new InvalidArgumentException($message));
+
+                });
+
+            });
+
+            context("with chain of methods", function() {
+
+                it("expects subbed chain to be subbed", function() {
+
+                    $foo = new Foo();
+                    Stub::on($foo)->method('a->b->c')->andReturn('something');
+                    $query = $foo->a();
+                    $select = $query->b();
+                    expect($select->c())->toBe('something');
+
+                });
+
+                it('auto monkey patch core classes using a stub when possible', function() {
+
+                    Stub::on('PDO')->method('prepare->fetchAll')->andReturn([['name' => 'bob']]);
+                    $user = new User();
+                    expect($user->all())->toBe([['name' => 'bob']]);
+
+                });
+
+                it('allows to mix static/dynamic methods', function() {
+
+                    Stub::on('PDO');
+                    Stub::on('Kahlan\Spec\Fixture\Plugin\Monkey\User')->method('::create->all')->andReturn([['name' => 'bob']]);
+                    $user = User::create();
+                    expect($user->all())->toBe([['name' => 'bob']]);
+
+                });
+
+                it("throws an exception when trying to stub an unexisting class", function() {
+
+                    $closure = function() {
+                        Stub::on('My\Unexisting\Classname\Foo');
+                    };
+                    $message = "Can't Stub the unexisting class `My\\Unexisting\\Classname\\Foo`.";
+                    expect($closure)->toThrow(new InvalidArgumentException($message));
+
+                });
+
+                it("throws an exception when trying to stub an instance of a built-in class", function() {
+
+                    expect(function() {
+                        Stub::on(new DateTime());
+                    })->toThrow(new InvalidArgumentException("Can't Stub built-in PHP instances, create a test double using `Stub::create()`."));
 
                 });
 
@@ -361,6 +413,19 @@ describe("Stub", function() {
                     };
                     $message = "Stubbed method definition for `bar` must be a closure or an array of returned value(s).";
                     expect($closure)->toThrow(new InvalidArgumentException($message));
+
+                });
+
+            });
+
+            context("with chain of methods", function() {
+
+                it("expects called chain to be called", function() {
+
+                    Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('::getQuery::newQuery::from')->andReturn('something');
+                    $query = Foo::getQuery();
+                    $select = $query::newQuery();
+                    expect($select::from())->toBe('something');
 
                 });
 
