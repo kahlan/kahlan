@@ -1,12 +1,10 @@
 <?php
 namespace Kahlan\Spec\Fixture\Plugin\Pointcut;
 
+use Kahlan\Spec\Fixture\Plugin\Pointcut\Bar;
+
 class Foo
 {
-    protected $_classes = [
-        'bar' => 'Kahlan\Spec\Fixture\Plugin\Pointcut\Bar'
-    ];
-
     protected $_inited = false;
 
     protected $_status = 'none';
@@ -43,8 +41,7 @@ class Foo
 
     public function bar()
     {
-        $bar = $this->_classes['bar'];
-        $bar = new $bar();
+        $bar = new Bar();
         return $bar->send();
     }
 

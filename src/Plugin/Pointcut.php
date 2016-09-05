@@ -63,13 +63,10 @@ class Pointcut
 
         $stub = static::$_classes['stub'];
 
-        Calls::log($list, compact('name', 'args'));
+        $method = $stub::find($list, $name, $args);
+        Calls::log($list, compact('name', 'args', 'method'));
 
-        if ($method = $stub::find($list, $name, $args)) {
-            return $method;
-        }
-
-        return false;
+        return $method ?: false;
     }
 
 }
