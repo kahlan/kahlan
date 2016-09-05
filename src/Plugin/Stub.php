@@ -37,6 +37,13 @@ class Stub
     protected static $_registered = [];
 
     /**
+     * Stub index counter.
+     *
+     * @var integer
+     */
+    protected static $_index = 0;
+
+    /**
      * Stubbed methods.
      *
      * @var Method[]
@@ -48,7 +55,7 @@ class Stub
      *
      * @var integer
      */
-    protected static $_index = 0;
+    protected $_needToBePatched = false;
 
     /**
      * The Constructor.
@@ -57,11 +64,12 @@ class Stub
      */
     public function __construct($reference)
     {
-        $isClass = is_string($reference);
-        if ($isClass) {
+        $isString = is_string($reference);
+        if ($isString) {
             if (!class_exists($reference)) {
                 throw new InvalidArgumentException("Can't Stub the unexisting class `{$reference}`.");
             }
+            $reference = ltrim($reference, '\\');
             $reflection = Inspector::inspect($reference);
         } else {
             $reflection = Inspector::inspect(get_class($reference));
@@ -71,12 +79,11 @@ class Stub
             $this->_reference = $reference;
             return;
         }
-        if (!$isClass) {
+        if (!$isString) {
             throw new InvalidArgumentException("Can't Stub built-in PHP instances, create a test double using `Stub::create()`.");
         }
-        $layer = Stub::classname();
-        Monkey::patch($reference, $layer);
-        return $this->_reference = $layer;
+        $this->_needToBePatched = true;
+        return $this->_reference = $reference;
     }
 
     /**
@@ -106,13 +113,21 @@ class Stub
     /**
      * Stubs a method.
      *
-     * @param  string $path    Method name or array of stubs where key are method names and
-     *                         values the stubs.
-     * @param  string $closure The stub implementation.
-     * @return Method          The stubbed method instance.
+     * @param  string   $path    Method name or array of stubs where key are method names and
+     *                           values the stubs.
+     * @param  string   $closure The stub implementation.
+     * @return Method[]          The created array of method instances.
+     * @return Method            The stubbed method instance.
      */
     public function method($path, $closure = null)
     {
+        if ($this->_needToBePatched) {
+            $layer = Stub::classname();
+            Monkey::patch($this->_reference, $layer);
+            $this->_needToBePatched = false;
+            $this->_reference = $layer;
+        }
+
         $reference = $this->_reference;
 
         $parts = preg_split('~((?:->|::)[^-:]+)~', $path, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
@@ -122,8 +137,8 @@ class Stub
             $names[] = isset($part[0]) && $part[0] === '-' ? substr($part, 2) : $part;
         }
 
-        $total = count($names);
         $methods = [];
+        $total = count($names);
 
         foreach ($names as $index => $name) {
             if (preg_match('/^::.*/', $name)) {
@@ -160,7 +175,7 @@ class Stub
 
         $method = end($methods);
         if ($closure) {
-            $method->andRun($closure);
+            $method->andReturnUsing($closure);
         }
         return $method;
     }
@@ -189,7 +204,7 @@ class Stub
      * @param  array       $args       The required arguments.
      * @return object|null             Return the subbed method or `null` if not founded.
      */
-    public static function find($references, $method = null, $args = [])
+    public static function find($references, $method = null, $args = null)
     {
         $references = (array) $references;
         $stub = null;
@@ -640,7 +655,7 @@ EOT;
      */
     public static function registered($hash = null)
     {
-        if ($hash === null) {
+        if (!func_num_args()) {
             return array_keys(static::$_registered);
         }
         return isset(static::$_registered[$hash]);

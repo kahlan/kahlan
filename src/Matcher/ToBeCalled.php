@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Matcher;
 
+use Exception;
 use Kahlan\Suite;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Plugin\Monkey;
@@ -78,8 +79,8 @@ class ToBeCalled
      */
     public function __construct($actual)
     {
+        $actual = ltrim($actual, '\\');
         $this->_actual = $actual;
-
         Suite::register(Suite::hash($actual));
         $this->_message = new Message(['name' => $actual]);
         $this->_backtrace = Debugger::backtrace();
@@ -124,33 +125,6 @@ class ToBeCalled
     }
 
     /**
-     * Sets the stub logic.
-     *
-     * @param Closure $closure The logic.
-     */
-    public function andRun($closure)
-    {
-        Monkey::patch($this->_actual, $closure);
-    }
-
-    /**
-     * Set. return values.
-     *
-     * @param mixed ... <0,n> Return value(s).
-     */
-    public function andReturn()
-    {
-        $args = func_get_args();
-        Monkey::patch($this->_actual, function() use ($args) {
-            static $index = 0;
-            if (isset($args[$index])) {
-                return $args[$index++];
-            }
-            return $args ? end($args) : null;
-        });
-    }
-
-    /**
      * Magic getter, if called with `'ordered'` will set ordered to `true`.
      *
      * @param string
@@ -158,7 +132,7 @@ class ToBeCalled
     public function __get($name)
     {
         if ($name !== 'ordered') {
-            throw new Exception("Unsupported attribute `{$name}`.");
+            throw new Exception("Unsupported attribute `{$name}` only `ordered` is available.");
         }
         $this->_ordered = true;
         return $this;

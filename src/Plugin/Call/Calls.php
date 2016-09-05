@@ -52,11 +52,11 @@ class Calls
             $call['static'] = true;
         }
         if (is_object($reference)) {
-            $call += ['instance' => $reference, 'class' => get_class($reference), 'static' => $static];
+            $call += ['instance' => $reference, 'class' => get_class($reference), 'static' => $static, 'method' => null];
         } elseif ($reference) {
-            $call += ['instance' => null, 'class' => $reference, 'static' => $static];
+            $call += ['instance' => null, 'class' => $reference, 'static' => $static, 'method' => null];
         } else {
-            $call += ['instance' => null, 'class' => null, 'static' => false];
+            $call += ['instance' => null, 'class' => null, 'static' => false, 'method' => null];
         }
         return $call;
     }
@@ -136,9 +136,15 @@ class Calls
 
             if ($message = next($messages)) {
                 $lastFound = $message;
-                $reference = $message->reference();
-                $reference = $message->isStatic() && is_object($reference) ? get_class($reference) : $reference;
                 $args = [];
+                if (!$reference = $message->reference() && $log['method']) {
+                    $reference = $log['method']->actualReturn();
+                }
+                if (!is_object($reference)) {
+                    $message = reset($message);
+                    $reference = $message->reference();
+                }
+                $reference = $message->isStatic() && is_object($reference) ? get_class($reference) : $reference;
                 continue;
             }
 

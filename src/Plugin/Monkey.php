@@ -21,6 +21,7 @@ class Monkey
      */
     public static function patch($source, $dest)
     {
+        $source = ltrim($source, '\\');
         static::$_registered[$source] = $dest;
     }
 
