@@ -2,6 +2,18 @@
 
 ## Last changes
 
+## 3.0.0 (2016-09-01)
+
+  * **Add:** Add `stub()` DSL.
+  * **Add:** Add `toBeCalled()` matcher.
+  * **Add:** `toReceive` now support a chain of messages as definition if correctly stubbed.
+  * **Add:** Allow to monkey patch a class using a specific instance for all `new` on that class.
+  * **Change:** Refactor the reporting to provide more meaningful messages on failure.
+  * **Bugfix:** Fixes an issue with `toReceive()/toBeCalled` and stubs where past called methods were taken into account.
+  * **BC break:** Rename `'params'` option to `'args'` in `Stub::create()`.
+  * **BC break:** Remove `toReceiveNext` matchers in flavor of `->ordered` attribute to be more close to rspec way.
+
+
 ## 2.5.6 (2016-08-18)
 
   * **Bugfix:** Allow passing 'string' as Stub's implements option.
