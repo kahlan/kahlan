@@ -4,6 +4,7 @@ namespace Kahlan\Matcher;
 use Exception;
 use InvalidArgumentException;
 use Kahlan\Suite;
+use Kahlan\Stubber;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Analysis\Inspector;
 use Kahlan\Plugin\Call\Message;
@@ -63,20 +64,13 @@ class ToReceive
     protected $_ordered = false;
 
     /**
-     * Boolean indicating if the return has been stubbed.
-     *
-     * @var boolean
-     */
-    protected $_stubbed = false;
-
-    /**
      * Checks that `$actual` receive the `$expected` message.
      *
      * @param  mixed   $actual   The actual value.
      * @param  mixed   $expected The expected message.
      * @return boolean
      */
-    public static function match($actual, $expected)
+    public static function match($actual, $expected = null)
     {
         $class = get_called_class();
         return new static($actual, $expected);
@@ -90,81 +84,114 @@ class ToReceive
      */
     public function __construct($actual, $expected)
     {
-        if (preg_match('/^::.*/', $expected)) {
-            $actual = is_object($actual) ? get_class($actual) : $actual;
+        $this->_backtrace = Debugger::backtrace();
+
+        if (is_string($actual)) {
+            $actual = ltrim($actual, '\\');
         }
+
+        $this->_check($actual);
 
         $parts = preg_split('~((?:->|::)[^-:]+)~', $expected, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
-        $expected = [];
-        foreach ($parts as $name) {
-            $expected[] = isset($name[0]) && $name[0] === '-' ? substr($name, 2) : $name;
+        $names = [];
+        foreach ($parts as $part) {
+            $names[] = isset($part[0]) && $part[0] === '-' ? substr($part, 2) : $part;
         }
 
-        $this->_expected = $expected;
+        $reference = $actual;
 
-        $total = count($expected);
-
-        $actual = $this->_actual($actual);
-
-        foreach ($expected as $index => $method) {
-            $this->_messages[] = $this->_message($actual, $method);
-            if ($index < $total - 1) {
-                $stub = Stub::create();
-                Stub::on($actual)->method($method)->andReturn($stub);
-                $actual = $stub;
+        if (count($parts) > 1) {
+            if (!Stub::registered(Suite::hash($reference))) {
+                throw new InvalidArgumentException("Kahlan can't Spy chained methods on real PHP code, you need to Stub the chain first.");
             }
         }
 
-        $this->_backtrace = Debugger::backtrace();
+        $reference = $this->_reference($reference);
+
+        foreach ($names as $index => $name) {
+            if (preg_match('/^::.*/', $name)) {
+                $reference = is_object($reference) ? get_class($reference) : $reference;
+            }
+            $this->_expected[] = $name;
+            $this->_messages[] = $this->_watch(new Message([
+                'reference' => $reference,
+                'name'      => $name
+            ]));
+            $reference = null;
+        }
     }
 
     /**
-     * Replaces core classes using a dynamic stub or when possible.
+     * Check the actual value can receive messages.
      *
-     * @param  string|object $actual A fully-namespaced class name or an object instance.
-     * @return string                The actual value to use.
+     * @param mixed $reference An instance or a fully-namespaced class name.
      */
-    protected function _actual($actual)
+    protected function _check($reference)
     {
-        $isClass = is_string($actual);
-        if ($isClass) {
-            if (!class_exists($actual)) {
-                return $actual;
+        $isString = is_string($reference);
+        if ($isString) {
+            if (!class_exists($reference)) {
+                throw new InvalidArgumentException("Can't Stub the unexisting class `{$reference}`.");
             }
-            $reflection = Inspector::inspect($actual);
+            $reflection = Inspector::inspect($reference);
         } else {
-            $reflection = Inspector::inspect(get_class($actual));
+            $reflection = Inspector::inspect(get_class($reference));
         }
 
         if (!$reflection->isInternal()) {
-            return $actual;
+            return;
         }
-        if (!$isClass) {
-            throw new InvalidArgumentException("Can't Spy/Stub instances not from PHP userland, use `Stub::create()` to proxify your instance first.");
+        if (!$isString) {
+            throw new InvalidArgumentException("Can't Spy built-in PHP instances, create a test double using `Stub::create()`.");
         }
-        $layer = Stub::classname();
-        Monkey::patch($actual, $layer);
-        return $layer;
     }
 
     /**
-     * Build a message instance and make it watched.
+     * Return the actual reference which must be used.
+     *
+     * @param mixed $reference An instance or a fully-namespaced class name.
+     * @param mixed            The reference or the monkey patched one if exist.
+     */
+    protected function _reference($reference)
+    {
+        if (!is_string($reference)) {
+            return $reference;
+        }
+
+        $pos = strrpos($reference, '\\');
+        if ($pos !== false) {
+            $namespace = substr($reference, 0, $pos);
+            $basename = substr($reference, $pos + 1);
+        } else {
+            $namespace = null;
+            $basename = $reference;
+        }
+        $substitute = null;
+        $reference = Monkey::patched($namespace, $basename, false, $substitute);
+
+        return $substitute ?: $reference;
+    }
+
+    /**
+     * Watch a message.
      *
      * @param string|object $actual A fully-namespaced class name or an object instance.
      * @param string        $method The expected method method name to be called.
      * @param object                A message instance.
      */
-    protected function _message($actual, $method)
+    protected function _watch($message)
     {
-        if (is_object($actual)) {
-            Suite::register(get_class($actual));
+        $reference = $message->reference();
+        if (!$reference) {
+            Suite::register($message->name());
+            return $message;
         }
-        Suite::register(Suite::hash($actual));
-        return new Message([
-            'reference' => $actual,
-            'name'      => $method
-        ]);
+        if (is_object($reference)) {
+            Suite::register(get_class($reference));
+        }
+        Suite::register(Suite::hash($reference));
+        return $message;
     }
 
     /**
@@ -207,35 +234,6 @@ class ToReceive
     }
 
     /**
-     * Sets the stub logic.
-     *
-     * @param Closure $closure The logic.
-     */
-    public function andRun($closure)
-    {
-        $this->_stubbed = true;
-        $message = end($this->_messages);
-        $reference = $message->reference();
-        $method = $message->name();
-        Stub::on($reference)->method($method, $closure);
-    }
-
-    /**
-     * Set. return values.
-     *
-     * @param mixed ... <0,n> Return value(s).
-     */
-    public function andReturn()
-    {
-        $this->_stubbed = true;
-        $message = end($this->_messages);
-        $reference = $message->reference();
-        $method = $message->name();
-        $stub = Stub::on($reference)->method($method);
-        call_user_func_array([$stub, 'andReturn'], func_get_args());
-    }
-
-    /**
      * Magic getter, if called with `'ordered'` will set ordered to `true`.
      *
      * @param string
@@ -243,7 +241,7 @@ class ToReceive
     public function __get($name)
     {
         if ($name !== 'ordered') {
-            throw new Exception("Unsupported attribute `{$name}`.");
+            throw new Exception("Unsupported attribute `{$name}` only `ordered` is available.");
         }
         $this->_ordered = true;
         return $this;
@@ -256,10 +254,6 @@ class ToReceive
      */
     public function resolve()
     {
-        if (count($this->_messages) > 1 && !$this->_stubbed) {
-            throw new Exception("Spying doesn't work with long chain syntax your must explicitly set the return value using `andReturn()`.");
-        }
-
         $startIndex = $this->_ordered ? Calls::lastFindIndex() : 0;
         $report = Calls::find($this->_messages, $startIndex, $this->times());
         $this->_report = $report;

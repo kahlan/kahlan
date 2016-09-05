@@ -6,7 +6,7 @@ use Kahlan\Jit\Interceptor;
 use Kahlan\Plugin\Monkey;
 use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 
-use Kahlan\Spec\Fixture\Plugin\Monkey\Foo;
+use Kahlan\Spec\Fixture\Plugin\Monkey\Mon;
 
 function mytime() {
     return 245026800;
@@ -63,9 +63,9 @@ describe("Monkey", function() {
 
     it("patches a core function", function() {
 
-        $foo = new Foo();
+        $mon = new Mon();
         Monkey::patch('time', 'Kahlan\Spec\Suite\Plugin\mytime');
-        expect($foo->time())->toBe(245026800);
+        expect($mon->time())->toBe(245026800);
 
     });
 
@@ -73,44 +73,44 @@ describe("Monkey", function() {
 
         it("patches a core function with a closure", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             Monkey::patch('time', function(){return 123;});
-            expect($foo->time())->toBe(123);
+            expect($mon->time())->toBe(123);
 
         });
 
         it("patches a core class", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             Monkey::patch('DateTime', 'Kahlan\Spec\Suite\Plugin\MyDateTime');
-            expect($foo->datetime()->getTimestamp())->toBe(245026800);
+            expect($mon->datetime()->getTimestamp())->toBe(245026800);
 
         });
 
         it("patches a function", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             Monkey::patch('Kahlan\Spec\Fixture\Plugin\Monkey\rand', 'Kahlan\Spec\Suite\Plugin\myrand');
-            expect($foo->rand(0, 100))->toBe(101);
+            expect($mon->rand(0, 100))->toBe(101);
 
         });
 
         it("patches a class", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             Monkey::patch('Kahlan\Util\Text', 'Kahlan\Spec\Suite\Plugin\MyString');
-            expect($foo->dump((object)'hello'))->toBe('myhashvalue');
+            expect($mon->dump((object)'hello'))->toBe('myhashvalue');
 
         });
 
         it("can unpatch a monkey patch", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             Monkey::patch('Kahlan\Spec\Fixture\Plugin\Monkey\rand', 'Kahlan\Spec\Suite\Plugin\myrand');
-            expect($foo->rand(0, 100))->toBe(101);
+            expect($mon->rand(0, 100))->toBe(101);
 
             Monkey::reset('Kahlan\Spec\Fixture\Plugin\Monkey\rand');
-            expect($foo->rand(0, 100))->toBe(50);
+            expect($mon->rand(0, 100))->toBe(50);
 
         });
 

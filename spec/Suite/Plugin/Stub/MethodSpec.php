@@ -3,7 +3,8 @@ namespace Kahlan\Kahlan\Spec\Suite\Plugin\Stub;
 
 use Exception;
 use Kahlan\Jit\Interceptor;
-use Kahlan\Jit\Patcher\Pointcut;
+use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
+use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 use Kahlan\Plugin\Stub;
 
 use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
@@ -20,7 +21,8 @@ describe("Method", function() {
         $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
         $include = ['Kahlan\Spec\\'];
         $interceptor = Interceptor::patch(compact('include', 'cachePath'));
-        $interceptor->patchers()->add('pointcut', new Pointcut());
+        $interceptor->patchers()->add('pointcut', new PointcutPatcher());
+        $interceptor->patchers()->add('monkey', new MonkeyPatcher());
     });
 
     /**
@@ -30,41 +32,106 @@ describe("Method", function() {
         Interceptor::load($this->previous);
     });
 
-    describe("->andRun()", function() {
+    describe("->andReturn()", function() {
 
-        it("should set closure", function() {
+        it("sets a return value", function() {
 
             $foo = new Foo();
-            $stub = Stub::on($foo)->method('message');
-            $stub->andRun(function($param) {
+            $stub = allow($foo)->toReceive('message');
+            $stub->andReturn('Aloha!');
+
+            expect($foo->message())->toBe('Aloha!');
+            expect($stub->actualReturn())->toBe('Aloha!');
+
+        });
+
+        it("sets return values", function() {
+
+            $foo = new Foo();
+            $stub = allow($foo)->toReceive('message');
+            $stub->andReturn('Aloha!', 'Hello!');
+
+            expect($foo->message())->toBe('Aloha!');
+            expect($stub->actualReturn())->toBe('Aloha!');
+
+            expect($foo->message())->toBe('Hello!');
+            expect($foo->message())->toBe('Hello!');
+            expect($stub->actualReturn())->toBe('Hello!');
+
+        });
+
+        it("throws when return is already set", function() {
+
+            expect(function() {
+                $foo = new Foo();
+                $stub = allow($foo)->toReceive('message');
+                $stub->andReturnUsing(function($param) {
+                    return $param;
+                });
+
+                $stub->andReturn('Ahoy!');
+
+            })->toThrow(new Exception('Closure already set.'));
+
+        });
+
+    });
+
+    describe("->andReturnUsing()", function() {
+
+        it("sets a closure", function() {
+
+            $foo = new Foo();
+            $stub = allow($foo)->toReceive('message');
+            $stub->andReturnUsing(function($param) {
                 return $param;
             });
 
             expect($foo->message('Aloha!'))->toBe('Aloha!');
+            expect($stub->actualReturn())->toBe('Aloha!');
 
         });
 
-        it("should throw when return is already set", function() {
+        it("sets closures", function() {
+
+            $foo = new Foo();
+            $stub = allow($foo)->toReceive('message');
+            $stub->andReturnUsing(function() {
+                return 'Aloha!';
+            }, function() {
+                return 'Hello!';
+            });
+
+            expect($foo->message())->toBe('Aloha!');
+            expect($stub->actualReturn())->toBe('Aloha!');
+
+            expect($foo->message())->toBe('Hello!');
+            expect($foo->message())->toBe('Hello!');
+            expect($stub->actualReturn())->toBe('Hello!');
+
+        });
+
+        it("throws when return is already set", function() {
 
             expect(function() {
                 $foo = new Foo();
-                $stub = Stub::on($foo)->method('message');
+                $stub = allow($foo)->toReceive('message');
                 $stub->andReturn('Ahoy!');
 
-                $stub->andRun(function($param) {
+                $stub->andReturnUsing(function($param) {
                     return $param;
                 });
             })->toThrow(new Exception('Some return values are already set.'));
 
         });
 
-        it("should throw when trying to pass non callable", function() {
+        it("throws when trying to pass non callable", function() {
 
             expect(function() {
                 $foo = new Foo();
-                $stub = Stub::on($foo)->method('message');
+                $stub = allow($foo)->toReceive('message');
 
-                $stub->andRun('String');
+                $stub->andReturnUsing('String');
             })->toThrow(new Exception('The passed parameter is not callable.'));
 
         });

@@ -3,11 +3,12 @@ namespace Kahlan\Plugin\Stub;
 
 use Closure;
 use Exception;
+use Kahlan\Plugin\Monkey;
 
-class Method extends \Kahlan\Plugin\Call\Message
+class Fct extends \Kahlan\Plugin\Call\Message
 {
     /**
-     * Index value in the `Method::$_returns/Method::$_closures` array.
+     * Index value in the `Fct::$_returns/Fct::$_closures` array.
      *
      * @var integer
      */
@@ -50,6 +51,7 @@ class Method extends \Kahlan\Plugin\Call\Message
         $config += $defaults;
 
         parent::__construct($config);
+        $this->_name = ltrim($this->_name, '\\');
         $this->_closures = $config['closures'];
         $this->_returns = $config['returns'];
     }
@@ -61,18 +63,13 @@ class Method extends \Kahlan\Plugin\Call\Message
      * @param  array  $args   The call arguments array.
      * @return mixed          The returned stub result.
      */
-    public function __invoke($self, $args)
+    public function __invoke($args)
     {
         if ($this->_closures !== null) {
             if (isset($this->_closures[$this->_index])) {
                 $closure = $this->_closures[$this->_index++];
             } else {
                 $closure = end($this->_closures);
-            }
-            if (is_string($self)) {
-                $closure = $closure->bindTo(null, $self);
-            } else {
-                $closure = $closure->bindTo($self, get_class($self));
             }
             $this->_return = call_user_func_array($closure, $args);
         } elseif (isset($this->_returns[$this->_index])) {
@@ -100,6 +97,9 @@ class Method extends \Kahlan\Plugin\Call\Message
             }
         }
         $this->_closures = $closures;
+        Monkey::patch($this->_name, function() {
+            return $this->__invoke(func_get_args());
+        });
     }
 
     /**
@@ -113,6 +113,9 @@ class Method extends \Kahlan\Plugin\Call\Message
             throw new Exception("Closure already set.");
         }
         $this->_returns = func_get_args();
+        Monkey::patch($this->_name, function() {
+            return $this->__invoke(func_get_args());
+        });
     }
 
     /**
