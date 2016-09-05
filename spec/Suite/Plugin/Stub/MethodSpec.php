@@ -30,13 +30,13 @@ describe("Method", function() {
         Interceptor::load($this->previous);
     });
 
-    describe("->andRun()", function() {
+    describe("->andReturnUsing()", function() {
 
         it("should set closure", function() {
 
             $foo = new Foo();
             $stub = Stub::on($foo)->method('message');
-            $stub->andRun(function($param) {
+            $stub->andReturnUsing(function($param) {
                 return $param;
             });
 
@@ -51,7 +51,7 @@ describe("Method", function() {
                 $stub = Stub::on($foo)->method('message');
                 $stub->andReturn('Ahoy!');
 
-                $stub->andRun(function($param) {
+                $stub->andReturnUsing(function($param) {
                     return $param;
                 });
             })->toThrow(new Exception('Some return values are already set.'));
@@ -64,7 +64,7 @@ describe("Method", function() {
                 $foo = new Foo();
                 $stub = Stub::on($foo)->method('message');
 
-                $stub->andRun('String');
+                $stub->andReturnUsing('String');
             })->toThrow(new Exception('The passed parameter is not callable.'));
 
         });

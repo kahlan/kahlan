@@ -23,7 +23,8 @@ describe("Calls", function() {
                 'class'    => 'my\name\space\Class',
                 'name'     => 'methodName',
                 'instance' => null,
-                'static'   => false
+                'static'   => false,
+                'method'   => null
             ]);
 
         });
@@ -40,7 +41,8 @@ describe("Calls", function() {
                 'class'    => 'my\name\space\Class',
                 'name'     => 'methodName',
                 'instance' => null,
-                'static'   => true
+                'static'   => true,
+                'method'   => null
             ]);
 
         });

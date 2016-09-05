@@ -123,7 +123,7 @@ class Message
      */
     public function matchArgs($args)
     {
-        if (!$this->_args) {
+        if ($this->_args === null || $args === null) {
             return true;
         }
         $arg = $this->_classes['arg'];

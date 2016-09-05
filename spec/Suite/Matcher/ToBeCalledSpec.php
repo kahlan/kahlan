@@ -2,12 +2,13 @@
 namespace Kahlan\Spec\Suite\Matcher;
 
 use Kahlan\Jit\Interceptor;
-use Kahlan\Jit\Patcher\Monkey;
+use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
+use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 use Kahlan\Matcher\ToBeCalled;
 
-use Kahlan\Spec\Fixture\Plugin\Monkey\Foo;
+use Kahlan\Spec\Fixture\Plugin\Monkey\Mon;
 
-describe("toBeCalled", function() {
+describe("ToBeCalled", function() {
 
     describe("::match()", function() {
 
@@ -21,7 +22,8 @@ describe("toBeCalled", function() {
             $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
             $include = ['Kahlan\Spec\\'];
             $interceptor = Interceptor::patch(compact('include', 'cachePath'));
-            $interceptor->patchers()->add('monkey', new Monkey());
+            $interceptor->patchers()->add('pointcut', new PointcutPatcher());
+            $interceptor->patchers()->add('monkey', new MonkeyPatcher());
         });
 
         /**
@@ -33,16 +35,16 @@ describe("toBeCalled", function() {
 
         it("expects uncalled function to be uncalled", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             expect('time')->not->toBeCalled();
 
         });
 
         it("expects called function to be called", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             expect('time')->toBeCalled();
-            $foo->time();
+            $mon->time();
 
         });
 
@@ -50,27 +52,27 @@ describe("toBeCalled", function() {
 
             it("expects called function called with correct arguments to be called", function() {
 
-                $foo = new Foo();
+                $mon = new Mon();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10);
-                $foo->rand(5, 10);
+                $mon->rand(5, 10);
 
             });
 
             it("expects called function called with correct arguments exactly a specified times to be called", function() {
 
-                $foo = new Foo();
+                $mon = new Mon();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10)->times(2);
-                $foo->rand(5, 10);
-                $foo->rand(5, 10);
+                $mon->rand(5, 10);
+                $mon->rand(5, 10);
 
             });
 
             it("expects called function called with correct arguments not exactly a specified times to be uncalled", function() {
 
-                $foo = new Foo();
+                $mon = new Mon();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->with(5, 10)->times(2);
-                $foo->rand(5, 10);
-                $foo->rand(10, 10);
+                $mon->rand(5, 10);
+                $mon->rand(10, 10);
 
             });
 
@@ -80,43 +82,20 @@ describe("toBeCalled", function() {
 
             it("expects called function to be called exactly a specified times", function() {
 
-                $foo = new Foo();
+                $mon = new Mon();
                 expect('time')->toBeCalled()->times(3);
-                $foo->time();
-                $foo->time();
-                $foo->time();
+                $mon->time();
+                $mon->time();
+                $mon->time();
 
             });
 
             it("expects called function not called exactly a specified times to be uncalled", function() {
 
-                $foo = new Foo();
+                $mon = new Mon();
                 expect('time')->not->toBeCalled()->times(1);
-                $foo->time();
-                $foo->time();
-
-            });
-
-        });
-
-        context("when using subbing", function() {
-
-            it("expects called method to be called and stubbed as expected", function() {
-
-                $foo = new Foo();
-                expect('time')->toBeCalled()->andReturn(123, 456);
-                expect($foo->time())->toBe(123);
-                expect($foo->time())->toBe(456);
-
-            });
-
-            it("expects called method to be called and stubbed as expected", function() {
-
-                $foo = new Foo();
-                expect('time')->toBeCalled()->andRun(function() {
-                    return 123;
-                });
-                expect($foo->time())->toBe(123);
+                $mon->time();
+                $mon->time();
 
             });
 
@@ -128,30 +107,30 @@ describe("toBeCalled", function() {
 
                 it("expects uncalled function to be uncalled in a defined order", function() {
 
-                    $foo = new Foo();
+                    $mon = new Mon();
                     expect('time')->toBeCalled()->ordered;
                     expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->ordered;
-                    $foo->time();
+                    $mon->time();
 
                 });
 
                 it("expects called function to be called in a defined order", function() {
 
-                    $foo = new Foo();
+                    $mon = new Mon();
                     expect('time')->toBeCalled()->ordered;
                     expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->ordered;
-                    $foo->time();
-                    $foo->rand(5, 10);
+                    $mon->time();
+                    $mon->rand(5, 10);
 
                 });
 
                 it("expects called function called in a different order to be uncalled", function() {
 
-                    $foo = new Foo();
+                    $mon = new Mon();
                     expect('time')->toBeCalled()->ordered;
                     expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->ordered;
-                    $foo->rand(5, 10);
-                    $foo->time();
+                    $mon->rand(5, 10);
+                    $mon->time();
 
                 });
 
@@ -165,7 +144,7 @@ describe("toBeCalled", function() {
 
         it("returns the description message for not received call", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             $matcher = new ToBeCalled('time');
 
             $matcher->resolve([
@@ -189,7 +168,7 @@ describe("toBeCalled", function() {
 
         it("returns the description message for not received call the specified number of times", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             $matcher = new ToBeCalled('time');
             $matcher->times(2);
 
@@ -215,11 +194,11 @@ describe("toBeCalled", function() {
 
         it("returns the description message for wrong passed arguments", function() {
 
-            $foo = new Foo();
+            $mon = new Mon();
             $matcher = new ToBeCalled('time');
             $matcher->with('Hello World!');
 
-            $foo->time();
+            $mon->time();
 
             $matcher->resolve([
                 'instance' => $matcher,

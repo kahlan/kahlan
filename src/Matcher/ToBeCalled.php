@@ -78,8 +78,8 @@ class ToBeCalled
      */
     public function __construct($actual)
     {
+        $actual = ltrim($actual, '\\');
         $this->_actual = $actual;
-
         Suite::register(Suite::hash($actual));
         $this->_message = new Message(['name' => $actual]);
         $this->_backtrace = Debugger::backtrace();
@@ -121,33 +121,6 @@ class ToBeCalled
         }
         $this->_times = $times;
         return $this;
-    }
-
-    /**
-     * Sets the stub logic.
-     *
-     * @param Closure $closure The logic.
-     */
-    public function andRun($closure)
-    {
-        Monkey::patch($this->_actual, $closure);
-    }
-
-    /**
-     * Set. return values.
-     *
-     * @param mixed ... <0,n> Return value(s).
-     */
-    public function andReturn()
-    {
-        $args = func_get_args();
-        Monkey::patch($this->_actual, function() use ($args) {
-            static $index = 0;
-            if (isset($args[$index])) {
-                return $args[$index++];
-            }
-            return $args ? end($args) : null;
-        });
     }
 
     /**

@@ -2,6 +2,7 @@
 use Kahlan\Expectation;
 use Kahlan\Suite;
 use Kahlan\Specification;
+use Kahlan\Allow;
 use Kahlan\Box\BoxException;
 use Kahlan\Box\Box;
 
@@ -36,7 +37,8 @@ if ($kahlanFuctions &&
     !function_exists('xcontext') &&
     !function_exists('waitsFor') &&
     !function_exists('skipIf') &&
-    !function_exists('expect')) {
+    !function_exists('expect') &&
+    !function_exists('allow')) {
 
     define('KAHLAN_FUNCTIONS_EXIST', true);
 
@@ -113,6 +115,15 @@ if ($kahlanFuctions &&
      */
     function expect($actual) {
         return Specification::current()->expect($actual);
+    }
+
+    /**
+     * @param $actual
+     *
+     * @return Stubber
+     */
+    function allow($actual) {
+        return new Allow($actual);
     }
 }
 

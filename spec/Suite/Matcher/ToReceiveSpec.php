@@ -88,7 +88,7 @@ describe("toReceive", function() {
                 expect(function() {
                     $date = new DateTime();
                     expect($date)->toReceive('getTimestamp');
-                })->toThrow(new InvalidArgumentException("Can't Spy/Stub instances not from PHP userland, use `Stub::create()` to proxify your instance first."));
+                })->toThrow(new InvalidArgumentException("Can't Spy built-in PHP instances, create a test double using `Stub::create()`."));
 
             });
 
@@ -235,14 +235,6 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method to be uncalled using a wrong classname", function() {
-
-                    $foo = new Foo();
-                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\FooFoo')->not->toReceive('message');
-                    $foo->message();
-
-                });
-
                 it("expects not overrided method to also be called on method's __CLASS__", function() {
 
                     $bar = new SubBar();
@@ -263,35 +255,13 @@ describe("toReceive", function() {
 
             });
 
-            context("when using subbing", function() {
-
-                it("expects called method to be called and stubbed as expected", function() {
-
-                    $foo = new Foo();
-                    expect($foo)->toReceive('message')->andReturn('Hello Boy!', 'Hello Man!');
-                    expect($foo->message())->toBe('Hello Boy!');
-                    expect($foo->message())->toBe('Hello Man!');
-
-                });
-
-                it("expects called method to be called and stubbed as expected", function() {
-
-                    $foo = new Foo();
-                    expect($foo)->toReceive('message')->andRun(function() {
-                        return 'Hello Girl!';
-                    });
-                    expect($foo->message())->toBe('Hello Girl!');
-
-                });
-
-            });
-
             context("with chain of methods", function() {
 
                 it("expects called chain to be called", function() {
 
                     $foo = new Foo();
-                    expect($foo)->toReceive('a->b->c')->andReturn('something');
+                    allow($foo)->toReceive('a->b->c')->andReturn('something');
+                    expect($foo)->toReceive('a->b->c')->once();
                     $query = $foo->a();
                     $select = $query->b();
                     expect($select->c())->toBe('something');
@@ -301,7 +271,8 @@ describe("toReceive", function() {
                 it("expects not called chain to be uncalled", function() {
 
                     $foo = new Foo();
-                    expect($foo)->not->toReceive('a->c->b')->andReturn('something');
+                    allow($foo)->toReceive('a->b->c')->andReturn('something');
+                    expect($foo)->not->toReceive('a->c->b')->once();
                     $query = $foo->a();
                     $select = $query->b();
                     $select->c();
@@ -310,7 +281,8 @@ describe("toReceive", function() {
 
                 it('auto monkey patch core classes using a stub when possible', function() {
 
-                    expect('PDO')->toReceive('prepare->fetchAll')->andReturn([['name' => 'bob']]);
+                    allow('PDO')->toReceive('prepare->fetchAll')->andReturn([['name' => 'bob']]);
+                    expect('PDO')->toReceive('prepare')->once();
                     $user = new User();
                     expect($user->all())->toBe([['name' => 'bob']]);
 
@@ -318,8 +290,8 @@ describe("toReceive", function() {
 
                 it('allows to mix static/dynamic methods', function() {
 
-                    Monkey::patch('PDO', Stub::create());
-                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create->all')->andReturn([['name' => 'bob']]);
+                    allow('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create->all')->andReturn([['name' => 'bob']]);
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create->all')->once();
                     $user = User::create();
                     expect($user->all())->toBe([['name' => 'bob']]);
 
@@ -410,7 +382,8 @@ describe("toReceive", function() {
 
                 it("expects called chain to be called", function() {
 
-                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->andReturn('something');
+                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->andReturn('something');
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from');
                     $query = Foo::getQuery();
                     $select = $query::newQuery();
                     expect($select::from())->toBe('something');
@@ -419,7 +392,8 @@ describe("toReceive", function() {
 
                 it("expects not called chain to be uncalled", function() {
 
-                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery::from::newQuery')->andReturn('something');
+                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::from::newQuery')->andReturn('something');
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery::from::newQuery');
                     $query = Foo::getQuery();
                     $select = $query::newQuery();
                     $select::from();
@@ -627,7 +601,7 @@ describe("toReceive", function() {
                         'logs'     => []
                     ]
                 ]);
-            })->toThrow(new Exception("Spying doesn't work with long chain syntax your must explicitly set the return value using `andReturn()`."));
+            })->toThrow(new InvalidArgumentException("Kahlan can't Spy chained methods on real PHP code, you need to Stub the chain first."));
 
         });
 

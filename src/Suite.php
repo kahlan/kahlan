@@ -655,13 +655,13 @@ class Suite extends Scope
     /**
      * Gets registered hashes. [Mainly used for optimizations]
      *
-     * @param  string     $hash The hash to look up. If `null` return all registered hashes.
+     * @param  string     $hash The hash to look up. If none return all registered hashes.
      *
      * @return array|bool
      */
     public static function registered($hash = null)
     {
-        if (!$hash) {
+        if (!func_num_args()) {
             return static::$_registered;
         }
 

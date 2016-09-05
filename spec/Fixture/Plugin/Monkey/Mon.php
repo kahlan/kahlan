@@ -7,7 +7,7 @@ function rand($min, $max) {
     return ($max - $min) / 2;
 }
 
-class Foo
+class Mon
 {
     public function time()
     {
@@ -27,5 +27,10 @@ class Foo
     public function dump($value)
     {
         return Text::dump($value);
+    }
+
+    public function loadFile($path = '')
+    {
+        return file_get_contents($path);
     }
 }
