@@ -93,6 +93,11 @@ class Message
      */
     public function match($call, $withArgs = true)
     {
+        if (preg_match('/^::.*/', $call['name'])) {
+            $call['static'] = true;
+            $call['name'] = substr($call['name'], 2);
+        }
+
         if (isset($call['static'])) {
             if ($call['static'] !== $this->_static) {
                 return false;
