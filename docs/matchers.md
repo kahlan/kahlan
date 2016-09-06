@@ -300,7 +300,7 @@ it("expects Foo to receive ::message() with the correct param only once", functi
 ```php
 it("expects Foo to receive ::message() with the correct param a specified number of times", function() {
 
-    expect(Foo::class)->toReceive('::message')->with('My Message')->time(2);
+    expect(Foo::class)->toReceive('::message')->with('My Message')->times(2);
     $foo::message('My Message');
     $foo::message('My Message');
 
