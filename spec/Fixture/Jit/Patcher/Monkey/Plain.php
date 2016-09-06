@@ -8,4 +8,4 @@ if (function_exists('myfunction')) {
 
 $rand = mt_rand();
 new MyAlias;
-new space\MyClass2();
+new space\MyClass2(time());
