@@ -6,12 +6,12 @@ use Kahlan\Jit\Patcher\Pointcut;
 
 describe("Pointcut", function() {
 
-    describe("->process()", function() {
+    beforeEach(function() {
+        $this->path = 'spec/Fixture/Jit/Patcher/Pointcut';
+        $this->patcher = new Pointcut();
+    });
 
-        beforeEach(function() {
-            $this->path = 'spec/Fixture/Jit/Patcher/Pointcut';
-            $this->patcher = new Pointcut();
-        });
+    describe("->process()", function() {
 
         it("adds an entry point to methods and wrap function call for classes", function() {
 
@@ -32,6 +32,16 @@ describe("Pointcut", function() {
             $expected = file_get_contents($this->path . '/SimpleTraitProcessed.php');
             $actual = Parser::unparse($this->patcher->process($nodes));
             expect($actual)->toBe($expected);
+
+        });
+
+    });
+
+    describe("->patchable()", function() {
+
+        it("return `true`", function() {
+
+            expect($this->patcher->patchable('SomeClass'))->toBe(true);
 
         });
 
