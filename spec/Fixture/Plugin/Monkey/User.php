@@ -5,7 +5,9 @@ use PDO;
 
 class User
 {
-    protected $_db;
+    protected $_db = null;
+
+    protected $_success = null;
 
     public function __construct()
     {
@@ -19,8 +21,18 @@ class User
     public function all()
     {
         $stmt = $this->_db->prepare('SELECT * FROM users');
-        $stmt->execute();
+        $this->_success = $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function db()
+    {
+        return $this->_db;
+    }
+
+    public function success()
+    {
+        return $this->_success;
     }
 
     public static function create()

@@ -261,6 +261,16 @@ describe("Allow", function() {
 
             });
 
+            it('allows to stubs a same method twice', function() {
+
+                allow('PDO')->toReceive('prepare->fetchAll')->andReturn([['name' => 'bob']]);
+                allow('PDO')->toReceive('prepare->execute')->andReturn(true);
+                $user = new User();
+                expect($user->all())->toBe([['name' => 'bob']]);
+                expect($user->success())->toBe(true);
+
+            });
+
             it('allows to mix static/dynamic methods', function() {
 
                 allow('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create->all')->andReturn([['name' => 'bob']]);
