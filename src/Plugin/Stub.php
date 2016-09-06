@@ -48,6 +48,13 @@ class Stub
      *
      * @var Method[]
      */
+    protected $_methods = [];
+
+    /**
+     * Generic stubs.
+     *
+     * @var Method[]
+     */
     protected $_stubs = [];
 
     /**
@@ -64,6 +71,7 @@ class Stub
      */
     public function __construct($reference)
     {
+        $reference = $this->_reference($reference);
         $isString = is_string($reference);
         if ($isString) {
             if (!class_exists($reference)) {
@@ -87,6 +95,32 @@ class Stub
     }
 
     /**
+     * Return the actual reference which must be used.
+     *
+     * @param mixed $reference An instance or a fully-namespaced class name.
+     * @param mixed            The reference or the monkey patched one if exist.
+     */
+    protected function _reference($reference)
+    {
+        if (!is_string($reference)) {
+            return $reference;
+        }
+
+        $pos = strrpos($reference, '\\');
+        if ($pos !== false) {
+            $namespace = substr($reference, 0, $pos);
+            $basename = substr($reference, $pos + 1);
+        } else {
+            $namespace = null;
+            $basename = $reference;
+        }
+        $substitute = null;
+        $reference = Monkey::patched($namespace, $basename, false, $substitute);
+
+        return $substitute ?: $reference;
+    }
+
+    /**
      * Getd/Setd stubs for methods or get stubbed methods array.
      *
      * @param  array    $name An array of method names.
@@ -95,7 +129,7 @@ class Stub
     public function methods($name = [])
     {
         if (!func_num_args()) {
-            return $this->_stubs;
+            return $this->_methods;
         }
         foreach ($name as $method => $returns) {
             if (is_callable($returns)) {
@@ -156,8 +190,9 @@ class Stub
             } else {
                 Suite::register($reference);
             }
-            if (!isset($instance->_stubs[$name])) {
-                $instance->_stubs[$name] = [];
+            if (!isset($instance->_methods[$name])) {
+                $instance->_methods[$name] = [];
+                $instance->_stubs[$name] = Stub::create();
             }
 
             $method = new Method([
@@ -165,10 +200,10 @@ class Stub
                 'name'      => $name
             ]);
             $methods[] = $method;
-            array_unshift($instance->_stubs[$name], $method);
+            array_unshift($instance->_methods[$name], $method);
 
             if ($index < $total - 1) {
-                $reference = Stub::create();
+                $reference = $instance->_stubs[$name];
                 $method->andReturn($reference);
             }
         }
