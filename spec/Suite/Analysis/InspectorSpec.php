@@ -3,6 +3,23 @@ namespace Kahlan\Spec\Suite\Analysis;
 
 use Kahlan\Analysis\Inspector;
 
+class Parameter
+{
+    protected $_parameter;
+    public function __construct($parameter)
+    {
+        $this->_parameter = $parameter;
+    }
+    public function getClass()
+    {
+        return false;
+    }
+    public function __toString()
+    {
+        return $this->_parameter;
+    }
+}
+
 describe("Inspector", function() {
 
     before(function() {
@@ -97,17 +114,21 @@ describe("Inspector", function() {
 
         it("returns parameter typehint for scalar type hints", function() {
 
-            skipIf(PHP_MAJOR_VERSION < 7);
-
-            $inspector = Inspector::parameters('Kahlan\Spec\Fixture\Analysis\ScalarTypeHintsClass', 'intTypeHint');
-            $typehint = Inspector::typehint(current($inspector));
+            $typehint = Inspector::typehint(new Parameter('Parameter #0 [ <required> integer $values ]'));
             expect($typehint)->toBeA('string');
             expect($typehint)->toBe('int');
 
-            $inspector = Inspector::parameters('Kahlan\Spec\Fixture\Analysis\ScalarTypeHintsClass', 'boolTypeHint');
-            $typehint = Inspector::typehint(current($inspector));
+            $typehint = Inspector::typehint(new Parameter('Parameter #0 [ <required> boolean $values ]'));
             expect($typehint)->toBeA('string');
             expect($typehint)->toBe('bool');
+
+        });
+
+        it("returns empty typehint for HHVM `mixed` type hint", function() {
+
+            $typehint = Inspector::typehint(new Parameter('Parameter #0 [ <required> mixed $values ]'));
+            expect($typehint)->toBeA('string');
+            expect($typehint)->toBe('');
 
         });
 
