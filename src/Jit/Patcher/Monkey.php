@@ -108,8 +108,7 @@ class Monkey
 
         $alpha = '[\\\a-zA-Z_\\x7f-\\xff]';
         $alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
-        $this->_regex = "/(new\s+)?(?<!\:|\\\$|\>|{$alphanum})(\s*)({$alpha}{$alphanum}*)(\s*)(\(|;|::{$alpha}{$alphanum}*\s*\()/m";
-
+        $this->_regex = "/(new\s+)?(?<!\:|\\\$|\>|{$alphanum})(\s*)({$alpha}{$alphanum}*)(\s*)(?=\(|;|::{$alpha}{$alphanum}*\s*\()/m";
     }
 
     /**
@@ -203,16 +202,17 @@ class Monkey
             return;
         }
         $offset = 0;
-        $buffer = $node->body;
         foreach (array_reverse($matches) as $match) {
             $len = strlen($match[0][0]);
             $pos = $match[0][1];
             $name = $match[3][0];
 
-            $isInstance = !!$match[1][0];
-            $isStatic = preg_match('/^::/', $match[5][0]);
+            $nextChar = $node->body[$pos + $len];
 
-            if (!isset($this->_blacklist[strtolower($name)]) && ($isInstance || $match[5][0] === '(' || $isStatic)) {
+            $isInstance = !!$match[1][0];
+            $isStatic = $nextChar === ':';
+
+            if (!isset($this->_blacklist[strtolower($name)]) && ($isInstance || $nextChar === '(' || $isStatic)) {
                 $tokens = explode('\\', $name, 2);
 
                 if ($name[0] === '\\') {
@@ -244,57 +244,60 @@ class Monkey
                 }
                 $substitute = $variable . '__';
                 if (!$isInstance) {
-                    $replace = $match[2][0] . $variable . $match[4][0] . $match[5][0];
+                    $replace = $match[2][0] . $variable . $match[4][0];
                 } else {
-                    $p = $pos + $len;
-                    $count = 0;
-                    $total = count($nodes);
-
-                    if ($match[5][0][strlen($match[5][0]) - 1] === ';') {
-                        $match[5][0] = substr($match[5][0], 0, -1) . ');';
-                        $count--;
+                    $added = $this->_addClosingParenthesis($pos + $len, $index, $nodes);
+                    if ($added) {
+                        $replace = '(' . $substitute . '?' . $substitute . ':' . $match[1][0] . $match[2][0] . $variable . $match[4][0];
                     } else {
-                        for ($i = $index; $i < $total; $i++) {
-                            $n = $nodes[$i];
-                            if ($n->processable && $n->type === 'code') {
-                                $code = $n->body;
-                                $l = strlen($code);
-                                while ($p < $l) {
-                                    if ($count === 0 && $code[$p] === ';') {
-                                        $n->body = substr_replace($code, ');', $p, 1);
-                                        $count--;
-                                        break 2;
-                                    } elseif ($code[$p] === '(' || $code[$p] === '{') {
-                                        $count++;
-                                    } elseif ($code[$p] === ')' || $code[$p] === '}') {
-                                        $count--;
-                                    }
-                                    if ($count < 0) {
-                                        if ($i === $index) {
-                                            $buffer = substr_replace($code, $code[$p] . ')', $p, 1);
-                                        } else {
-                                            $n->body = substr_replace($code, $code[$p] . ')', $p, 1);
-                                        }
-                                        break 2;
-                                    }
-                                    $p++;
-                                }
-                            }
-                            $p = 0;
-                        }
-                    }
-                    if ($count < 0) {
-                        $replace = '(' . $substitute . '?' . $substitute . ':' . $match[1][0] . $match[2][0] . $variable . $match[4][0] . $match[5][0];
-                    } else {
-                        $replace = $match[1][0] . $match[2][0] . $variable . $match[4][0] . $match[5][0];
+                        $replace = $match[1][0] . $match[2][0] . $variable . $match[4][0];
                     }
                 }
-                $buffer = substr_replace($buffer, $replace, $pos, $len);
+                $node->body = substr_replace($node->body, $replace, $pos, $len);
                 $offset = $pos + strlen($replace);
             } else {
                 $offset = $pos + $len;
             }
         }
-        return $node->body = $buffer;
+    }
+
+    /**
+     * Add a closing parenthesis
+     *
+     * @param  integer $pos   The current pos to start from.
+     * @param  integer $index The current node to start from.
+     * @param  arrar   $nodes The nodes array.
+     * @return boolean        Returns `true` if succeed, `false` otherwise.
+     */
+    protected function _addClosingParenthesis($pos, $index, $nodes)
+    {
+        $count = 0;
+        $total = count($nodes);
+
+        for ($i = $index; $i < $total; $i++) {
+            $node = $nodes[$i];
+            if (!$node->processable || $node->type !== 'code') {
+                continue;
+            }
+            $code = $node->body;
+            $len = strlen($code);
+            while ($pos < $len) {
+                if ($count === 0 && $code[$pos] === ';') {
+                    $node->body = substr_replace($code, ');', $pos, 1);
+                    return true;
+                } elseif ($code[$pos] === '(' || $code[$pos] === '{') {
+                    $count++;
+                } elseif ($code[$pos] === ')' || $code[$pos] === '}') {
+                    $count--;
+                    if ($count === 0) {
+                        $node->body = substr_replace($code, $code[$pos] . ')', $pos, 1);
+                        return true;
+                    }
+                }
+                $pos++;
+            }
+            $pos = 0;
+        }
+        return false;
     }
 }

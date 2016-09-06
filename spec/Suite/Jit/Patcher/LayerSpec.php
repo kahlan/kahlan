@@ -6,6 +6,15 @@ use Kahlan\Jit\Patcher\Layer;
 
 describe("Layer", function() {
 
+    beforeEach(function() {
+        $this->path = 'spec/Fixture/Jit/Patcher/Layer';
+        $this->patcher = new Layer([
+            'override' => [
+                'Kahlan\Analysis\Inspector'
+            ]
+        ]);
+    });
+
     describe("->findFile()", function() {
 
         it("returns the file path to patch", function() {
@@ -18,15 +27,6 @@ describe("Layer", function() {
     });
 
     describe("->process()", function() {
-
-        beforeEach(function() {
-            $this->path = 'spec/Fixture/Jit/Patcher/Layer';
-            $this->patcher = new Layer([
-                'override' => [
-                    'Kahlan\Analysis\Inspector'
-                ]
-            ]);
-        });
 
         it("patches class's extends", function() {
 
@@ -79,6 +79,17 @@ class Inspector extends \\Kahlan\\Analysis\\Inspector
 
 EOD;
             expect($actual)->toBe($expected);
+
+        });
+
+    });
+
+
+    describe("->patchable()", function() {
+
+        it("return `true`", function() {
+
+            expect($this->patcher->patchable('SomeClass'))->toBe(true);
 
         });
 

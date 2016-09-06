@@ -6,12 +6,12 @@ use Kahlan\Jit\Patcher\Monkey;
 
 describe("Monkey", function() {
 
-    describe("->process()", function() {
+    beforeEach(function() {
+        $this->path = 'spec/Fixture/Jit/Patcher/Monkey';
+        $this->patcher = new Monkey();
+    });
 
-        beforeEach(function() {
-            $this->path = 'spec/Fixture/Jit/Patcher/Monkey';
-            $this->patcher = new Monkey();
-        });
+    describe("->process()", function() {
 
         it("patches class's methods", function() {
 
@@ -40,6 +40,24 @@ describe("Monkey", function() {
 
         });
 
+        it("patches errored php file", function() {
+
+            $nodes = Parser::parse(file_get_contents($this->path . '/Errored.php'));
+            $expected = file_get_contents($this->path . '/ErroredProcessed.php');
+            $actual = Parser::unparse($this->patcher->process($nodes));
+            expect($actual)->toBe($expected);
+
+        });
+
     });
 
+    describe("->patchable()", function() {
+
+        it("return `true`", function() {
+
+            expect($this->patcher->patchable('SomeClass'))->toBe(true);
+
+        });
+
+    });
 });

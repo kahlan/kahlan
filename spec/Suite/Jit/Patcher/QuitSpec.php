@@ -6,12 +6,12 @@ use Kahlan\Jit\Patcher\Quit;
 
 describe("Quit", function() {
 
-    describe("->process()", function() {
+    beforeEach(function() {
+        $this->path = 'spec/Fixture/Jit/Patcher/Quit';
+        $this->patcher = new Quit();
+    });
 
-        beforeEach(function() {
-            $this->path = 'spec/Fixture/Jit/Patcher/Quit';
-            $this->patcher = new Quit();
-        });
+    describe("->process()", function() {
 
         it("patches class's methods", function() {
 
@@ -24,4 +24,13 @@ describe("Quit", function() {
 
     });
 
+    describe("->patchable()", function() {
+
+        it("return `true`", function() {
+
+            expect($this->patcher->patchable('SomeClass'))->toBe(true);
+
+        });
+
+    });
 });
