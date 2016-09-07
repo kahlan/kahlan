@@ -68,7 +68,7 @@ describe("Allow", function() {
         expect(function() {
             $foo = new Foo();
             allow($foo)->toBe(Stub::create());
-        })->toThrow(new Exception("Error you can use `toBe()` on a fully-namespaced class or function name."));
+        })->toThrow(new Exception("Error `toBe()` need to be applied on a fully-namespaced class or function name."));
 
     });
 
@@ -76,8 +76,8 @@ describe("Allow", function() {
 
         expect(function() {
             $foo = new Foo();
-            allow($foo)->toWork();
-        })->toThrow(new Exception("Error you can use `toWork()` on a fully-namespaced class or function name."));
+            allow($foo)->toBeOK();
+        })->toThrow(new Exception("Error `toBeOK()` need to be applied on a fully-namespaced class or function name."));
 
     });
 
@@ -378,7 +378,7 @@ describe("Allow", function() {
 
         it('makes built-in PHP class to work', function() {
 
-            allow('PDO')->toWork();
+            allow('PDO')->toBeOK();
             $user = new User();
 
         });
@@ -431,7 +431,7 @@ describe("Allow", function() {
 
         it('makes built-in PHP function to work', function() {
 
-            allow('file_get_contents')->toWork();
+            allow('file_get_contents')->toBeOK();
 
             $mon = new Mon();
             expect($mon->loadFile())->toBe(null);

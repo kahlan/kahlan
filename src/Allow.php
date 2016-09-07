@@ -89,7 +89,7 @@ class Allow
     public function toBe($substitute)
     {
         if (!is_string($this->_actual)) {
-            throw new Exception("Error you can use `toBe()` on a fully-namespaced class or function name.");
+            throw new Exception("Error `toBe()` need to be applied on a fully-namespaced class or function name.");
         }
         Monkey::patch($this->_actual, $substitute);
     }
@@ -99,10 +99,10 @@ class Allow
      *
      * @param mixed $substitute The logic.
      */
-    public function toWork()
+    public function toBeOK()
     {
         if (!is_string($this->_actual)) {
-            throw new Exception("Error you can use `toWork()` on a fully-namespaced class or function name.");
+            throw new Exception("Error `toBeOK()` need to be applied on a fully-namespaced class or function name.");
         }
         if ($this->_isClass) {
             Monkey::patch($this->_actual, Stub::classname());
