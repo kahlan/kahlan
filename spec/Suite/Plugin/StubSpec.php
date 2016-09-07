@@ -77,7 +77,7 @@ describe("Stub", function() {
                 expect(function() {
                     $foo = new Foo();
                     Stub::on($foo)->method('message', function($param) { return $param; })->andReturn(true);
-                })->toThrow(new Exception("Closure already set."));
+                })->toThrow(new Exception("Some closure(s) has already been set."));
 
             });
 

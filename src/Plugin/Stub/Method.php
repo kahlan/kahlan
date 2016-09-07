@@ -7,11 +7,25 @@ use Exception;
 class Method extends \Kahlan\Plugin\Call\Message
 {
     /**
+     * Index value in the `Method::$_substitutes` array.
+     *
+     * @var integer
+     */
+    protected $_substituteIndex = 0;
+
+    /**
+     * Return values.
+     *
+     * @var array
+     */
+    protected $_substitutes = null;
+
+    /**
      * Index value in the `Method::$_returns/Method::$_closures` array.
      *
      * @var integer
      */
-    protected $_index = 0;
+    protected $_returnIndex = 0;
 
     /**
      * Stub implementation.
@@ -62,11 +76,11 @@ class Method extends \Kahlan\Plugin\Call\Message
      * @param  array  $args   The call arguments array.
      * @return mixed          The returned stub result.
      */
-    public function __invoke($args, $self = null)
+    public function __invoke($args = [], $self = null)
     {
         if ($this->_closures !== null) {
-            if (isset($this->_closures[$this->_index])) {
-                $closure = $this->_closures[$this->_index++];
+            if (isset($this->_closures[$this->_returnIndex])) {
+                $closure = $this->_closures[$this->_returnIndex++];
             } else {
                 $closure = end($this->_closures);
             }
@@ -76,12 +90,22 @@ class Method extends \Kahlan\Plugin\Call\Message
                 $closure = $closure->bindTo($self, get_class($self));
             }
             $this->_return = call_user_func_array($closure, $args);
-        } elseif (isset($this->_returns[$this->_index])) {
-            $this->_return = $this->_returns[$this->_index++];
+        } elseif (isset($this->_returns[$this->_returnIndex])) {
+            $this->_return = $this->_returns[$this->_returnIndex++];
         } else {
             $this->_return = $this->_returns ? end($this->_returns) : null;
         }
         return $this->_return;
+    }
+
+    /**
+     * Set return values.
+     *
+     * @param mixed ... <0,n> Return value(s).
+     */
+    public function toBe()
+    {
+        $this->_substitutes = func_get_args();
     }
 
     /**
@@ -92,7 +116,7 @@ class Method extends \Kahlan\Plugin\Call\Message
     public function andReturnUsing($closure)
     {
         if ($this->_returns !== null) {
-            throw new Exception("Some return values are already set.");
+            throw new Exception("Some return value(s) has already been set.");
         }
         $closures = func_get_args();
         foreach ($closures as $closure) {
@@ -111,7 +135,7 @@ class Method extends \Kahlan\Plugin\Call\Message
     public function andReturn()
     {
         if ($this->_closures !== null) {
-            throw new Exception("Closure already set.");
+            throw new Exception("Some closure(s) has already been set.");
         }
         $this->_returns = func_get_args();
     }
@@ -124,5 +148,19 @@ class Method extends \Kahlan\Plugin\Call\Message
     public function actualReturn()
     {
         return $this->_return;
+    }
+
+
+    /**
+     * Get the method substitute.
+     *
+     * @return mixed
+     */
+    public function substitute()
+    {
+        if (isset($this->_substitutes[$this->_substituteIndex])) {
+            return $this->_substitutes[$this->_substituteIndex++];
+        }
+        return $this->_substitutes ? end($this->_substitutes) : null;
     }
 }

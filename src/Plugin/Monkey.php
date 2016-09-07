@@ -27,11 +27,7 @@ class Monkey
         if (!$dest) {
             return $method;
         }
-        if (class_exists($source)) {
-            $method->reference($dest);
-        } else {
-            $method->andReturnUsing($dest);
-        }
+        $method->toBe($dest);
         return $method;
     }
 
@@ -54,25 +50,25 @@ class Monkey
         }
 
         $method = isset(static::$_registered[$name]) ? static::$_registered[$name] : null;
+        $fake = $method ? $method->substitute() : null;
 
         if (!$isFunc) {
-            $reference = $method ? $method->reference() : $name;
-            if (is_object($reference)) {
-                $substitute = $reference;
+            if (is_object($fake)) {
+                $substitute = $fake;
             }
-            return $reference;
+            return $fake ?: $name;
         }
 
-        return function() use ($name, $method) {
+        return function() use ($name, $method, $fake) {
             $args = func_get_args();
             if (Suite::registered($name)) {
                 Calls::log(null, compact('name', 'args'));
             }
-
-            if ($method && $method->matchArgs($args)) {
+            $function = $fake ?: $name;
+            if (!$fake && $method && $method->matchArgs($args)) {
                 return $method($args);
             }
-            return call_user_func_array($name, $args);
+            return call_user_func_array($function, $args);
         };
     }
 
