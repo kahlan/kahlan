@@ -50,6 +50,7 @@ class Method extends \Kahlan\Plugin\Call\Message
         $config += $defaults;
 
         parent::__construct($config);
+        $this->_name = ltrim($this->_name, '\\');
         $this->_closures = $config['closures'];
         $this->_returns = $config['returns'];
     }
@@ -71,7 +72,7 @@ class Method extends \Kahlan\Plugin\Call\Message
             }
             if (is_string($self)) {
                 $closure = $closure->bindTo(null, $self);
-            } else {
+            } elseif ($self) {
                 $closure = $closure->bindTo($self, get_class($self));
             }
             $this->_return = call_user_func_array($closure, $args);

@@ -2,7 +2,7 @@
 namespace Kahlan\Plugin;
 
 use Kahlan\Suite;
-use Kahlan\Plugin\Stub\Fct;
+use Kahlan\Plugin\Stub\Method;
 use Kahlan\Plugin\Call\Calls;
 
 class Monkey
@@ -23,16 +23,16 @@ class Monkey
     public static function patch($source, $dest = null)
     {
         $source = ltrim($source, '\\');
-        $function = static::register($source);
+        $method = static::register($source);
         if (!$dest) {
-            return $function;
+            return $method;
         }
         if (class_exists($source)) {
-            $function->reference($dest);
+            $method->reference($dest);
         } else {
-            $function->andReturnUsing($dest);
+            $method->andReturnUsing($dest);
         }
-        return $function;
+        return $method;
     }
 
     /**
@@ -53,24 +53,24 @@ class Monkey
             }
         }
 
-        $function = isset(static::$_registered[$name]) ? static::$_registered[$name] : null;
+        $method = isset(static::$_registered[$name]) ? static::$_registered[$name] : null;
 
         if (!$isFunc) {
-            $reference = $function ? $function->reference() : $name;
+            $reference = $method ? $method->reference() : $name;
             if (is_object($reference)) {
                 $substitute = $reference;
             }
             return $reference;
         }
 
-        return function() use ($name, $function) {
+        return function() use ($name, $method) {
             $args = func_get_args();
             if (Suite::registered($name)) {
                 Calls::log(null, compact('name', 'args'));
             }
 
-            if ($function && $function->matchArgs($args)) {
-                return $function($args);
+            if ($method && $method->matchArgs($args)) {
+                return $method($args);
             }
             return call_user_func_array($name, $args);
         };
@@ -84,7 +84,7 @@ class Monkey
      */
     public static function register($name)
     {
-        return static::$_registered[$name] = new Fct();
+        return static::$_registered[$name] = new Method();
     }
 
     /**
