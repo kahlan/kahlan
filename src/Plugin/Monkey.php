@@ -2,6 +2,7 @@
 namespace Kahlan\Plugin;
 
 use Kahlan\Suite;
+use Kahlan\Plugin\Stub\Fct;
 use Kahlan\Plugin\Call\Calls;
 
 class Monkey
@@ -19,10 +20,19 @@ class Monkey
      * @param string $source A fully namespaced reference string.
      * @param string $dest   A fully namespaced reference string.
      */
-    public static function patch($source, $dest)
+    public static function patch($source, $dest = null)
     {
         $source = ltrim($source, '\\');
-        static::$_registered[$source] = $dest;
+        $function = static::register($source);
+        if (!$dest) {
+            return $function;
+        }
+        if (class_exists($source)) {
+            $function->reference($dest);
+        } else {
+            $function->andReturnUsing($dest);
+        }
+        return $function;
     }
 
     /**
@@ -43,21 +53,52 @@ class Monkey
             }
         }
 
-        $registered = isset(static::$_registered[$name]) ? static::$_registered[$name] : $name;
+        $function = isset(static::$_registered[$name]) ? static::$_registered[$name] : null;
+
         if (!$isFunc) {
-            if (is_object($registered)) {
-                $substitute = $registered;
+            $reference = $function ? $function->reference() : $name;
+            if (is_object($reference)) {
+                $substitute = $reference;
             }
-            return $registered;
+            return $reference;
         }
-        if (!Suite::registered($name)) {
-            return $registered;
-        }
-        return function() use ($name, $registered) {
+
+        return function() use ($name, $function) {
             $args = func_get_args();
-            Calls::log(null, compact('name', 'args'));
-            return call_user_func_array($registered, $args);
+            if (Suite::registered($name)) {
+                Calls::log(null, compact('name', 'args'));
+            }
+
+            if ($function && $function->matchArgs($args)) {
+                return $function($args);
+            }
+            return call_user_func_array($name, $args);
         };
+    }
+
+    /**
+     * Register a patch
+     *
+     * @param  mixed         $name A fully namespaced class/function name.
+     * @return boolean|array
+     */
+    public static function register($name)
+    {
+        return static::$_registered[$name] = new Fct();
+    }
+
+    /**
+     * Checks if a stub has been registered for a hash
+     *
+     * @param  mixed         $name A fully namespaced class/function name.
+     * @return boolean|array
+     */
+    public static function registered($name = null)
+    {
+        if (!func_num_args()) {
+            return array_keys(static::$_registered);
+        }
+        return isset(static::$_registered[$name]);
     }
 
     /**

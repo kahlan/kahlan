@@ -2,7 +2,6 @@
 namespace Kahlan;
 
 use Exception;
-use Kahlan\Plugin\Stub\Fct;
 use Kahlan\Plugin\Stub;
 use Kahlan\Plugin\Monkey;
 
@@ -79,7 +78,7 @@ class Allow
         if ($this->_isClass) {
             throw new Exception("Error `toBeCalled()` are are only available on functions not classes/instances.");
         }
-        return new Fct(['name' => $this->_actual]);
+        return Monkey::patch($this->_actual);
     }
 
     /**

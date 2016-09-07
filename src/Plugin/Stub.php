@@ -204,7 +204,7 @@ class Stub
 
             if ($index < $total - 1) {
                 $reference = $instance->_stubs[$name];
-                $method->andReturn($reference);
+                $method->andReturn($instance->_stubs[$name]);
             }
         }
 
