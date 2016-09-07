@@ -84,14 +84,15 @@ class Allow
     /**
      * Sets the stub logic.
      *
-     * @param mixed $substitute The logic.
+     * @param mixed ... The substitue(s).
      */
-    public function toBe($substitute)
+    public function toBe()
     {
         if (!is_string($this->_actual)) {
             throw new Exception("Error `toBe()` need to be applied on a fully-namespaced class or function name.");
         }
-        Monkey::patch($this->_actual, $substitute);
+        $method = Monkey::patch($this->_actual);
+        call_user_func_array([$method, 'toBe'], func_get_args());
     }
 
     /**

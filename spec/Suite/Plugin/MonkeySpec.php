@@ -87,6 +87,16 @@ describe("Monkey", function() {
 
         });
 
+        it("patches a core class using substitutes", function() {
+
+            $mon = new Mon();
+            $patch = Monkey::patch('DateTime');
+            $patch->toBe(new DateTime('@123'), new DateTime('@456'));
+            expect($mon->datetime()->getTimestamp())->toBe(123);
+            expect($mon->datetime()->getTimestamp())->toBe(456);
+
+        });
+
         it("patches a function", function() {
 
             $mon = new Mon();
