@@ -145,12 +145,8 @@ class Message
      *
      * @return mixed
      */
-    public function reference($reference = null)
+    public function reference()
     {
-        if (func_get_args()) {
-            $this->_reference = $reference;
-            return $this;
-        }
         return $this->_reference;
     }
 
