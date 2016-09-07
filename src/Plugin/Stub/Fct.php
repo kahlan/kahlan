@@ -97,9 +97,6 @@ class Fct extends \Kahlan\Plugin\Call\Message
             }
         }
         $this->_closures = $closures;
-        Monkey::patch($this->_name, function() {
-            return $this->__invoke(func_get_args());
-        });
     }
 
     /**
@@ -113,9 +110,6 @@ class Fct extends \Kahlan\Plugin\Call\Message
             throw new Exception("Closure already set.");
         }
         $this->_returns = func_get_args();
-        Monkey::patch($this->_name, function() {
-            return $this->__invoke(func_get_args());
-        });
     }
 
     /**
