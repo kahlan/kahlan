@@ -128,7 +128,7 @@ class Pointcut
     {
         $prefix = $this->_prefix;
         $statement = $generator ? 'yield' : 'return';
-        return "\$__{$prefix}_ARGS__ = func_get_args(); \$__{$prefix}_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__{$prefix}__ = \Kahlan\Plugin\Pointcut::before(__METHOD__, \$__{$prefix}_SELF__, \$__{$prefix}_ARGS__)) { \$r = \$__{$prefix}__(\$__{$prefix}_SELF__, \$__{$prefix}_ARGS__); {$statement} \$r; }";
+        return "\$__{$prefix}_ARGS__ = func_get_args(); \$__{$prefix}_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__{$prefix}__ = \Kahlan\Plugin\Pointcut::before(__METHOD__, \$__{$prefix}_SELF__, \$__{$prefix}_ARGS__)) { \$r = \$__{$prefix}__(\$__{$prefix}_ARGS__, \$__{$prefix}_SELF__); {$statement} \$r; }";
     }
 
 }
