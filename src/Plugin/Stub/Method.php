@@ -61,7 +61,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      * @param  array  $args   The call arguments array.
      * @return mixed          The returned stub result.
      */
-    public function __invoke($self, $args)
+    public function __invoke($args, $self = null)
     {
         if ($this->_closures !== null) {
             if (isset($this->_closures[$this->_index])) {
