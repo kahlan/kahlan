@@ -71,7 +71,7 @@ describe("Method", function() {
 
                 $stub->andReturn('Ahoy!');
 
-            })->toThrow(new Exception('Closure already set.'));
+            })->toThrow(new Exception('Some closure(s) has already been set.'));
 
         });
 
@@ -121,7 +121,7 @@ describe("Method", function() {
                 $stub->andReturnUsing(function($param) {
                     return $param;
                 });
-            })->toThrow(new Exception('Some return values are already set.'));
+            })->toThrow(new Exception('Some return value(s) has already been set.'));
 
         });
 

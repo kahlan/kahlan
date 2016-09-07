@@ -413,11 +413,21 @@ describe("Allow", function() {
 
         });
 
-        it("expects stubbed method to be stubbed as expected using a closure", function() {
+        it("expects stubbed method to be stubbed as expected using return closures", function() {
 
             $mon = new Mon();
-            allow('time')->toBeCalled()->andReturnUsing(function() {return 123;});
+            allow('time')->toBeCalled()->andReturnUsing(function() {return 123;}, function() {return 456;});
             expect($mon->time())->toBe(123);
+            expect($mon->time())->toBe(456);
+
+        });
+
+        it("expects stubbed method to be stubbed as expected using closures", function() {
+
+            $mon = new Mon();
+            allow('time')->toBe(function() {return 123;}, function() {return 456;});
+            expect($mon->time())->toBe(123);
+            expect($mon->time())->toBe(456);
 
         });
 
