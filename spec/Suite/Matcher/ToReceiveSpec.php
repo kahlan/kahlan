@@ -378,6 +378,16 @@ describe("toReceive", function() {
 
             });
 
+            it("throws an exception when trying to spy an unexisting class", function() {
+
+                $closure = function() {
+                    expect('My\Unexisting\Classname\Foo')->toReceive('::test');
+                };
+                $message = "Can't Spy the unexisting class `My\\Unexisting\\Classname\\Foo`.";
+                expect($closure)->toThrow(new InvalidArgumentException($message));
+
+            });
+
             context("with chain of methods", function() {
 
                 it("expects called chain to be called", function() {

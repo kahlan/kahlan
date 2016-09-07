@@ -132,7 +132,7 @@ class ToReceive
         $isString = is_string($reference);
         if ($isString) {
             if (!class_exists($reference)) {
-                throw new InvalidArgumentException("Can't Stub the unexisting class `{$reference}`.");
+                throw new InvalidArgumentException("Can't Spy the unexisting class `{$reference}`.");
             }
             $reflection = Inspector::inspect($reference);
         } else {
