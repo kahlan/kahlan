@@ -23,7 +23,7 @@ class Monkey
     public static function patch($source, $dest = null)
     {
         $source = ltrim($source, '\\');
-        $method = static::register($source);
+        $method = static::$_registered[$source] = new Method();
         if (!$dest) {
             return $method;
         }
@@ -70,31 +70,6 @@ class Monkey
             }
             return call_user_func_array($function, $args);
         };
-    }
-
-    /**
-     * Register a patch
-     *
-     * @param  mixed         $name A fully namespaced class/function name.
-     * @return boolean|array
-     */
-    public static function register($name)
-    {
-        return static::$_registered[$name] = new Method();
-    }
-
-    /**
-     * Checks if a stub has been registered for a hash
-     *
-     * @param  mixed         $name A fully namespaced class/function name.
-     * @return boolean|array
-     */
-    public static function registered($name = null)
-    {
-        if (!func_num_args()) {
-            return array_keys(static::$_registered);
-        }
-        return isset(static::$_registered[$name]);
     }
 
     /**
