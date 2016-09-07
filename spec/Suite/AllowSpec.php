@@ -404,7 +404,7 @@ describe("Allow", function() {
 
     context("with functions", function() {
 
-        it("expects called method to be called and stubbed as expected", function() {
+        it("expects stubbed method to be stubbed as expected", function() {
 
             $mon = new Mon();
             allow('time')->toBeCalled()->andReturn(123, 456);
@@ -413,12 +413,20 @@ describe("Allow", function() {
 
         });
 
-        it("expects called method to be called and stubbed as expected", function() {
+        it("expects stubbed method to be stubbed as expected using a closure", function() {
 
             $mon = new Mon();
             allow('time')->toBeCalled()->andReturnUsing(function() {return 123;});
             expect($mon->time())->toBe(123);
 
+        });
+
+        it("expects stubbed method to be stubbed only when the with constraint is respected", function() {
+
+            $mon = new Mon();
+            allow('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(10, 20)->andReturn(40);
+            expect($mon->rand(0, 10))->toBe(5);
+            expect($mon->rand(10, 20))->toBe(40);
         });
 
         it('makes built-in PHP function to work', function() {

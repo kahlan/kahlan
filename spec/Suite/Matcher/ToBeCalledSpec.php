@@ -128,9 +128,11 @@ describe("ToBeCalled", function() {
 
                     $mon = new Mon();
                     expect('time')->toBeCalled()->ordered;
-                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->ordered;
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10)->ordered;
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(10, 20)->ordered;
                     $mon->time();
                     $mon->rand(5, 10);
+                    $mon->rand(10, 20);
 
                 });
 
@@ -138,7 +140,7 @@ describe("ToBeCalled", function() {
 
                     $mon = new Mon();
                     expect('time')->toBeCalled()->ordered;
-                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->ordered;
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->with(5, 10)->ordered;
                     $mon->rand(5, 10);
                     $mon->time();
 
