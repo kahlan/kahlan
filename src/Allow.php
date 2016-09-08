@@ -127,7 +127,7 @@ class Allow
      *
      * @param mixed ... <0,n> Return value(s).
      */
-    public function andReturnUsing()
+    public function andRun()
     {
         throw new Exception("You must to call `toReceive()/toBeCalled()` before defining a return value.");
     }

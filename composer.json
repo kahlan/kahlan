@@ -15,7 +15,10 @@
         "psr-4": {
             "Kahlan\\": "src/"
         },
-        "files": ["src/init.php"]
+        "files": [
+            "src/init.php",
+            "src/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

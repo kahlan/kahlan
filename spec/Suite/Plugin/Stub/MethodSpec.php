@@ -65,7 +65,7 @@ describe("Method", function() {
             expect(function() {
                 $foo = new Foo();
                 $stub = allow($foo)->toReceive('message');
-                $stub->andReturnUsing(function($param) {
+                $stub->andRun(function($param) {
                     return $param;
                 });
 
@@ -77,13 +77,13 @@ describe("Method", function() {
 
     });
 
-    describe("->andReturnUsing()", function() {
+    describe("->andRun()", function() {
 
         it("sets a closure", function() {
 
             $foo = new Foo();
             $stub = allow($foo)->toReceive('message');
-            $stub->andReturnUsing(function($param) {
+            $stub->andRun(function($param) {
                 return $param;
             });
 
@@ -96,7 +96,7 @@ describe("Method", function() {
 
             $foo = new Foo();
             $stub = allow($foo)->toReceive('message');
-            $stub->andReturnUsing(function() {
+            $stub->andRun(function() {
                 return 'Aloha!';
             }, function() {
                 return 'Hello!';
@@ -118,7 +118,7 @@ describe("Method", function() {
                 $stub = allow($foo)->toReceive('message');
                 $stub->andReturn('Ahoy!');
 
-                $stub->andReturnUsing(function($param) {
+                $stub->andRun(function($param) {
                     return $param;
                 });
             })->toThrow(new Exception('Some return value(s) has already been set.'));
@@ -131,7 +131,7 @@ describe("Method", function() {
                 $foo = new Foo();
                 $stub = allow($foo)->toReceive('message');
 
-                $stub->andReturnUsing('String');
+                $stub->andRun('String');
             })->toThrow(new Exception('The passed parameter is not callable.'));
 
         });

@@ -12,7 +12,6 @@ use Kahlan\Arg;
 use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
 use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 use Kahlan\Plugin\Stub;
-use Kahlan\IncompleteException;
 
 use Kahlan\Spec\Fixture\Plugin\Monkey\Mon;
 use Kahlan\Spec\Fixture\Plugin\Monkey\User;
@@ -105,7 +104,7 @@ describe("Allow", function() {
         it("stubs a method using a closure", function() {
 
             $foo = new Foo();
-            allow($foo)->toReceive('message')->andReturnUsing(function($param) { return $param; });
+            allow($foo)->toReceive('message')->andRun(function($param) { return $param; });
             expect($foo->message('Good Bye!'))->toBe('Good Bye!');
 
         });
@@ -121,7 +120,7 @@ describe("Allow", function() {
         it("stubs a magic method using a closure", function() {
 
             $foo = new Foo();
-            allow($foo)->toReceive('magicHello')->andReturnUsing(function($message) { return $message; });
+            allow($foo)->toReceive('magicHello')->andRun(function($message) { return $message; });
             expect($foo->magicHello('Hello World!'))->toBe('Hello World!');
 
         });
@@ -137,7 +136,7 @@ describe("Allow", function() {
         it("stubs a static magic method using a closure", function() {
 
             $foo = new Foo();
-            allow($foo)->toReceive('::magicHello')->andReturnUsing(function($message) { return $message; });
+            allow($foo)->toReceive('::magicHello')->andRun(function($message) { return $message; });
             expect($foo::magicHello('Hello World!'))->toBe('Hello World!');
 
         });
@@ -315,7 +314,7 @@ describe("Allow", function() {
 
         it("stubs a method using a closure", function() {
 
-            allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->andReturnUsing(function($param) { return $param; });
+            allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->andRun(function($param) { return $param; });
             $foo = new Foo();
             expect($foo->message('Good Bye!'))->toBe('Good Bye!');
 
@@ -323,7 +322,7 @@ describe("Allow", function() {
 
         it("stubs a static method using a closure", function() {
 
-            allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::messageStatic')->andReturnUsing(function($param) { return $param; });
+            allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::messageStatic')->andRun(function($param) { return $param; });
             expect(Foo::messageStatic('Good Bye!'))->toBe('Good Bye!');
 
         });
@@ -380,6 +379,7 @@ describe("Allow", function() {
 
             allow('PDO')->toBeOK();
             $user = new User();
+            expect($user->all())->toBeTruthy();
 
         });
 
@@ -416,7 +416,7 @@ describe("Allow", function() {
         it("expects stubbed method to be stubbed as expected using return closures", function() {
 
             $mon = new Mon();
-            allow('time')->toBeCalled()->andReturnUsing(function() {return 123;}, function() {return 456;});
+            allow('time')->toBeCalled()->andRun(function() {return 123;}, function() {return 456;});
             expect($mon->time())->toBe(123);
             expect($mon->time())->toBe(456);
 
@@ -469,7 +469,7 @@ describe("Allow", function() {
     it("throws an exception when trying to call `andReturn()` right away", function() {
 
         expect(function() {
-            allow('time')->andReturnUsing(function(){});
+            allow('time')->andRun(function(){});
         })->toThrow(new Exception("You must to call `toReceive()/toBeCalled()` before defining a return value."));
 
     });

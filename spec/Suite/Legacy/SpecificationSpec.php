@@ -10,68 +10,21 @@ use Kahlan\Plugin\Stub;
 
 describe("Specification", function() {
 
+    before(function() {
+        Suite::$PHP = 5;
+    });
+
+    after(function() {
+        Suite::$PHP = PHP_MAJOR_VERSION;
+    });
+
     beforeEach(function() {
 
         $this->spec = new Specification(['closure' => function() {}]);
 
     });
 
-    describe("->__construct()", function() {
-
-        it("sets spec as pending with empty closure", function() {
-
-            $this->spec = new Specification(['closure' => null]);
-
-            expect($this->spec->passed())->toBe(true);
-
-            $pending = $this->spec->summary()->pending();
-            expect($pending)->toBe(1);
-
-        });
-
-    });
-
-    describe("->expect()", function() {
-
-        it("returns the matcher instance", function() {
-
-            $matcher = $this->spec->expect('actual');
-            expect($matcher)->toBeAnInstanceOf('Kahlan\Expectation');
-
-        });
-
-    });
-
-    describe("->waitsFor()", function() {
-
-        it("allows non closure", function() {
-
-            $this->spec = new Specification([
-                'message' => 'allows non closure',
-                'closure' => function() {
-                    $this->waitsFor('something')->toBe('something');
-                }
-            ]);
-
-            expect($this->spec->passed())->toBe(true);
-
-        });
-
-        it("returns the matcher instance setted with the correct timeout", function() {
-
-            $matcher = $this->spec->waitsFor(function(){}, 10);
-            expect($matcher)->toBeAnInstanceOf('Kahlan\Expectation');
-            expect($matcher->timeout())->toBe(10);
-
-            $matcher = $this->spec->waitsFor(function(){});
-            expect($matcher)->toBeAnInstanceOf('Kahlan\Expectation');
-            expect($matcher->timeout())->toBe(0);
-
-        });
-
-    });
-
-    describe("->passed()", function() {
+        describe("->passed()", function() {
 
         it("returns the closure return value", function() {
 
@@ -186,10 +139,7 @@ describe("Specification", function() {
 
             it("logs deferred matcher backtrace", function() {
 
-                $root = new Suite();
-                $root->backtraceFocus(['*Spec.php', '*.spec.php']);
                 $this->spec = new Specification([
-                    'parent'  => $root,
                     'closure' => function() {
                         $this->expect(Stub::create())->not->toReceive('helloWorld');
                     }
@@ -203,8 +153,8 @@ describe("Specification", function() {
                 $pass = reset($passes);
                 $expectation = $pass->children()[0];
 
-                $file = $expectation->file();
-                expect($file)->toMatch('~SpecificationSpec.php$~');
+                $backtrace = $expectation->backtrace();
+                expect($backtrace[0]['file'])->toMatch('~ToReceive.php$~');
 
             });
 
@@ -267,7 +217,7 @@ describe("Specification", function() {
                     'expected' => false
                 ]);
                 expect($expectation->messages())->toBe(['it runs a spec']);
-
+                expect($expectation->backtrace())->toBeAn('array');
             });
 
             it("logs a fail with a deferred matcher", function() {
@@ -298,6 +248,7 @@ describe("Specification", function() {
                 ]);
                 expect($expectation->description())->toBe('receive the expected method.');
                 expect($expectation->messages())->toBe(['it runs a spec']);
+                expect($expectation->backtrace())->toBeAn('array');
 
             });
 
@@ -372,7 +323,7 @@ describe("Specification", function() {
                     'expected' => false
                 ]);
                 expect($expectation->messages())->toBe(['it runs a spec']);
-
+                expect($expectation->backtrace())->toBeAn('array');
             });
 
             it("logs the first failing spec only", function() {
@@ -404,7 +355,7 @@ describe("Specification", function() {
                     'expected' => false
                 ]);
                 expect($expectation->messages())->toBe(['it runs a spec']);
-
+                expect($expectation->backtrace())->toBeAn('array');
             });
 
         });

@@ -10,6 +10,10 @@ use Kahlan\Matcher;
 use Kahlan\Expectation;
 use Kahlan\Plugin\Stub;
 
+function expectation($actual, $timeout = -1) {
+    return new Expectation(compact('actual', 'timeout'));
+}
+
 describe("Expectation", function() {
 
     beforeEach(function() {
@@ -30,7 +34,7 @@ describe("Expectation", function() {
         it("throws an exception when using an undefined matcher name", function() {
 
             $closure = function() {
-                $result = Expectation::expect(true)->toHelloWorld(true);
+                $result = expectation(true)->toHelloWorld(true);
             };
 
             expect($closure)->toThrow(new Exception("Unexisting matcher attached to `'toHelloWorld'`."));
@@ -42,7 +46,7 @@ describe("Expectation", function() {
             Matcher::register('toEqualCustom', Stub::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
 
             $closure = function() {
-                $result = Expectation::expect([])->toEqualCustom(new stdClass());
+                $result = expectation([])->toEqualCustom(new stdClass());
             };
 
             expect($closure)->toThrow(new Exception("Unexisting matcher attached to `'toEqualCustom'` for `stdClass`."));
@@ -52,7 +56,7 @@ describe("Expectation", function() {
         it("doesn't wait when the spec passes", function () {
 
             $start = microtime(true);
-            $result = Expectation::expect(true, 1)->toBe(true);
+            $result = expectation(true, 1)->toBe(true);
             $end = microtime(true);
             expect($end - $start)->toBeLessThan(1);
 
@@ -61,7 +65,7 @@ describe("Expectation", function() {
         it("loops until the timeout is reached on failure", function () {
 
             $start = microtime(true);
-            $result = Expectation::expect(true, 0.1)->toBe(false);
+            $result = expectation(true, 0.1)->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
             expect($end - $start)->toBeLessThan(0.2);
@@ -74,7 +78,7 @@ describe("Expectation", function() {
             $subspec = new Specification(['closure' => function() {
                 return true;
             }]);
-            $result = Expectation::expect($subspec, 0.1)->toBe(false);
+            $result = expectation($subspec, 0.1)->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
             expect($end - $start)->toBeLessThan(0.2);
@@ -84,7 +88,7 @@ describe("Expectation", function() {
         it("doesn't wait on failure when a negative expectation is expected", function () {
 
             $start = microtime(true);
-            $result = Expectation::expect(true, 1)->not->toBe(false);
+            $result = expectation(true, 1)->not->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeLessThan(1);
 
@@ -92,33 +96,33 @@ describe("Expectation", function() {
 
     });
 
-    describe("->run()", function() {
+    describe("->passed()", function() {
 
-        it ("returns the matcher when called", function() {
+        it("verifies the expectation", function() {
 
-            $result = Expectation::expect(true)->run();
-            expect($result)->toBeAnInstanceOf('Kahlan\Expectation');
+            $actual = expectation(true)->toBe(true)->passed();
+            expect($actual)->toBe(true);
 
         });
 
-        it ("runs sub specs", function() {
+        it("verifies nested expectations inside a spec", function() {
 
-            $subspec = new Specification(['closure' => function() {
+            $spec = new Specification(['closure' => function() {
                 return true;
             }]);
-            $result = Expectation::expect($subspec)->run();
-            expect($result)->toBeAnInstanceOf('Kahlan\Expectation');
+            $actual = expectation($spec)->toBe(true)->passed();
+            expect($actual)->toBe(true);
 
         });
 
-        it("loops until the timeout is reached on failure using a sub spec", function () {
+        it("loops until the timeout is reached on failure", function () {
 
             $start = microtime(true);
-            $subspec = new Specification(['closure' => function() {
+            $spec = new Specification(['closure' => function() {
                 expect(true)->toBe(false);
             }]);
-            $result = Expectation::expect($subspec, 0.1)->run();
-            expect($result)->toBeAnInstanceOf('Kahlan\Expectation');
+            $actual = expectation($spec, 0.1)->passed();
+            expect($actual)->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
             expect($end - $start)->toBeLessThan(0.2);
@@ -155,11 +159,20 @@ describe("Expectation", function() {
         it("clears an expectation", function() {
 
             $actual = Stub::create();
-            $expectation = Expectation::expect($actual, 10);
+            $expectation = expectation($actual, 10);
             $matcher = $expectation->not->toReceive('helloWorld');
 
             expect($expectation->actual())->toBe($actual);
-            expect($expectation->deferred())->toHaveLength(1);
+            expect($expectation->deferred())->toBe([
+                'matcherName' => 'toReceive',
+                'matcher' => 'Kahlan\Matcher\ToReceive',
+                'data' => [
+                    'actual' => $actual,
+                    'expected' => 'helloWorld'
+                ],
+                'instance' => $matcher,
+                'not' => true
+            ]);
             expect($expectation->timeout())->toBe(10);
             expect($expectation->not())->toBe(true);
             expect($expectation->passed())->toBe(true);
@@ -168,7 +181,7 @@ describe("Expectation", function() {
             $expectation->clear();
 
             expect($expectation->actual())->toBe(null);
-            expect($expectation->deferred())->toHaveLength(0);
+            expect($expectation->deferred())->toBe(null);
             expect($expectation->timeout())->toBe(-1);
             expect($expectation->not())->toBe(false);
             expect($expectation->passed())->toBe(true);

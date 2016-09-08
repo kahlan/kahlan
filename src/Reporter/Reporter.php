@@ -51,96 +51,73 @@ class Reporter
     /**
      * Callback called on a suite start.
      *
-     * @param object $report The report object of the whole spec.
+     * @param object $suite The suite instance.
      */
-    public function suiteStart($report = null)
-    {
-    }
-
-    /**
-     * Callback called after a suite execution.
-     *
-     * @param object $report The report object of the whole spec.
-     */
-    public function suiteEnd($report = null)
+    public function suiteStart($suite = null)
     {
     }
 
     /**
      * Callback called on a spec start.
      *
-     * @param object $report The report object of the whole spec.
+     * @param object $spec The spec object of the whole spec.
      */
-    public function specStart($report = null)
+    public function specStart($spec = null)
     {
-    }
-
-    /**
-     * Callback called after a spec execution.
-     *
-     * @param object $report The report object of the whole spec.
-     */
-    public function specEnd($report = null)
-    {
-        $this->_current++;
     }
 
     /**
      * Callback called on successful expect.
      *
-     * @param object $report An expect report object.
+     * @param object $log An expect log object.
      */
-    public function pass($report = null)
+    public function passed($log = null)
     {
     }
 
     /**
      * Callback called on failure.
      *
-     * @param object $report An expect report object.
+     * @param object $log An expect log object.
      */
-    public function fail($report = null)
+    public function failed($log = null)
     {
     }
 
     /**
-     * Callback called when an exception occur.
+     * Callback called after a spec execution.
      *
-     * @param object $report An expect report object.
+     * @param object $log The log object of the whole spec.
      */
-    public function exception($report = null)
+    public function specEnd($log = null)
     {
+        $this->_current++;
     }
 
     /**
-     * Callback called on a skipped spec.
+     * Callback called after a suite execution.
      *
-     * @param object $report An expect report object.
+     * @param object $suite The suite instance.
      */
-    public function skip($report = null)
-    {
-    }
-
-    /**
-     * Callback called when a `Kahlan\IncompleteException` occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function incomplete($report = null)
+    public function suiteEnd($suite = null)
     {
     }
 
     /**
      * Callback called at the end of specs processing.
+     *
+     * @param object $summary The execution summary instance.
      */
-    public function end($results = [])
+    public function end($summary)
     {
     }
 
     /**
      * Callback called at the end of the process.
+     *
+     * @param object $summary The execution summary instance.
      */
-    public function stop($results = [])
+    public function stop($summary)
     {
     }
 }

@@ -152,7 +152,7 @@ Configuration Options:
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
   --spec=<path>                       Paths of specification directories (default: `['spec']`).
-  --pattern=<pattern>                 A shell wildcard pattern (default: `'*Spec.php'`).
+  --pattern=<pattern>                 A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
 
 Reporter Options:
 
@@ -174,12 +174,12 @@ Code Coverage Options:
 Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
-  --no-colors=<boolean>               To turn off colors. (default: `false`).
-  --no-header=<boolean>               To turn off header. (default: `false`).
+  --no-colors                         To turn off colors. (default: `false`).
+  --no-header                         To turn off header. (default: `false`).
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --cc=<boolean>                      Clear cache before spec run. (default: `false`).
+  --cc                                Clear cache before spec run. (default: `false`).
   --autoclear                         Classes to autoclear after each spec (default: [
                                           `'Kahlan\Plugin\Monkey'`,
                                           `'Kahlan\Plugin\Call'`,
@@ -327,7 +327,11 @@ EOD;
             Filter::register('spec.bootstrap', function($chain) use (&$order) { $order[] = 'bootstrap';});
             Filter::apply($this->specs, 'bootstrap', 'spec.bootstrap');
 
-            Filter::register('spec.interceptor', function($chain) use (&$order) { $order[] = 'interceptor';});
+            $previous = $this->previous;
+            Filter::register('spec.interceptor', function($chain) use (&$order, $previous) {
+                Interceptor::load($previous);
+                $order[] = 'interceptor';
+            });
             Filter::apply($this->specs, 'interceptor', 'spec.interceptor');
 
             Filter::register('spec.namespaces', function($chain) use (&$order) { $order[] = 'namespaces';});

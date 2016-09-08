@@ -108,7 +108,7 @@ class Method extends \Kahlan\Plugin\Call\Message
         if ($this->reference()) {
             $this->_substitutes = func_get_args();
         } else {
-            call_user_func_array([$this, 'andReturnUsing'], func_get_args());
+            call_user_func_array([$this, 'andRun'], func_get_args());
         }
     }
 
@@ -117,7 +117,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      *
      * @param Closure $closure The logic.
      */
-    public function andReturnUsing()
+    public function andRun()
     {
         if ($this->_returns !== null) {
             throw new Exception("Some return value(s) has already been set.");

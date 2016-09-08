@@ -102,7 +102,7 @@ class Kahlan {
         $args->argument('src',       ['array'   => true, 'default' => ['src']]);
         $args->argument('spec',      ['array'   => true, 'default' => ['spec']]);
         $args->argument('reporter',  ['array'   => true, 'default' => ['dot']]);
-        $args->argument('pattern',   ['default' => '*Spec.php']);
+        $args->argument('pattern',   ['default' => ['*Spec.php', '*.spec.php']]);
         $args->argument('coverage',  ['type'    => 'string']);
         $args->argument('config',    ['default' => 'kahlan-config.php']);
         $args->argument('ff',        ['type'    => 'numeric', 'default' => 0]);
@@ -256,7 +256,7 @@ Configuration Options:
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
   --spec=<path>                       Paths of specification directories (default: `['spec']`).
-  --pattern=<pattern>                 A shell wildcard pattern (default: `'*Spec.php'`).
+  --pattern=<pattern>                 A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
 
 Reporter Options:
 
@@ -278,12 +278,12 @@ Code Coverage Options:
 Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
-  --no-colors=<boolean>               To turn off colors. (default: `false`).
-  --no-header=<boolean>               To turn off header. (default: `false`).
+  --no-colors                         To turn off colors. (default: `false`).
+  --no-header                         To turn off header. (default: `false`).
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --cc=<boolean>                      Clear cache before spec run. (default: `false`).
+  --cc                                Clear cache before spec run. (default: `false`).
   --autoclear                         Classes to autoclear after each spec (default: [
                                           `'Kahlan\Plugin\Monkey'`,
                                           `'Kahlan\Plugin\Call'`,
@@ -433,10 +433,11 @@ EOD;
      */
     protected function _patchers()
     {
+        if (!$interceptor = Interceptor::instance()) {
+            return;
+        }
         return Filter::on($this, 'patchers', [], function($chain) {
-            if (!$interceptor = Interceptor::instance()) {
-                return;
-            }
+            $interceptor = Interceptor::instance();
             $patchers = $interceptor->patchers();
             $patchers->add('pointcut', new Pointcut());
             $patchers->add('monkey',   new Monkey());

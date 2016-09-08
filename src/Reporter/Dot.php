@@ -22,59 +22,40 @@ class Dot extends Terminal
     }
 
     /**
-     * Callback called on successful expect.
+     * Callback called after a spec execution.
      *
-     * @param object $report An expect report.
+     * @param object $log The log object of the whole spec.
      */
-    public function pass($report = null)
+    public function specEnd($log = null)
     {
-        $this->_write('.');
-    }
-
-    /**
-     * Callback called on failure.
-     *
-     * @param object $report An expect report object.
-     */
-    public function fail($report = null)
-    {
-        $this->_write('F', 'red');
-    }
-
-    /**
-     * Callback called when an exception occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function exception($report = null)
-    {
-        $this->_write('E', 'magenta');
-    }
-
-    /**
-     * Callback called on a skipped spec.
-     *
-     * @param object $report An expect report object.
-     */
-    public function skip($report = null)
-    {
-        $this->_write('S', 'cyan');
-    }
-
-    /**
-     * Callback called when a `Kahlan\IncompleteException` occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function incomplete($report = null)
-    {
-        $this->_write('I', 'yellow');
+        switch($log->type()) {
+            case 'passed':
+                $this->_write('.');
+            break;
+            case 'skipped':
+                $this->_write('S', 'd');
+            break;
+            case 'pending':
+                $this->_write('P', 'cyan');
+            break;
+            case 'excluded':
+                $this->_write('X', 'yellow');
+            break;
+            case 'failed':
+                $this->_write('F', 'red');
+            break;
+            case 'errored':
+                $this->_write('E', 'magenta');
+            break;
+        }
     }
 
     /**
      * Callback called at the end of specs processing.
+     *
+     * @param object $summary The execution summary instance.
      */
-    public function end($results = [])
+    public function end($summary)
     {
         do {
             $this->_write(' ');
@@ -82,17 +63,14 @@ class Dot extends Terminal
 
         $this->write("\n");
 
-        foreach ($results['specs'] as $type => $reports) {
-            foreach ($reports as $report) {
-                if ($report->type() !== 'pass' && $report->type() !== 'skip') {
-                    $this->_report($report);
-                }
+        foreach ($summary->logs() as $log) {
+            if (!$log->passed()) {
+                $this->_report($log);
             }
         }
 
         $this->write("\n\n");
-        $this->_summary($results);
-        $this->_reportFocused($results);
+        $this->_reportSummary($summary);
     }
 
     /**

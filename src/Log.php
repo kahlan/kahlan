@@ -3,7 +3,7 @@ namespace Kahlan;
 
 use Kahlan\Analysis\Debugger;
 
-class Report
+class Log
 {
     /**
      * The scope context instance.
@@ -76,11 +76,18 @@ class Report
     protected $_exception = null;
 
     /**
+     * The backtrace.
+     *
+     * @var array
+     */
+    protected $_backtrace = [];
+
+    /**
      * The reports of executed expectations.
      *
      * @var array
      */
-    protected $_childs = [];
+    protected $_children = [];
 
     /**
      * The Constructor.
@@ -92,7 +99,7 @@ class Report
     {
         $defaults = [
             'scope'       => null,
-            'type'        => 'pass',
+            'type'        => 'passed',
             'not'         => false,
             'description' => null,
             'matcher'     => null,
@@ -110,13 +117,11 @@ class Report
         $this->_matcher     = $config['matcher'];
         $this->_matcherName = $config['matcherName'];
         $this->_data        = $config['data'];
-        $this->_backtrace   = $config['backtrace'];
-        $this->_exception   = $config['exception'];
-
-        if ($this->_backtrace) {
-            $trace = reset($this->_backtrace);
-            $this->_file = preg_replace('~' . preg_quote(getcwd(), '~') . '~', '', $trace['file']);
-            $this->_line = $trace['line'];
+        $this->exception($config['exception']);
+        if ($config['backtrace']) {
+            $this->backtrace($config['backtrace']);
+        } elseif ($this->scope()) {
+            $this->backtrace($this->scope()->backtrace());
         }
     }
 
@@ -135,9 +140,23 @@ class Report
      *
      * @return string
      */
-    public function type()
+    public function type($type = null)
     {
-        return $this->_type;
+        if (!func_num_args()) {
+            return $this->_type;
+        }
+        $this->_type = $type;
+        return $this;
+    }
+
+    /**
+     * Return the state of the log.
+     *
+     * @return boolean
+     */
+    public function passed()
+    {
+        return $this->_type !== 'failed' && $this->_type !== 'errored';
     }
 
     /**
@@ -191,23 +210,35 @@ class Report
     }
 
     /**
-     * Gets the backtrace related to the report.
-     *
-     * @return array
-     */
-    public function backtrace()
-    {
-        return $this->_backtrace;
-    }
-
-    /**
      * Gets the exception related to the report.
      *
      * @return object
      */
-    public function exception()
+    public function exception($exception = null)
     {
-        return $this->_exception;
+        if (!func_num_args()) {
+            return $this->_exception;
+        }
+        $this->_exception = $exception;
+        return $this;
+    }
+
+    /**
+     * Gets the backtrace related to the report.
+     *
+     * @return array
+     */
+    public function backtrace($backtrace = [])
+    {
+        if (!func_num_args()) {
+            return $this->_backtrace;
+        }
+        if ($this->_backtrace = $backtrace) {
+            $trace = reset($this->_backtrace);
+            $this->_file = preg_replace('~' . preg_quote(getcwd(), '~') . '~', '', '.' . $trace['file']);
+            $this->_line = $trace['line'];
+        }
+        return $this;
     }
 
     /**
@@ -245,9 +276,9 @@ class Report
      *
      * @return array The executed expectations reports.
      */
-    public function childs()
+    public function children()
     {
-        return $this->_childs;
+        return $this->_children;
     }
 
     /**
@@ -257,33 +288,17 @@ class Report
      */
     public function add($type, $data = [])
     {
+        if ($this->type() === 'passed' && $type === 'failed') {
+            $this->type('failed');
+        }
         $data['type'] = $type;
-        if ($type !== 'pass' && $type !== 'skip') {
-            $this->scope()->failure();
-        }
-
-        $data['backtrace'] = $this->_backtrace($data);
-        $this->_type = ($data['type'] !== 'pass') ? $data['type'] : 'pass';
-        $child = new static($data + ['scope' => $this->_scope]);
-        $this->_childs[] = $child;
-        $this->scope()->dispatch($child);
-    }
-
-    /**
-     * Helper which extracts the backtrace of a report.
-     *
-     * @param array $data The report data.
-     */
-    public function _backtrace($data)
-    {
-        if (isset($data['exception'])) {
-            return Debugger::backtrace(['trace' => $data['exception']]);
-        }
-        $type = $data['type'];
-        $depth = ($type === 'pass' || $type === 'fail' | $type === 'skip') ? 1 : null;
         if (!isset($data['backtrace'])) {
             $data['backtrace'] = [];
+        } else {
+            $data['backtrace'] = Debugger::focus($this->scope()->backtraceFocus(), $data['backtrace'], 1);
         }
-        return Debugger::focus($this->scope()->backtraceFocus(), $data['backtrace'], $depth);
+        $child = new static($data + ['scope' => $this->_scope]);
+        $this->_children[] = $child;
+        return $child;
     }
 }

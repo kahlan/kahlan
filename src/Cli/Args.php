@@ -222,7 +222,7 @@ class Args {
         if ($type === 'boolean') {
             $value = ($value === 'false' || $value === '0' || $value === false || $value === null) ? false : true;
         } elseif ($type === 'numeric') {
-            $value = $value !== null ? $value + 0 : 1;
+            $value = $value !== null ? (int) $value + 0 : 1;
         } elseif ($type === 'string') {
             $value = ($value !== true && $value !== null) ? (string) $value : null;
         }
