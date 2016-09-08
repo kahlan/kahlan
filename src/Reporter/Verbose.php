@@ -18,11 +18,11 @@ class Verbose extends Terminal
     /**
      * Callback called on a suite start.
      *
-     * @param object $report The report object of the whole spec.
+     * @param object $suite The suite instance.
      */
-    public function suiteStart($report = null)
+    public function suiteStart($suite = null)
     {
-        $messages = $report->messages();
+        $messages = $suite->messages();
         $message = end($messages);
         $this->write("{$message}\n", "b;");
         $this->_indent++;
@@ -31,9 +31,9 @@ class Verbose extends Terminal
     /**
      * Callback called after a suite execution.
      *
-     * @param object $report The report object of the whole spec.
+     * @param object $suite The suite instance.
      */
-    public function suiteEnd($report = null)
+    public function suiteEnd($suite = null)
     {
         $this->_indent--;
     }
@@ -41,20 +41,21 @@ class Verbose extends Terminal
     /**
      * Callback called after a spec execution.
      *
-     * @param object $report The report object of the whole spec.
+     * @param object $log The log object of the whole spec.
      */
-    public function specEnd($report = null)
+    public function specEnd($log = null)
     {
-        $this->_reportSpec($report);
+        $this->_reportSpec($log);
     }
 
     /**
      * Callback called at the end of specs processing.
+     *
+     * @param object $summary The execution summary instance.
      */
-    public function end($results = [])
+    public function end($summary)
     {
         $this->write("\n\n");
-        $this->_summary($results);
-        $this->_reportFocused($results);
+        $this->_reportSummary($summary);
     }
 }

@@ -51,10 +51,8 @@ class Bar extends Terminal
         $defaults = [
             'size' => 50,
             'preferences' => [
-                'pass'       => 'green',
-                'fail'       => 'red',
-                'incomplete' => 'yellow',
-                'exception'  => 'magenta'
+                'passed'  => 'green',
+                'failed'  => 'red'
             ],
             'chars' => [
                 'bar'       => '=',
@@ -71,7 +69,7 @@ class Bar extends Terminal
             $_key = "_{$key}";
             $this->$_key = $value;
         }
-        $this->_color = $this->_preferences['pass'];
+        $this->_color = $this->_preferences['passed'];
     }
 
     /**
@@ -83,54 +81,24 @@ class Bar extends Terminal
     {
         parent::start($args);
         $this->write("\n");
-    }
-
-    /**
-     * Callback called on a spec start.
-     *
-     * @param object $report The report object of the whole spec.
-     */
-    public function specStart($report = null)
-    {
-        parent::specStart($report);
         $this->_progressBar();
     }
 
-
     /**
-     * Callback called on failure.
+     * Callback called after a spec execution.
      *
-     * @param array $report The report array.
+     * @param object $log The log object of the whole spec.
      */
-    public function fail($report = [])
+    public function specEnd($log = null)
     {
-        $this->_color = $this->_preferences['fail'];
-        $this->write("\n");
-        $this->_report($report);
-    }
-
-    /**
-     * Callback called when an exception occur.
-     *
-     * @param array $report The report array.
-     */
-    public function exception($report = [])
-    {
-        $this->_color = $this->_preferences['exception'];
-        $this->write("\n");
-        $this->_report($report);
-    }
-
-    /**
-     * Callback called when a `Kahlan\IncompleteException` occur.
-     *
-     * @param array $report The report array.
-     */
-    public function incomplete($report = [])
-    {
-        $this->_color = $this->_preferences['incomplete'];
-        $this->write("\n");
-        $this->_report($report);
+        $this->_current++;
+        switch($log->type()) {
+            case 'failed':
+            case 'errored':
+                $this->_color = $this->_preferences['failed'];
+            break;
+        }
+        $this->_progressBar();
     }
 
     /**
@@ -161,11 +129,18 @@ class Bar extends Terminal
 
     /**
      * Callback called at the end of specs processing.
+     *
+     * @param object $summary The execution summary instance.
      */
-    public function end($results = [])
+    public function end($summary)
     {
         $this->write("\n\n");
-        $this->_summary($results);
-        $this->_reportFocused($results);
+        foreach ($summary->logs() as $log) {
+            if (!$log->passed()) {
+                $this->_report($log);
+            }
+        }
+        $this->write("\n\n");
+        $this->_reportSummary($summary);
     }
 }

@@ -6,7 +6,7 @@ use Reflection;
 use ReflectionMethod;
 use ReflectionClass;
 use Kahlan\Suite;
-use Kahlan\IncompleteException;
+use Kahlan\MissingImplementationException;
 use Kahlan\Analysis\Inspector;
 use Kahlan\Plugin\Stub\Method;
 
@@ -210,7 +210,7 @@ class Stub
 
         $method = end($methods);
         if ($closure) {
-            $method->andReturnUsing($closure);
+            $method->andRun($closure);
         }
         return $method;
     }
@@ -332,7 +332,7 @@ class Stub
     public static function generate($options = [])
     {
         $defaults = [
-            'class'      => 'spec\plugin\stub\Stub' . static::$_index++,
+            'class'      => 'Kahlan\Spec\Plugin\Stub\Stub' . static::$_index++,
             'extends'    => '',
             'implements' => [],
             'uses'       => [],
@@ -426,7 +426,7 @@ EOT;
         $traits = [];
         foreach ((array) $uses as $use) {
             if (!trait_exists($use)) {
-                throw new IncompleteException("Unexisting trait `{$use}`");
+                throw new MissingImplementationException("Unexisting trait `{$use}`");
             }
             $traits[] = '\\' . ltrim($use, '\\');
         }
@@ -514,7 +514,7 @@ EOT;
     {
         $result = [];
         if (!class_exists($class)) {
-            throw new IncompleteException("Unexisting parent class `{$class}`");
+            throw new MissingImplementationException("Unexisting class `{$class}`");
         }
         $result = static::_generateAbstractMethods($class);
 
@@ -547,7 +547,7 @@ EOT;
     {
         $result = [];
         if (!class_exists($class)) {
-            throw new IncompleteException("Unexisting parent class `{$class}`");
+            throw new MissingImplementationException("Unexisting parent class `{$class}`");
         }
         $reflection = Inspector::inspect($class);
         $methods = $reflection->getMethods(ReflectionMethod::IS_ABSTRACT);
@@ -572,7 +572,7 @@ EOT;
         $result = [];
         foreach ((array) $interfaces as $interface) {
             if (!interface_exists($interface)) {
-                throw new IncompleteException("Unexisting interface `{$interface}`");
+                throw new MissingImplementationException("Unexisting interface `{$interface}`");
             }
             $reflection = Inspector::inspect($interface);
             $methods = $reflection->getMethods($mask);
@@ -616,7 +616,7 @@ EOT;
      */
     protected static function _generateReturnType($method)
     {
-        if (PHP_MAJOR_VERSION < 7) {
+        if (Suite::$PHP < 7) {
             return '';
         }
         $type = $method->getReturnType();
@@ -640,7 +640,7 @@ EOT;
     protected static function _generateSignature($method)
     {
         $params = [];
-        $isVariadic = PHP_MAJOR_VERSION >= 7 ? $method->isVariadic() : false;
+        $isVariadic = Suite::$PHP >= 7 ? $method->isVariadic() : false;
 
         foreach ($method->getParameters() as $num => $parameter) {
             $typehint = Inspector::typehint($parameter);

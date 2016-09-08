@@ -2,12 +2,15 @@
 namespace Kahlan;
 
 use Closure;
+use Throwable;
 use Exception;
 use InvalidArgumentException;
 use Kahlan\Analysis\Debugger;
 
 class Suite extends Scope
 {
+    public static $PHP = PHP_MAJOR_VERSION;
+
     /**
      * Store all hashed references.
      *
@@ -23,11 +26,11 @@ class Suite extends Scope
     protected $_status = null;
 
     /**
-     * The childs array.
+     * The children array.
      *
      * @var Suite[]|Specification[]
      */
-    protected $_childs = [];
+    protected $_children = [];
 
     /**
      * Suite statistics.
@@ -56,13 +59,6 @@ class Suite extends Scope
     protected $_autoclear = [];
 
     /**
-     * Saved backtrace of focused specs.
-     *
-     * @var array
-     */
-    protected $_focuses = [];
-
-    /**
      * Set the number of fails allowed before aborting. `0` mean no fast fail.
      *
      * @see ::failfast()
@@ -76,31 +72,22 @@ class Suite extends Scope
      * @param array $config The Suite config array. Options are:
      *                      -`'closure'` _Closure_: the closure of the test.
      *                      -`'name'`    _string_ : the type of the suite.
-     *                      -`'scope'`   _string_ : supported scope are `'normal'` & `'focus'`.
      */
     public function __construct($config = [])
     {
         $defaults = [
             'closure' => null,
-            'name'    => 'describe',
-            'scope'   => 'normal'
+            'name'    => 'describe'
         ];
         $config += $defaults;
         parent::__construct($config);
 
-        /**
-         * @var Closure $closure
-         * @var string  $name
-         * @var string  $scope
-         */
-        extract($config);
-
         if ($this->_root === $this) {
             return;
         }
-        $closure = $this->_bind($closure, $name);
+        $closure = $this->_bind($config['closure'], $config['name']);
         $this->_closure = $closure;
-        if ($scope === 'focus') {
+        if ($this->_type === 'focus') {
             $this->_emitFocus();
         }
     }
@@ -113,14 +100,14 @@ class Suite extends Scope
      *
      * @return Suite
      */
-    public function describe($message, $closure, $timeout = null, $scope = 'normal')
+    public function describe($message, $closure, $timeout = null, $type = 'normal')
     {
         $parent = $this;
         $name = 'describe';
         $timeout = $timeout !== null ? $timeout : $this->timeout();
-        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'timeout', 'scope'));
+        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'timeout', 'type'));
 
-        return $this->_childs[] = $suite;
+        return $this->_children[] = $suite;
     }
 
     /**
@@ -129,18 +116,18 @@ class Suite extends Scope
      * @param  string  $message Description message.
      * @param  Closure $closure A test case closure.
      * @param  null    $timeout
-     * @param  string  $scope
+     * @param  string  $type
      *
      * @return Suite
      */
-    public function context($message, $closure, $timeout = null, $scope = 'normal')
+    public function context($message, $closure, $timeout = null, $type = 'normal')
     {
         $parent = $this;
         $name = 'context';
         $timeout = $timeout !== null ? $timeout : $this->timeout();
-        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'timeout', 'scope'));
+        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'timeout', 'type'));
 
-        return $this->_childs[] = $suite;
+        return $this->_children[] = $suite;
     }
 
     /**
@@ -148,15 +135,15 @@ class Suite extends Scope
      *
      * @param  string|Closure $message Description message or a test closure.
      * @param  Closure        $closure A test case closure.
-     * @param  string         $scope   The scope.
+     * @param  string         $type   The type.
      *
      * @return Specification
      */
-    public function it($message, $closure = null, $timeout = null, $scope = 'normal')
+    public function it($message, $closure = null, $timeout = null, $type = 'normal')
     {
         static $inc = 1;
         if ($message instanceof Closure) {
-            $scope = $timeout;
+            $type = $timeout;
             $timeout = $closure;
             $closure = $message;
             $message = "spec #" . $inc++;
@@ -164,8 +151,8 @@ class Suite extends Scope
         $parent = $this;
         $root = $this->_root;
         $timeout = $timeout !== null ? $timeout : $this->timeout();
-        $spec = new Specification(compact('message', 'closure', 'parent', 'root', 'timeout', 'scope'));
-        $this->_childs[] = $spec;
+        $spec = new Specification(compact('message', 'closure', 'parent', 'root', 'timeout', 'type'));
+        $this->_children[] = $spec;
 
         return $this;
     }
@@ -178,8 +165,9 @@ class Suite extends Scope
      *
      * @return
      */
-    public function xdescribe($message, $closure)
+    public function xdescribe($message, $closure, $timeout = null)
     {
+        return $this->describe($message, $closure, $timeout, 'exclude');
     }
 
     /**
@@ -190,8 +178,9 @@ class Suite extends Scope
      *
      * @return
      */
-    public function xcontext($message, $closure)
+    public function xcontext($message, $closure, $timeout = null)
     {
+        return $this->context($message, $closure, $timeout, 'exclude');
     }
 
     /**
@@ -202,8 +191,9 @@ class Suite extends Scope
      *
      * @return
      */
-    public function xit($message, $closure = null)
+    public function xit($message, $closure = null, $timeout = null)
     {
+        return $this->it($message, $closure, $timeout, 'exclude');
     }
 
     /**
@@ -310,28 +300,39 @@ class Suite extends Scope
      *
      * @param array $options Process options.
      */
-    protected function process($options = [])
+    protected function _process($options = [])
     {
-        if ($this->_root->focused() && !$this->focused()) {
-            return;
-        }
+        $this->_passed = true;
         static::$_instances[] = $this;
         $this->_errorHandler(true, $options);
 
-        try {
-            $this->_suiteStart();
-            foreach ($this->_childs as $child) {
-                if ($this->failfast()) {
-                    break;
-                }
-                $child->process();
-            }
-            $this->_suiteEnd();
-        } catch (Exception $exception) {
-            $this->_exception($exception);
+        if (Suite::$PHP >= 7) {
             try {
+                $this->_suiteStart();
+                foreach ($this->_children as $child) {
+                    if ($this->failfast()) {
+                        break;
+                    }
+                    $this->_passed = $child->passed() && $this->_passed;
+                }
+                $this->_suiteEnd();
+            } catch (Throwable $exception) {
+                $this->_exception($exception);
+                $this->_suiteEnd();
+            }
+        } else {
+            try {
+                $this->_suiteStart();
+                foreach ($this->_children as $child) {
+                    if ($this->failfast()) {
+                        break;
+                    }
+                    $this->_passed = $child->passed() && $this->_passed;
+                }
                 $this->_suiteEnd();
             } catch (Exception $exception) {
+                $this->_exception($exception);
+                $this->_suiteEnd();
             }
         }
 
@@ -345,7 +346,7 @@ class Suite extends Scope
     protected function _suiteStart()
     {
         if ($this->message()) {
-            $this->emitReport('suiteStart', $this->report());
+            $this->report('suiteStart', $this);
         }
         $this->runCallbacks('before', false);
     }
@@ -357,7 +358,7 @@ class Suite extends Scope
     {
         $this->runCallbacks('after', false);
         if ($this->message()) {
-            $this->emitReport('suiteEnd', $this->report());
+            $this->report('suiteEnd', $this);
         }
     }
 
@@ -368,7 +369,7 @@ class Suite extends Scope
      */
     public function failfast()
     {
-        return $this->_root->_ff && $this->_root->_failure >= $this->_root->_ff;
+        return $this->_root->_ff && $this->_root->_failures >= $this->_root->_ff;
     }
 
     /**
@@ -440,16 +441,15 @@ class Suite extends Scope
         $this->_autoclear = (array)$options['autoclear'];
         $this->_ff = $options['ff'];
 
-        $this->emitReport('start', ['total' => $this->enabled()]);
-        $this->process();
-        $this->emitReport('end', [
-            'specs'   => $this->_results,
-            'focuses' => $this->_focuses,
-        ]);
+        $this->report('start', ['total' => $this->enabled()], true);
+
+        $success = $this->passed();
+
+        $this->report('end', $this->summary(), true);
 
         $this->_locked = false;
 
-        return $this->passed();
+        return $success;
     }
 
     /**
@@ -459,11 +459,10 @@ class Suite extends Scope
      */
     public function passed()
     {
-        if (empty($this->_results['failed']) && empty($this->_results['exceptions']) && empty($this->_results['incomplete'])) {
-            return true;
+        if ($this->_passed === null) {
+            $this->_process();
         }
-
-        return false;
+        return $this->_passed;
     }
 
     /**
@@ -476,8 +475,7 @@ class Suite extends Scope
         if ($this->_stats === null) {
             $this->stats();
         }
-
-        return $this->_stats['focused'] + $this->_stats['normal'];
+        return $this->_stats['normal'] + $this->_stats['focused'] + $this->_stats['excluded'];
     }
 
     /**
@@ -490,7 +488,6 @@ class Suite extends Scope
         if ($this->_stats === null) {
             $this->stats();
         }
-
         return $this->focused() ? $this->_stats['focused'] : $this->_stats['normal'];
     }
 
@@ -499,10 +496,7 @@ class Suite extends Scope
      */
     public function stop()
     {
-        $this->emitReport('stop', [
-            'specs'   => $this->_results,
-            'focuses' => $this->_focuses,
-        ]);
+        $this->report('stop', $this->summary(), true);
     }
 
     /**
@@ -513,29 +507,50 @@ class Suite extends Scope
     protected function stats()
     {
         static::$_instances[] = $this;
-        if ($closure = $this->_closure) {
-            $closure($this);
-        }
-
-        $normal = 0;
-        $focused = 0;
-        foreach ($this->childs() as $child) {
-            if ($child instanceof Suite) {
-                $result = $child->stats();
-                if ($child->focused() && !$result['focused']) {
-                    $focused += $result['normal'];
-                    $child->_broadcastFocus();
-                } else {
-                    $focused += $result['focused'];
-                    $normal += $result['normal'];
-                }
-            } else {
-                $child->focused() ? $focused++ : $normal++;
+        try {
+            if ($closure = $this->_closure) {
+                $closure($this);
             }
+
+            $normal = 0;
+            $focused = 0;
+            $excluded = 0;
+            foreach ($this->children() as $child) {
+                if ($this->excluded()) {
+                    $child->type('exclude');
+                }
+                if ($child instanceof Suite) {
+                    $result = $child->stats();
+                    if ($child->focused() && !$result['focused']) {
+                        $focused += $result['normal'];
+                        $excluded += $result['excluded'];
+                        $child->_broadcastFocus();
+                    } else {
+                        $normal += $result['normal'];
+                        $focused += $result['focused'];
+                        $excluded += $result['excluded'];
+                    }
+                } else {
+                    switch($child->type()) {
+                        case 'exclude':
+                            $excluded++;
+                        break;
+                        case 'focus':
+                            $focused++;
+                        break;
+                        default:
+                            $normal++;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $this->_root->_passed = false;
+            array_pop(static::$_instances);
+            throw $e;
         }
         array_pop(static::$_instances);
-
-        return $this->_stats = compact('normal', 'focused');
+        return $this->_stats = compact('normal', 'focused', 'excluded');
     }
 
     /**
@@ -563,13 +578,13 @@ class Suite extends Scope
     }
 
     /**
-     * Gets childs.
+     * Gets children.
      *
-     * @return array The array of childs instances.
+     * @return array The array of children instances.
      */
-    public function childs()
+    public function children()
     {
-        return $this->_childs;
+        return $this->_children;
     }
 
     /**
@@ -582,16 +597,6 @@ class Suite extends Scope
     public function callbacks($type)
     {
         return isset($this->_callbacks[$type]) ? $this->_callbacks[$type] : [];
-    }
-
-    /**
-     * Gets references of focused specs.
-     *
-     * @return array
-     */
-    public function focuses()
-    {
-        return $this->_focuses;
     }
 
     /**
@@ -615,8 +620,8 @@ class Suite extends Scope
      */
     protected function _broadcastFocus()
     {
-        foreach ($this->_childs as $child) {
-            $child->focus();
+        foreach ($this->_children as $child) {
+            $child->type('focus');
             if ($child instanceof Suite) {
                 $child->_broadcastFocus();
             }

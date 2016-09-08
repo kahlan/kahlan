@@ -58,24 +58,24 @@ if ($kahlanFuctions &&
         return Suite::current()->afterEach($closure);
     }
 
-    function describe($message, $closure, $timeout = null, $scope = 'normal') {
+    function describe($message, $closure, $timeout = null, $type = 'normal') {
         if (!Suite::current()) {
             $suite = box('kahlan')->get('suite.global');
-            return $suite->describe($message, $closure, $timeout, $scope);
+            return $suite->describe($message, $closure, $timeout, $type);
         }
-        return Suite::current()->describe($message, $closure, $timeout, $scope);
+        return Suite::current()->describe($message, $closure, $timeout, $type);
     }
 
-    function context($message, $closure, $timeout = null, $scope = 'normal') {
-        return Suite::current()->context($message, $closure, $timeout, $scope);
+    function context($message, $closure, $timeout = null, $type = 'normal') {
+        return Suite::current()->context($message, $closure, $timeout, $type);
     }
 
     function given($name, $value) {
         return Suite::current()->given($name, $value);
     }
 
-    function it($message, $closure, $timeout = null, $scope = 'normal') {
-        return Suite::current()->it($message, $closure, $timeout, $scope);
+    function it($message, $closure = null, $timeout = null, $type = 'normal') {
+        return Suite::current()->it($message, $closure, $timeout, $type);
     }
 
     function fdescribe($message, $closure, $timeout = null) {
@@ -90,13 +90,16 @@ if ($kahlanFuctions &&
         return it($message, $closure, $timeout, 'focus');
     }
 
-    function xdescribe($message, $closure) {
+    function xdescribe($message, $closure, $timeout = null) {
+        return describe($message, $closure, $timeout, 'exclude');
     }
 
-    function xcontext($message, $closure) {
+    function xcontext($message, $closure, $timeout = null) {
+        return context($message, $closure, $timeout, 'exclude');
     }
 
-    function xit($message, $closure = null) {
+    function xit($message, $closure = null, $timeout = null) {
+        return it($message, $closure, $timeout, 'exclude');
     }
 
     function waitsFor($actual, $timeout = null) {

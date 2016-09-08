@@ -90,7 +90,7 @@ class Debugger
         $mask = $options['args'] ? 0 : DEBUG_BACKTRACE_IGNORE_ARGS;
         $mask = $options['object'] ? $mask | DEBUG_BACKTRACE_PROVIDE_OBJECT : $mask;
 
-        $backtrace = static::normalise($options['trace'] ?: debug_backtrace($mask));
+        $backtrace = static::normalize($options['trace'] ?: debug_backtrace($mask));
 
         $traceDefaults = [
             'line'     => '?',
@@ -120,9 +120,9 @@ class Debugger
      * @param  array|object $backtrace A backtrace array or an exception instance.
      * @return array                   A backtrace array.
      */
-    public static function normalise($backtrace)
+    public static function normalize($backtrace)
     {
-        if (!$backtrace instanceof Exception) {
+        if (!static::isThrowable($backtrace)) {
             return $backtrace;
         }
         return array_merge([[
@@ -134,6 +134,20 @@ class Debugger
     }
 
     /**
+     * Check if a value is "Throwable" or not.
+     *
+     * @param  mixed   $value A value.
+     * @return boolean        Return `true` if throwable.
+     */
+    public static function isThrowable($value)
+    {
+        if (!is_object($value)) {
+            return false;
+        }
+        return is_a($value, 'Exception') || is_a($value, 'Throwable');
+    }
+
+    /**
      * Generates a string message from a backtrace array.
      *
      * @param  array|object $backtrace A backtrace array or an exception instance.
@@ -141,7 +155,7 @@ class Debugger
      */
     public static function message($backtrace)
     {
-        if ($backtrace instanceof Exception) {
+        if (static::isThrowable($backtrace)) {
             $name = get_class($backtrace);
             $code = $backtrace->getCode();
             return "`{$name}` Code({$code}): " . $backtrace->getMessage();

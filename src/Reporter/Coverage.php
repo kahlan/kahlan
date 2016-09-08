@@ -87,11 +87,11 @@ class Coverage extends Terminal
     /**
      * Callback called on a spec start.
      *
-     * @param object $report The report object of the whole spec.
+     * @param object $spec The spec object of the whole spec.
      */
-    public function specStart($report = null)
+    public function specStart($spec = null)
     {
-        parent::specStart($report);
+        parent::specStart($spec);
         if (!$this->enabled()) {
             return;
         }
@@ -101,11 +101,11 @@ class Coverage extends Terminal
     /**
      * Callback called after a spec execution.
      *
-     * @param object $report The report object of the whole spec.
+     * @param object $log The log object of the whole spec.
      */
-    public function specEnd($report = null)
+    public function specEnd($log = null)
     {
-        parent::specEnd($report);
+        parent::specEnd($log);
         if (!$this->enabled()) {
             return;
         }
@@ -257,8 +257,10 @@ class Coverage extends Terminal
 
     /**
      * Callback called at the end of the process.
+     *
+     * @param object $summary The execution summary instance.
      */
-    public function stop($results = [])
+    public function stop($summary)
     {
         $this->write("Coverage Summary\n----------------\n\n");
         if (is_numeric($this->_verbosity)) {

@@ -20,6 +20,7 @@ Filter::register('kahlan.coverage', function($chain) {
         'exclude'   => [
             //Exclude init script
             'src/init.php',
+            'src/functions.php',
             //Exclude Workflow from code coverage reporting
             'src/Cli/Kahlan.php',
             //Exclude coverage classes from code coverage reporting (don't know how to test the tester)
