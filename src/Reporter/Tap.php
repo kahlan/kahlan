@@ -1,28 +1,16 @@
 <?php
 namespace Kahlan\Reporter;
 
+use Kahlan\Util\Text;
+
 class Tap extends Terminal
 {
     /**
-     * Store the current number of dots.
+     * Store the current spec number.
      *
      * @var integer
      */
     protected $_counter = 0;
-
-    /**
-     * Store counters for all types of tests
-     *
-     * @var array
-     */
-    protected $_counters = [
-        'success' => 0,
-        'failed' => 0,
-        'skipped' => 0,
-        'total' => 0
-    ];
-
-    protected $_lines = [];
 
     /**
      * Callback called before any specs processing.
@@ -33,110 +21,67 @@ class Tap extends Terminal
     {
         $this->_header = false;
         parent::start($args);
-        $this->write("\n");
-        $this->write("# Building report it can take some time, please be patient");
+        $this->write("\n1..{$args['total']}\n");
     }
 
     /**
-     * Callback called on successful expect.
+     * Callback called after a spec execution.
      *
-     * @param object $report An expect report object.
+     * @param object $log The log object of the whole spec.
      */
-    public function pass($report = null)
+    public function specEnd($log = null)
     {
-        $this->_counters['success'] += 1;
-        $this->_counters['total'] += 1;
+        $isOk = $log->passed() ? "ok" : "not ok";
 
-        $this->_formatTap(true, $report);
-    }
+        switch($log->type()) {
+            case 'skipped';
+            case 'pending';
+            case 'excluded';
+                $prefix = "# {$log->type()} ";
+            break;
+            default:
+                $prefix = '- ';
+            break;
+        }
+        $message = $prefix . trim(implode(" ", $log->messages()));
+        $this->_counter++;
 
-    /**
-     * Callback called on failure.
-     *
-     * @param object $report An expect report object.
-     */
-    public function fail($report = null)
-    {
-        $this->_counters['failed'] += 1;
-        $this->_counters['total'] += 1;
+        $this->write("{$isOk} {$this->_counter} {$message}\n");
 
-        $this->_formatTap(false, $report);
-        $this->_lines[] = "# Actual: {$report->data()["actual"]}";
-        $this->_lines[] = "# Expected: {$report->data()["expected"]}";
-    }
+        if ($exception = $log->exception()) {
+            $this->write('# Exception: `' . get_class($exception) .'` Code(' . $exception->getCode() . '):' . "\n");
+            $this->write('# Message: ' . $exception->getMessage() . "\n");
+        } else {
+            foreach ($log->children() as $log) {
+                if ($log->passed()) {
+                    continue;
+                }
+                $toString = function($instance) {
+                    return 'an instance of `' . get_class($instance) . '`';
+                };
+                foreach ($log->data() as $key => $value) {
+                    $key = ucfirst($key);
+                    $value = Text::toString($value, ['object' => ['method' => $toString]]);
+                    $this->write("# {$key}: {$value}\n");
+                }
+            }
 
-    /**
-     * Callback called when an exception occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function exception($report = null)
-    {
-        $this->_counters['failed'] += 1;
-        $this->_counters['total'] += 1;
-
-        $this->_formatTap(true, $report);
-        $exception = $report->exception();
-        $this->_lines[] = '# Exception: `' . get_class($exception) .'` Code(' . $exception->getCode() . '):';
-        $this->_lines[] = '# Message: ' . $exception->getMessage();
-    }
-
-    /**
-     * Callback called on a skipped spec.
-     *
-     * @param object $report An expect report object.
-     */
-    public function skip($report = null)
-    {
-        $this->_counters['skipped'] += 1;
-        $this->_counters['total'] += 1;
-
-        $this->_formatTap(true, $report);
-    }
-
-    /**
-     * Callback called when a `Kahlan\IncompleteException` occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function incomplete($report = null)
-    {
-        $this->_counters['skipped'] += 1;
-        $this->_counters['total'] += 1;
-
-        $this->_formatTap(true, $report);
+        }
     }
 
     /**
      * Callback called at the end of specs processing.
      *
-     * @param array $results The results array of the execution.
+     * @param object $summary The execution summary instance.
      */
-    public function end($results = [])
+    public function end($summary)
     {
-        $this->write("1..{$this->_counters['total']}\n");
-        foreach($this->_lines as $line) {
-            $this->write($line . "\n");
-        }
-
-        $this->write("# total {$this->_counters['total']}\n");
-        $this->write("# pass {$this->_counters['success']}\n");
-        $this->write("# fail {$this->_counters['failed']}\n");
-        $this->write("# skip {$this->_counters['skipped']}\n");
+        $this->write("# total {$summary->total()}\n");
+        $this->write("# passed {$summary->passed()}\n");
+        $this->write("# pending {$summary->pending()}\n");
+        $this->write("# skipped {$summary->skipped()}\n");
+        $this->write("# excluded {$summary->excluded()}\n");
+        $this->write("# failed {$summary->failed()}\n");
+        $this->write("# errored {$summary->errored()}\n");
     }
-
-    /**
-     * Export a report to its TAP representation.
-     *
-     * @param  boolean $success The success value.
-     * @param  object  $report  The report to export.
-     * @return                  The TAP string representation of the report.
-     */
-    protected function _formatTap($success, $report)
-    {
-        $isOk = ($success) ? "ok" : "not ok";
-        $message = $report->file() . ": " .trim(implode(" ", $report->messages()));
-        $this->_lines[] = "{$isOk} {$this->_counters['total']} {$message}";
-    }
-
 }

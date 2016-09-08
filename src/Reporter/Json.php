@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan\Reporter;
 
+use Kahlan\Util\Text;
+
 class Json extends Terminal
 {
     /**
@@ -16,15 +18,7 @@ class Json extends Terminal
      * @var array
      */
     protected $_json = [
-        'errors'  => [],
-        'summary' => [
-            'success'    => 0,
-            'failed'     => 0,
-            'skipped'    => 0,
-            'error'      => 0,
-            'passed'     => 0,
-            'incomplete' => 0
-        ]
+        'errors'  => []
     ];
 
     /**
@@ -39,89 +33,60 @@ class Json extends Terminal
     }
 
     /**
-     * Callback called on successful expect.
-     *
-     * @param object $report An expect report object.
-     */
-    public function pass($report = null)
-    {
-        $this->_json['summary']['passed'] += 1;
-    }
-
-    /**
-     * Callback called on failure.
-     *
-     * @param object $report An expect report object.
-     */
-    public function fail($report = null)
-    {
-        $this->_json['summary']['failed'] += 1;
-    }
-
-    /**
-     * Callback called when an exception occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function exception($report = null)
-    {
-        $this->_json['summary']['failed'] += 1;
-    }
-
-    /**
-     * Callback called on a skipped spec.
-     *
-     * @param object $report An expect report object.
-     */
-    public function skip($report = null)
-    {
-        $this->_json['summary']['skipped'] += 1;
-    }
-
-    /**
-     * Callback called when a `Kahlan\IncompleteException` occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function incomplete($report = null)
-    {
-        $this->_json['summary']['incomplete'] += 1;
-    }
-
-    /**
      * Callback called at the end of specs processing.
      *
-     * @param array $results The results array of the execution.
+     * @param object $summary The execution summary instance.
      */
-    public function end($results = [])
+    public function end($summary)
     {
-        foreach ($results['specs'] as $type => $reports) {
-            foreach ($reports as $report) {
-                if ($report->type() !== 'pass' && $report->type() !== 'skip') {
-                    switch ($report->type()) {
-                        case 'fail':
-                            $this->_json['errors'][] = [
-                                'spec' => trim(implode(' ', $report->messages())),
-                                'suite' => $report->file(),
-                                'actual' => $report->data()['actual'],
-                                'expected' => $report->data()['expected']
-                            ];
-                        break;
-                        case 'exception':
-                            $exception = $report->exception();
+        $toString = function($instance) {
+            return 'an instance of `' . get_class($instance) . '`';
+        };
 
-                            $this->_json['errors'][] = [
-                                'spec' => trim(implode(' ', $report->messages())),
-                                'suite' => $report->file(),
-                                'exception' => '`' . get_class($exception) .'` Code(' . $exception->getCode() . ')',
-                                'trace' => $exception->getMessage()
-                            ];
-                        break;
+        foreach ($summary->logs() as $log) {
+            if ($log->passed()) {
+                continue;
+            }
+            switch ($log->type()) {
+                case 'failed':
+                    foreach ($log->children() as $log) {
+                        if ($log->passed()) {
+                            continue;
+                        }
+                        $data = [];
+                        foreach ($log->data() as $key => $value) {
+                           $data[$key] = Text::toString($value, ['object' => ['method' => $toString]]);
+                        }
+
+                        $this->_json['errors'][] = [
+                            'spec'  => trim(implode(' ', $log->messages())),
+                            'suite' => $log->file(),
+                            'data'  => $data
+                        ];
                     }
+                break;
+                case 'errored':
+                    $exception = $log->exception();
 
-                }
+                    $this->_json['errors'][] = [
+                        'spec' => trim(implode(' ', $log->messages())),
+                        'suite' => $log->file(),
+                        'exception' => '`' . get_class($exception) .'` Code(' . $exception->getCode() . ')',
+                        'trace' => $exception->getMessage()
+                    ];
+                break;
             }
         }
+        $this->_json['summary'] = [
+            'total'    => $summary->total(),
+            'passed'   => $summary->passed(),
+            'pending'  => $summary->pending(),
+            'skipped'  => $summary->skipped(),
+            'excluded' => $summary->excluded(),
+            'failed'   => $summary->failed(),
+            'errored'  => $summary->errored(),
+        ];
+
         $this->write(json_encode($this->_json));
     }
 }

@@ -39,28 +39,18 @@ use Closure;
 class Expectation
 {
     /**
-     * Class dependencies.
-     *
-     * @var array
-     */
-    protected $_classes = [
-        'specification' => 'Kahlan\Specification',
-        'matcher'       => 'matcher'
-    ];
-
-    /**
      * Deferred expectation.
      *
      * @var array
      */
-    protected $_deferred = [];
+    protected $_deferred = null;
 
     /**
      * Stores the success value.
      *
      * @var boolean
      */
-    protected $_passed = true;
+    protected $_passed = null;
 
     /**
      * The result logs.
@@ -89,14 +79,6 @@ class Expectation
      * @var integer
      */
     protected $_timeout = -1;
-
-    /**
-     * Factory method.
-     */
-    public static function expect($actual, $timeout = -1)
-    {
-        return new static(compact('actual', 'timeout'));
-    }
 
     /**
      * Constructor.
@@ -174,12 +156,12 @@ class Expectation
     {
         $result = true;
         $spec = $this->_actual;
-        $specification = $this->_classes['specification'];
+        $this->_passed = true;
 
-        $closure = function () use ($spec, $specification, $matcherName, $args, &$actual, &$result) {
-            if ($spec instanceof $specification) {
-                $actual = $spec->run();
-                if (!$spec->passed()) {
+        $closure = function () use ($spec, $matcherName, $args, &$actual, &$result) {
+            if ($spec instanceof Specification) {
+                $actual = null;
+                if (!$spec->passed($actual)) {
                     return false;
                 }
             } else {
@@ -201,11 +183,11 @@ class Expectation
         $matcher = $this->_matcher($matcherName, $actual);
         $data = Inspector::parameters($matcher, 'match', $args);
         $report = compact('matcherName', 'matcher', 'data');
-        if ($spec instanceof $specification) {
+        if ($spec instanceof Specification) {
             foreach ($spec->logs() as $value) {
                 $this->_logs[] = $value;
             }
-            $this->_passed = $this->_passed && $spec->passed();
+            $this->_passed = $spec->passed() && $this->_passed;
         }
 
         if (!is_object($result)) {
@@ -214,7 +196,7 @@ class Expectation
 
             return $this;
         }
-        $this->_deferred[] = $report + [
+        $this->_deferred = $report + [
             'instance' => $result, 'not' => $this->_not,
         ];
 
@@ -261,33 +243,32 @@ class Expectation
      *
      * @return mixed
      */
-    public function run()
+    protected function _run()
     {
+        if ($this->_passed !== null) {
+            return $this;
+        }
         $spec = $this->_actual;
-        $specification = $this->_classes['specification'];
-        if (!$spec instanceof $specification) {
+        if (!$spec instanceof Specification) {
             $this->_passed = false;
-
             return $this;
         }
 
         $closure = function () use ($spec) {
+            $success = true;
             try {
-                $spec->run();
+                $success = $spec->passed();
             } catch (Exception $e) {
             }
-
-            return $spec->passed();
+            return $success;
         };
 
         try {
             $this->_spin($closure);
         } catch (TimeoutException $e) {
         }
-        foreach ($spec->logs() as $value) {
-            $this->_logs[] = $value;
-        }
-        $this->_passed = $this->_passed && $spec->passed();
+        $this->_logs = $spec->logs();
+        $this->_passed = $spec->passed() && $this->_passed;
 
         return $this;
     }
@@ -311,15 +292,19 @@ class Expectation
      */
     protected function _resolve()
     {
-        foreach ($this->_deferred as $data) {
-            $instance = $data['instance'];
-            $this->_not = $data['not'];
-            $boolean = $instance->resolve();
-            $data['description'] = $instance->description();
-            $data['backtrace'] = $instance->backtrace();
-            $this->_log($boolean, $data);
+        if (!$this->_deferred) {
+            return;
         }
-        $this->_deferred = [];
+        $data = $this->_deferred;
+
+        $instance = $data['instance'];
+        $this->_not = $data['not'];
+        $boolean = $instance->resolve();
+        $data['description'] = $instance->description();
+        $data['backtrace'] = $instance->backtrace();
+        $this->_log($boolean, $data);
+
+        $this->_deferred = null;
     }
 
     /**
@@ -334,9 +319,9 @@ class Expectation
         $not = $this->_not;
         $pass = $not ? !$boolean : $boolean;
         if ($pass) {
-            $data['type'] = 'pass';
+            $data['type'] = 'passed';
         } else {
-            $data['type'] = 'fail';
+            $data['type'] = 'failed';
             $this->_passed = false;
         }
 
@@ -374,23 +359,9 @@ class Expectation
      */
     public function passed()
     {
-        if ($this->_deferred) {
-            $this->_resolve();
-        }
+        $this->_run();
+        $this->_resolve();
         return $this->_passed;
-    }
-
-    /**
-     * Checks if all test passed.
-     *
-     * @return boolean Returns `true` if no error occurred, `false` otherwise.
-     */
-    public function runned()
-    {
-        if ($this->_deferred) {
-            $this->_resolve();
-        }
-        return !empty($this->_logs);
     }
 
     /**
@@ -403,6 +374,6 @@ class Expectation
         $this->_not = false;
         $this->_timeout = -1;
         $this->_logs = [];
-        $this->_deferred = [];
+        $this->_deferred = null;
     }
 }

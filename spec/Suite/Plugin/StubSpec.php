@@ -12,7 +12,6 @@ use Kahlan\Arg;
 use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
 use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 use Kahlan\Plugin\Stub;
-use Kahlan\IncompleteException;
 
 use Kahlan\Spec\Fixture\Plugin\Monkey\User;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
@@ -534,7 +533,7 @@ describe("Stub", function() {
                     return static::_generateAbstractMethods($class);
                 });
                 $stub::generateAbstractMethods('some\unexisting\Class');
-            })->toThrow(new IncompleteException('Unexisting parent class `some\unexisting\Class`'));
+            })->toThrow();
 
         });
 
@@ -821,7 +820,7 @@ describe("Stub", function() {
 
            expect(function() {
                Stub::generate(['uses' => ['an\unexisting\Trait']]);
-           })->toThrow(new IncompleteException('Unexisting trait `an\unexisting\Trait`'));
+           })->toThrow();
 
        });
 
@@ -829,7 +828,7 @@ describe("Stub", function() {
 
            expect(function() {
                Stub::generate(['implements' => ['an\unexisting\Interface']]);
-           })->toThrow(new IncompleteException('Unexisting interface `an\unexisting\Interface`'));
+           })->toThrow();
 
        });
 
@@ -837,7 +836,7 @@ describe("Stub", function() {
 
            expect(function() {
                Stub::generate(['extends' => 'an\unexisting\ParentClass']);
-           })->toThrow(new IncompleteException('Unexisting parent class `an\unexisting\ParentClass`'));
+           })->toThrow();
 
        });
 

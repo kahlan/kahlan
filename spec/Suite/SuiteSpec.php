@@ -5,10 +5,11 @@ use stdClass;
 use Exception;
 use InvalidArgumentException;
 
-use Kahlan\IncompleteException;
+use Kahlan\MissingImplementationException;
 use Kahlan\PhpErrorException;
 use Kahlan\Suite;
 use Kahlan\Matcher;
+use Kahlan\Reporters;
 use Kahlan\Arg;
 use Kahlan\Plugin\Stub;
 
@@ -16,6 +17,21 @@ describe("Suite", function() {
 
     beforeEach(function() {
         $this->suite = new Suite(['matcher' => new Matcher()]);
+        $this->reporters = new Reporters();
+    });
+
+    describe("->__construct()", function() {
+
+        it("throws an exception with invalid closure", function() {
+            $closure = function() {
+                $this->suite = new Suite([
+                    'closure' => null,
+                    'parent'  => new Suite()
+                ]);
+            };
+            expect($closure)->toThrow(new Exception('Error, invalid closure.'));
+        });
+
     });
 
     context("when inspecting flow", function() {
@@ -145,7 +161,7 @@ describe("Suite", function() {
             expect($suite->message())->toBe('->method()');
             expect($suite->parent())->toBe($this->suite);
 
-            $suites = $this->suite->childs();
+            $suites = $this->suite->children();
             expect($suite)->toBe(end($suites));
 
         });
@@ -161,7 +177,7 @@ describe("Suite", function() {
             expect($suite->message())->toBe('->method()');
             expect($suite->parent())->toBe($this->suite);
 
-            $suites = $this->suite->childs();
+            $suites = $this->suite->children();
             expect($suite)->toBe(end($suites));
 
         });
@@ -174,7 +190,7 @@ describe("Suite", function() {
 
             $this->suite->it("does some things", function() {});
 
-            $specs = $this->suite->childs();
+            $specs = $this->suite->children();
             $it = end($specs);
 
             expect($it->message())->toBe('it does some things');
@@ -186,7 +202,7 @@ describe("Suite", function() {
 
             $this->suite->it(function() {});
 
-            $specs = $this->suite->childs();
+            $specs = $this->suite->children();
             $it = end($specs);
 
             expect($it->message())->toMatch('~^it spec #[0-9]+$~');
@@ -300,13 +316,21 @@ describe("Suite", function() {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
+                $this->describe("->describe()", function() {
+
+                    $this->it("it", function() {
+                        $this->exectuted['it']++;
+                    });
+
+                });
+
                 $this->fdescribe("->fdescribe()", function() {
 
-                    $this->fit("assumes fit due to the parent", function() {
+                    $this->fit("fit", function() {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("it", function() {
                         $this->exectuted['it']++;
                     });
 
@@ -314,10 +338,10 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
-            expect($this->suite->total())->toBe(2);
+            expect($this->suite->total())->toBe(3);
             expect($this->suite->enabled())->toBe(1);
             expect($this->suite->focused())->toBe(true);
             expect($this->suite->status())->toBe(-1);
@@ -345,7 +369,7 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->suite->total())->toBe(2);
@@ -388,7 +412,7 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
             expect($this->suite->total())->toBe(4);
@@ -423,7 +447,7 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->suite->total())->toBe(2);
@@ -454,7 +478,7 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->suite->total())->toBe(2);
@@ -497,7 +521,7 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
             expect($this->suite->total())->toBe(4);
@@ -536,7 +560,7 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->suite->total())->toBe(4);
@@ -571,7 +595,7 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->suite->total())->toBe(2);
@@ -610,7 +634,7 @@ describe("Suite", function() {
 
             });
 
-            $this->suite->run();
+            $this->suite->run(['reporters' => $this->reporters]);
 
             expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->suite->total())->toBe(3);
@@ -651,7 +675,118 @@ describe("Suite", function() {
 
             $this->suite->run();
 
-            expect($this->suite->focuses())->toHaveLength(2);
+            expect($this->suite->summary()->get('focused'))->toHaveLength(2);
+
+        });
+
+    });
+
+    describe("->xdecribe()", function() {
+
+        it("propagates the exclusion down to children", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0];
+
+                $this->it("it1", function() {
+                    $this->exectuted['it']++;
+                });
+
+                $this->xdescribe("xdescribe", function() {
+
+                    $this->it("it2", function() {
+                        $this->exectuted['it']++;
+                    });
+
+                    $this->it("it3", function() {
+                        $this->exectuted['it']++;
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($describe->exectuted)->toEqual(['it' => 1]);
+            expect($this->suite->total())->toBe(3);
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->status())->toBe(0);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+    });
+
+    describe("->xcontext()", function() {
+
+        it("propagates the exclusion down to children", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0];
+
+                $this->it("it1", function() {
+                    $this->exectuted['it']++;
+                });
+
+                $this->xcontext("xcontext", function() {
+
+                    $this->it("it2", function() {
+                        $this->exectuted['it']++;
+                    });
+
+                    $this->it("it3", function() {
+                        $this->exectuted['it']++;
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($describe->exectuted)->toEqual(['it' => 1]);
+            expect($this->suite->total())->toBe(3);
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->status())->toBe(0);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
+    });
+
+    describe("->xit()", function() {
+
+        it("skips excluded `it`", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->exectuted = ['it' => 0];
+
+                $this->it("an it", function() {
+                    $this->exectuted['it']++;
+                });
+
+                $this->xit("an xit", function() {
+                    $this->exectuted['it']++;
+                });
+
+                $this->it("an it", function() {
+                    $this->exectuted['it']++;
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($describe->exectuted)->toEqual(['it' => 2]);
+            expect($this->suite->total())->toBe(3);
+            expect($this->suite->enabled())->toBe(2);
+            expect($describe->children()[1]->excluded())->toBe(true);
+            expect($this->suite->status())->toBe(0);
+            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -681,16 +816,14 @@ describe("Suite", function() {
 
             $reporters = Stub::create();
 
-            expect($reporters)->toReceive('process')->with('start', ['total' => 2])->ordered;
-            expect($reporters)->toReceive('process')->with('suiteStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('suiteEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('end', Arg::toBeAn('array'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('start', ['total' => 2])->ordered;
+            expect($reporters)->toReceive('dispatch')->with('suiteStart', $describe)->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Specification'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Log'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Specification'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Log'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('suiteEnd', $describe)->ordered;
+            expect($reporters)->toReceive('dispatch')->with('end', Arg::toBeAnInstanceOf('Kahlan\Summary'))->ordered;
 
             $this->suite->run(['reporters' => $reporters]);
 
@@ -723,15 +856,13 @@ describe("Suite", function() {
 
             $reporters = Stub::create();
 
-            expect($reporters)->toReceive('process')->with('start', ['total' => 2])->ordered;
-            expect($reporters)->toReceive('process')->with('suiteStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('skip', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('suiteEnd', Arg::toBeAnInstanceOf('Kahlan\Report'))->ordered;
-            expect($reporters)->toReceive('process')->with('end', Arg::toBeAn('array'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('start', ['total' => 2])->ordered;
+            expect($reporters)->toReceive('dispatch')->with('suiteStart', $describe)->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Specification'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Log'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Specification'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('suiteEnd', $describe)->ordered;
+            expect($reporters)->toReceive('dispatch')->with('end', Arg::toBeAnInstanceOf('Kahlan\Summary'))->ordered;
 
             $this->suite->run(['reporters' => $reporters]);
 
@@ -875,6 +1006,22 @@ describe("Suite", function() {
 
     describe("->run()", function() {
 
+        it("run the suite", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->it("runs a spec", function() {
+                    $this->expect(true)->toBe(true);
+                });
+
+            });
+
+            $this->suite->run();
+            expect($this->suite->status())->toBe(0);
+            expect($this->suite->passed())->toBe(true);
+
+        });
+
         it("calls `afterX` callbacks if an exception occurs during callbacks", function() {
 
             $describe = $this->suite->describe("", function() {
@@ -898,36 +1045,42 @@ describe("Suite", function() {
 
             expect($describe->inAfterEach)->toBe(1);
 
-            $results = $this->suite->results();
-            expect($results['exceptions'])->toHaveLength(1);
+            $results = $this->suite->summary()->logs('errored');
+            expect($results)->toHaveLength(1);
 
-            $report = reset($results['exceptions']);
+            $report = reset($results);
             $actual = $report->exception()->getMessage();
             expect($actual)->toBe('Breaking the flow should execute afterEach anyway.');
 
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
+
         });
 
-        it("logs `IncompleteException` when thrown", function() {
+        it("logs `MissingImplementationException` when thrown", function() {
 
-            $incomplete = new IncompleteException();
+            $missing = new MissingImplementationException();
 
-            $describe = $this->suite->describe("", function() use ($incomplete) {
+            $describe = $this->suite->describe("", function() use ($missing) {
 
-                $this->it("throws an `IncompleteException`", function() use ($incomplete) {
-                    throw $incomplete;
+                $this->it("throws an `MissingImplementationException`", function() use ($missing) {
+                    throw $missing;
                 });
 
             });
 
             $this->suite->run();
 
-            $results = $this->suite->results();
-            expect($results['incomplete'])->toHaveLength(1);
+            $results = $this->suite->summary()->logs('errored');
+            expect($results)->toHaveLength(1);
 
-            $report = reset($results['incomplete']);
-            expect($report->exception())->toBe($incomplete);
-            expect($report->type())->toBe('incomplete');
-            expect($report->messages())->toBe(['', '', 'it throws an `IncompleteException`']);
+            $report = reset($results);
+            expect($report->exception())->toBe($missing);
+            expect($report->type())->toBe('errored');
+            expect($report->messages())->toBe(['', '', 'it throws an `MissingImplementationException`']);
+
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
 
         });
 
@@ -942,25 +1095,8 @@ describe("Suite", function() {
 
             expect($closure)->toThrow(new Exception('Method not allowed in this context.'));
 
-        });
-
-        it("throws and exception if attempts to call the `process()` function inside a scope", function() {
-
-            $describe = $this->suite->describe("", function() {
-
-                $this->it("attempts to call the `process()` function", function() {
-                    $this->process();
-                });
-
-            });
-
-            $this->suite->run();
-            $results = $this->suite->results();
-            expect($results['exceptions'])->toHaveLength(1);
-
-            $report = reset($results['exceptions']);
-            $actual = $report->exception()->getMessage();
-            expect($actual)->toBe('Method not allowed in this context.');
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
 
         });
 
@@ -984,8 +1120,7 @@ describe("Suite", function() {
 
             $this->suite->run(['ff' => 1]);
 
-            $results = $this->suite->results();
-            $failed = $results['failed'];
+            $failed = $this->suite->summary()->logs('failed');
 
             expect($failed)->toHaveLength(1);
             expect($this->suite->focused())->toBe(false);
@@ -1014,8 +1149,7 @@ describe("Suite", function() {
 
             $this->suite->run(['ff' => 2]);
 
-            $results = $this->suite->results();
-            $failed = $results['failed'];
+            $failed = $this->suite->summary()->logs('failed');
 
             expect($failed)->toHaveLength(2);
             expect($this->suite->focused())->toBe(false);
@@ -1096,9 +1230,7 @@ describe("Suite", function() {
 
             $reporters = Stub::create();
 
-            expect($reporters)->toReceive('process')->with('stop', Arg::toMatch(function($actual) {
-                return isset($actual['specs']) && isset($actual['focuses']);
-            }));
+            expect($reporters)->toReceive('dispatch')->with('stop', Arg::toBeAnInstanceOf('Kahlan\Summary'));
 
             $this->suite->run(['reporters' => $reporters]);
             $this->suite->stop();

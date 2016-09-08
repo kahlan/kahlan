@@ -105,7 +105,7 @@ describe("Reporters", function() {
 
     });
 
-    describe("->process()", function() {
+    describe("->dispatch()", function() {
 
         it("runs a method on all reporters", function() {
 
@@ -118,7 +118,7 @@ describe("Reporters", function() {
             expect($stub1)->toReceive('action')->with(['value']);
             expect($stub2)->toReceive('action')->with(['value']);
 
-            $this->reporters->process('action', ['value']);
+            $this->reporters->dispatch('action', ['value']);
 
         });
 

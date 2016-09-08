@@ -96,7 +96,7 @@ class Terminal extends Reporter
     }
 
     /**
-     * Returns the Kahlan ascii art string.
+     * Return the Kahlan ascii art string.
      *
      * @return string
      */
@@ -112,7 +112,7 @@ EOD;
     }
 
     /**
-     * Returns the Kahlan baseline string.
+     * Return the Kahlan baseline string.
      *
      * @return string
      */
@@ -122,28 +122,40 @@ EOD;
     }
 
     /**
-     * Prints a spec report with its parents messages.
+     * Print a spec report with its parents messages.
      *
-     * @param object $report A spec report instance.
+     * @param object $log A spec log instance.
      */
-    protected function _report($report)
+    protected function _report($log)
     {
-        $this->_reportSuiteMessages($report);
-        $this->_reportSpecMessage($report);
-        $this->_reportExpect($report);
-        $this->indent(0);
+        $type = $log->type();
+        $this->_reportSuiteMessages($log);
+        $this->_reportSpecMessage($log);
+        $this->_reportFailure($log);
+        $this->_indent = 0;
     }
 
     /**
-     * Prints an array of description messages to STDOUT
+     * Print a spec report.
+     *
+     * @param object $log A spec log instance.
+     */
+    protected function _reportSpec($log)
+    {
+        $this->_reportSpecMessage($log);
+        $this->_reportFailure($log);
+    }
+
+    /**
+     * Print an array of description messages to STDOUT
      *
      * @param  array   $messages An array of description message.
      * @return integer           The final message indentation.
      */
-    protected function _reportSuiteMessages($report)
+    protected function _reportSuiteMessages($log)
     {
         $this->_indent = 0;
-        $messages = array_values(array_filter($report->messages()));
+        $messages = array_values(array_filter($log->messages()));
         array_pop($messages);
         foreach ($messages as $message) {
             $this->write($message);
@@ -153,97 +165,86 @@ EOD;
     }
 
     /**
-     * Prints a spec report.
+     * Print a spec message report.
      *
-     * @param object $report A spec report instance.
+     * @param object $log A spec log instance.
      */
-    protected function _reportSpec($report)
+    protected function _reportSpecMessage($log)
     {
-        $this->_reportSpecMessage($report);
-        foreach($report->childs() as $child) {
-            $this->_reportExpect($child);
-        }
-    }
-
-    protected function _reportSpecMessage($report)
-    {
-        $messages = $report->messages();
+        $messages = $log->messages();
         $message = end($messages);
 
-        switch($report->type()) {
-            case "pass":
-                $this->write("✔", 'green');
-                $this->write(" ");
+        switch($log->type()) {
+            case 'passed':
+                $this->write('✔', 'green');
+                $this->write(' ');
                 $this->write("{$message}\n", 'd');
             break;
-            case "skip":
-                $this->write("↩", 'cyan');
-                $this->write(" ");
+            case 'skipped':
+                $this->write('✔', 'd');
+                $this->write(' ');
+                $this->write("{$message}\n", 'd');
+            break;
+            case 'pending':
+                $this->write('✔', 'cyan');
+                $this->write(' ');
                 $this->write("{$message}\n", 'cyan');
             break;
-            case "fail":
-                $this->write("✘", 'red');
-                $this->write(" ");
+            case 'excluded':
+                $this->write('✔', 'yellow');
+                $this->write(' ');
+                $this->write("{$message}\n", 'yellow');
+            break;
+            case 'failed':
+                $this->write('✘', 'red');
+                $this->write(' ');
                 $this->write("{$message}\n", 'red');
             break;
-            case "exception":
-                $this->write("✘", 'red');
-                $this->write(" ");
-                $this->write("{$message}\n", 'red');
-            break;
-            case "incomplete":
-                $this->write("✘", 'red');
-                $this->write(" ");
+            case 'errored':
+                $this->write('✘', 'red');
+                $this->write(' ');
                 $this->write("{$message}\n", 'red');
             break;
         }
     }
 
     /**
-     * Prints an expectation report.
+     * Print an expectation report.
      *
-     * @param object $report An expectation report.
+     * @param object $log An specification log.
      */
-    protected function _reportExpect($report)
+    protected function _reportFailure($log)
     {
         $this->_indent++;
-        switch($report->type()) {
-            case "skip":
-                $this->write("specification skipped in ", 'cyan');
-                $this->write("`{$report->file()}` ");
-                $this->write("line {$report->line()}", 'cyan');
-                $this->write("\n\n");
+        $type = $log->type();
+        switch($type) {
+            case "failed":
+                foreach ($log->children() as $expectation) {
+                    if ($expectation->type() !== 'failed') {
+                        continue;
+                    }
+                    $this->write("expect->{$expectation->matcherName()}() failed in ", 'red');
+                    $this->write("`{$expectation->file()}` ");
+                    $this->write("line {$expectation->line()}", 'red');
+                    $this->write("\n\n");
+                    $this->_reportDiff($expectation);
+                }
             break;
-            case "fail":
-                $this->write("expect->{$report->matcherName()}() failed in ", 'red');
-                $this->write("`{$report->file()}` ");
-                $this->write("line {$report->line()}", 'red');
-                $this->write("\n\n");
-                $this->_reportDiff($report);
-            break;
-            case "exception":
+            case "errored":
+                $backtrace = Debugger::backtrace(['trace' => $log->exception()]);
+                $trace = reset($backtrace);
+                $file = preg_replace('~' . preg_quote(getcwd(), '~') . '/~', '', $trace['file']);
+                $line = $trace['line'];
+
                 $this->write("an uncaught exception has been thrown in ", 'magenta');
-                $this->write("`{$report->file()}` ");
-                $this->write("line {$report->line()}", 'magenta');
+                $this->write("`{$file}` ");
+                $this->write("line {$line}", 'magenta');
                 $this->write("\n\n");
 
                 $this->write('message:', 'yellow');
-                $this->_reportException($report->exception());
+                $this->_reportException($log->exception());
                 $this->prefix($this->format(' ', 'n;;magenta') . ' ');
-                $this->write(Debugger::trace(['trace' => $report->backtrace()]));
-                $this->prefix('');
-                $this->write("\n\n");
-            break;
-            case "incomplete":
-                $this->write("an unexisting class has been used in ", 'yellow');
-                $this->write("`{$report->file()}` ");
-                $this->write("line {$report->line()}", 'yellow');
-                $this->write("\n\n");
-
-                $this->write('message:', 'yellow');
-                $this->_reportException($report->exception());
-                $this->prefix($this->format(' ', 'n;;magenta') . ' ');
-                $this->write(Debugger::trace(['trace' => $report->backtrace()]));
+                $this->write(Debugger::trace(['trace' => $backtrace]));
                 $this->prefix('');
                 $this->write("\n\n");
             break;
@@ -252,23 +253,23 @@ EOD;
     }
 
     /**
-     * Prints diff of spec's data.
+     * Print diff of spec's data.
      *
-     * @param array $report A report array.
+     * @param array $log A log array.
      */
-    protected function _reportDiff($report)
+    protected function _reportDiff($log)
     {
-        $data = $report->data();
+        $data = $log->data();
 
         $this->write("It expect actual ");
 
-        if ($report->not()) {
+        if ($log->not()) {
             $this->write('NOT ', 'cyan');
             $not = 'not ';
         } else {
             $not = '';
         }
-        $this->write("to {$report->description()}\n\n");
+        $this->write("to {$log->description()}\n\n");
 
         foreach ($data as $key => $value) {
             if (preg_match('~actual~', $key)) {
@@ -291,6 +292,11 @@ EOD;
         $this->write("\n");
     }
 
+    /**
+     * Print an exception to the outpout.
+     *
+     * @param object $exception An exception.
+     */
     protected function _reportException($exception)
     {
         $msg = '`' . get_class($exception) .'` Code(' . $exception->getCode() . ') with ';
@@ -304,7 +310,7 @@ EOD;
     }
 
     /**
-     * Prints a string to output.
+     * Print a string to output.
      *
      * @param string       $string  The string to print.
      * @param string|array $options The possible values for an array are:
@@ -335,7 +341,7 @@ EOD;
     }
 
     /**
-     * Gets/sets the console indentation.
+     * Get/set the console indentation.
      *
      * @param  integer $indent The indent number.
      * @return integer         Returns the indent value.
@@ -349,7 +355,7 @@ EOD;
     }
 
     /**
-     * Gets/sets the console prefix to use for writing.
+     * Get/set the console prefix to use for writing.
      *
      * @param  string $prefix The prefix.
      * @return string         Returns the prefix value.
@@ -383,74 +389,105 @@ EOD;
     }
 
     /**
-     * Prints a summary of specs execution to STDOUT
+     * Print a summary of specs execution to STDOUT
      *
-     * @param array $results The results array of the execution.
+     * @param object $summary The execution summary instance.
      */
-    public function _summary($report)
+    public function _reportSummary($summary)
     {
-        $results = $report['specs'];
+        $this->_summarizeSkipped($summary);
 
-        $passed = count($results['passed']) + count($results['skipped']);
-        $failed = 0;
-        foreach ([
-            'exceptions' => 'exception',
-            'incomplete' => 'incomplete',
-            'failed'     => 'fail'
-        ] as $key => $value) {
-            ${$value} = count($results[$key]);
-            $failed += ${$value};
-        }
-        $total = $passed + $failed;
+        $passed = $summary->passed();
+        $skipped = $summary->skipped();
+        $pending = $summary->pending();
+        $excluded = $summary->excluded();
+        $failed = $summary->failed();
+        $errored = $summary->errored();
+        $expectation = $summary->expectation();
+        $total = $summary->executable();
 
-        $this->write('Executed ' . $passed . " of {$total} ");
+        $this->write("Expectations   : ");
+        $this->write("{$expectation} Executed");
+        $this->write("\n");
+        $this->write("Specifications : ");
+        $this->write("{$pending} Pending", 'cyan');
+        $this->write(", ");
+        $this->write("{$excluded} Excluded", 'yellow');
+        $this->write(", ");
+        $this->write("{$skipped} Skipped", 'd');
+        $this->write("\n\n");
+        $this->write('Passed ' . ($passed), 'green');
+        $this->write(" of {$total} ");
 
-        if ($failed) {
+        if ($failed + $errored) {
             $this->write('FAIL ', 'red');
             $this->write('(');
             $comma = false;
-            if ($fail) {
-                $this->write('FAILURE: ' . $fail , 'red');
+            if ($failed) {
+                $this->write('FAILURE: ' . $failed , 'red');
                 $comma = true;
             }
-            if ($incomplete) {
+            if ($errored) {
                 if ($comma) {
                     $this->write(', ');
                 }
-                $this->write('INCOMPLETE: ' . $incomplete , 'yellow');
-                $comma = true;
-            }
-            if ($exception) {
-                if ($comma) {
-                    $this->write(', ');
-                }
-                $this->write('EXCEPTION: ' . $exception , 'magenta');
+                $this->write('EXCEPTION: ' . $errored , 'magenta');
             }
             $this->write(')');
         } else {
             $this->write('PASS', 'green');
         }
         $time = number_format(microtime(true) - $this->_start, 3);
-        $this->write(" in {$time} seconds\n\n\n");
+        $this->write(" in {$time} seconds");
+        $this->write("\n\n");
+
+        $this->_summarizeFocused($summary);
     }
 
     /**
-     * Prints focused report to STDOUT
+     * Print focused report to STDOUT
      *
-     * @param array $report A report array.
+     * @param object $summary The execution summary instance.
      */
-    protected function _reportFocused($report)
+    protected function _summarizeFocused($summary)
     {
-        if (!$backtraces = $report['focuses']) {
+        if (!$focused = $summary->get('focused')) {
             return;
         }
 
         $this->write("Focus Mode Detected in the following files:\n", 'b;yellow;');
-        foreach ($backtraces as $backtrace) {
+        foreach ($focused as $scope) {
+            $backtrace = $scope->backtrace();
             $this->write(Debugger::trace(['trace' => $backtrace, 'depth' => 1]), 'n;yellow');
             $this->write("\n");
         }
         $this->write("exit(-1)\n\n", 'red');
+    }
+
+    /**
+     * Print focused report to STDOUT
+     *
+     * @param object $summary The execution summary instance.
+     */
+    protected function _summarizeSkipped($summary)
+    {
+        foreach ([
+            'pending'  => 'cyan',
+            'excluded' => 'yellow',
+            'skipped'  => 'd'
+        ] as $type => $color) {
+            if (!$logs = $summary->logs($type)) {
+                continue;
+            }
+            $count = count($logs);
+            $this->write(ucfirst($type) . " specification" . ($count > 1 ? 's' : '') . ": {$count}\n\n", $color);
+
+            foreach ($logs as $log) {
+                $this->write("{$log->file()}, line {$log->line()}\n", 'd');
+            }
+            $this->write("\n");
+        }
+
     }
 
     /**

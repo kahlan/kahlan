@@ -80,7 +80,7 @@ class Reporters
      * @param string $type The name of the report.
      * @param array  $data The data to report.
      */
-    public function process($type, $data = null)
+    public function dispatch($type, $data = null)
     {
         foreach ($this->_reporters as $reporter) {
             $reporter->$type($data);

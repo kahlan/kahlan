@@ -9,6 +9,13 @@ use Kahlan\Plugin\Call\Message;
 class Scope
 {
     /**
+     * Stores the success value.
+     *
+     * @var boolean
+     */
+    protected $_passed = null;
+
+    /**
      * Instances stack.
      *
      * @var Scope[]
@@ -32,15 +39,14 @@ class Scope
         'context'     => true,
         'current'     => true,
         'describe'    => true,
-        'dispatch'    => true,
-        'emitReport'  => true,
+        'excluded'    => true,
         'expect'      => true,
-        'focus'       => true,
         'focused'     => true,
         'failfast'    => true,
         'given'       => true,
         'hash'        => true,
         'it'          => true,
+        'log'         => true,
         'logs'        => true,
         'matcher'     => true,
         'message'     => true,
@@ -51,11 +57,12 @@ class Scope
         'registered'  => true,
         'report'      => true,
         'reset'       => true,
-        'results'     => true,
         'run'         => true,
         'skipIf'      => true,
         'status'      => true,
+        'summary'     => true,
         'timeout'     => true,
+        'type'        => true,
         'wait'        => true,
         'fdescribe'   => true,
         'fcontext'    => true,
@@ -66,14 +73,11 @@ class Scope
     ];
 
     /**
-     * Class dependencies.
+     * The scope type.
      *
-     * @var array
+     * @var object
      */
-    protected $_classes = [
-        'expectation' => 'Kahlan\Expectation',
-        'given'       => 'Kahlan\Given'
-    ];
+    protected $_type = null;
 
     /**
      * The root instance.
@@ -118,44 +122,18 @@ class Scope
     protected $_given = [];
 
     /**
-     * The report result of executed spec.
+     * The report log of executed spec.
      *
      * @var object
      */
-    protected $_report = null;
+    protected $_log = null;
 
     /**
-     * The results array.
+     * The execution summary instance.
      *
-     * @var array
+     * @var object
      */
-    protected $_results = [
-        'passed'     => [],
-        'failed'     => [],
-        'skipped'    => [],
-        'exceptions' => [],
-        'incomplete' => []
-    ];
-
-    /**
-     * The matching beetween events name & result types.
-     *
-     * @var array
-     */
-    protected $_resultTypes = [
-        'pass'       => 'passed',
-        'fail'       => 'failed',
-        'skip'       => 'skipped',
-        'exception'  => 'exceptions',
-        'incomplete' => 'incomplete'
-    ];
-
-    /**
-     * Focused scope detected.
-     *
-     * @var boolean
-     */
-    protected $_focused = false;
+    protected $_summary = null;
 
     /**
      * Count the number of failure or exception.
@@ -163,7 +141,7 @@ class Scope
      * @see ::failfast()
      * @var integer
      */
-    protected $_failure = 0;
+    protected $_failures = 0;
 
     /**
      * The reporters container.
@@ -203,34 +181,45 @@ class Scope
      * The Constructor.
      *
      * @param array $config The Suite config array. Options are:
+     *                       -`'type'`    _string_ : supported type are `'normal'` & `'focus'`.
      *                       -`'message'` _string_ : the description message.
      *                       -`'parent'`  _object_ : the parent scope.
      *                       -`'root'`    _object_ : the root scope.
+     *                       -`'log'`     _object_ : the log instance.
+     *                       -`'timeout'` _integer_: the timeout.
      */
     public function __construct($config = [])
     {
         $defaults = [
+            'type'    => 'normal',
             'message' => '',
             'parent'  => null,
             'root'    => null,
+            'log'     => null,
             'timeout' => 0,
-            'classes' => []
+            'summary' => null
         ];
         $config += $defaults;
-        $this->_classes += $config['classes'];
-        /**
-         * @var Message $message
-         * @var Scope   $parent
-         * @var integer $timeout
-         */
-        extract($config);
 
-        $this->_message   = $message;
-        $this->_parent    = $parent;
-        $this->_root      = $parent ? $parent->_root : $this;
-        $this->_report    = new Report(['scope' => $this]);
-        $this->_timeout   = $timeout;
+        $this->_type      = $config['type'];
+        $this->_message   = $config['message'];
+        $this->_parent    = $config['parent'];
+        $this->_root      = $this->_parent ? $this->_parent->_root : $this;
+        $this->_timeout   = $config['timeout'];
         $this->_backtrace = Debugger::focus($this->backtraceFocus(), Debugger::backtrace(), 1);
+        $this->_log       = $config['log'] ?: new Log([
+            'scope' => $this,
+            'backtrace' => $this->_backtrace
+        ]);
+        $this->_summary = $config['summary'];
+        if ($this->_summary) {
+            return;
+        }
+        if ($this->_root->summary()) {
+            $this->_summary = $this->_root->summary();
+        } else {
+            $this->_summary = new Summary();
+        }
     }
 
     /**
@@ -253,7 +242,7 @@ class Scope
             return $this->_parent->__get($key);
         }
         if (in_array($key, static::$blacklist)) {
-            if ($key == 'expect') {
+            if ($key === 'expect') {
                 throw new Exception("You can't use expect() inside of describe()");
             }
         }
@@ -306,8 +295,8 @@ class Scope
         if (isset(static::$blacklist[$name])) {
             throw new Exception("Sorry `{$name}` is a reserved keyword, it can't be used as a scope variable.");
         }
-        $class = $this->_classes['given'];
-        $given = new $class($closure);
+
+        $given = new Given($closure);
         if (array_key_exists($name, $this->_given)) {
             $given->{$name} = $this->_given[$name](static::current());
         }
@@ -351,6 +340,16 @@ class Scope
     }
 
     /**
+     * Gets the backtrace array.
+     *
+     * @return array
+     */
+    public function backtrace()
+    {
+        return $this->_backtrace;
+    }
+
+    /**
      * Skips specs(s) if the condition is `true`.
      *
      * @param boolean $condition
@@ -366,24 +365,29 @@ class Scope
     }
 
     /**
-     * Skips childs specs(s).
+     * Skips children specs(s).
      *
      * @param object  $exception The exception at the origin of the skip.
      * @param boolean $emit      Indicated if report events should be generated.
      */
-    protected function _skipChilds($exception, $emit = false)
+    protected function _skipChildren($exception, $emit = false)
     {
-        $report = $this->report();
+        $log = $this->log();
         if ($this instanceof Suite) {
-            foreach ($this->_childs as $child) {
-                $child->_skipChilds($exception, true);
+            foreach ($this->children() as $child) {
+                $child->_skipChildren($exception, true);
             }
         } elseif ($emit) {
-            $this->emitReport('specStart', $report);
-            $report->add('skip', ['exception' => $exception]);
-            $this->emitReport('specEnd', $report);
+            if (!$this->_root->focused() || $this->focused()) {
+                $this->report('specStart', $this);
+                $this->_passed = true;
+                $this->log()->type('skipped');
+                $this->summary()->log($this->log());
+                $this->report('specEnd', $log);
+            }
         } else {
-            $report->add('skip', ['exception' => $exception]);
+            $this->_passed = true;
+            $this->log()->type('skipped');
         }
     }
 
@@ -395,20 +399,18 @@ class Scope
      */
     protected function _exception($exception, $inEachHook = false)
     {
-        $data = compact('exception');
         switch(get_class($exception)) {
             case 'Kahlan\SkipException':
                 if ($inEachHook) {
-                    $this->report()->add('skip', $data);
+                    $this->log()->type('skipped');
                 } else {
-                    $this->_skipChilds($exception);
+                    $this->_skipChildren($exception);
                 }
             break;
-            case 'Kahlan\IncompleteException':
-                $this->report()->add('incomplete', $data);
-            break;
             default:
-                $this->report()->add('exception', $data);
+                $this->_passed = false;
+                $this->log()->type('errored');
+                $this->log()->exception($exception);
             break;
         }
     }
@@ -460,29 +462,47 @@ class Scope
         if ($pattern === null) {
             return $this->_root->_backtraceFocus;
         }
-        return $this->_root->_backtraceFocus = strtr(preg_quote($pattern, '~'), ['\*' => '.*', '\?' => '.']);
+        $patterns = is_array($pattern) ? $pattern : [$pattern];
+        foreach ($patterns as $key => $value) {
+            $patterns[$key] = preg_quote($value, '~');
+        }
+        $pattern = join('|', $patterns);
+        return $this->_root->_backtraceFocus = strtr($pattern, ['\*' => '.*', '\?' => '.']);
     }
 
     /**
-     * Sets focused mode.
+     * Set/get the scope type.
      *
-     * @param  boolean The focus mode.
+     * @param  string  The type mode.
+     * @return mixed
+     */
+    public function type($type = null)
+    {
+        if (!func_num_args()) {
+            return $this->_type;
+        }
+        $this->_type = $type;
+        return $this;
+    }
+
+    /**
+     * Check for excluded mode.
+     *
      * @return boolean
      */
-    public function focus($state = true)
+    public function excluded()
     {
-        return $this->_focused = $state;
+        return $this->_type === 'exclude';
     }
 
     /**
-     * Gets focused mode.
+     * Check for focused mode.
      *
-     * @param  boolean|null For the setter behavior.
      * @return boolean
      */
     public function focused()
     {
-        return $this->_focused;
+        return $this->_type === 'focus';
     }
 
     /**
@@ -490,11 +510,11 @@ class Scope
      */
     protected function _emitFocus()
     {
-        $this->_root->_focuses[] = Debugger::focus($this->backtraceFocus(), Debugger::backtrace());
+        $this->_root->summary()->add('focused', $this);
         $instances = $this->_parents(true);
 
         foreach ($instances as $instance) {
-            $instance->focus();
+            $instance->type('focus');
         }
     }
 
@@ -503,17 +523,9 @@ class Scope
      *
      * @return array
      */
-    public function results()
+    public function summary()
     {
-        return $this->_results;
-    }
-
-    /**
-     * Notifies a failure occurs.
-     */
-    public function failure()
-    {
-        $this->_root->_failure++;
+        return $this->_root->_summary;
     }
 
     /**
@@ -530,38 +542,31 @@ class Scope
      * Dispatches a report up to the root scope.
      * It only logs expectations report.
      *
-     * @param object $report The report object to log.
+     * @param object $log The report object to log.
      */
-    public function dispatch($report)
+    public function log($type = null, $data = [])
     {
-        $resultType = $this->_resultTypes[$report->type()];
-        $this->_root->_results[$resultType][] = $report;
-
-        $this->emitReport($report->type(), $report);
+        if (!func_num_args()) {
+            return $this->_log;
+        }
+        $this->report($type, $this->log()->add($type, $data));
     }
 
     /**
-     * Emit a report even up to reporters.
+     * Send some data to reporters.
      *
-     * @param string $type The name of the report.
-     * @param array  $data The data to report.
+     * @param string $type The message type.
+     * @param mixed  $data The message data.
      */
-    public function emitReport($type, $data = null)
+    public function report($type, $data, $byPassFocuses = false)
     {
         if (!$this->_root->_reporters) {
             return;
         }
-        $this->_root->_reporters->process($type, $data);
-    }
-
-    /**
-     * Gets the report instance.
-     *
-     * @return object The report instance.
-     */
-    public function report()
-    {
-        return $this->_report;
+        if (!$byPassFocuses && $this->_root->focused() && !$this->focused()) {
+            return;
+        }
+        $this->_root->_reporters->dispatch($type, $data);
     }
 
     /**
@@ -586,5 +591,4 @@ class Scope
         }
         return $this->_timeout;
     }
-
 }
