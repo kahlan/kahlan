@@ -60,4 +60,16 @@ describe("Monkey", function() {
         });
 
     });
+
+    describe("::blacklisted()", function() {
+
+        it("checks that blacklisted function returns `false`", function() {
+
+            foreach (Monkey::blacklisted() as $name) {
+                expect(Monkey::blacklisted($name))->toBe(true);
+            }
+
+        });
+
+    });
 });

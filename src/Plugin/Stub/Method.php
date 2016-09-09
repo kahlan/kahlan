@@ -105,7 +105,11 @@ class Method extends \Kahlan\Plugin\Call\Message
      */
     public function toBe()
     {
-        $this->_substitutes = func_get_args();
+        if ($this->reference()) {
+            $this->_substitutes = func_get_args();
+        } else {
+            call_user_func_array([$this, 'andReturnUsing'], func_get_args());
+        }
     }
 
     /**
@@ -113,7 +117,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      *
      * @param Closure $closure The logic.
      */
-    public function andReturnUsing($closure)
+    public function andReturnUsing()
     {
         if ($this->_returns !== null) {
             throw new Exception("Some return value(s) has already been set.");
