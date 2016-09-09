@@ -154,6 +154,9 @@ $__KMONKEY__13();
         extract();
         for($i=0;$i<1;$i++) {};
         foreach($array as $key=>$value) {}
+        func_get_arg();
+        func_get_args();
+        func_num_args();
         function(){};
         if(true){}
         include('filename');
