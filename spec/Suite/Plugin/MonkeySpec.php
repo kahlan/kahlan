@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Spec\Suite\Plugin;
 
+use Exception;
 use DateTime;
 use Kahlan\Jit\Interceptor;
 use Kahlan\Plugin\Monkey;
@@ -122,6 +123,15 @@ describe("Monkey", function() {
             Monkey::reset('Kahlan\Spec\Fixture\Plugin\Monkey\rand');
             expect($mon->rand(0, 100))->toBe(50);
 
+        });
+
+        it("throws an exception with trying to patch an unsupported functions or core langage statements", function() {
+
+            $closure = function() {
+                Monkey::patch('func_get_args', function(){return [];});
+            };
+
+            expect($closure)->toThrow(new Exception('Monkey patching `func_get_args()` is not supported by Kahlan.'));
         });
 
     });

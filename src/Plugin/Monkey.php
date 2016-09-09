@@ -1,9 +1,11 @@
 <?php
 namespace Kahlan\Plugin;
 
+use Exception;
 use Kahlan\Suite;
 use Kahlan\Plugin\Stub\Method;
 use Kahlan\Plugin\Call\Calls;
+use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 
 class Monkey
 {
@@ -23,7 +25,15 @@ class Monkey
     public static function patch($source, $dest = null)
     {
         $source = ltrim($source, '\\');
-        $method = static::$_registered[$source] = new Method();
+        if (is_object($source) || class_exists($source)) {
+            $reference = $source;
+        } else {
+            $reference = null;
+            if (MonkeyPatcher::blacklisted($source)) {
+                throw new Exception("Monkey patching `{$source}()` is not supported by Kahlan.");
+            }
+        }
+        $method = static::$_registered[$source] = new Method(compact('reference'));
         if (!$dest) {
             return $method;
         }
@@ -59,16 +69,20 @@ class Monkey
             return $fake ?: $name;
         }
 
-        return function() use ($name, $method, $fake) {
+        if (!Suite::registered($name) && !$method) {
+            return $name;
+        }
+
+        return function() use ($name, $method) {
             $args = func_get_args();
+
             if (Suite::registered($name)) {
                 Calls::log(null, compact('name', 'args'));
             }
-            $function = $fake ?: $name;
-            if (!$fake && $method && $method->matchArgs($args)) {
+            if ($method && $method->matchArgs($args)) {
                 return $method($args);
             }
-            return call_user_func_array($function, $args);
+            return call_user_func_array($name, $args);
         };
     }
 

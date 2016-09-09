@@ -1,37 +1,16 @@
 <?php
 namespace Kahlan\Jit\Patcher;
 
+use Kahlan\Jit\Node\NodeDef;
+
 class Monkey
 {
-    /**
-     * Class dependencies.
-     *
-     * @var array
-     */
-    protected $_classes = [
-        'node' => 'Kahlan\Jit\Node\NodeDef',
-    ];
-
-    /**
-     * Prefix to use for custom variable name.
-     *
-     * @var string
-     */
-    protected $_prefix = '';
-
-    /**
-     * Counter for building unique variable name.
-     *
-     * @var integer
-     */
-    protected $_counter = 0;
-
     /**
      * Ignoring the following statements which are not valid function or class names.
      *
      * @var array
      */
-    protected $_blacklist = [
+    protected static $_blacklist = [
         '__halt_compiler' => true,
         'and'             => true,
         'array'           => true,
@@ -48,6 +27,9 @@ class Monkey
         'extract'         => true,
         'for'             => true,
         'foreach'         => true,
+        'func_get_arg'    => true,
+        'func_get_args'   => true,
+        'func_num_args'   => true,
         'function'        => true,
         'if'              => true,
         'include'         => true,
@@ -67,6 +49,20 @@ class Monkey
         'while'           => true,
         'xor'             => true
     ];
+
+    /**
+     * Prefix to use for custom variable name.
+     *
+     * @var string
+     */
+    protected $_prefix = '';
+
+    /**
+     * Counter for building unique variable name.
+     *
+     * @var integer
+     */
+    protected $_counter = 0;
 
     /**
      * Uses for the parsed node's namespace.
@@ -98,12 +94,10 @@ class Monkey
     public function __construct($config = [])
     {
         $defaults = [
-            'classes'  => [],
             'prefix'   => 'KMONKEY'
         ];
         $config += $defaults;
 
-        $this->_classes += $config['classes'];
         $this->_prefix   = $config['prefix'];
 
         $alpha = '[\\\a-zA-Z_\\x7f-\\xff]';
@@ -161,7 +155,6 @@ class Monkey
                 $this->_uses = $node->namespace ? $node->namespace->uses : [];
 
                 $this->_monkeyPatch($node, $nodes, $index);
-                $code = $this->_classes['node'];
                 $body = '';
 
                 if ($this->_variables) {
@@ -176,7 +169,7 @@ class Monkey
                         $body = '<?php ' . $body . ' ?>';
                     }
 
-                    $patch = new $code($body, 'code');
+                    $patch = new NodeDef($body, 'code');
                     $patch->parent = $parent;
                     $patch->function = $node->function;
                     $patch->namespace = $node->namespace;
@@ -212,7 +205,7 @@ class Monkey
             $isInstance = !!$match[1][0];
             $isStatic = $nextChar === ':';
 
-            if (!isset($this->_blacklist[strtolower($name)]) && ($isInstance || $nextChar === '(' || $isStatic)) {
+            if (!isset(static::$_blacklist[strtolower($name)]) && ($isInstance || $nextChar === '(' || $isStatic)) {
                 $tokens = explode('\\', $name, 2);
 
                 if ($name[0] === '\\') {
@@ -299,5 +292,19 @@ class Monkey
             $pos = 0;
         }
         return false;
+    }
+
+    /**
+     * Check if a function is part of the blacklisted ones.
+     *
+     * @param  string  $name A function name.
+     * @return boolean
+     */
+    public static function blacklisted($name = null)
+    {
+        if (!func_num_args()) {
+            return array_keys(static::$_blacklist);
+        }
+        return isset(static::$_blacklist[strtolower($name)]);
     }
 }
