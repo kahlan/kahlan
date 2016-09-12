@@ -3,9 +3,7 @@
 * [Overview](#overview)
 
 ### <a name="overview"></a>Overview
-You can always look on Kahlan options, just execute: `kahlan --help`  
-
-Let's take a look at the command-line Kahlan options:  
+You can see below all Kahlan's option obtained through the `kahlan --help` command line.
 
 ```
 Configuration Options:

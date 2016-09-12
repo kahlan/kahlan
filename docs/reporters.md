@@ -40,63 +40,58 @@ namespace My\Namespace;
 class MyReporter extends \Kahlan\Reporter\Terminal
 {
     /**
-     * Callback called on successful expectation.
+     * Callback called after a spec execution.
      *
-     * @param object $report An expect report object.
+     * @param object $log The log object of the whole spec.
      */
-    public function pass($report = null)
+    public function specEnd($log = null)
     {
-        $this->write('✓', "green");
-    }
-
-    /**
-     * Callback called on failure.
-     *
-     * @param object $report An expect report object.
-     */
-    public function fail($report = null)
-    {
-        $this->write('☠', "red");
-        $this->write("\n");
-        $this->_report($report);
-    }
-
-    /**
-     * Callback called when an exception occur.
-     *
-     * @param object $report An expect report object.
-     */
-    public function exception($report = null)
-    {
-        $this->write('☠', "magenta");
-        $this->write("\n");
-        $this->_report($report);
-    }
-
-    /**
-     * Callback called on a skipped spec.
-     *
-     * @param object $report An expect report object.
-     */
-    public function skip($report = null)
-    {
-        $this->write('-', "cyan");
+        switch($log->type()) {
+            case 'passed':
+                $this->write('✓', "green");
+            break;
+            case 'skipped':
+                $this->_write('S');
+            break;
+            case 'pending':
+                $this->_write('P', 'cyan');
+            break;
+            case 'excluded':
+                $this->_write('X', 'yellow');
+            break;
+            case 'failed':
+                '☠', "red");
+                $this->write("\n");
+                $this->_report($log);
+            break;
+            case 'errored':
+                $this->write('☠', "magenta");
+                $this->write("\n");
+                $this->_report($log);
+            break;
+        }
     }
 
     /**
      * Callback called at the end of specs processing.
+     *
+     * @param object $summary The execution summary instance.
      */
-    public function end($results = [])
+    public function end($summary)
     {
-        $this->write("\n");
-        $this->_summary($results);
-        $this->_focused($results);
+        $this->write('total:' . $summary->total() . "\n");
+        $this->write('passed:' . $summary->passed() . "\n");
+        $this->write('pending:' . $summary->pending() . "\n");
+        $this->write('skipped:' . $summary->skipped() . "\n");
+        $this->write('excluded:' . $summary->excluded() . "\n");
+        $this->write('failed:' . $summary->failed() . "\n");
+        $this->write('errored:'. $summary->errored() . "\n");
     }
 }
 ?>
 ```
 
-**Note:** `_report()` and `_summary()` are also two inherited methods. Their roles are to format errors and to display a summary of passed tests respectively. Feel free to dig into the source code if you want some more specific output for that.
+**Note:** `_report()` is an inherited method. Its role is to print a report of passed log as parameter. Feel free to dig into the source code if you want some more specific output for that.
 
 The next step is to register your new reporter so you'll need to create you own custom [config file](config-file.md)).
 

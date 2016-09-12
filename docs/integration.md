@@ -22,9 +22,48 @@ Filter::register('mycustom.namespaces', function($chain) {
 Filter::apply($this, 'namespaces', 'mycustom.namespaces');
 ```
 
-### Using the `Layer` patcher (Phalcon).
+### Laravel
 
-When a class extends a built-in class (i.e. a non PHP class) it's not possible to stub core methods. Long story short, let's take the following example as an illustration:
+To import all Laravel "test facilities" into Kahlan you can make use of [this dedicated plugin](https://github.com/jarektkaczyk/laravel-kahlan) through the following steps:
+
+```
+composer require --dev sofa/laravel-kahlan:"~5.3"
+```
+
+** Note: ** For Laravel 5.2/5.1 version use the appropriate version of the package above.
+
+The second step is to set up you kahlan config file (create it if necessary) like so:
+
+```php
+/*  /path/to/your/app/kahlan-config.php  */
+<?php
+
+Sofa\LaravelKahlan\Env::bootstrap($this);
+```
+
+And then you can create your first spec in /spec folder and run test suite with `kahlan`:
+
+Example of spec:
+```php
+/*  /path/to/your/app/spec/AppSpec.php  */
+<?php
+
+describe('My awesome Kahlan driven Laravel app', function () {
+    it("provides the same testing API as Laravel's own TestCase", function () {
+        $this->laravel->get('/')
+                      ->see('Laravel 5')
+                      ->assertResponseOk();
+    });
+}
+```
+
+[You can find the whole example here.](https://github.com/jarektkaczyk/kahlan-driven-laravel).
+
+### Phalcon
+
+When a class extends a built-in class (i.e. a non PHP class) it's not possible to stub parent class methods right away since they are not in PHP userland.
+
+Long story short, let's take the following example as an illustration:
 
 We have a model:
 
@@ -33,69 +72,40 @@ namespace Api\Models;
 
 class MyModel extends \Phalcon\Mvc\Model
 {
-    public $title;
-    public function getTitle()
-    {
-        return $this->title;
-    }
 }
 ```
 
-We have a controller:
-
-```php
-namespace Api\Contollers;
-
-use Exception;
-use Api\Models\MyModel;
-
-class MyController extends \Phalcon\Mvc\Controller
-{
-   public function indexAction()
-   {
-      $article = MyModel::findFirst();
-      $this->view->setVar('title', $article->getTitle());
-   }
-}
-```
-
-And we want to check that `indexAction()` correctly sets the `'title'` view var. This check can be tranlsated into the following spec:
+And we want `findFirst()` to return a stubbed result. This can be tranlsated into the following spec:
 
 ```php
 namespace Api\Spec\Contollers;
 
 use Api\Models\MyModel;
-use Api\Contollers\MyController;
-use Kahlan\Plugin\Stub;
 
-describe("MyController", function() {
+describe("MyModel", function() {
 
-    describe("->indexAction()", function() {
+    it("stubs findFirst as an example", function() {
 
-        it("correctly populates the view var", function() {
+        $article = new MyModel();
 
-            $article = new MyModel();
-            $article->title = 'Hello World';
+        allow('Api\Models\MyModel')->toReceive('::findFirst')->andReturn($article);
 
-            Stub::on('Api\Models\MyModel')->method('::findFirst')->andReturn($article);
+        $actual = MyModel::findFirst();
 
-            $controller = new MyController();
-            $controller->indexAction();
-
-            expect($controller->view->getVar('title'))->toBe('Hello World');
-
-        });
+        expect($actual)->toBe($article);
 
     });
 
 });
 ```
 
-Unfortunalty it doesn't work out of the box. Indeed `MyModel` extends `Phalcon\Mvc\Model` which is a core class (i.e a class compiled from C sources). Since the method `MyModel::findFirst()` doesn't exists in PHP land, it can't be stubbed.
+Unfortunalty it doesn't work out of the box because `MyModel` extends `Phalcon\Mvc\Model` which is a core class (i.e a class compiled from C sources). So `MyModel::findFirst()` doesn't exists in PHP userland and can't be stubbed.
 
-The workaround here is to configure the Kahlan's `Layer` patcher in [the `kahlan-config.php` file](config-file.md). The `Layer` patcher can dynamically replace all `extends` done on core class to an intermediate layer class in PHP.
+The workaround here is to add the Kahlan's `Layer` patcher in [your `kahlan-config.php` file](config-file.md).
 
-For a Phalcon project, the `Layer` patcher can be configured like the following in the Kahlan config file:
+However Kahlan can support this use case through the configuration of the `Layer` patcher. The `Layer` patcher will dynamically replace all `extends` done on core class to an intermediate layer class in PHP.
+
+So for our example above, the `Layer` patcher can be configured like the following in in [your `kahlan-config.php` file](config-file.md):
 
 ```php
 use Kahlan\Filter\Filter;
@@ -103,13 +113,11 @@ use Kahlan\Jit\Interceptor;
 use Kahlan\Plugin\Layer;
 
 Filter::register('api.patchers', function($chain) {
-    if (!$interceptor = Interceptor::instance()) {
-        return;
-    }
+    $interceptor = Interceptor::instance();
     $patchers = $interceptor->patchers();
     $patchers->add('layer', new Layer([
         'override' => [
-            'Phalcon\Mvc\Model' // this will dynamically apply a layer on top of the `Phalcon\Mvc\Model` to make it stubbable.
+            'Phalcon\Mvc\Model' // apply a layer on top of all classes extending `Phalcon\Mvc\Model`.
         ]
     ]));
 
@@ -119,8 +127,8 @@ Filter::register('api.patchers', function($chain) {
 Filter::apply($this, 'patchers', 'api.patchers');
 ```
 
-**Note:** You will probably need to remove all cached files in `/tmp/kahlan` (or in `sys_get_temp_dir() . '/kahlan'` if you are not on linux) to make it works.
+**Note:** You will probably need to remove all cached files using `kahlan --cc`.
 
-### Working with a autoloader not compatible with PSR-0.
+### Working with a custom autoloader not compatible with PSR-0.
 
 In this case your must implement a `PSR-0` **Composer** compatible autoloader. To have a right direction you could see at [sources](https://github.com/composer/composer/blob/master/src/Composer/Autoload/ClassLoader.php), and take care of `findFile`, `loadClass` and `add` functions.
