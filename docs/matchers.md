@@ -331,16 +331,6 @@ it("expects \$foo to receive message() but not followed by foo()", function() {
 });
 ```
 
-```php
-it("expects \$foo to receive a chain of messages with a final stub", function() {
-
-    $foo = new Foo();
-    expect($foo)->toReceive('a->b->c')->andReturn('Hello World!');
-    expect($foo->a()->b()->c())->toBe('Hello World!');
-
-});
-```
-
 **Note:** You should pay attention that using such matchers will make your tests more "fragile" and can be identified as code smells even though not all code smells indicate real problems.
 
 ### <a name="method"></a>Function invocation matchers

@@ -3,19 +3,23 @@
 
 Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses a `describe-it` syntax and moves testing in PHP one step forward.
 
-Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and makes Unit & BDD testing fun again!
+**Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.**
 
-**Killer features:**
-Kahlan is able to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions. You can stub classic or static methods of userland PHP code as well as internal PHP C-extenstions out of the box.
-
-## Video
+## Videos
 
 * <a href="http://vimeo.com/116949820" target="_blank">Warren Seymour presentation at Unified Diff (2015)</a>
+* <a href="https://www.grafikart.fr/tutoriels/php/tdd-kahlan-805" target="_blank">Grafikart presentation in French (2016)</a>
 
 ## IRC
 
 **chat.freenode.net** (server)
 **#kahlan** (channel)
+
+## Requirements
+
+ * PHP 5.5+
+ * Composer
+ * [phpdbg](http://php.net/manual/en/debugger-about.php) or [Xdebug](http://xdebug.org/) (required for code coverage analysis only)
 
 ## Download
 
@@ -37,13 +41,14 @@ composer require --dev crysalead/kahlan
   * [Method invocation matchers](matchers.md#method)
   * [Argument matchers](matchers.md#argument)
   * [Custom matchers](matchers.md#custom)
-* [Stubs](stubs.md)
-  * [Method Stubbing](stubs.md#method-stubbing)
-  * [Instance Stubbing](stubs.md#instance-stubbing)
-  * [Class Stubbing](stubs.md#class-stubbing)
-  * [Custom Stubbing](stubs.md#custom-stubbing)
-* [Monkey Patching](monkey-patching.md)
-  * [Monkey Patch Quit Statements](monkey-patching.md#monkey-patch-quit-statements)
+* [Method Stubbing & Monkey Patching](allow.md)
+    * [Replacing a method](allow.md#method-stubbing)
+    * [Replacing a function](allow.md#function-stubbing)
+    * [Replacing a class](allow.md#monkey-patching)
+* [Test Double](test-double.md)
+    * [Instance Double](test-double.md#instance-double)
+    * [Class Double](test-double.md#class-double)
+* [Quit Statement Patching](quit.md)
 * [Reporters](reporters.md)
 * [Pro Tips](pro-tips.md) - including CLI arguments
 * [The `kahlan-config.php` file](config-file.md)

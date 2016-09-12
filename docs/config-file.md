@@ -99,4 +99,4 @@ Finally you can also disable all the patching everywhere if you prefer to deal w
 ```php
 $this->args()->set('include', []);
 ```
-**Note:** You will still able to stub instances and classes created with `Stub::create()`/`Stub::classname()` anyway.
+**Note:** You will still able to stub instances and classes created with `Double::instance()`/`Double::classname()` anyway.
