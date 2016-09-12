@@ -120,7 +120,7 @@ To perform some asynchronous tests it's possible to use the `waitsFor` statement
 ```php
 describe("Asynchronous Expectations", function() {
 
-    it("waits in vain", function() {
+    it("will timeout for sure", function() {
 
         waitsFor(function() {
             expect(false)->toBe(true);

@@ -11,13 +11,12 @@
 
 Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses a `describe-it` syntax and moves testing in PHP one step forward.
 
-Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and makes Unit & BDD testing fun again!
+**Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.**
 
-**Killer feature:** Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.
-
-## Video
+## Videos
 
 * <a href="http://vimeo.com/116949820" target="_blank">Warren Seymour presentation at Unified Diff (2015)</a>
+* <a href="https://www.grafikart.fr/tutoriels/php/tdd-kahlan-805" target="_blank">Grafikart presentation in French (2016)</a>
 
 ## IRC
 
@@ -26,26 +25,25 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 
 ## Documentation
 
-See the whole [documentation here](http://kahlan.readthedocs.org/en/latest) (documentation for Kahlan <= 1.3.0 [can still be found here](docs/deprecated))
+See the whole [documentation here](http://kahlan.readthedocs.org/en/latest)
 
 ## Requirements
 
  * PHP 5.5+
  * Composer
- * [Xdebug](http://xdebug.org/) (if you want to perform code coverage analysis)
+ * [phpdbg](http://php.net/manual/en/debugger-about.php) or [Xdebug](http://xdebug.org/) (required for code coverage analysis only)
 
 ## Main Features
 
-* Simple API
+* RSpec/JSpec syntax
 * Code Coverage metrics ([xdebug](http://xdebug.org) or [phpdbg](http://phpdbg.com/docs) required)
 * Handy stubbing system ([mockery](https://github.com/padraic/mockery) or [prophecy](https://github.com/phpspec/prophecy) are no longer needed)
 * Set stubs on your class methods directly (i.e allows dynamic mocking)
 * Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
-* Check called methods on your class/instances
+* Check called methods on your classes/instances
 * Built-in Reporters (Terminal or HTML reporting through [istanbul](https://gotwarlost.github.io/istanbul/) or [lcov](http://ltp.sourceforge.net/coverage/lcov.php))
 * Built-in Exporters (Coveralls, Code Climate, Scrutinizer, Clover)
 * Extensible, customizable workflow
-* Small code base (~10 times smaller than PHPUnit)
 
 ## Syntax
 
@@ -54,15 +52,35 @@ See the whole [documentation here](http://kahlan.readthedocs.org/en/latest) (doc
 
 describe("Example", function() {
 
-    it("passes if true === true", function() {
+    it("makes an expectation", function() {
 
-        expect(true)->toBe(true);
+         expect(true)->toBe(true);
 
     });
 
-    it("passes if false !== true", function() {
+    it("expects methods to be called", function() {
 
-        expect(false)->not->toBe(true);
+        expect($user)->toReceive('save')->with(['validates' => false]);
+
+        $user = new User();
+        $user->validates(['validates' => false]);
+
+    });
+
+    it("stubs a function", function() {
+
+        allow('time')->toBeCalled()->andReturn(123);
+        $user = new User();
+        expect($user->save())->toBe(true)
+        expect($user->created)->toBe(123);
+
+    });
+
+    it("stubs a class", function() {
+
+        allow('PDO')->toReceive('prepare', 'fetchAll')->andReturn([['name' => 'bob']]);
+        $user = new User();
+        expect($user->all())->toBe([['name' => 'bob']]);
 
     });
 
