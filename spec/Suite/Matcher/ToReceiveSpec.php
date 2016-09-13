@@ -299,6 +299,68 @@ describe("toReceive", function() {
 
             });
 
+            context("with chain of methods and arguments requirements", function() {
+
+                it("expects called method to be called with correct arguments", function() {
+
+                    $foo = new Foo();
+                    expect($foo)->toReceive('message')->where(['message' => ['My Message', 'My Other Message']]);
+                    $foo->message('My Message', 'My Other Message');
+
+                });
+
+                it("expects stubbed chain called with matching arguments are called", function() {
+
+                    $foo = new Foo();
+                    allow($foo)->toReceive('a->b->c');
+                    expect($foo)->toReceive('a->b->c')->where([
+                        'a' => [1],
+                        'b' => [2],
+                        'c' => [3]
+                    ]);
+
+                    $query = $foo->a(1);
+                    $select = $query->b(2);
+                    $select->c(3);
+
+                });
+
+                it("expects stubbed chain not called with matching arguments are uncalled", function() {
+
+                    $foo = new Foo();
+                    allow($foo)->toReceive('a->b->c');
+                    expect($foo)->not->toReceive('a->b->c')->where([
+                        'a' => [1],
+                        'b' => [2],
+                        'c' => [3]
+                    ]);
+
+                    $query = $foo->a(1);
+                    $select = $query->b(2);
+                    $select->c(0);
+
+                });
+
+                it("throws an exception when required arguments are applied on a method not present in the chain", function() {
+
+                    expect(function() {
+                        $foo = new Foo();
+                        expect($foo)->not->toReceive('a')->where(['b' => [2]]);
+                    })->toThrow(new InvalidArgumentException("Unexisting `b` as method as part of the chain definition."));
+
+                });
+
+                it("throws an exception when required arguments are not an array", function() {
+
+                    expect(function() {
+                        $foo = new Foo();
+                        expect($foo)->not->toReceive('a')->where(['a' => 2]);
+                    })->toThrow(new InvalidArgumentException("Argument requirements must be an arrays for `a` method."));
+
+                });
+
+            });
+
         });
 
         context("with static call", function() {
@@ -407,6 +469,42 @@ describe("toReceive", function() {
                     $query = Foo::getQuery();
                     $select = $query::newQuery();
                     $select::from();
+
+                });
+
+            });
+
+            context("with chain of methods and arguments requirements", function() {
+
+                it("expects stubbed chain called with matching arguments are called", function() {
+
+                    $foo = new Foo();
+                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from');
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->where([
+                        '::getQuery' => [1],
+                        '::newQuery' => [2],
+                        '::from'     => [3]
+                    ]);
+
+                    $query = Foo::getQuery(1);
+                    $select = $query::newQuery(2);
+                    $select::from(3);
+
+                });
+
+                it("expects stubbed chain not called with matching arguments are uncalled", function() {
+
+                    $foo = new Foo();
+                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from');
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery::newQuery::from')->where([
+                        '::getQuery' => [1],
+                        '::newQuery' => [2],
+                        '::from'     => [3]
+                    ]);
+
+                    $query = Foo::getQuery(1);
+                    $select = $query::newQuery(2);
+                    $select::from(0);
 
                 });
 
