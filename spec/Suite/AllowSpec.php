@@ -150,6 +150,15 @@ describe("Allow", function() {
 
         });
 
+        it("throws an exception when trying to spy an invalid empty method", function() {
+
+            expect(function() {
+                $foo = new Foo();
+                allow($foo)->toReceive();
+            })->toThrow(new InvalidArgumentException("Method name can't be empty."));
+
+        });
+
         it("throws an exception when trying to call `toReceive()`", function() {
 
             expect(function() {
@@ -245,7 +254,7 @@ describe("Allow", function() {
             it("expects stubbed chain to be stubbed", function() {
 
                 $foo = new Foo();
-                allow($foo)->toReceive('a->b->c')->andReturn('something');
+                allow($foo)->toReceive('a', 'b', 'c')->andReturn('something');
                 $query = $foo->a();
                 $select = $query->b();
                 expect($select->c())->toBe('something');
@@ -254,7 +263,7 @@ describe("Allow", function() {
 
             it('auto monkey patch core classes using a stub when possible', function() {
 
-                allow('PDO')->toReceive('prepare->fetchAll')->andReturn([['name' => 'bob']]);
+                allow('PDO')->toReceive('prepare', 'fetchAll')->andReturn([['name' => 'bob']]);
                 $user = new User();
                 expect($user->all())->toBe([['name' => 'bob']]);
 
@@ -262,8 +271,8 @@ describe("Allow", function() {
 
             it('allows to stubs a same method twice', function() {
 
-                allow('PDO')->toReceive('prepare->fetchAll')->andReturn([['name' => 'bob']]);
-                allow('PDO')->toReceive('prepare->execute')->andReturn(true);
+                allow('PDO')->toReceive('prepare', 'fetchAll')->andReturn([['name' => 'bob']]);
+                allow('PDO')->toReceive('prepare', 'execute')->andReturn(true);
                 $user = new User();
                 expect($user->all())->toBe([['name' => 'bob']]);
                 expect($user->success())->toBe(true);
@@ -272,7 +281,7 @@ describe("Allow", function() {
 
             it('allows to mix static/dynamic methods', function() {
 
-                allow('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create->all')->andReturn([['name' => 'bob']]);
+                allow('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create', 'all')->andReturn([['name' => 'bob']]);
                 $user = User::create();
                 expect($user->all())->toBe([['name' => 'bob']]);
 
@@ -301,7 +310,7 @@ describe("Allow", function() {
             it("expects stubbed chain to return the stubbed value when required arguments are matching", function() {
 
                 $foo = new Foo();
-                allow($foo)->toReceive('a->b->c')->where([
+                allow($foo)->toReceive('a', 'b', 'c')->where([
                     'a' => [1], 'b' => [2], 'c' => [3]
                 ])->andReturn('something');
 
@@ -314,7 +323,7 @@ describe("Allow", function() {
             it("expects stubbed chain to not return the stubbed value when required arguments doesn't match", function() {
 
                 $foo = new Foo();
-                allow($foo)->toReceive('a->b->c')->where([
+                allow($foo)->toReceive('a', 'b', 'c')->where([
                     'a' => [1], 'b' => [2], 'c' => [3]
                 ])->andReturn('something');
 
@@ -423,7 +432,7 @@ describe("Allow", function() {
 
             it("expects called chain to be called", function() {
 
-                allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->andReturn('something');
+                allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->andReturn('something');
                 $query = Foo::getQuery();
                 $select = $query::newQuery();
                 expect($select::from())->toBe('something');
@@ -436,7 +445,7 @@ describe("Allow", function() {
 
             it("expects stubbed chain to return the stubbed value when required arguments are matching", function() {
 
-                allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->where([
+                allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->where([
                     '::getQuery' => [1],
                     '::newQuery' => [2],
                     '::from'     => [3]
@@ -450,7 +459,7 @@ describe("Allow", function() {
 
             it("expects stubbed chain to not return the stubbed value when required arguments doesn't match", function() {
 
-                allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->where([
+                allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->where([
                     '::getQuery' => [1],
                     '::newQuery' => [2],
                     '::from'     => [3]

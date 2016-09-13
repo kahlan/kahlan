@@ -73,7 +73,9 @@ class ToReceive
     public static function match($actual, $expected = null)
     {
         $class = get_called_class();
-        return new static($actual, $expected);
+        $args = func_get_args();
+        $actual = array_shift($args);
+        return new static($actual, $args);
     }
 
     /**
@@ -92,16 +94,15 @@ class ToReceive
 
         $this->_check($actual);
 
-        $parts = preg_split('~((?:->|::)[^-:]+)~', $expected, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-
-        $names = [];
-        foreach ($parts as $part) {
-            $names[] = isset($part[0]) && $part[0] === '-' ? substr($part, 2) : $part;
+        if (!$expected) {
+            throw new InvalidArgumentException("Method name can't be empty.");
         }
+
+        $names = is_array($expected) ? $expected : [$expected];
 
         $reference = $actual;
 
-        if (count($parts) > 1) {
+        if (count($names) > 1) {
             if (!Stub::registered(Suite::hash($reference))) {
                 throw new InvalidArgumentException("Kahlan can't Spy chained methods on real PHP code, you need to Stub the chain first.");
             }
