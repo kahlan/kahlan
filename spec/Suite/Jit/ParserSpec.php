@@ -3,10 +3,10 @@ namespace Kahlan\Spec\Jit\Suite;
 
 use Kahlan\Jit\Parser;
 
-describe("Parser", function() {
+describe("Parser", function () {
 
-    beforeEach(function() {
-        $this->flattenTree = function($nodes, $self) {
+    beforeEach(function () {
+        $this->flattenTree = function ($nodes, $self) {
             $result = [] ;
             foreach ($nodes as $node) {
                 if (count($node->tree)) {
@@ -19,16 +19,17 @@ describe("Parser", function() {
         };
     });
 
-    describe("->parse()", function() {
+    describe("->parse()", function () {
 
-        it("parses consistently", function() {
+        it("parses consistently", function () {
+
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Sample.php');
             $parsed = Parser::parse($sample);
             expect(Parser::unparse($parsed))->toBe($sample);
 
         });
 
-        it("parses syntaxically broken use statement and doesn't crash", function() {
+        it("parses syntaxically broken use statement and doesn't crash", function () {
 
             $code = "<?php use MyClass?>";
             $parsed = Parser::parse($code);
@@ -36,7 +37,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses functions", function() {
+        it("parses functions", function () {
 
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Function.php');
             $root = Parser::parse($sample);
@@ -60,7 +61,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses PHP directly when the `'php'` option is set to true", function() {
+        it("parses PHP directly when the `'php'` option is set to true", function () {
 
             $code = "namespace MyNamespace;";
             $root = Parser::parse($code, ['php' => true]);
@@ -71,14 +72,14 @@ describe("Parser", function() {
 
         });
 
-        it("correctly populates the `->inPhp` attribute", function() {
+        it("correctly populates the `->inPhp` attribute", function () {
 
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Sample.php');
             $root = Parser::parse($sample);
             $plain = [];
 
             foreach ($this->flattenTree($root->tree, $this) as $node) {
-                if(!$node->inPhp) {
+                if (!$node->inPhp) {
                     $plain[] = (string) $node;
                 }
             }
@@ -93,7 +94,7 @@ describe("Parser", function() {
             ]);
         });
 
-        it("correctly populates the `->isGenerator` attribute", function() {
+        it("correctly populates the `->isGenerator` attribute", function () {
 
             skipIf(version_compare(phpversion(), '5.5', '<'));
 
@@ -113,9 +114,9 @@ describe("Parser", function() {
 
     });
 
-    describe("->debug()", function() {
+    describe("->debug()", function () {
 
-        it("attaches the correct lines", function() {
+        it("attaches the correct lines", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/Sample';
             $content = file_get_contents($filename . '.php');
@@ -128,7 +129,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses files with no namespace", function() {
+        it("parses files with no namespace", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/NoNamespace';
             $content = file_get_contents($filename . '.php');
@@ -141,7 +142,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses heredoc", function() {
+        it("parses heredoc", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/Heredoc';
             $content = file_get_contents($filename . '.php');
@@ -154,7 +155,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses strings", function() {
+        it("parses strings", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/String';
             $content = file_get_contents($filename . '.php');
@@ -167,7 +168,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses char at syntax", function() {
+        it("parses char at syntax", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/CharAtSyntax';
             $content = file_get_contents($filename . '.php');
@@ -180,7 +181,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses closures", function() {
+        it("parses closures", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/Closure';
             $content = file_get_contents($filename . '.php');
@@ -193,7 +194,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses switch cases", function() {
+        it("parses switch cases", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/Switch';
             $content = file_get_contents($filename . '.php');
@@ -206,7 +207,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses uses", function() {
+        it("parses uses", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/Uses';
             $content = file_get_contents($filename . '.php');
@@ -228,7 +229,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses ::class syntax", function() {
+        it("parses ::class syntax", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/StaticClassKeyword';
             $content = file_get_contents($filename . '.php');
@@ -241,7 +242,7 @@ describe("Parser", function() {
 
         });
 
-        it("parses anonymous class", function() {
+        it("parses anonymous class", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/AnonymousClass';
             $content = file_get_contents($filename . '.php');
@@ -254,12 +255,13 @@ describe("Parser", function() {
 
         });
 
-        it("parses extends", function() {
+        it("parses extends", function () {
 
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Extends.php');
             $root = Parser::parse($sample);
 
-            $check = 0;;
+            $check = 0;
+            ;
 
             foreach ($root->tree as $node) {
                 if ($node->type !== 'namespace') {
@@ -296,12 +298,13 @@ describe("Parser", function() {
             expect($check)->toBe(5);
         });
 
-        it("parses implements", function() {
+        it("parses implements", function () {
 
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Implements.php');
             $root = Parser::parse($sample);
 
-            $check = 0;;
+            $check = 0;
+            ;
 
             foreach ($root->tree as $node) {
                 if ($node->type !== 'namespace') {

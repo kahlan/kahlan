@@ -90,34 +90,34 @@ class Parser
                     $this->_states['body'] .= $token[1];
                     $this->_codeNode('open');
                     $this->_states['php'] = true;
-                break;
+                    break;
                 case T_CLOSE_TAG:
                     $this->_codeNode();
                     $this->_states['php'] = false;
                     $this->_states['body'] .= $token[1];
                     $this->_codeNode('close');
-                break;
+                    break;
                 case T_DOC_COMMENT:
                 case T_COMMENT:
                     $this->_commentNode();
-                break;
+                    break;
                 case T_CONSTANT_ENCAPSED_STRING:
                     $this->_stringNode('');
-                break;
+                    break;
                 case T_START_HEREDOC:
                     $name = substr($token[1], 3, -1);
                     $this->_stringNode("\n" . $name . ';');
-                break;
+                    break;
                 case '"':
                     $this->_stringNode('"');
-                break;
+                    break;
                 case '{':
                     $this->_states['body'] .= $token[0];
                     $this->_states['current'] = $this->_codeNode();
-                break;
+                    break;
                 case '}':
                     $this->_closeCurly();
-                break;
+                    break;
                 case '(':
                 case '[':
                     $this->_states['body'] .= $token[0];
@@ -125,7 +125,7 @@ class Parser
                         $lines = explode("\n", $this->_states['body']);
                         $blockStartLines[$token[0]][] = $this->_states['num'] + (count($lines) - 1);
                     }
-                break;
+                    break;
                 case ')':
                 case ']':
                     $this->_states['body'] .= $token[0];
@@ -133,7 +133,7 @@ class Parser
                         $char = $token[0] === ']' ? '[' : '(';
                         $blockStartLine[$token[0]] = array_pop($blockStartLines[$char]);
                     }
-                break;
+                    break;
                 case ';':
                     $this->_states['body'] .= $token[1];
                     $node = $this->_codeNode(null, true);
@@ -149,25 +149,25 @@ class Parser
                             }
                         }
                     }
-                break;
+                    break;
                 case T_DECLARE:
                     $this->_declareNode();
                 break;
                 case T_NAMESPACE:
                     $this->_namespaceNode();
-                break;
+                    break;
                 case T_USE:
                     $this->_useNode();
-                break;
+                    break;
                 case T_TRAIT:
                     $this->_traitNode();
-                break;
+                    break;
                 case T_INTERFACE:
                     $this->_interfaceNode();
-                break;
+                    break;
                 case T_CLASS:
                     $this->_classNode();
-                break;
+                    break;
                 case T_FINAL:
                 case T_ABSTRACT:
                 case T_PRIVATE:
@@ -176,11 +176,11 @@ class Parser
                 case T_STATIC:
                     $this->_states['visibility'][$token[1]] = true;
                     $this->_states['body'] .= $token[1];
-                break;
+                    break;
                 case T_FUNCTION:
                     $this->_functionNode();
                     $buffered = '';
-                break;
+                    break;
                 case $T_YIELD: // use T_YIELD directly when PHP 5.4 support will be removed.
                     $parent = $this->_states['current'];
                     while ($parent && !$parent instanceof FunctionDef) {
@@ -188,14 +188,14 @@ class Parser
                     }
                     $parent->isGenerator = true;
                     $this->_states['body'] .= $token[1];
-                break;
+                    break;
                 case T_VARIABLE:
                     $this->_states['visibility'] = [];
                     $this->_states['body'] .= $token[1];
                     break;
                 default:
                     $this->_states['body'] .= $token[1];
-                break;
+                    break;
             }
             $this->_stream->next();
         }
@@ -254,46 +254,26 @@ class Parser
                     $as ? $this->_states['uses'][$alias] = $prefix . $use : $this->_states['uses'][$last] = $prefix . $use;
                     $last = $alias = $use = '';
                     $as = false;
-                break;
+                    break;
                 case T_STRING:
                     $last = $token[1];
+                    /* Always prefix */
                 case T_NS_SEPARATOR:
                     $as ? $alias .= $token[1] : $use .= $token[1];
-                break;
+                    break;
                 case T_AS:
                     $as = true;
-                break;
+                    break;
                 case '{':
                     $prefix = $use;
                     $use = '';
                     $stop = '}';
-                break;
+                    break;
             }
         }
         $this->_states['body'] .= $token[0];
         $as ? $this->_states['uses'][$alias] = $prefix . $use : $this->_states['uses'][$last] = $prefix . $use;
         $this->_codeNode('use');
-    }
-
-    /**
-     * Build a namespace node.
-     */
-    protected function _declareNode()
-    {
-        $this->_codeNode();
-        $body = $this->_stream->current() . $this->_stream->next([';', '{']);
-        $isBlock = substr($body, -1) === '{';
-        if ($isBlock) {
-            $body = substr($body, 0, -1);
-        }
-        $node = new NodeDef($body, 'declare');
-        $this->_contextualize($node);
-
-        if ($isBlock) {
-            $this->_states['body'] .= '{';
-            $this->_states['current'] = $this->_codeNode();
-        }
-        return $node;
     }
 
     /**
@@ -499,27 +479,28 @@ class Parser
                         $value .= $token[1];
                     }
                     $cpt++;
-                break;
+                    break;
                 case '=':
                     $name = $value;
                     $value = '';
-                break;
+                    break;
                 case ')':
                     $cpt--;
                     if ($cpt) {
                         $value .= $token[1];
                         break;
                     }
+                    /* Same behavior as comma */
                 case ',':
                     $value = trim($value);
                     if ($value !== '') {
                         $name ? $args[trim($name)] = $value : $args[] = $value;
                     }
                     $name = $value = '';
-                break;
+                    break;
                 default:
                     $value .= $token[1];
-                break;
+                    break;
             }
             if ($token[1] === ')' && $cpt === 0) {
                 break;
@@ -619,7 +600,7 @@ class Parser
         $lines = explode("\n", $content);
         $nbLines = count($lines);
         if ($this->_states['lines']) {
-            for($i = 0; $i < $nbLines; $i++) {
+            for ($i = 0; $i < $nbLines; $i++) {
                 $this->_root->lines['content'][$i] = [
                     'body' => $lines[$i],
                     'nodes' => [],
@@ -635,7 +616,8 @@ class Parser
      * @param object  $node The node to match.
      * @param string  $body The  to match.
      */
-    protected function _assignLines($node) {
+    protected function _assignLines($node)
+    {
         if (!$this->_states['lines']) {
             return;
         }
@@ -659,7 +641,8 @@ class Parser
      * @param object  $node The node to match.
      * @param string  $body The  to match.
      */
-    protected function _assignLine($index, $node, $line) {
+    protected function _assignLine($index, $node, $line)
+    {
         if ($node->lines['start'] === null) {
             $node->lines['start'] = $index;
         }
@@ -672,7 +655,8 @@ class Parser
     /**
      * Assign coverable data to lines.
      */
-    protected function _assignCoverable() {
+    protected function _assignCoverable()
+    {
         if (!$this->_states['lines']) {
             return;
         }
@@ -688,7 +672,8 @@ class Parser
      * @param  integer $index The line to check.
      * @return boolean
      */
-    protected function _isCoverable($index) {
+    protected function _isCoverable($index)
+    {
         $coverable = false;
         foreach ($this->_root->lines['content'][$index]['nodes'] as $node) {
             if ($node->coverable && ($node->lines['stop'] === $index)) {
@@ -737,7 +722,6 @@ class Parser
             'file'      => 'file',
             'open'      => 'open',
             'close'     => 'close',
-            'declare'   => 'declare',
             'namespace' => 'namespace',
             'use'       => 'use',
             'class'     => 'class',
