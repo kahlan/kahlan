@@ -145,7 +145,7 @@ class ToReceive
             return;
         }
         if (!$isString) {
-            throw new InvalidArgumentException("Can't Spy built-in PHP instances, create a test double using `Stub::create()`.");
+            throw new InvalidArgumentException("Can't Spy built-in PHP instances, create a test double using `Double::instance()`.");
         }
     }
 

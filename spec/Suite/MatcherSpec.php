@@ -7,7 +7,7 @@ use DateTime;
 use SplMaxHeap;
 use Kahlan\Specification;
 use Kahlan\Matcher;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 describe("Matcher", function() {
 
@@ -28,7 +28,7 @@ describe("Matcher", function() {
 
         it("registers a matcher", function() {
 
-            Matcher::register('toBeOrNotToBe', Stub::classname(['extends' => 'Kahlan\Matcher\ToBe']));
+            Matcher::register('toBeOrNotToBe', Double::classname(['extends' => 'Kahlan\Matcher\ToBe']));
             expect(Matcher::exists('toBeOrNotToBe'))->toBe(true);
             expect(Matcher::exists('toBeOrNot'))->toBe(false);
 
@@ -38,7 +38,7 @@ describe("Matcher", function() {
 
         it("registers a matcher for a specific class", function() {
 
-            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
+            Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
             expect(Matcher::exists('toEqualCustom', 'stdClass'))->toBe(true);
             expect(Matcher::exists('toEqualCustom'))->toBe(false);
 
@@ -49,7 +49,7 @@ describe("Matcher", function() {
 
         it("makes registered matchers for a specific class available for sub classes", function() {
 
-            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
+            Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
             expect(Matcher::exists('toEqualCustom', 'SplHeap'))->toBe(true);
             expect(Matcher::exists('toEqualCustom'))->toBe(false);
 
@@ -130,7 +130,7 @@ describe("Matcher", function() {
 
         it("unregisters a matcher", function() {
 
-            Matcher::register('toBeOrNotToBe', Stub::classname(['extends' => 'Kahlan\Matcher\ToBe']));
+            Matcher::register('toBeOrNotToBe', Double::classname(['extends' => 'Kahlan\Matcher\ToBe']));
             expect(Matcher::exists('toBeOrNotToBe'))->toBe(true);
 
             Matcher::unregister('toBeOrNotToBe');

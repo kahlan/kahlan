@@ -1,7 +1,7 @@
 <?php
-namespace Kahlan\Spec\Fixture\Plugin\Stub;
+namespace Kahlan\Spec\Fixture\Plugin\Double;
 
-class ConstrDoz 
+class ConstrDoz
 {
     public $a;
 

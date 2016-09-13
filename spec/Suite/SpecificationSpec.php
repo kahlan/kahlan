@@ -6,7 +6,7 @@ use Exception;
 use Kahlan\Suite;
 use Kahlan\Specification;
 use Kahlan\Matcher;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 describe("Specification", function() {
 
@@ -136,7 +136,7 @@ describe("Specification", function() {
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
                     'closure' => function() {
-                        $stub = Stub::create();
+                        $stub = Double::instance();
                         $this->expect($stub)->toReceive('methodName');
                         $stub->methodName();
                     }
@@ -191,7 +191,7 @@ describe("Specification", function() {
                 $this->spec = new Specification([
                     'parent'  => $root,
                     'closure' => function() {
-                        $this->expect(Stub::create())->not->toReceive('helloWorld');
+                        $this->expect(Double::instance())->not->toReceive('helloWorld');
                     }
                 ]);
 
@@ -212,7 +212,7 @@ describe("Specification", function() {
 
                 $this->spec = new Specification([
                     'closure' => function() {
-                        $stub = Stub::create();
+                        $stub = Double::instance();
                         $this->expect($stub)->not->toReceive('methodName');
                     }
                 ]);
@@ -275,7 +275,7 @@ describe("Specification", function() {
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
                     'closure' => function() {
-                        $stub = Stub::create();
+                        $stub = Double::instance();
                         $this->expect($stub)->toReceive('methodName');
                     }
                 ]);
@@ -325,7 +325,7 @@ describe("Specification", function() {
 
                 $this->spec = new Specification([
                     'closure' => function() {
-                        $stub = Stub::create();
+                        $stub = Double::instance();
                         $this->expect($stub)->not->toReceive('methodName');
                         $stub->methodName();
                     }

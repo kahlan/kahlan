@@ -1,5 +1,5 @@
 <?php
-namespace Kahlan\Spec\Mock\Plugin\Stub;
+namespace Kahlan\Spec\Mock\Plugin\Double;
 
 trait HelloTrait
 {

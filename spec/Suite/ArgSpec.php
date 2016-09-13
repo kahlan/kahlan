@@ -7,7 +7,7 @@ use DateTime;
 use SplMaxHeap;
 use Kahlan\Arg;
 use Kahlan\Matcher;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 describe("Arg", function() {
 
@@ -44,7 +44,7 @@ describe("Arg", function() {
 
         it("registers a matcher for a specific class", function() {
 
-            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
+            Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
 
             $arg = Arg::toEqualCustom(new stdClass());
             expect($arg->match(new stdClass()))->toBe(true);
@@ -56,7 +56,7 @@ describe("Arg", function() {
 
         it("makes registered matchers for a specific class available for sub classes", function() {
 
-            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
+            Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
 
             $arg = Arg::toEqualCustom(new SplMaxHeap());
             expect($arg->match(new SplMaxHeap()))->toBe(true);
@@ -74,7 +74,7 @@ describe("Arg", function() {
 
         it("throws an exception using an matcher name which doesn't match actual", function() {
 
-            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
+            Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
 
             $closure = function() {
                 $arg = Arg::toEqualCustom(new SplMaxHeap());

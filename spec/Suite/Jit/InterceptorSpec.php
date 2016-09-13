@@ -6,8 +6,6 @@ use Kahlan\Jit\JitException;
 use Kahlan\Jit\Patchers;
 use Kahlan\Jit\Interceptor;
 
-use Kahlan\Plugin\Stub;
-
 use Kahlan\Spec\Proxy\Autoloader;
 use Kahlan\Spec\Mock\Patcher;
 
@@ -256,10 +254,10 @@ describe("Interceptor", function() {
 
             it("delegates find to patchers", function() {
 
-                Stub::on($this->patcher1)->method('findFile', function($interceptor, $class, $file) {
+                allow($this->patcher1)->toReceive('findFile')->andRun(function($interceptor, $class, $file) {
                     return $file . '1';
                 });
-                Stub::on($this->patcher2)->method('findFile', function($interceptor, $class, $file) {
+                allow($this->patcher2)->toReceive('findFile')->andRun(function($interceptor, $class, $file) {
                     return $file . '2';
                 });
 
