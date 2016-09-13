@@ -2,6 +2,21 @@
 
 ## Last changes
 
+## 3.0.0 (2016-09-01)
+
+  * **Add:** Add `allow()` DSL.
+  * **Add:** Add `toBeCalled()` matcher.
+  * **Add:** `toReceive` now support a chain of messages as definition if correctly stubbed.
+  * **Add:** Allow to monkey patch a class using a specific instance for all `new` on that class.
+  * **Change:** Refactor the reporting to provide more meaningful messages on failure.
+  * **Bugfix:** Fixes an issue with `toReceive()/toBeCalled` and stubs where past called methods were taken into account.
+  * **BC break:** Cached files are no more compatible, cached files needs to be purged.
+  * **BC break:** Rename `'params'` option to `'args'` in `Double::instance()`.
+  * **BC break:** `Stub::on()` is now deprecated use `allow()` instead.
+  * **BC break:** Rename `Stub::create()` to `Double::instance()`.
+  * **BC break:** Rename `Stub::classname()` to `Double::classname()`.
+  * **BC break:** Remove `toReceiveNext` matchers in flavor of `->ordered` attribute to be more close to rspec way.
+
 ## 2.5.8 (2016-09-29)
 
   * **Bugfix:** Ignore `declare()` statement from coverable statements.
