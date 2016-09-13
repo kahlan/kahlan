@@ -83,7 +83,16 @@ describe("toReceive", function() {
 
             });
 
-            it("throw an exception when trying to play with core instance", function() {
+            it("throws an exception when trying to spy an invalid empty method", function() {
+
+                expect(function() {
+                    $foo = new Foo();
+                    expect($foo)->toReceive();
+                })->toThrow(new InvalidArgumentException("Method name can't be empty."));
+
+            });
+
+            it("throws an exception when trying to play with core instance", function() {
 
                 expect(function() {
                     $date = new DateTime();
@@ -260,8 +269,8 @@ describe("toReceive", function() {
                 it("expects called chain to be called", function() {
 
                     $foo = new Foo();
-                    allow($foo)->toReceive('a->b->c')->andReturn('something');
-                    expect($foo)->toReceive('a->b->c')->once();
+                    allow($foo)->toReceive('a', 'b', 'c')->andReturn('something');
+                    expect($foo)->toReceive('a', 'b', 'c')->once();
                     $query = $foo->a();
                     $select = $query->b();
                     expect($select->c())->toBe('something');
@@ -271,8 +280,8 @@ describe("toReceive", function() {
                 it("expects not called chain to be uncalled", function() {
 
                     $foo = new Foo();
-                    allow($foo)->toReceive('a->b->c')->andReturn('something');
-                    expect($foo)->not->toReceive('a->c->b')->once();
+                    allow($foo)->toReceive('a', 'b', 'c')->andReturn('something');
+                    expect($foo)->not->toReceive('a', 'c', 'b')->once();
                     $query = $foo->a();
                     $select = $query->b();
                     $select->c();
@@ -281,7 +290,7 @@ describe("toReceive", function() {
 
                 it('auto monkey patch core classes using a stub when possible', function() {
 
-                    allow('PDO')->toReceive('prepare->fetchAll')->andReturn([['name' => 'bob']]);
+                    allow('PDO')->toReceive('prepare', 'fetchAll')->andReturn([['name' => 'bob']]);
                     expect('PDO')->toReceive('prepare')->once();
                     $user = new User();
                     expect($user->all())->toBe([['name' => 'bob']]);
@@ -290,8 +299,8 @@ describe("toReceive", function() {
 
                 it('allows to mix static/dynamic methods', function() {
 
-                    allow('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create->all')->andReturn([['name' => 'bob']]);
-                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create->all')->once();
+                    allow('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create', 'all')->andReturn([['name' => 'bob']]);
+                    expect('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create', 'all')->once();
                     $user = User::create();
                     expect($user->all())->toBe([['name' => 'bob']]);
 
@@ -312,8 +321,8 @@ describe("toReceive", function() {
                 it("expects stubbed chain called with matching arguments are called", function() {
 
                     $foo = new Foo();
-                    allow($foo)->toReceive('a->b->c');
-                    expect($foo)->toReceive('a->b->c')->where([
+                    allow($foo)->toReceive('a', 'b', 'c');
+                    expect($foo)->toReceive('a', 'b', 'c')->where([
                         'a' => [1],
                         'b' => [2],
                         'c' => [3]
@@ -328,8 +337,8 @@ describe("toReceive", function() {
                 it("expects stubbed chain not called with matching arguments are uncalled", function() {
 
                     $foo = new Foo();
-                    allow($foo)->toReceive('a->b->c');
-                    expect($foo)->not->toReceive('a->b->c')->where([
+                    allow($foo)->toReceive('a', 'b', 'c');
+                    expect($foo)->not->toReceive('a', 'b', 'c')->where([
                         'a' => [1],
                         'b' => [2],
                         'c' => [3]
@@ -454,8 +463,8 @@ describe("toReceive", function() {
 
                 it("expects called chain to be called", function() {
 
-                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->andReturn('something');
-                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from');
+                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->andReturn('something');
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from');
                     $query = Foo::getQuery();
                     $select = $query::newQuery();
                     expect($select::from())->toBe('something');
@@ -464,8 +473,8 @@ describe("toReceive", function() {
 
                 it("expects not called chain to be uncalled", function() {
 
-                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::from::newQuery')->andReturn('something');
-                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery::from::newQuery');
+                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::from', '::newQuery')->andReturn('something');
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery', '::from', '::newQuery');
                     $query = Foo::getQuery();
                     $select = $query::newQuery();
                     $select::from();
@@ -479,8 +488,8 @@ describe("toReceive", function() {
                 it("expects stubbed chain called with matching arguments are called", function() {
 
                     $foo = new Foo();
-                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from');
-                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->where([
+                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from');
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->where([
                         '::getQuery' => [1],
                         '::newQuery' => [2],
                         '::from'     => [3]
@@ -495,8 +504,8 @@ describe("toReceive", function() {
                 it("expects stubbed chain not called with matching arguments are uncalled", function() {
 
                     $foo = new Foo();
-                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from');
-                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery::newQuery::from')->where([
+                    allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from');
+                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery', '::newQuery', '::from')->where([
                         '::getQuery' => [1],
                         '::newQuery' => [2],
                         '::from'     => [3]
@@ -714,12 +723,12 @@ describe("toReceive", function() {
 
             expect(function() {
                 $foo = new Foo();
-                $matcher = new ToReceive($foo, 'a->c->b');
+                $matcher = new ToReceive($foo, ['a', 'b', 'c']);
                 $matcher->resolve([
                     'instance' => $matcher,
                     'data'     => [
                         'actual'   => $foo,
-                        'expected' => 'a->c->b',
+                        'expected' => ['a', 'b', 'c'],
                         'logs'     => []
                     ]
                 ]);
