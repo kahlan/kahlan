@@ -44,6 +44,13 @@ class Stub
     protected static $_index = 0;
 
     /**
+     * Method chain.
+     *
+     * @var Method[]
+     */
+    protected $_chain = [];
+
+    /**
      * Stubbed methods.
      *
      * @var Method[]
@@ -171,7 +178,7 @@ class Stub
             $names[] = isset($part[0]) && $part[0] === '-' ? substr($part, 2) : $part;
         }
 
-        $methods = [];
+        $this->_chain = [];
         $total = count($names);
 
         foreach ($names as $index => $name) {
@@ -196,10 +203,11 @@ class Stub
             }
 
             $method = new Method([
+                'parent'    => $this,
                 'reference' => $reference,
                 'name'      => $name
             ]);
-            $methods[] = $method;
+            $this->_chain[$name] = $method;
             array_unshift($instance->_methods[$name], $method);
 
             if ($index < $total - 1) {
@@ -208,11 +216,31 @@ class Stub
             }
         }
 
-        $method = end($methods);
+        $method = end($this->_chain);
         if ($closure) {
             $method->andRun($closure);
         }
         return $method;
+    }
+
+    /**
+     * Set arguments requirement indexed by method name.
+     *
+     * @param  mixed ... <0,n> Argument(s).
+     * @return self
+     */
+    public function where($requirements = [])
+    {
+        foreach ($requirements as $name => $args) {
+            if (!isset($this->_chain[$name])) {
+                throw new InvalidArgumentException("Unexisting `{$name}` as method as part of the chain definition.");
+            }
+            if (!is_array($args)) {
+                throw new InvalidArgumentException("Argument requirements must be an arrays for `{$name}` method.");
+            }
+            call_user_func_array([$this->_chain[$name], 'with'], $args);
+        }
+        return $this;
     }
 
     /**

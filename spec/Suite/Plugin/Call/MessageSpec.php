@@ -5,6 +5,19 @@ use Kahlan\Plugin\Call\Message;
 
 describe("Message", function() {
 
+    describe("->parent()", function() {
+
+        it("Gets the message parent", function() {
+
+            $message = new Message([
+                'parent' => 'parent',
+            ]);
+            expect($message->parent())->toBe('parent');
+
+        });
+
+    });
+
     describe("->reference()", function() {
 
         it("Gets the message reference", function() {

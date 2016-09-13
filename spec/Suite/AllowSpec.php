@@ -288,6 +288,63 @@ describe("Allow", function() {
 
         });
 
+        context("with chain of methods and arguments requirements", function() {
+
+            it("stubs on matched arguments", function() {
+
+                $foo = new Foo();
+                allow($foo)->toReceive('message')->where(['message' => ['Hello World!']])->andReturn('Good Bye!');
+                expect($foo->message('Hello World!'))->toBe('Good Bye!');
+
+            });
+
+            it("expects stubbed chain to return the stubbed value when required arguments are matching", function() {
+
+                $foo = new Foo();
+                allow($foo)->toReceive('a->b->c')->where([
+                    'a' => [1], 'b' => [2], 'c' => [3]
+                ])->andReturn('something');
+
+                $query = $foo->a(1);
+                $select = $query->b(2);
+                expect($select->c(3))->toBe('something');
+
+            });
+
+            it("expects stubbed chain to not return the stubbed value when required arguments doesn't match", function() {
+
+                $foo = new Foo();
+                allow($foo)->toReceive('a->b->c')->where([
+                    'a' => [1], 'b' => [2], 'c' => [3]
+                ])->andReturn('something');
+
+                $query = $foo->a(1);
+                $select = $query->b(2);
+                expect($select->c(5))->not->toBe('something');
+
+            });
+
+
+            it("throws an exception when required arguments are applied on a method not present in the chain", function() {
+
+                expect(function() {
+                    $foo = new Foo();
+                    allow($foo)->toReceive('a')->where(['b' => [2]])->andReturn('something');
+                })->toThrow(new InvalidArgumentException("Unexisting `b` as method as part of the chain definition."));
+
+            });
+
+            it("throws an exception when required arguments are not an array", function() {
+
+                expect(function() {
+                    $foo = new Foo();
+                    allow($foo)->toReceive('a')->where(['a' => 2])->andReturn('something');
+                })->toThrow(new InvalidArgumentException("Argument requirements must be an arrays for `a` method."));
+
+            });
+
+        });
+
     });
 
     context("with an class", function() {
@@ -370,6 +427,38 @@ describe("Allow", function() {
                 $query = Foo::getQuery();
                 $select = $query::newQuery();
                 expect($select::from())->toBe('something');
+
+            });
+
+        });
+
+        context("with chain of methods and arguments requirements", function() {
+
+            it("expects stubbed chain to return the stubbed value when required arguments are matching", function() {
+
+                allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->where([
+                    '::getQuery' => [1],
+                    '::newQuery' => [2],
+                    '::from'     => [3]
+                ])->andReturn('something');
+
+                $query = Foo::getQuery(1);
+                $select = $query::newQuery(2);
+                expect($select::from(3))->toBe('something');
+
+            });
+
+            it("expects stubbed chain to not return the stubbed value when required arguments doesn't match", function() {
+
+                allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery::newQuery::from')->where([
+                    '::getQuery' => [1],
+                    '::newQuery' => [2],
+                    '::from'     => [3]
+                ])->andReturn('something');
+
+                $query = Foo::getQuery(1);
+                $select = $query::newQuery(2);
+                expect($select::from(0))->not->toBe('something');
 
             });
 

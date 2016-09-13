@@ -13,6 +13,13 @@ class Message
     ];
 
     /**
+     * Parent instance.
+     *
+     * @var mixed
+     */
+    protected $_parent = null;
+
+    /**
      * Message reference.
      *
      * @var mixed
@@ -52,6 +59,7 @@ class Message
     public function __construct($config = [])
     {
         $defaults = [
+            'parent' => null,
             'reference' => null,
             'name' => null,
             'args' => null,
@@ -66,6 +74,7 @@ class Message
             $name = substr($name, 2);
         }
 
+        $this->_parent = $config['parent'];
         $this->_reference = $config['reference'];
         $this->_name = $name;
         $this->_args = $config['args'];
@@ -85,7 +94,19 @@ class Message
     }
 
     /**
-     * Checks if this message is compatible with passed call array.
+     * Set arguments requirement indexed by method name.
+     *
+     * @param  mixed ... <0,n> Argument(s).
+     * @return self
+     */
+    public function where($requirements = [])
+    {
+        $this->_parent->where($requirements);
+        return $this;
+    }
+
+    /**
+     * Check if this message is compatible with passed call array.
      *
      * @param  array   $call     A call array.
      * @param  boolean $withArgs Boolean indicating if matching should take arguments into account.
@@ -141,7 +162,17 @@ class Message
     }
 
     /**
-     * Gets message reference.
+     * Get the parent.
+     *
+     * @return mixed
+     */
+    public function parent()
+    {
+        return $this->_parent;
+    }
+
+    /**
+     * Get the message reference.
      *
      * @return mixed
      */
