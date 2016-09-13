@@ -3,7 +3,7 @@ namespace Kahlan\Spec\Suite;
 
 use Exception;
 use Kahlan\Reporters;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 describe("Reporters", function() {
 
@@ -15,7 +15,7 @@ describe("Reporters", function() {
 
         it("stores a reporter", function() {
 
-            $stub = Stub::create();
+            $stub = Double::instance();
             $this->reporters->add('my_reporter', $stub);
 
             $actual = $this->reporters->get('my_reporter');
@@ -50,7 +50,7 @@ describe("Reporters", function() {
 
         it("returns `true` for an existing reporter", function() {
 
-            $stub = Stub::create();
+            $stub = Double::instance();
             $this->reporters->add('my_reporter', $stub);
 
             $actual = $this->reporters->exists('my_reporter');
@@ -71,7 +71,7 @@ describe("Reporters", function() {
 
         it("removes a reporter", function() {
 
-            $stub = Stub::create();
+            $stub = Double::instance();
             $this->reporters->add('my_reporter', $stub);
 
             $actual = $this->reporters->exists('my_reporter');
@@ -90,7 +90,7 @@ describe("Reporters", function() {
 
         it("clears all reporters", function() {
 
-            $stub = Stub::create();
+            $stub = Double::instance();
             $this->reporters->add('my_reporter', $stub);
 
             $actual = $this->reporters->exists('my_reporter');
@@ -109,10 +109,10 @@ describe("Reporters", function() {
 
         it("runs a method on all reporters", function() {
 
-            $stub1 = Stub::create();
+            $stub1 = Double::instance();
             $this->reporters->add('reporter1', $stub1);
 
-            $stub2 = Stub::create();
+            $stub2 = Double::instance();
             $this->reporters->add('reporter2', $stub2);
 
             expect($stub1)->toReceive('action')->with(['value']);

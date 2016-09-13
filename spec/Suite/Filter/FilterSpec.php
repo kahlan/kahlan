@@ -2,7 +2,7 @@
 namespace Kahlan\Spec\Suite\Filter;
 
 use Exception;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 use Kahlan\Filter\Filter;
 
 describe("Filter", function() {
@@ -33,8 +33,8 @@ describe("Filter", function() {
 	context("with an instance context", function() {
 
 		beforeEach(function() {
-			$this->mock = Stub::create(['uses' => ['Kahlan\Filter\Behavior\Filterable']]);
-			Stub::on($this->mock)->method('filterable', function() {
+			$this->mock = Double::instance(['uses' => ['Kahlan\Filter\Behavior\Filterable']]);
+			allow($this->mock)->toReceive('filterable')->andRun(function() {
 				return Filter::on($this, 'filterable', func_get_args(), function($chain, $message) {
 					return "Hello {$message}";
 				});
@@ -59,7 +59,7 @@ describe("Filter", function() {
 
 			it("applies a custom filter", function() {
 
-				Stub::on($this->mock)->method('filterable', function() {
+				allow($this->mock)->toReceive('filterable')->andRun(function() {
 					$closure = function($chain, $message) {
 						return "Hello {$message}";
 					};
@@ -131,8 +131,8 @@ describe("Filter", function() {
 	context("with a class context", function() {
 
 		beforeEach(function() {
-			$this->class = Stub::classname();
-			Stub::on($this->class)->method('::filterable', function() {
+			$this->class = Double::classname();
+			allow($this->class)->toReceive('::filterable')->andRun(function() {
 				return Filter::on(get_called_class(), 'filterable', func_get_args(), function($chain, $message) {
 					return "Hello {$message}";
 				});
@@ -155,8 +155,8 @@ describe("Filter", function() {
 
 			it("applies parent classes's filters", function() {
 				$class = $this->class;
-				$subclass = Stub::classname(['extends' => $class]);
-				Stub::on($subclass)->method('::filterable', function() {
+				$subclass = Double::classname(['extends' => $class]);
+				allow($subclass)->toReceive('::filterable')->andRun(function() {
 					return Filter::on(get_called_class(), 'filterable', func_get_args(), function($chain, $message) {
 						return "Hello {$message}";
 					});
@@ -168,8 +168,8 @@ describe("Filter", function() {
 
 			it("applies parent classes's filters using cached filters", function() {
 				$class = $this->class;
-				$subclass = Stub::classname(['extends' => $class]);
-				Stub::on($subclass)->method('::filterable', function() {
+				$subclass = Double::classname(['extends' => $class]);
+				allow($subclass)->toReceive('::filterable')->andRun(function() {
 					return Filter::on(get_called_class(), 'filterable', func_get_args(), function($chain, $message) {
 						return "Hello {$message}";
 					});
@@ -182,8 +182,8 @@ describe("Filter", function() {
 
 			it("invalidates parent cached filters", function() {
 				$class = $this->class;
-				$subclass = Stub::classname(['extends' => $class]);
-				Stub::on($subclass)->method('::filterable', function() {
+				$subclass = Double::classname(['extends' => $class]);
+				allow($subclass)->toReceive('::filterable')->andRun(function() {
 					return Filter::on(get_called_class(), 'filterable', func_get_args(), function($chain, $message) {
 						return "Hello {$message}";
 					});

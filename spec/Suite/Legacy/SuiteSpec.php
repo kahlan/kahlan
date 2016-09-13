@@ -10,7 +10,7 @@ use Kahlan\PhpErrorException;
 use Kahlan\Suite;
 use Kahlan\Matcher;
 use Kahlan\Arg;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 describe("Suite", function() {
 
@@ -203,8 +203,7 @@ describe("Suite", function() {
                 });
 
             });
-
-            $reporters = Stub::create();
+            $reporters = Double::instance();
 
             expect($reporters)->toReceive('dispatch')->with('start', ['total' => 2])->ordered;
             expect($reporters)->toReceive('dispatch')->with('suiteStart', $describe)->ordered;
@@ -244,7 +243,7 @@ describe("Suite", function() {
 
             });
 
-            $reporters = Stub::create();
+            $reporters = Double::instance();
 
             expect($reporters)->toReceive('dispatch')->with('start', ['total' => 2])->ordered;
             expect($reporters)->toReceive('dispatch')->with('suiteStart', $describe)->ordered;

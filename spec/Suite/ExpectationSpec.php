@@ -8,7 +8,7 @@ use DateTime;
 use Kahlan\Specification;
 use Kahlan\Matcher;
 use Kahlan\Expectation;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 function expectation($actual, $timeout = -1) {
     return new Expectation(compact('actual', 'timeout'));
@@ -43,7 +43,7 @@ describe("Expectation", function() {
 
         it("throws an exception when a specific class matcher doesn't match", function() {
 
-            Matcher::register('toEqualCustom', Stub::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
+            Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
 
             $closure = function() {
                 $result = expectation([])->toEqualCustom(new stdClass());
@@ -158,7 +158,7 @@ describe("Expectation", function() {
 
         it("clears an expectation", function() {
 
-            $actual = Stub::create();
+            $actual = Double::instance();
             $expectation = expectation($actual, 10);
             $matcher = $expectation->not->toReceive('helloWorld');
 

@@ -1,5 +1,5 @@
 <?php
-namespace Kahlan\Spec\Fixture\Plugin\Stub;
+namespace Kahlan\Spec\Fixture\Plugin\Double;
 
 interface ReturnTypesInterface
 {

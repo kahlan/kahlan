@@ -3,7 +3,7 @@ namespace Kahlan\Spec\Suite\Analysis;
 
 use Exception;
 use Kahlan\Analysis\Debugger;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 describe("Debugger", function() {
 
@@ -63,11 +63,11 @@ describe("Debugger", function() {
         describe("::_line()", function() {
 
             beforeEach(function() {
-                $this->debugger = Stub::classname([
+                $this->debugger = Double::classname([
                     'extends' => 'Kahlan\Analysis\Debugger',
                     'methods' => ['::line']
                 ]);
-                Stub::on($this->debugger)->method('::line', function($trace) {
+                allow($this->debugger)->toReceive('::line')->andRun(function($trace) {
                     return static::_line($trace);
                 });
             });
@@ -138,7 +138,7 @@ describe("Debugger", function() {
 
         it("gets/sets a loader", function() {
 
-            $loader = Stub::create();
+            $loader = Double::instance();
             expect(Debugger::loader($loader))->toBe($loader);
 
         });

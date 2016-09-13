@@ -1,15 +1,15 @@
 <?php
 namespace Kahlan\Spec\Suite\Filter\Behavior;
 
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 use Kahlan\Filter\MethodFilters;
 
 describe('Filterable', function() {
 
 	beforeEach(function() {
-		$this->mock = Stub::create(['uses' => ['Kahlan\Filter\Behavior\Filterable']]);
+		$this->mock = Double::instance(['uses' => ['Kahlan\Filter\Behavior\Filterable']]);
 
-		Stub::on($this->mock)->method('filterable', function() {
+		allow($this->mock)->toReceive('filterable')->andRun(function() {
 			return Filter::on($this, 'filterable', func_get_args(), function($chain, $message) {
 				return "Hello {$message}";
 			});
