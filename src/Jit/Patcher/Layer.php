@@ -1,7 +1,7 @@
 <?php
 namespace Kahlan\Jit\Patcher;
 
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 class Layer {
 
@@ -120,7 +120,7 @@ class Layer {
                 $pattern = preg_quote($parent);
                 $node->body = preg_replace("~(extends\s+){$pattern}~", "\\1{$layerClass}", $node->body);
 
-                $code = Stub::generate([
+                $code = Double::generate([
                     'class'    => $layerClass,
                     'extends'  => $extends,
                     'openTag'  => false,

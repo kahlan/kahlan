@@ -3,6 +3,7 @@ namespace Kahlan;
 
 use Exception;
 use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 use Kahlan\Plugin\Monkey;
 
 class Allow
@@ -106,7 +107,7 @@ class Allow
             throw new Exception("Error `toBeOK()` need to be applied on a fully-namespaced class or function name.");
         }
         if ($this->_isClass) {
-            Monkey::patch($this->_actual, Stub::classname());
+            Monkey::patch($this->_actual, Double::classname());
         } else {
             Monkey::patch($this->_actual, function(){});
         }

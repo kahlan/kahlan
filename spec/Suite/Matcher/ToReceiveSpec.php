@@ -7,7 +7,7 @@ use DateTime;
 
 use Kahlan\Jit\Interceptor;
 use Kahlan\Arg;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 use Kahlan\Plugin\Monkey;
 use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
 use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
@@ -97,7 +97,7 @@ describe("toReceive", function() {
                 expect(function() {
                     $date = new DateTime();
                     expect($date)->toReceive('getTimestamp');
-                })->toThrow(new InvalidArgumentException("Can't Spy built-in PHP instances, create a test double using `Stub::create()`."));
+                })->toThrow(new InvalidArgumentException("Can't Spy built-in PHP instances, create a test double using `Double::instance()`."));
 
             });
 
@@ -623,7 +623,7 @@ describe("toReceive", function() {
 
         it("returns the description message for not received call", function() {
 
-            $stub = Stub::create();
+            $stub = Double::instance();
             $matcher = new ToReceive($stub, 'method');
 
             $matcher->resolve([
@@ -647,7 +647,7 @@ describe("toReceive", function() {
 
         it("returns the description message for not received call the specified number of times", function() {
 
-            $stub = Stub::create();
+            $stub = Double::instance();
             $matcher = new ToReceive($stub, 'method');
             $matcher->times(2);
 
@@ -673,7 +673,7 @@ describe("toReceive", function() {
 
         it("returns the description message for wrong passed arguments", function() {
 
-            $stub = Stub::create();
+            $stub = Double::instance();
             $matcher = new ToReceive($stub, 'method');
             $matcher->with('Hello World!');
 

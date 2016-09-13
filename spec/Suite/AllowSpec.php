@@ -11,7 +11,7 @@ use Kahlan\Jit\Patchers;
 use Kahlan\Arg;
 use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
 use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 use Kahlan\Spec\Fixture\Plugin\Monkey\Mon;
 use Kahlan\Spec\Fixture\Plugin\Monkey\User;
@@ -43,7 +43,7 @@ describe("Allow", function() {
 
     it("monkey patches a class", function() {
 
-        $bar = Stub::create();
+        $bar = Double::instance();
         allow($bar)->toReceive('send')->andReturn('EOF');
         allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Bar')->toBe($bar);
 
@@ -66,7 +66,7 @@ describe("Allow", function() {
 
         expect(function() {
             $foo = new Foo();
-            allow($foo)->toBe(Stub::create());
+            allow($foo)->toBe(Double::instance());
         })->toThrow(new Exception("Error `toBe()` need to be applied on a fully-namespaced class or function name."));
 
     });
@@ -291,7 +291,7 @@ describe("Allow", function() {
 
                 expect(function() {
                     allow(new DateTime());
-                })->toThrow(new InvalidArgumentException("Can't Stub built-in PHP instances, create a test double using `Stub::create()`."));
+                })->toThrow(new InvalidArgumentException("Can't Stub built-in PHP instances, create a test double using `Double::instance()`."));
 
             });
 

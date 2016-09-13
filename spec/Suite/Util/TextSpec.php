@@ -4,7 +4,7 @@ namespace Kahlan\Spec\Suite\Util;
 use stdClass;
 use Exception;
 use Kahlan\Util\Text;
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 describe("Text", function() {
 
@@ -24,8 +24,8 @@ describe("Text", function() {
             $string = 'Obi-Wan is a {:noun}.';
             $expected = 'Obi-Wan is a jedi.';
 
-            $stub = Stub::create();
-            Stub::on($stub)->method('__toString')->andReturn('jedi');
+            $stub = Double::instance();
+            allow($stub)->toReceive('__toString')->andReturn('jedi');
 
             $result = Text::insert($string, ['noun' => $stub]);
             $this->expect($result)->toBe($expected);
@@ -168,8 +168,8 @@ describe("Text", function() {
 
         it("exports an object supporting __toString()", function() {
 
-            $stub = Stub::create();
-            Stub::on($stub)->method('__toString')->andReturn('jedi');
+            $stub = Double::instance();
+            allow($stub)->toReceive('__toString')->andReturn('jedi');
 
             $dump = Text::toString($stub);
             $this->expect($dump)->toBe("jedi");
