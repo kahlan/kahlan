@@ -40,260 +40,50 @@ describe("Stub", function() {
         Interceptor::load($this->previous);
     });
 
-    describe("::on()", function() {
+    describe("__construct()", function() {
+
+        it("throws an exception when trying to stub an unexisting class", function() {
+
+            $closure = function() {
+                new Stub('My\Unexisting\Classname\Foo');
+            };
+            $message = "Can't Stub the unexisting class `My\\Unexisting\\Classname\\Foo`.";
+            expect($closure)->toThrow(new InvalidArgumentException($message));
+
+        });
+
+    });
+
+    describe("->methods()", function() {
 
         context("with an instance", function() {
 
-            it("stubs a method", function() {
+            it("stubs methods using an array", function() {
 
                 $foo = new Foo();
-                Stub::on($foo)->method('message')->andReturn('Good Bye!');
-                expect($foo->message())->toBe('Good Bye!');
+                Stub::on($foo)->methods([
+                    'message' => function() {
+                        return 'Good Evening World!';
+                    },
+                    'bar' => function() {
+                        return 'Hello Bar!';
+                    }
+                ]);
+                expect($foo->message())->toBe('Good Evening World!');
+                expect($foo->bar())->toBe('Hello Bar!');
 
             });
 
-            it("stubs only on the stubbed instance", function() {
+            it("throw an exception with invalid definition", function() {
 
-                $foo = new Foo();
-                Stub::on($foo)->method('message')->andReturn('Good Bye!');
-                expect($foo->message())->toBe('Good Bye!');
-
-                $foo2 = new Foo();
-                expect($foo2->message())->toBe('Hello World!');
-
-            });
-
-            it("stubs a method using a closure", function() {
-
-                $foo = new Foo();
-                Stub::on($foo)->method('message', function($param) { return $param; });
-                expect($foo->message('Good Bye!'))->toBe('Good Bye!');
-
-            });
-
-            it("throw when stub a method using closure and using andReturn()", function() {
-
-                expect(function() {
-                    $foo = new Foo();
-                    Stub::on($foo)->method('message', function($param) { return $param; })->andReturn(true);
-                })->toThrow(new Exception("Some closure(s) has already been set."));
-
-            });
-
-            it("stubs a magic method", function() {
-
-                $foo = new Foo();
-                Stub::on($foo)->method('magicCall')->andReturn('Magic Call!');
-                expect($foo->magicCall())->toBe('Magic Call!');
-
-            });
-
-            it("stubs a magic method using a closure", function() {
-
-                $foo = new Foo();
-                Stub::on($foo)->method('magicHello', function($message) { return $message; });
-                expect($foo->magicHello('Hello World!'))->toBe('Hello World!');
-
-            });
-
-            it("stubs a static magic method", function() {
-
-                $foo = new Foo();
-                Stub::on($foo)->method('::magicCallStatic')->andReturn('Magic Call Static!');
-                expect($foo::magicCallStatic())->toBe('Magic Call Static!');
-
-            });
-
-            it("stubs a static magic method using a closure", function() {
-
-                $foo = new Foo();
-                Stub::on($foo)->method('::magicHello', function($message) { return $message; });
-                expect($foo::magicHello('Hello World!'))->toBe('Hello World!');
-
-            });
-
-            it("overrides previously applied stubs", function() {
-
-                $foo = new Foo();
-                Stub::on($foo)->method('magicHello')->andReturn('Hello World!');
-                Stub::on($foo)->method('magicHello')->andReturn('Good Bye!');
-                expect($foo->magicHello())->toBe('Good Bye!');
-
-            });
-
-            context("with several applied stubs on a same method", function() {
-
-                it("stubs a magic method multiple times", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->method('magic')->with('hello')->andReturn('world');
-                    Stub::on($foo)->method('magic')->with('world')->andReturn('hello');
-                    expect($foo->magic('hello'))->toBe('world');
-                    expect($foo->magic('world'))->toBe('hello');
-
-                });
-
-                it("stubs a static magic method multiple times", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->method('::magic')->with('hello')->andReturn('world');
-                    Stub::on($foo)->method('::magic')->with('world')->andReturn('hello');
-                    expect($foo::magic('hello'))->toBe('world');
-                    expect($foo::magic('world'))->toBe('hello');
-
-                });
-
-            });
-
-            context("using the with() parameter", function() {
-
-                it("stubs on matched parameter", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->method('message')->with('Hello World!')->andReturn('Good Bye!');
-                    expect($foo->message('Hello World!'))->toBe('Good Bye!');
-
-                });
-
-                it("doesn't stubs on unmatched parameter", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->method('message')->with('Hello World!')->andReturn('Good Bye!');
-                    expect($foo->message('Hello!'))->not->toBe('Good Bye!');
-
-
-                });
-
-            });
-
-            context("using the with() parameter and the argument matchers", function() {
-
-                it("stubs on matched parameter", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->method('message')->with(Arg::toBeA('string'))->andReturn('Good Bye!');
-                    expect($foo->message('Hello World!'))->toBe('Good Bye!');
-                    expect($foo->message('Hello'))->toBe('Good Bye!');
-
-                });
-
-                it("doesn't stubs on unmatched parameter", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->method('message')->with(Arg::toBeA('string'))->andReturn('Good Bye!');
-                    expect($foo->message(false))->not->toBe('Good Bye!');
-                    expect($foo->message(['Hello World!']))->not->toBe('Good Bye!');
-
-                });
-
-            });
-
-            context("with multiple return values", function() {
-
-                it("stubs a method", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->method('message')->andReturn('Good Evening World!', 'Good Bye World!');
-                    expect($foo->message())->toBe('Good Evening World!');
-                    expect($foo->message())->toBe('Good Bye World!');
-                    expect($foo->message())->toBe('Good Bye World!');
-
-                });
-
-            });
-
-            context("with ->methods()", function() {
-
-                it("stubs methods using return values as an array", function() {
-
+                $closure = function() {
                     $foo = new Foo();
                     Stub::on($foo)->methods([
-                        'message' => ['Good Evening World!', 'Good Bye World!'],
-                        'bar' => ['Hello Bar!']
+                        'bar' => 'Hello Bar!'
                     ]);
-                    expect($foo->message())->toBe('Good Evening World!');
-                    expect($foo->message())->toBe('Good Bye World!');
-                    expect($foo->bar())->toBe('Hello Bar!');
-
-                });
-
-                it("stubs methods using closure", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->methods([
-                        'message' => function() {
-                            return 'Good Evening World!';
-                        },
-                        'bar' => function() {
-                            return 'Hello Bar!';
-                        }
-                    ]);
-                    expect($foo->message())->toBe('Good Evening World!');
-                    expect($foo->bar())->toBe('Hello Bar!');
-
-                });
-
-                it("throw an exception with invalid definition", function() {
-
-                    $closure = function() {
-                        $foo = new Foo();
-                        Stub::on($foo)->methods([
-                            'bar' => 'Hello Bar!'
-                        ]);
-                    };
-                    $message = "Stubbed method definition for `bar` must be a closure or an array of returned value(s).";
-                    expect($closure)->toThrow(new InvalidArgumentException($message));
-
-                });
-
-            });
-
-            context("with chain of methods", function() {
-
-                it("expects subbed chain to be subbed", function() {
-
-                    $foo = new Foo();
-                    Stub::on($foo)->method('a->b->c')->andReturn('something');
-                    $query = $foo->a();
-                    $select = $query->b();
-                    expect($select->c())->toBe('something');
-
-                });
-
-                it('auto monkey patch core classes using a stub when possible', function() {
-
-                    Stub::on('PDO')->method('prepare->fetchAll')->andReturn([['name' => 'bob']]);
-                    $user = new User();
-                    expect($user->all())->toBe([['name' => 'bob']]);
-
-                });
-
-                it('allows to mix static/dynamic methods', function() {
-
-                    Stub::on('PDO');
-                    Stub::on('Kahlan\Spec\Fixture\Plugin\Monkey\User')->method('::create->all')->andReturn([['name' => 'bob']]);
-                    $user = User::create();
-                    expect($user->all())->toBe([['name' => 'bob']]);
-
-                });
-
-                it("throws an exception when trying to stub an unexisting class", function() {
-
-                    $closure = function() {
-                        Stub::on('My\Unexisting\Classname\Foo');
-                    };
-                    $message = "Can't Stub the unexisting class `My\\Unexisting\\Classname\\Foo`.";
-                    expect($closure)->toThrow(new InvalidArgumentException($message));
-
-                });
-
-                it("throws an exception when trying to stub an instance of a built-in class", function() {
-
-                    expect(function() {
-                        Stub::on(new DateTime());
-                    })->toThrow(new InvalidArgumentException("Can't Stub built-in PHP instances, create a test double using `Stub::create()`."));
-
-                });
+                };
+                $message = "Stubbed method definition for `bar` must be a closure or an array of returned value(s).";
+                expect($closure)->toThrow(new InvalidArgumentException($message));
 
             });
 
@@ -301,149 +91,53 @@ describe("Stub", function() {
 
         context("with an class", function() {
 
-            it("stubs a method", function() {
+            it("stubs methods using return values as an array", function() {
 
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')
-                    ->method('message')
-                    ->andReturn('Good Bye!');
+                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->methods([
+                    'message' => ['Good Evening World!', 'Good Bye World!'],
+                    'bar' => ['Hello Bar!']
+                ]);
 
                 $foo = new Foo();
-                expect($foo->message())->toBe('Good Bye!');
+                expect($foo->message())->toBe('Good Evening World!');
+
                 $foo2 = new Foo();
-                expect($foo2->message())->toBe('Good Bye!');
+                expect($foo2->message())->toBe('Good Bye World!');
+
+                $foo3 = new Foo();
+                expect($foo3->bar())->toBe('Hello Bar!');
 
             });
 
-            it("stubs a static method", function() {
+            it("stubs methods using closure", function() {
 
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('::messageStatic')->andReturn('Good Bye!');
-                expect(Foo::messageStatic())->toBe('Good Bye!');
+                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->methods([
+                    'message' => function() {
+                        return 'Good Evening World!';
+                    },
+                    'bar' => function() {
+                        return 'Hello Bar!';
+                    }
+                ]);
 
-            });
-
-            it("stubs a method using a closure", function() {
-
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('message', function($param) { return $param; });
                 $foo = new Foo();
-                expect($foo->message('Good Bye!'))->toBe('Good Bye!');
+                expect($foo->message())->toBe('Good Evening World!');
+
+                $foo2 = new Foo();
+                expect($foo2->bar())->toBe('Hello Bar!');
 
             });
 
-            it("stubs a static method using a closure", function() {
+            it("throw an exception with invalid definition", function() {
 
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('::messageStatic', function($param) { return $param; });
-                expect(Foo::messageStatic('Good Bye!'))->toBe('Good Bye!');
-
-            });
-
-            it("stubs a magic method multiple times", function() {
-
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('::magic')->with('hello')->andReturn('world');
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('::magic')->with('world')->andReturn('hello');
-                expect(Foo::magic('hello'))->toBe('world');
-                expect(Foo::magic('world'))->toBe('hello');
-
-            });
-
-            context("with multiple return values", function(){
-
-                it("stubs a method", function() {
-
-                    Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')
-                        ->method('message')
-                        ->andReturn('Good Evening World!', 'Good Bye World!');
-
+                $closure = function() {
                     $foo = new Foo();
-                    expect($foo->message())->toBe('Good Evening World!');
-
-                    $foo2 = new Foo();
-                    expect($foo2->message())->toBe('Good Bye World!');
-
-                });
-
-            });
-
-            context("with ->methods()", function() {
-
-                it("stubs methods using return values as an array", function() {
-
                     Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->methods([
-                        'message' => ['Good Evening World!', 'Good Bye World!'],
-                        'bar' => ['Hello Bar!']
+                        'bar' => 'Hello Bar!'
                     ]);
-
-                    $foo = new Foo();
-                    expect($foo->message())->toBe('Good Evening World!');
-
-                    $foo2 = new Foo();
-                    expect($foo2->message())->toBe('Good Bye World!');
-
-                    $foo3 = new Foo();
-                    expect($foo3->bar())->toBe('Hello Bar!');
-
-                });
-
-                it("stubs methods using closure", function() {
-
-                    Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->methods([
-                        'message' => function() {
-                            return 'Good Evening World!';
-                        },
-                        'bar' => function() {
-                            return 'Hello Bar!';
-                        }
-                    ]);
-
-                    $foo = new Foo();
-                    expect($foo->message())->toBe('Good Evening World!');
-
-                    $foo2 = new Foo();
-                    expect($foo2->bar())->toBe('Hello Bar!');
-
-                });
-
-                it("throw an exception with invalid definition", function() {
-
-                    $closure = function() {
-                        $foo = new Foo();
-                        Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->methods([
-                            'bar' => 'Hello Bar!'
-                        ]);
-                    };
-                    $message = "Stubbed method definition for `bar` must be a closure or an array of returned value(s).";
-                    expect($closure)->toThrow(new InvalidArgumentException($message));
-
-                });
-
-            });
-
-            context("with chain of methods", function() {
-
-                it("expects called chain to be called", function() {
-
-                    Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('::getQuery::newQuery::from')->andReturn('something');
-                    $query = Foo::getQuery();
-                    $select = $query::newQuery();
-                    expect($select::from())->toBe('something');
-
-                });
-
-            });
-
-        });
-
-        context("with a trait", function() {
-
-            it("stubs a method", function() {
-
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar')
-                    ->method('traitMethod')
-                    ->andReturn('trait method stubbed !');
-
-                $subBar = new SubBar();
-                expect($subBar->traitMethod())->toBe('trait method stubbed !');
-                $subBar2 = new SubBar();
-                expect($subBar2->traitMethod())->toBe('trait method stubbed !');
+                };
+                $message = "Stubbed method definition for `bar` must be a closure or an array of returned value(s).";
+                expect($closure)->toThrow(new InvalidArgumentException($message));
 
             });
 
@@ -488,6 +182,19 @@ describe("Stub", function() {
                 expect(Stub::registered('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo'))->toBe(true);
 
             });
+
+        });
+
+    });
+
+    describe("::on()", function() {
+
+        it("throw when stub a method using closure and using andReturn()", function() {
+
+            expect(function() {
+                $foo = new Foo();
+                Stub::on($foo)->method('message', function($param) { return $param; })->andReturn(true);
+            })->toThrow(new Exception("Some closure(s) has already been set."));
 
         });
 
