@@ -114,7 +114,8 @@ class ToReceive
                 $reference = is_object($reference) ? get_class($reference) : $reference;
             }
             $this->_expected[] = $name;
-            $this->_messages[] = $this->_watch(new Message([
+            $this->_messages[$name] = $this->_watch(new Message([
+                'parent'    => $this,
                 'reference' => $reference,
                 'name'      => $name
             ]));
@@ -204,6 +205,26 @@ class ToReceive
     {
         $message = end($this->_messages);
         call_user_func_array([$message, 'with'], func_get_args());
+        return $this;
+    }
+
+    /**
+     * Set arguments requirement indexed by method name.
+     *
+     * @param  mixed ... <0,n> Argument(s).
+     * @return self
+     */
+    public function where($requirements = [])
+    {
+        foreach ($requirements as $name => $args) {
+            if (!isset($this->_messages[$name])) {
+                throw new InvalidArgumentException("Unexisting `{$name}` as method as part of the chain definition.");
+            }
+            if (!is_array($args)) {
+                throw new InvalidArgumentException("Argument requirements must be an arrays for `{$name}` method.");
+            }
+            call_user_func_array([$this->_messages[$name], 'with'], $args);
+        }
         return $this;
     }
 
