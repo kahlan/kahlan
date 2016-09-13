@@ -171,12 +171,11 @@ class Stub
 
         $reference = $this->_reference;
 
-        $parts = preg_split('~((?:->|::)[^-:]+)~', $path, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-
-        $names = [];
-        foreach ($parts as $part) {
-            $names[] = isset($part[0]) && $part[0] === '-' ? substr($part, 2) : $part;
+        if (!$path) {
+            throw new InvalidArgumentException("Method name can't be empty.");
         }
+
+        $names = is_array($path) ? $path : [$path];
 
         $this->_chain = [];
         $total = count($names);

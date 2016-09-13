@@ -60,12 +60,12 @@ class Allow
      * @param  string $expected the method to be stubbed or a chain of methods.
      * @return        self.
      */
-    public function toReceive($expected)
+    public function toReceive()
     {
         if (!$this->_isClass) {
             throw new Exception("Error `toReceive()` are only available on classes/instances not functions.");
         }
-        return $this->_method = $this->_stub->method($expected);
+        return $this->_method = $this->_stub->method(func_get_args());
     }
 
     /**
