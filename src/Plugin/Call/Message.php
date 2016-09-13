@@ -73,7 +73,7 @@ class Message
     }
 
     /**
-     * Sets arguments requirement.
+     * Set arguments requirement.
      *
      * @param  mixed ... <0,n> Argument(s).
      * @return self
@@ -116,7 +116,7 @@ class Message
     }
 
     /**
-     * Checks if this stub is compatible with passed args.
+     * Check if this stub is compatible with passed args.
      *
      * @param  array   $args The passed arguments.
      * @return boolean
@@ -151,7 +151,7 @@ class Message
     }
 
     /**
-     * Gets message name.
+     * Get message name.
      *
      * @return string
      */
@@ -161,7 +161,7 @@ class Message
     }
 
     /**
-     * Gets message arguments.
+     * Get message arguments.
      *
      * @return array
      */
@@ -171,7 +171,7 @@ class Message
     }
 
     /**
-     * Checks if the method is a static method.
+     * Check if the method is a static method.
      *
      * @return boolean
      */

@@ -185,7 +185,7 @@ describe("Allow", function() {
 
         context("using the with() parameter", function() {
 
-            it("stubs on matched parameter", function() {
+            it("stubs on matched arguments", function() {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->with('Hello World!')->andReturn('Good Bye!');
@@ -193,7 +193,7 @@ describe("Allow", function() {
 
             });
 
-            it("doesn't stubs on unmatched parameter", function() {
+            it("doesn't stubs on unmatched arguments", function() {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->with('Hello World!')->andReturn('Good Bye!');
@@ -206,7 +206,7 @@ describe("Allow", function() {
 
         context("using the with() parameter and the argument matchers", function() {
 
-            it("stubs on matched parameter", function() {
+            it("stubs on matched arguments", function() {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->with(Arg::toBeA('string'))->andReturn('Good Bye!');
@@ -215,7 +215,7 @@ describe("Allow", function() {
 
             });
 
-            it("doesn't stubs on unmatched parameter", function() {
+            it("doesn't stubs on unmatched arguments", function() {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->with(Arg::toBeA('string'))->andReturn('Good Bye!');
@@ -242,7 +242,7 @@ describe("Allow", function() {
 
         context("with chain of methods", function() {
 
-            it("expects subbed chain to be subbed", function() {
+            it("expects stubbed chain to be stubbed", function() {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('a->b->c')->andReturn('something');
