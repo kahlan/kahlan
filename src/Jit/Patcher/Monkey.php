@@ -2,6 +2,7 @@
 namespace Kahlan\Jit\Patcher;
 
 use Kahlan\Jit\Node\NodeDef;
+use Kahlan\Jit\Node\FunctionDef;
 
 class Monkey
 {
@@ -45,6 +46,7 @@ class Monkey
         'self'            => true,
         'static'          => true,
         'switch'          => true,
+        'throw'           => true,
         'unset'           => true,
         'while'           => true,
         'xor'             => true
@@ -77,6 +79,13 @@ class Monkey
      * @var array
      */
     protected $_variables = [];
+
+    /**
+     * Nested function depth level.
+     *
+     * @var integer
+     */
+    protected $_depth = 0;
 
     /**
      * The regex.
@@ -138,7 +147,13 @@ class Monkey
      */
     public function process($node, $path = null)
     {
-        $this->_processTree($node->tree);
+        $this->_depth = 0;
+        $this->_variables[$this->_depth] = [];
+        $this->_processTree($node);
+        if ($this->_variables[$this->_depth]) {
+            $this->_flushVariables($node);
+        }
+        $this->_variables = [];
         return $node;
     }
 
@@ -147,49 +162,67 @@ class Monkey
      *
      * @param array $nodes A array of nodes to patch.
      */
-    protected function _processTree($nodes)
+    protected function _processTree($parent)
     {
-        foreach ($nodes as $index => $node) {
-            $this->_variables = [];
+        $hasScope = $parent instanceof FunctionDef || $parent->type === 'namespace';
+        if ($hasScope) {
+            $this->_variables[++$this->_depth] = [];
+        }
+        foreach ($parent->tree as $index => $node) {
+            if (count($node->tree)) {
+                $this->_processTree($node);
+            }
             if ($node->processable && $node->type === 'code') {
                 $this->_uses = $node->namespace ? $node->namespace->uses : [];
 
-                $this->_monkeyPatch($node, $nodes, $index);
-                $body = '';
-
-                if ($this->_variables) {
-                    foreach ($this->_variables as $variable) {
-                        if ($variable['isInstance']) {
-                            $body .= $variable['name'] . '__=null;';
-                        }
-                        $body .= $variable['name'] . $variable['patch'];
-                    }
-                    $parent = $node->function ?: $node->parent;
-                    if (!$parent->inPhp) {
-                        $body = '<?php ' . $body . ' ?>';
-                    }
-
-                    $patch = new NodeDef($body, 'code');
-                    $patch->parent = $parent;
-                    $patch->function = $node->function;
-                    $patch->namespace = $node->namespace;
-                    array_unshift($parent->tree, $patch);
-                }
-            }
-            if (count($node->tree)) {
-                $this->_processTree($node->tree);
+                $this->_monkeyPatch($node, $parent, $index);
             }
         }
+        if ($hasScope) {
+            $this->_flushVariables($parent);
+            $this->_depth--;
+        }
+    }
+
+    /**
+     * Flush stored variables in the passed node.
+     *
+     * @param array $node The node to store variables in.
+     */
+    protected function _flushVariables($node)
+    {
+        if (!$this->_variables[$this->_depth]) {
+            return;
+        }
+
+        $body = '';
+        foreach ($this->_variables[$this->_depth] as $variable) {
+            if ($variable['isClass']) {
+                $body .= $variable['name'] . '__=null;';
+            }
+            $body .= $variable['name'] . $variable['patch'];
+        }
+
+        if (!$node->inPhp) {
+            $body = '<?php ' . $body . ' ?>';
+        }
+
+        $patch = new NodeDef($body, 'code');
+        $patch->parent = $node;
+        $patch->function = $node->function;
+        $patch->namespace = $node->namespace;
+        array_unshift($node->tree, $patch);
+        $this->_variables[$this->_depth] = [];
     }
 
     /**
      * Monkey patch a node body.
      *
-     * @param object  $node  The node to monkey patch.
-     * @param array   $nodes The nodes array.
-     * @param integer $index The index of node in nodes.
+     * @param object  $node   The node to monkey patch.
+     * @param array   $parent The parent array.
+     * @param integer $index  The index of node in parent children.
      */
-    protected function _monkeyPatch($node, $nodes, $index)
+    protected function _monkeyPatch($node, $parent, $index)
     {
         if (!preg_match_all($this->_regex, $node->body, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
             return;
@@ -203,9 +236,9 @@ class Monkey
             $nextChar = $node->body[$pos + $len];
 
             $isInstance = !!$match[1][0];
-            $isStatic = $nextChar === ':';
+            $isClass = $nextChar === ':' || $isInstance;
 
-            if (!isset(static::$_blacklist[strtolower($name)]) && ($isInstance || $nextChar === '(' || $isStatic)) {
+            if (!isset(static::$_blacklist[strtolower($name)]) && ($isClass || $nextChar === '(')) {
                 $tokens = explode('\\', $name, 2);
 
                 if ($name[0] === '\\') {
@@ -221,25 +254,26 @@ class Monkey
                     $args = "__NAMESPACE__ , '{$name}'";
                 }
 
-                if (!isset($this->_variables[$name])) {
+                if (!isset($this->_variables[$this->_depth][$name])) {
                     $variable = '$__' . $this->_prefix . '__' . $this->_counter++;
-                    $this->_variables[$name]['name'] = $variable;
-                    $this->_variables[$name]['isInstance'] = $isInstance;
-                    if ($isInstance) {
+
+                    if ($isClass) {
                         $args .= ', false, ' . $variable . '__';
-                    } elseif ($isStatic) {
-                        $args .= ', false';
                     }
 
-                    $this->_variables[$name]['patch'] = "=\Kahlan\Plugin\Monkey::patched({$args});";
+                    $this->_variables[$this->_depth][$name] = [
+                        'name' => $variable,
+                        'isClass' => $isClass,
+                        'patch' => "=\Kahlan\Plugin\Monkey::patched({$args});"
+                    ];
                 } else {
-                    $variable = $this->_variables[$name]['name'];
+                    $variable = $this->_variables[$this->_depth][$name]['name'];
                 }
                 $substitute = $variable . '__';
                 if (!$isInstance) {
                     $replace = $match[2][0] . $variable . $match[4][0];
                 } else {
-                    $added = $this->_addClosingParenthesis($pos + $len, $index, $nodes);
+                    $added = $this->_addClosingParenthesis($pos + $len, $index, $parent);
                     if ($added) {
                         $replace = '(' . $substitute . '?' . $substitute . ':' . $match[1][0] . $match[2][0] . $variable . $match[4][0];
                     } else {
@@ -257,14 +291,15 @@ class Monkey
     /**
      * Add a closing parenthesis
      *
-     * @param  integer $pos   The current pos to start from.
-     * @param  integer $index The current node to start from.
-     * @param  arrar   $nodes The nodes array.
+     * @param object  $node   The node to monkey patch.
+     * @param array   $parent The parent array.
+     * @param integer $index  The index of node in parent children.
      * @return boolean        Returns `true` if succeed, `false` otherwise.
      */
-    protected function _addClosingParenthesis($pos, $index, $nodes)
+    protected function _addClosingParenthesis($pos, $index, $parent)
     {
         $count = 0;
+        $nodes = $parent->tree;
         $total = count($nodes);
 
         for ($i = $index; $i < $total; $i++) {

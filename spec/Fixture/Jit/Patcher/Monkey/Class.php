@@ -98,6 +98,11 @@ class Example extends \Kahlan\Fixture\Parent
         return Text::hash((object) 'hello');
     }
 
+    public function staticCallAndinstantiation() {
+        $node = Parser::parse($string);
+        return new Parser($node);
+    }
+
     public function noIndent()
     {
 rand();
@@ -177,6 +182,7 @@ rand();
                 break;
             default:
         }
+        throw($e);
         unset($a);
         while(false){};
         true xor(true);
@@ -222,3 +228,6 @@ rand();
         TRUE XOR(TRUE);
     }
 }
+
+Exemple::reset();
+$time = time();

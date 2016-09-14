@@ -1,5 +1,5 @@
 <?php
-namespace Kahlan\Spec\Fixture\Jit\Patcher\Monkey;
+namespace Kahlan\Spec\Fixture\Jit\Patcher\Monkey;$__KMONKEY__21__=null;$__KMONKEY__21=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Exemple', false, $__KMONKEY__21__);$__KMONKEY__22=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'time');
 
 use Kahlan\MongoId;
 use Kahlan\Util\Text;
@@ -89,24 +89,29 @@ class Example extends \Kahlan\Fixture\Parent
     }
 
     public function staticCall()
-    {$__KMONKEY__11=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Debugger', false);
+    {$__KMONKEY__11__=null;$__KMONKEY__11=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Debugger', false, $__KMONKEY__11__);
         return $__KMONKEY__11::trace();
     }
 
     public function staticCallFromUsed()
-    {$__KMONKEY__12=\Kahlan\Plugin\Monkey::patched(null, 'Kahlan\Util\Text', false);
+    {$__KMONKEY__12__=null;$__KMONKEY__12=\Kahlan\Plugin\Monkey::patched(null, 'Kahlan\Util\Text', false, $__KMONKEY__12__);
         return $__KMONKEY__12::hash((object) 'hello');
     }
 
+    public function staticCallAndinstantiation() {$__KMONKEY__13__=null;$__KMONKEY__13=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Parser', false, $__KMONKEY__13__);
+        $node = $__KMONKEY__13::parse($string);
+        return ($__KMONKEY__13__?$__KMONKEY__13__:new $__KMONKEY__13($node));
+    }
+
     public function noIndent()
-    {$__KMONKEY__13=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand');
-$__KMONKEY__13();
+    {$__KMONKEY__14=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand');
+$__KMONKEY__14();
     }
 
     public function closure()
     {
-        $func = function() {$__KMONKEY__14=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand');
-            $__KMONKEY__14(2.5);
+        $func = function() {$__KMONKEY__15=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'rand');
+            $__KMONKEY__15(2.5);
         };
         $func();
     }
@@ -119,23 +124,23 @@ $__KMONKEY__13();
     public function lambda()
     {
         $initializers = [
-            'name' => function($self) {$__KMONKEY__15=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'str_replace');$__KMONKEY__16=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'basename');
-                return $__KMONKEY__16($__KMONKEY__15('\\', '/', $self));
+            'name' => function($self) {$__KMONKEY__16=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'str_replace');$__KMONKEY__17=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'basename');
+                return $__KMONKEY__17($__KMONKEY__16('\\', '/', $self));
             },
-            'source' => function($self) {$__KMONKEY__17=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Inflector', false);
-                return $__KMONKEY__17::tableize($self::meta('name'));
+            'source' => function($self) {$__KMONKEY__18__=null;$__KMONKEY__18=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'Inflector', false, $__KMONKEY__18__);
+                return $__KMONKEY__18::tableize($self::meta('name'));
             },
-            'title' => function($self) {$__KMONKEY__18=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'array_merge');
+            'title' => function($self) {$__KMONKEY__19=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'array_merge');
                 $titleKeys = array('title', 'name');
-                $titleKeys = $__KMONKEY__18($titleKeys, (array) $self::meta('key'));
+                $titleKeys = $__KMONKEY__19($titleKeys, (array) $self::meta('key'));
                 return $self::hasField($titleKeys);
             }
         ];
     }
 
-    public function subChild() {$__KMONKEY__19__=null;$__KMONKEY__19=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'RecursiveIteratorIterator', false, $__KMONKEY__19__);
+    public function subChild() {$__KMONKEY__20__=null;$__KMONKEY__20=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , 'RecursiveIteratorIterator', false, $__KMONKEY__20__);
         if ($options['recursive']) {
-            $worker = ($__KMONKEY__19__?$__KMONKEY__19__:new $__KMONKEY__19($worker, $iteratorFlags));
+            $worker = ($__KMONKEY__20__?$__KMONKEY__20__:new $__KMONKEY__20($worker, $iteratorFlags));
         }
     }
 
@@ -177,6 +182,7 @@ $__KMONKEY__13();
                 break;
             default:
         }
+        throw($e);
         unset($a);
         while(false){};
         true xor(true);
@@ -222,3 +228,6 @@ $__KMONKEY__13();
         TRUE XOR(TRUE);
     }
 }
+
+$__KMONKEY__21::reset();
+$time = $__KMONKEY__22();
