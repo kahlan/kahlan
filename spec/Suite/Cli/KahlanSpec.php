@@ -39,7 +39,7 @@ describe("Kahlan", function() {
 
         it("sets passed arguments to specs", function() {
 
-            $args = [
+            $argv = [
                 '--src=src',
                 '--spec=spec/Fixture/Kahlan/Spec',
                 '--pattern=*MySpec.php',
@@ -59,8 +59,8 @@ describe("Kahlan", function() {
                 '--autoclear=Kahlan\Plugin\Quit'
             ];
 
-            $this->specs->loadConfig($args);
-            expect($this->specs->args()->get())->toBe([
+            $this->specs->loadConfig($argv);
+            expect($this->specs->commandLine()->get())->toBe([
                 'src'        => ['src'],
                 'spec'       => ['spec/Fixture/Kahlan/Spec'],
                 'reporter'   => [
@@ -263,14 +263,14 @@ EOD;
 
         it("doesn't filter empty string from include & exclude", function() {
 
-            $args = [
+            $argv = [
                 '--include=',
                 '--exclude=',
             ];
 
-            $this->specs->loadConfig($args);
-            expect($this->specs->args()->get()['include'])->toBe([]);
-            expect($this->specs->args()->get()['exclude'])->toBe([]);
+            $this->specs->loadConfig($argv);
+            expect($this->specs->commandLine()->get()['include'])->toBe([]);
+            expect($this->specs->commandLine()->get()['exclude'])->toBe([]);
 
         });
 

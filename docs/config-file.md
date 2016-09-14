@@ -13,11 +13,11 @@ use Kahlan\Reporter\Coverage\Exporter\Coveralls;
 
 // It overrides some default option values.
 // Note that the values passed in command line will overwrite the ones below.
-$args = $this->args();
-$args->argument('ff', 'default', 1);
-$args->argument('coverage', 'default', 3);
-$args->argument('coverage-scrutinizer', 'default', 'scrutinizer.xml');
-$args->argument('coverage-coveralls', 'default', 'coveralls.json');
+$commandLine = $this->commandLine();
+$commandLine->argument('ff', 'default', 1);
+$commandLine->argument('coverage', 'default', 3);
+$commandLine->argument('coverage-scrutinizer', 'default', 'scrutinizer.xml');
+$commandLine->argument('coverage-coveralls', 'default', 'coveralls.json');
 
 // The logic to include into the workflow.
 Filter::register('kahlan.coveralls', function($chain) {
@@ -26,14 +26,14 @@ Filter::register('kahlan.coveralls', function($chain) {
     $coverage = $this->reporters()->get('coverage');
 
     // Abort if no coverage is available.
-    if (!$coverage || !$this->args()->exists('coverage-coveralls')) {
+    if (!$coverage || !$this->commandLine()->exists('coverage-coveralls')) {
         return $chain->next();
     }
 
     // Use the `Coveralls` class to write the JSON coverage into a file
     Coveralls::write([
         'coverage' => $coverage,
-        'file' => $this->args()->get('coverage-coveralls'),
+        'file' => $this->commandLine()->get('coverage-coveralls'),
         'service_name' => 'travis-ci',
         'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
     ]);
@@ -79,7 +79,7 @@ Notice that this approach will make your code run a bit slower than your origina
 For example, the following configuration will only limit the patching to a bunch of namespaces/classes:
 
 ```php
-$this->args()->set('include', [
+$this->commandLine()->set('include', [
     'myapp',
     'lithium',
     'li3_zendserver\data\Job',
@@ -89,7 +89,7 @@ $this->args()->set('include', [
 
 Conversely you can also exclude some external dependencies to speed up performances if you don't intend to Monkey Patch/Stub some namespaces/classes:
 ```php
-$this->args()->set('exclude', [
+$this->commandLine()->set('exclude', [
     'Symfony',
     'Doctrine'
 ]);
@@ -97,6 +97,6 @@ $this->args()->set('exclude', [
 
 Finally you can also disable all the patching everywhere if you prefer to deal with DI only and are not interested by Kahlan's features:
 ```php
-$this->args()->set('include', []);
+$this->commandLine()->set('include', []);
 ```
 **Note:** You will still able to stub instances and classes created with `Double::instance()`/`Double::classname()` anyway.

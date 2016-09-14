@@ -5,8 +5,8 @@ use Kahlan\Reporter\Coverage\Driver\Xdebug;
 use Kahlan\Reporter\Coverage\Exporter\Coveralls;
 use Kahlan\Reporter\Coverage\Exporter\CodeClimate;
 
-$args = $this->args();
-$args->argument('coverage', 'default', 3);
+$commandLine = $this->commandLine();
+$commandLine->option('coverage', 'default', 3);
 
 Filter::register('kahlan.coverage', function($chain) {
     if (!extension_loaded('xdebug')) {
@@ -14,9 +14,9 @@ Filter::register('kahlan.coverage', function($chain) {
     }
     $reporters = $this->reporters();
     $coverage = new Coverage([
-        'verbosity' => $this->args()->get('coverage'),
+        'verbosity' => $this->commandLine()->get('coverage'),
         'driver'    => new Xdebug(),
-        'path'      => $this->args()->get('src'),
+        'path'      => $this->commandLine()->get('src'),
         'exclude'   => [
             //Exclude init script
             'src/init.php',
@@ -38,7 +38,7 @@ Filter::register('kahlan.coverage', function($chain) {
             'src/Reporter/Json.php',
             'src/Reporter/Tap.php',
         ],
-        'colors'    => !$this->args()->get('no-colors')
+        'colors'    => !$this->commandLine()->get('no-colors')
     ]);
     $reporters->add('coverage', $coverage);
 });
