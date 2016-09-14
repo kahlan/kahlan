@@ -562,16 +562,17 @@ class Suite extends Scope
      */
     public function status($status = null)
     {
-        if ($status !== null) {
+        if (func_num_args()) {
             $this->_status = $status;
-        }
-
-        if ($this->_status !== null) {
-            return $this->_status;
+            return $this;
         }
 
         if ($this->focused()) {
             return -1;
+        }
+
+        if ($this->_status !== null) {
+            return $this->_status;
         }
 
         return $this->passed() ? 0 : -1;

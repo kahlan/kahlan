@@ -36,17 +36,17 @@ class Rebase {
      */
     public function process($node, $path = null)
     {
-        $this->_processTree($node->tree, $path);
+        $this->_processTree($node, $path);
         return $node;
     }
 
     /**
      * Helper for `Rebase::process()`.
      *
-     * @param array  $nodes An array of nodes to patch.
-     * @param string $path  The file path of the source code.
+     * @param array  $parent The node instance tor process.
+     * @param string $path   The file path of the source code.
      */
-    protected function _processTree($nodes, $path)
+    protected function _processTree($parent, $path)
     {
         $path = addcslashes($path, "'");
         $dir = "'" . dirname($path) . "'";
@@ -56,13 +56,13 @@ class Rebase {
         $dirRegex  = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)(__DIR__)/";
         $fileRegex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)(__FILE__)/";
 
-        foreach ($nodes as $node) {
+        foreach ($parent->tree as $node) {
             if ($node->processable && $node->type === 'code') {
                 $node->body = preg_replace($dirRegex, $dir, $node->body);
                 $node->body = preg_replace($fileRegex, $file, $node->body);
             }
             if (count($node->tree)) {
-                $this->_processTree($node->tree, $path);
+                $this->_processTree($node, $path);
             }
         }
     }
