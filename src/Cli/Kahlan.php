@@ -60,7 +60,7 @@ class Kahlan {
      *
      * @var object
      */
-    protected $_args = null;
+    protected $_commandLine = null;
 
     /**
      * Warning !
@@ -97,34 +97,34 @@ class Kahlan {
         $this->_suite = $options['suite'];
 
         $this->_reporters = new Reporters();
-        $this->_args = $args = new Args();
+        $this->_commandLine = $commandLine = new CommandLine();
 
-        $args->argument('src',       ['array'   => true, 'default' => ['src']]);
-        $args->argument('spec',      ['array'   => true, 'default' => ['spec']]);
-        $args->argument('reporter',  ['array'   => true, 'default' => ['dot']]);
-        $args->argument('pattern',   ['default' => ['*Spec.php', '*.spec.php']]);
-        $args->argument('coverage',  ['type'    => 'string']);
-        $args->argument('config',    ['default' => 'kahlan-config.php']);
-        $args->argument('ff',        ['type'    => 'numeric', 'default' => 0]);
-        $args->argument('cc',        ['type'    => 'boolean', 'default' => false]);
-        $args->argument('no-colors', ['type'    => 'boolean', 'default' => false]);
-        $args->argument('no-header', ['type'    => 'boolean', 'default' => false]);
-        $args->argument('include',   [
+        $commandLine->option('src',       ['array'   => true, 'default' => ['src']]);
+        $commandLine->option('spec',      ['array'   => true, 'default' => ['spec']]);
+        $commandLine->option('reporter',  ['array'   => true, 'default' => ['dot']]);
+        $commandLine->option('pattern',   ['default' => ['*Spec.php', '*.spec.php']]);
+        $commandLine->option('coverage',  ['type'    => 'string']);
+        $commandLine->option('config',    ['default' => 'kahlan-config.php']);
+        $commandLine->option('ff',        ['type'    => 'numeric', 'default' => 0]);
+        $commandLine->option('cc',        ['type'    => 'boolean', 'default' => false]);
+        $commandLine->option('no-colors', ['type'    => 'boolean', 'default' => false]);
+        $commandLine->option('no-header', ['type'    => 'boolean', 'default' => false]);
+        $commandLine->option('include',   [
             'array' => true,
             'default' => ['*'],
             'value' => function($value) {
                 return array_filter($value);
             }
         ]);
-        $args->argument('exclude',    [
+        $commandLine->option('exclude',    [
             'array' => true,
             'default' => [],
             'value' => function($value) {
                 return array_filter($value);
             }
         ]);
-        $args->argument('persistent', ['type'  => 'boolean', 'default' => true]);
-        $args->argument('autoclear',  ['array' => true, 'default' => [
+        $commandLine->option('persistent', ['type'  => 'boolean', 'default' => true]);
+        $commandLine->option('autoclear',  ['array' => true, 'default' => [
             'Kahlan\Plugin\Monkey',
             'Kahlan\Plugin\Stub',
             'Kahlan\Plugin\Quit',
@@ -147,9 +147,9 @@ class Kahlan {
      *
      * @return object
      */
-    public function args()
+    public function commandLine()
     {
-        return $this->_args;
+        return $this->_commandLine;
     }
 
     /**
@@ -179,25 +179,25 @@ class Kahlan {
      */
     public function loadConfig($argv = [])
     {
-        $args = new Args();
-        $args->argument('config',  ['default'  => 'kahlan-config.php']);
-        $args->argument('help',    ['type'     => 'boolean']);
-        $args->argument('version', ['type'     => 'boolean']);
-        $args->parse($argv);
+        $commandLine = new CommandLine();
+        $commandLine->option('config',  ['default'  => 'kahlan-config.php']);
+        $commandLine->option('help',    ['type'     => 'boolean']);
+        $commandLine->option('version', ['type'     => 'boolean']);
+        $commandLine->parse($argv);
 
-        $run = function($args) {
-            if (file_exists($args->get('config'))) {
-                require $args->get('config');
+        $run = function($commandLine) {
+            if (file_exists($commandLine->get('config'))) {
+                require $commandLine->get('config');
             }
         };
-        $run($args);
-        $this->_args->parse($argv, false);
+        $run($commandLine);
+        $this->_commandLine->parse($argv, false);
 
-        if ($args->get('help')) {
+        if ($commandLine->get('help')) {
             return $this->_help();
         }
 
-        if ($args->get('version')) {
+        if ($commandLine->get('version')) {
             return $this->_version();
         }
     }
@@ -210,8 +210,8 @@ class Kahlan {
     protected function _terminal()
     {
         return new Terminal([
-            'colors' => !$this->args()->get('no-colors'),
-            'header' => !$this->args()->get('no-header')
+            'colors' => !$this->commandLine()->get('no-colors'),
+            'header' => !$this->commandLine()->get('no-header')
         ]);
     }
 
@@ -221,7 +221,7 @@ class Kahlan {
     protected function _version()
     {
         $terminal = $this->_terminal();
-        if (!$this->args()->get('no-header')) {
+        if (!$this->commandLine()->get('no-header')) {
             $terminal->write($terminal->kahlan() ."\n\n");
             $terminal->write($terminal->kahlanBaseline(), 'd');
             $terminal->write("\n\n");
@@ -242,7 +242,7 @@ class Kahlan {
     protected function _help()
     {
         $terminal = $this->_terminal();
-        if (!$this->args()->get('no-header')) {
+        if (!$this->commandLine()->get('no-header')) {
             $terminal->write($terminal->kahlan() ."\n\n");
             $terminal->write($terminal->kahlanBaseline(), 'd');
             $terminal->write("\n\n");
@@ -387,10 +387,10 @@ EOD;
     protected function _bootstrap()
     {
         return Filter::on($this, 'bootstrap', [], function($chain) {
-            $this->suite()->backtraceFocus($this->args()->get('pattern'));
-            if (!$this->args()->exists('coverage')) {
-                if ($this->args()->exists('clover') || $this->args()->exists('istanbul') || $this->args()->exists('lcov')) {
-                    $this->args()->set('coverage', 1);
+            $this->suite()->backtraceFocus($this->commandLine()->get('pattern'));
+            if (!$this->commandLine()->exists('coverage')) {
+                if ($this->commandLine()->exists('clover') || $this->commandLine()->exists('istanbul') || $this->commandLine()->exists('lcov')) {
+                    $this->commandLine()->set('coverage', 1);
                 }
             }
         });
@@ -404,11 +404,11 @@ EOD;
         return Filter::on($this, 'interceptor', [], function($chain) {
             Interceptor::patch([
                 'loader'     => [$this->autoloader(), 'loadClass'],
-                'include'    => $this->args()->get('include'),
-                'exclude'    => array_merge($this->args()->get('exclude'), ['Kahlan\\']),
-                'persistent' => $this->args()->get('persistent'),
+                'include'    => $this->commandLine()->get('include'),
+                'exclude'    => array_merge($this->commandLine()->get('exclude'), ['Kahlan\\']),
+                'persistent' => $this->commandLine()->get('persistent'),
                 'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan',
-                'clearCache' => $this->args()->get('cc')
+                'clearCache' => $this->commandLine()->get('cc')
             ]);
         });
     }
@@ -419,7 +419,7 @@ EOD;
     protected function _namespaces()
     {
         return Filter::on($this, 'namespaces', [], function($chain) {
-            $paths = $this->args()->get('spec');
+            $paths = $this->commandLine()->get('spec');
             foreach ($paths as $path) {
                 $path = realpath($path);
                 $namespace = basename($path) . '\\';
@@ -452,7 +452,7 @@ EOD;
     protected function _load()
     {
         return Filter::on($this, 'load', [], function($chain) {
-            $specDirs = $this->args()->get('spec');
+            $specDirs = $this->commandLine()->get('spec');
             foreach ($specDirs as $dir) {
                 if (!file_exists($dir)) {
                     fwrite(STDERR, "ERROR: unexisting `{$dir}` directory, use --spec option to set a valid one (ex: --spec=tests).\n");
@@ -460,7 +460,7 @@ EOD;
                 }
             }
             $files = Dir::scan($specDirs, [
-                'include' => $this->args()->get('pattern'),
+                'include' => $this->commandLine()->get('pattern'),
                 'exclude' => '*/.*',
                 'type' => 'file'
             ]);
@@ -489,7 +489,7 @@ EOD;
         return Filter::on($this, 'console', [], function($chain) {
             $collection = $this->reporters();
 
-            $reporters = $this->args()->get('reporter');
+            $reporters = $this->commandLine()->get('reporter');
             if (!$reporters) {
                 return;
             }
@@ -505,8 +505,8 @@ EOD;
 
                 $params = [
                     'start'  => $this->_start,
-                    'colors' => !$this->args()->get('no-colors'),
-                    'header' => !$this->args()->get('no-header')
+                    'colors' => !$this->commandLine()->get('no-colors'),
+                    'header' => !$this->commandLine()->get('no-header')
                 ];
 
                 if (isset($output) && strlen($output) > 0) {
@@ -534,7 +534,7 @@ EOD;
     protected function _coverage()
     {
         return Filter::on($this, 'coverage', [], function($chain) {
-            if (!$this->args()->exists('coverage')) {
+            if (!$this->commandLine()->exists('coverage')) {
                 return;
             }
             $reporters = $this->reporters();
@@ -548,7 +548,7 @@ EOD;
                 fwrite(STDERR, "ERROR: PHPDBG SAPI has not been detected and Xdebug is not installed, code coverage can't be used.\n");
                 exit(-1);
             }
-            $srcDirs = $this->args()->get('src');
+            $srcDirs = $this->commandLine()->get('src');
             foreach ($srcDirs as $dir) {
                 if (!file_exists($dir)) {
                     fwrite(STDERR, "ERROR: unexisting `{$dir}` directory, use --src option to set a valid one (ex: --src=app).\n");
@@ -556,10 +556,10 @@ EOD;
                 }
             }
             $coverage = new Coverage([
-                'verbosity' => $this->args()->get('coverage') === null ? 1 : $this->args()->get('coverage'),
+                'verbosity' => $this->commandLine()->get('coverage') === null ? 1 : $this->commandLine()->get('coverage'),
                 'driver' => $driver,
                 'path' => $srcDirs,
-                'colors' => !$this->args()->get('no-colors')
+                'colors' => !$this->commandLine()->get('no-colors')
             ]);
             $reporters->add('coverage', $coverage);
         });
@@ -583,8 +583,8 @@ EOD;
         return Filter::on($this, 'run', [], function($chain) {
             $this->suite()->run([
                 'reporters' => $this->reporters(),
-                'autoclear' => $this->args()->get('autoclear'),
-                'ff'        => $this->args()->get('ff')
+                'autoclear' => $this->commandLine()->get('autoclear'),
+                'ff'        => $this->commandLine()->get('ff')
             ]);
         });
     }
@@ -599,22 +599,22 @@ EOD;
             if (!$reporter) {
                 return;
             }
-            if ($this->args()->exists('clover')) {
+            if ($this->commandLine()->exists('clover')) {
                 Clover::write([
                     'collector' => $reporter,
-                    'file' => $this->args()->get('clover')
+                    'file' => $this->commandLine()->get('clover')
                 ]);
             }
-            if ($this->args()->exists('istanbul')) {
+            if ($this->commandLine()->exists('istanbul')) {
                 Istanbul::write([
                     'collector' => $reporter,
-                    'file' => $this->args()->get('istanbul')
+                    'file' => $this->commandLine()->get('istanbul')
                 ]);
             }
-            if ($this->args()->exists('lcov')) {
+            if ($this->commandLine()->exists('lcov')) {
                 Lcov::write([
                     'collector' => $reporter,
-                    'file' => $this->args()->get('lcov')
+                    'file' => $this->commandLine()->get('lcov')
                 ]);
             }
         });
