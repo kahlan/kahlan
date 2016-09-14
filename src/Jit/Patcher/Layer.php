@@ -95,18 +95,18 @@ class Layer {
         if (!$this->_override) {
             return;
         }
-        $this->_processTree($node->tree);
+        $this->_processTree($node);
         return $node;
     }
 
     /**
      * Helper for `Layer::process()`.
      *
-     * @param array $nodes A array of nodes to patch.
+     * @param array $parent The node instance tor process.
      */
-    protected function _processTree($nodes)
+    protected function _processTree($parent)
     {
-        foreach ($nodes as $node) {
+        foreach ($parent->tree as $node) {
             if ($node->processable && $node->type === 'class' && $node->extends) {
                 $namespace = $node->namespace->name . '\\';
                 $parent = $node->extends;
@@ -129,11 +129,11 @@ class Layer {
                 ]);
 
                 $parser = $this->_classes['parser'];
-                $nodes = $parser::parse($code, ['php' => true]);
-                $node->close .= str_replace("\n", '', $parser::unparse($this->_pointcut->process($nodes)));
+                $root = $parser::parse($code, ['php' => true]);
+                $node->close .= str_replace("\n", '', $parser::unparse($this->_pointcut->process($root)));
 
             } elseif (count($node->tree)) {
-                $this->_processTree($node->tree);
+                $this->_processTree($node);
             }
         }
     }

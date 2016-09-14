@@ -71,22 +71,22 @@ class Pointcut
      */
     public function process($node, $path = null)
     {
-        $this->_processTree($node->tree);
+        $this->_processTree($node);
         return $node;
     }
 
     /**
      * Helper for `Pointcut::process()`.
      *
-     * @param array $nodes A node array to patch.
+     * @param array $parent The node instance tor process.
      */
-    protected function _processTree($nodes)
+    protected function _processTree($parent)
     {
-        foreach ($nodes as $node) {
+        foreach ($parent->tree as $node) {
             if ($node->hasMethods && $node->type !== 'interface') {
-                $this->_processMethods($node->tree);
+                $this->_processMethods($node);
             } elseif (count($node->tree)) {
-                $this->_processTree($node->tree);
+                $this->_processTree($node);
             }
         }
     }
@@ -94,11 +94,11 @@ class Pointcut
     /**
      * Helper for `Pointcut::process()`.
      *
-     * @param object The node instance to patch.
+     * @param array $parent The node instance tor process.
      */
-    protected function _processMethods($node)
+    protected function _processMethods($parent)
     {
-        foreach ($node as $child) {
+        foreach ($parent->tree as $child) {
             if (!$child->processable) {
                 continue;
             }

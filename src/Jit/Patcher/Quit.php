@@ -36,26 +36,26 @@ class Quit {
      */
     public function process($node, $path = null)
     {
-        $this->_processTree($node->tree);
+        $this->_processTree($node);
         return $node;
     }
 
     /**
      * Helper for `Quit::process()`.
      *
-     * @param array $nodes A array of nodes to patch.
+     * @param array $parent The node instance tor process.
      */
-    protected function _processTree($nodes)
+    protected function _processTree($parent)
     {
         $alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
         $regex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)((?:exit|die)\s*\()/m";
 
-        foreach ($nodes as $node) {
+        foreach ($parent->tree as $node) {
             if ($node->processable && $node->type === 'code') {
                 $node->body = preg_replace($regex, '\1\Kahlan\Plugin\Quit::quit(', $node->body);
             }
             if (count($node->tree)) {
-                $this->_processTree($node->tree);
+                $this->_processTree($node);
             }
         }
     }
