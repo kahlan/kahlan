@@ -2,14 +2,14 @@
 namespace Kahlan\Cli;
 
 
-class Args {
+class CommandLine {
 
     /**
      * Arguments attributes
      *
      * @var array
      */
-    protected $_arguments = [];
+    protected $_options = [];
 
     /**
      * Arguments values.
@@ -21,34 +21,34 @@ class Args {
     /**
      * The Constructor.
      *
-     * @param array $arguments An array of argument's attributes where keys are argument's names
-     *                         and values are an array of attributes.
+     * @param array $options An array of option's attributes where keys are option's names
+     *                       and values are an array of attributes.
      */
-    public function __construct($arguments = [])
+    public function __construct($options = [])
     {
-        foreach ($arguments as $name => $config) {
-            $this->argument($name, $config);
+        foreach ($options as $name => $config) {
+            $this->option($name, $config);
         }
     }
 
     /**
-     * Returns all arguments attributes.
+     * Returns all options attributes.
      *
      * @return array
      */
-    public function arguments() {
-        return $this->_arguments;
+    public function options() {
+        return $this->_options;
     }
 
 
     /**
-     * Gets/Sets/Overrides an argument's attributes.
+     * Gets/Sets/Overrides an option's attributes.
      *
-     * @param  string $name   The name of the argument.
-     * @param  array  $config The argument attributes to set.
+     * @param  string $name   The name of the option.
+     * @param  array  $config The option attributes to set.
      * @return array
      */
-    public function argument($name = null, $config = [], $value = null)
+    public function option($name = null, $config = [], $value = null)
     {
         $defaults = [
             'type'    => 'string',
@@ -57,14 +57,13 @@ class Args {
             'default' => null
         ];
         if (func_num_args() === 1) {
-            if (isset($this->_arguments[$name])) {
-                return $this->_arguments[$name];
+            if (isset($this->_options[$name])) {
+                return $this->_options[$name];
             }
             return $defaults;
         }
-        $config = is_array($config) ? $config + $defaults : [$config => $value] + $this->argument($name);
-
-        return $this->_arguments[$name] = $config;
+        $config = is_array($config) ? $config + $defaults : [$config => $value] + $this->option($name);
+        return $this->_options[$name] = $config;
     }
 
     /**
@@ -113,71 +112,87 @@ class Args {
     }
 
     /**
-     * Checks if an argument has been setted the value of a specific argument.
+     * Checks if an option has been setted.
      *
-     * @param  string  $name The name of the argument.
+     * @param  string  $name The name of the option.
      * @return boolean
      */
     public function exists($name)
     {
-        if (array_key_exists($name, $this->_values)) {
+        list($key, $extra) = $this->_splitOptionName($name);
+        if (isset($this->_values[$key]) && is_array($this->_values[$key]) && array_key_exists($extra, $this->_values[$key])) {
             return true;
         }
-        if (isset($this->_arguments[$name])) {
-            return isset($this->_arguments[$name]['default']);
+        if (isset($this->_options[$name])) {
+            return isset($this->_options[$name]['default']);
         }
         return false;
     }
 
     /**
-     * Sets the value of a specific argument.
+     * Sets the value of a specific option.
      *
-     * @param  string $name  The name of the argument.
-     * @param  mixed  $value The value of the argument to set.
+     * @param  string $name  The name of the option.
+     * @param  mixed  $value The value of the option to set.
      * @return array         The setted value.
      */
     public function set($name, $value)
     {
-        return $this->_values[$name] = $value;
+        list($key, $extra) = $this->_splitOptionName($name);
+        return $this->_values[$key][$extra] = $value;
     }
 
     /**
-     * Adds a value to a specific argument (or set if it's not an array).
+     * Adds a value to a specific option (or set if it's not an array).
      *
-     * @param  string $name  The name of the argument.
-     * @param  mixed  $value The value of the argument to set.
+     * @param  string $name  The name of the option.
+     * @param  mixed  $value The value of the option to set.
      * @return array         The setted value.
      */
     public function add($name, $value)
     {
-        $config = $this->argument($name);
+        $config = $this->option($name);
+        list($key, $extra) = $this->_splitOptionName($name);
+
         if ($config['array']) {
-            $this->_values[$name][] = $value;
+            $this->_values[$key][$extra][] = $value;
         } else {
             $this->set($name, $value);
         }
-        return $this->_values[$name];
+        return $this->_values[$key][$extra];
     }
 
     /**
-     * Gets the value of a specific argument.
+     * Gets the value of a specific option.
      *
-     * @param  string $name The name of the argument.
+     * @param  string $name The name of the option.
      * @return array        The value.
      */
     public function get($name = null)
     {
-        if ($name !== null) {
+        if (func_num_args()) {
             return $this->_get($name);
         }
         $result = [];
-        foreach ($this->_arguments as $key => $value) {
+        foreach ($this->_options as $name => $value) {
+            list($key, $extra) = $this->_splitOptionName($name);
             if (isset($value['default'])) {
-                $result[$key] = $this->_get($key);
+                if ($extra === '') {
+                    $result[$key] = $this->_get($name);
+                } else {
+                    $result[$key][$extra] = $this->_get($name);
+                }
             }
         }
-        foreach ($this->_values as $key => $value) {
-            $result[$key] = $this->_get($key);
+
+        foreach ($this->_values as $key => $data) {
+            foreach ($data as $extra => $value) {
+                if ($extra === '') {
+                    $result[$key] = $this->_get($key);
+                } else {
+                    $result[$key][$extra] = $this->_get($key . ':' . $extra);
+                }
+            }
         }
         return $result;
     }
@@ -185,25 +200,26 @@ class Args {
     /**
      * Helper for `get()`.
      *
-     * @param  string $name The name of the argument.
+     * @param  string $name The name of the option.
      * @return array        The casted value.
      */
     protected function _get($name)
     {
-        $config = $this->argument($name);
-        $value = isset($this->_values[$name]) ? $this->_values[$name] : $config['default'];
+        $config = $this->option($name);
+        list($key, $extra) = $this->_splitOptionName($name);
+        $value = isset($this->_values[$key][$extra]) ? $this->_values[$key][$extra] : $config['default'];
         $casted = $this->cast($value, $config['type'], $config['array']);
         if (!isset($config['value'])) {
             return $casted;
         }
         if (is_callable($config['value'])) {
-            return array_key_exists($name, $this->_values) ? $config['value']($casted, $name, $this) : $casted;
+            return array_key_exists($key, $this->_values) ? $config['value']($casted, $name, $this) : $casted;
         }
         return $config['value'];
     }
 
     /**
-     * Casts a value according to the argument attributes.
+     * Casts a value according to the option attributes.
      *
      * @param  string  $value The value to cast.
      * @param  string  $type  The type of the value.
@@ -232,4 +248,15 @@ class Args {
         return $value;
     }
 
+    /**
+     * Helper to split option name
+     *
+     * @param  string $name The option name.
+     * @return array
+     */
+    protected function _splitOptionName($name)
+    {
+        $parts = explode(':', $name, 2);
+        return [$parts[0], isset($parts[1]) ? $parts[1] : ''];
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-use Kahlan\Cli\Args;
+use Kahlan\Cli\CommandLine;
 
-$args = new Args();
+$commandLine = new CommandLine();
 $this->suite()->loaded = true;
