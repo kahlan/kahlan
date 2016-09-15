@@ -174,7 +174,7 @@ class Dir extends \FilterIterator
      * @param  string        $dest    Destination directory.
      * @param  array         $options Scanning options. Possible values are:
      *                                -`'mode'`           _integer_     : Mode used for directory creation.
-     *                                -`'childsOnly'`     _boolean_     : Excludes parent directory if `true`.
+     *                                -`'childrenOnly'`     _boolean_     : Excludes parent directory if `true`.
      *                                -`'followSymlinks'` _boolean_     : Follows Symlinks if `true`.
      *                                -`'recursive'`      _boolean_     : Scans recursively if `true`.
      * @return array
@@ -184,7 +184,7 @@ class Dir extends \FilterIterator
     {
         $defaults = [
             'mode'           => 0755,
-            'childsOnly'     => false,
+            'childrenOnly'     => false,
             'followSymlinks' => true,
             'recursive'      => true
         ];
@@ -215,7 +215,7 @@ class Dir extends \FilterIterator
      * @param  string    $dest Destination directory.
      * @param  array     $options Scanning options. Possible values are:
      *                            -`'mode'`           _integer_     : Mode used for directory creation.
-     *                            -`'childsOnly'`     _boolean_     : Excludes parent directory if `true`.
+     *                            -`'childrenOnly'`     _boolean_     : Excludes parent directory if `true`.
      *                            -`'followSymlinks'` _boolean_     : Follows Symlinks if `true`.
      *                            -`'recursive'`      _boolean_     : Scans recursively if `true`.
      *                            -`'include'`        _string|array_: An array of includes.
@@ -226,7 +226,7 @@ class Dir extends \FilterIterator
     protected static function _copy($path, $dest, $options)
     {
         $ds = DIRECTORY_SEPARATOR;
-        $root = $options['childsOnly'] ? $path : dirname($path);
+        $root = $options['childrenOnly'] ? $path : dirname($path);
         $dest = rtrim($dest, $ds);
 
         $paths = static::scan($path, $options);

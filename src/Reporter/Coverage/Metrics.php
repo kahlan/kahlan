@@ -53,7 +53,7 @@ class Metrics
      *
      * @param array
      */
-    protected $_childs = [];
+    protected $_children = [];
 
     /**
      * Constructor
@@ -156,17 +156,17 @@ class Metrics
             return;
         }
         list($name, $subname, $nameType) = $this->_parseName($name, $type);
-        if (!isset($this->_childs[$name])) {
+        if (!isset($this->_children[$name])) {
             $parent = $this;
-            $this->_childs[$name] = new Metrics([
+            $this->_children[$name] = new Metrics([
                 'name'   => $name,
                 'parent' => $parent,
                 'type'   => $nameType
             ]);
         }
-        ksort($this->_childs);
+        ksort($this->_children);
         $this->_merge($metrics);
-        $this->_childs[$name]->add($subname, $type, $metrics);
+        $this->_children[$name]->add($subname, $type, $metrics);
     }
 
     /**
@@ -182,29 +182,29 @@ class Metrics
         }
         list($name, $subname, $type) = $this->_parseName($name);
 
-        if (!isset($this->_childs[$name])) {
+        if (!isset($this->_children[$name])) {
             return;
         }
-        return $this->_childs[$name]->get($subname);
+        return $this->_children[$name]->get($subname);
     }
 
     /**
-     * Gets the childs of the current metrics.
+     * Gets the children of the current metrics.
      *
      * @param  string $name The name reference of the metrics.
-     * @return array        The metrics childs.
+     * @return array        The metrics children.
      */
-    public function childs($name = null)
+    public function children($name = null)
     {
         if (!$name) {
-            return $this->_childs;
+            return $this->_children;
         }
         list($name, $subname, $type) = $this->_parseName($name);
 
-        if (!isset($this->_childs[$name])) {
+        if (!isset($this->_children[$name])) {
             return null;
         }
-        return $this->_childs[$name]->childs($subname);
+        return $this->_children[$name]->children($subname);
     }
 
     /**

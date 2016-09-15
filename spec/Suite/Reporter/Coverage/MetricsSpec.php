@@ -212,7 +212,7 @@ describe("Metrics", function() {
 
         });
 
-        describe("->childs()", function() {
+        describe("->children()", function() {
 
             beforeEach(function() {
 
@@ -226,43 +226,43 @@ describe("Metrics", function() {
 
             });
 
-            it("returns root's childs", function() {
+            it("returns root's children", function() {
 
-                $childs = $this->metrics->childs();
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['Kahlan']))->toBe(true);
+                $children = $this->metrics->children();
+                expect(is_array($children))->toBe(true);
+                expect(isset($children['Kahlan']))->toBe(true);
 
             });
 
             it("returns specified child", function() {
 
-                $childs = $this->metrics->childs('Kahlan');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['Spec']))->toBe(true);
+                $children = $this->metrics->children('Kahlan');
+                expect(is_array($children))->toBe(true);
+                expect(isset($children['Spec']))->toBe(true);
 
-                $childs = $this->metrics->childs('Kahlan\Spec');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['Fixture']))->toBe(true);
+                $children = $this->metrics->children('Kahlan\Spec');
+                expect(is_array($children))->toBe(true);
+                expect(isset($children['Fixture']))->toBe(true);
 
-                $childs = $this->metrics->childs('Kahlan\Spec\Fixture');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['Reporter']))->toBe(true);
+                $children = $this->metrics->children('Kahlan\Spec\Fixture');
+                expect(is_array($children))->toBe(true);
+                expect(isset($children['Reporter']))->toBe(true);
 
-                $childs = $this->metrics->childs('Kahlan\Spec\Fixture\Reporter');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['Coverage']))->toBe(true);
+                $children = $this->metrics->children('Kahlan\Spec\Fixture\Reporter');
+                expect(is_array($children))->toBe(true);
+                expect(isset($children['Coverage']))->toBe(true);
 
-                $childs = $this->metrics->childs('Kahlan\Spec\Fixture\Reporter\Coverage');
-                expect(is_array($childs))->toBe(true);
-                expect(isset($childs['ExtraEmptyLine']))->toBe(true);
-                expect(isset($childs['NoEmptyLine']))->toBe(true);
+                $children = $this->metrics->children('Kahlan\Spec\Fixture\Reporter\Coverage');
+                expect(is_array($children))->toBe(true);
+                expect(isset($children['ExtraEmptyLine']))->toBe(true);
+                expect(isset($children['NoEmptyLine']))->toBe(true);
 
             });
 
             it("returns `null` on unknown child", function() {
 
-                $childs = $this->metrics->childs('unknown_child');
-                expect($childs)->toBe(null);
+                $children = $this->metrics->children('unknown_child');
+                expect($children)->toBe(null);
 
             });
 
