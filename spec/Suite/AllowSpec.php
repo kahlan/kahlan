@@ -90,6 +90,16 @@ describe("Allow", function() {
 
         });
 
+        it("stubs with multiple return value", function() {
+
+            $foo = new Foo();
+            allow($foo)->toReceive('message')->andReturn(null, 'Hello World!', 'Good Bye!');
+            expect($foo->message())->toBe(null);
+            expect($foo->message())->toBe('Hello World!');
+            expect($foo->message())->toBe('Good Bye!');
+
+        });
+
         it("stubs only on the stubbed instance", function() {
 
             $foo = new Foo();
