@@ -78,7 +78,7 @@ class NodeDef
     public $close = '';
 
     /**
-     * The childs of the node.
+     * The children of the node.
      *
      * @var array
      */
@@ -116,10 +116,10 @@ class NodeDef
      */
     public function __toString()
     {
-        $childs = '';
+        $children = '';
         foreach ($this->tree as $node) {
-            $childs .= (string) $node;
+            $children .= (string) $node;
         }
-        return $this->body . $childs . $this->close;
+        return $this->body . $children . $this->close;
     }
 }

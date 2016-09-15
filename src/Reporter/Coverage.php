@@ -173,7 +173,7 @@ class Coverage extends Terminal
         if ($verbosity === 1) {
             return;
         }
-        foreach ($metrics->childs() as $child) {
+        foreach ($metrics->children() as $child) {
             $this->_renderChildMetrics($child, $verbosity);
         }
     }
