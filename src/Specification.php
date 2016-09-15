@@ -198,8 +198,6 @@ class Specification extends Scope
             $this->_root->_failures++;
         }
 
-        $this->summary()->log($this->log());
-
         if ($this->_parent && $runAfterEach) {
             try {
                 $this->_parent->runCallbacks('afterEach');
@@ -207,6 +205,8 @@ class Specification extends Scope
                 $this->_exception($exception, true);
             }
         }
+
+        $this->summary()->log($this->log());
 
         $this->report('specEnd', $this->log());
 
