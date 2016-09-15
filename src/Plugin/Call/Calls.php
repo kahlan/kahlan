@@ -141,7 +141,7 @@ class Calls
                     $reference = $log['method']->actualReturn();
                 }
                 if (!is_object($reference)) {
-                    $message = reset($message);
+                    $message = reset($messages);
                     $reference = $message->reference();
                 }
                 $reference = $message->isStatic() && is_object($reference) ? get_class($reference) : $reference;

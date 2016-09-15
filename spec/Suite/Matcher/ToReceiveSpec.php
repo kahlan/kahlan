@@ -350,6 +350,26 @@ describe("toReceive", function() {
 
                 });
 
+                it("expects stubbed chain to be called if one path exists", function() {
+
+                    $foo = new Foo();
+                    $double = Double::instance();
+                    allow($foo)->toReceive('a')->andReturn(null, $double);
+                    allow($double)->toReceive('b')->andReturn('success');
+
+                    expect($foo)->toReceive('a', 'b')->where([
+                        'a' => ['arg1'],
+                        'b' => ['arg2']
+                    ]);
+
+                    expect($foo->a('arg1'))->toBe(null);
+                    expect($instance = $foo->a('arg1'))->toBe($double);
+
+                    expect($instance->b('arg2'))->toBe('success');
+
+                });
+
+
                 it("throws an exception when required arguments are applied on a method not present in the chain", function() {
 
                     expect(function() {
