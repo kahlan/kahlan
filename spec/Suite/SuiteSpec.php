@@ -1022,7 +1022,7 @@ describe("Suite", function() {
 
         });
 
-        it("calls `afterX` callbacks if an exception occurs during callbacks", function() {
+        it("calls `afterEach` callbacks if an exception occurs during callbacks", function() {
 
             $describe = $this->suite->describe("", function() {
 
@@ -1051,6 +1051,34 @@ describe("Suite", function() {
             $report = reset($results);
             $actual = $report->exception()->getMessage();
             expect($actual)->toBe('Breaking the flow should execute afterEach anyway.');
+
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
+
+        });
+
+        it("logs error if an exception is occuring during an `afterEach` callbacks", function() {
+
+            $describe = $this->suite->describe("", function() {
+
+                $this->it("does nothing", function() {
+                });
+
+                $this->afterEach(function() {
+                    throw new Exception('Errors occured in afterEach should be logged anyway.');
+                });
+
+            });
+
+            $this->suite->run();
+
+            $results = $this->suite->summary()->logs('errored');
+
+            expect($results)->toHaveLength(1);
+
+            $report = reset($results);
+            $actual = $report->exception()->getMessage();
+            expect($actual)->toBe('Errors occured in afterEach should be logged anyway.');
 
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(false);
