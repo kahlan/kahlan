@@ -474,17 +474,21 @@ EOD;
         foreach ([
             'pending'  => 'cyan',
             'excluded' => 'yellow',
-            'skipped'  => 'd'
+            'skipped'  => '90'
         ] as $type => $color) {
             if (!$logs = $summary->logs($type)) {
                 continue;
             }
             $count = count($logs);
-            $this->write(ucfirst($type) . " specification" . ($count > 1 ? 's' : '') . ": {$count}\n\n", $color);
+            if ($this->_colors) {
+                $this->prefix($this->format(' ', "n;;{$color}") . ' ');
+            }
+            $this->write(ucfirst($type) . " specification" . ($count > 1 ? 's' : '') . ": {$count}\n");
 
             foreach ($logs as $log) {
                 $this->write("{$log->file()}, line {$log->line()}\n", 'd');
             }
+            $this->prefix('');
             $this->write("\n");
         }
 
