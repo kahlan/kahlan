@@ -63,10 +63,11 @@ describe("Kahlan", function() {
             expect($this->specs->commandLine()->get())->toBe([
                 'src'        => ['src'],
                 'spec'       => ['spec/Fixture/Kahlan/Spec'],
+                'pattern'    => "*MySpec.php",
                 'reporter'   => [
                     "verbose"
                 ],
-                'pattern'    => "*MySpec.php",
+                'coverage'   => '3',
                 'config'     => "spec/Fixture/Kahlan/kahlan-config.php",
                 'ff'         => 5,
                 'cc'         => true,
@@ -80,8 +81,7 @@ describe("Kahlan", function() {
                     'Kahlan\Plugin\Call',
                     'Kahlan\Plugin\Stub',
                     'Kahlan\Plugin\Quit'
-                ],
-                'coverage'   => '3'
+                ]
             ]);
 
         });

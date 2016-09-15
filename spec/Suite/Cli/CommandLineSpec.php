@@ -13,6 +13,7 @@ describe("CommandLine", function() {
             $commandLine->option('option1', ['type' => 'boolean']);
             expect($commandLine->option('option1'))->toEqual([
                 'type'    => 'boolean',
+                'group'   => false,
                 'array'   => false,
                 'value'   => null,
                 'default' => null
@@ -23,6 +24,7 @@ describe("CommandLine", function() {
             expect(isset($options['option1']))->toBe(true);
             expect($options['option1'])->toEqual([
                 'type'    => 'boolean',
+                'group'   => false,
                 'array'   => false,
                 'value'   => null,
                 'default' => null
@@ -35,6 +37,7 @@ describe("CommandLine", function() {
             $commandLine = new CommandLine();
             expect($commandLine->option('option1'))->toEqual([
                 'type'    => 'string',
+                'group'   => false,
                 'array'   => false,
                 'value'   => null,
                 'default' => null
@@ -48,6 +51,7 @@ describe("CommandLine", function() {
             $commandLine->option('option1', ['type' => 'boolean']);
             expect($commandLine->option('option1'))->toEqual([
                 'type'    => 'boolean',
+                'group'   => false,
                 'array'   => false,
                 'value'   => null,
                 'default' => null
@@ -56,6 +60,7 @@ describe("CommandLine", function() {
             $commandLine->option('option1', 'default', 'value1');
             expect($commandLine->option('option1'))->toEqual([
                 'type'    => 'boolean',
+                'group'   => false,
                 'array'   => false,
                 'value'   => null,
                 'default' => 'value1'
@@ -183,7 +188,7 @@ describe("CommandLine", function() {
                 'option1:sub3' => ['type' => 'boolean', 'default' => true],
             ]);
             $actual = $commandLine->parse([
-                'command', '--option1:sub1', '--option1:sub1=value1' , '--option1:sub1=value2' , '--option1:sub2=value3'
+                'command', '--option1:sub1', '--option1:sub1=value1', '--option1:sub1=value2', '--option1:sub2=value3'
             ]);
             expect($actual)->toEqual([
                 'option1' => [
@@ -273,6 +278,9 @@ describe("CommandLine", function() {
                     if (!$value) {
                         return  'empty_value';
                     }
+                    if ($value === 'default_value') {
+                        return 'default_value';
+                    }
                     return 'non_empty_value';
                 }
             ]]);
@@ -285,6 +293,51 @@ describe("CommandLine", function() {
 
             $actual = $commandLine->parse(['command', '--option1="some_value"']);
             expect($commandLine->get('option1'))->toEqual('non_empty_value');
+
+        });
+
+        it("returns a group subset", function() {
+
+            $commandLine = new CommandLine([
+                'option1:sub1' => ['array' => true],
+                'option1:sub3' => ['type' => 'boolean', 'default' => true],
+            ]);
+            $actual = $commandLine->parse([
+                'command', '--option1:sub1', '--option1:sub1=value1', '--option1:sub1=value2', '--option1:sub2=value3'
+            ]);
+
+            expect($commandLine->get('option1'))->toBe([
+                'sub3' => true,
+                'sub1' => [
+                    null,
+                    'value1',
+                    'value2'
+                ],
+                'sub2' => 'value3'
+            ]);
+
+        });
+
+        it("returns a group subset even when no explicitly defined", function() {
+
+            $commandLine = new CommandLine();
+            $actual = $commandLine->parse([
+                'command', '--option1:sub1=value1', '--option1:sub2=value2'
+            ]);
+
+            expect($commandLine->get('option1'))->toBe([
+                'sub1' => 'value1',
+                'sub2' => 'value2'
+            ]);
+
+        });
+
+        it("returns an array by default for group subsets", function() {
+
+            $commandLine = new CommandLine(['option1:sub1' => ['array' => true],]);
+            $actual = $commandLine->parse(['command']);
+
+            expect($commandLine->get('option1'))->toBe([]);
 
         });
 

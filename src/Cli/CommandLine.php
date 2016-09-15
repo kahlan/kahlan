@@ -12,6 +12,13 @@ class CommandLine {
     protected $_options = [];
 
     /**
+     * Defaults options values
+     *
+     * @var array
+     */
+    protected $_defaults = [];
+
+    /**
      * Arguments values.
      *
      * @var array
@@ -52,6 +59,7 @@ class CommandLine {
     {
         $defaults = [
             'type'    => 'string',
+            'group'   => false,
             'array'   => false,
             'value'   => null,
             'default' => null
@@ -63,7 +71,19 @@ class CommandLine {
             return $defaults;
         }
         $config = is_array($config) ? $config + $defaults : [$config => $value] + $this->option($name);
-        return $this->_options[$name] = $config;
+
+        $this->_options[$name] = $config;
+
+        list($key, $extra) = $this->_splitOptionName($name);
+
+        if ($extra) {
+            $this->option($key, ['group' => true, 'array' => true]);
+        }
+        if ($config['default'] !== null) {
+            $this->_defaults[$key][$extra] = $this->_get($name);
+        }
+
+        return $config;
     }
 
     /**
@@ -76,7 +96,7 @@ class CommandLine {
     public function parse($argv, $override = true)
     {
         $exists = [];
-        $override ? $this->_values = [] : $exists = array_fill_keys(array_keys($this->_values), true);
+        $override ? $this->_values = $this->_defaults : $exists = array_fill_keys(array_keys($this->_values), true);
 
         foreach($argv as $arg) {
             if ($arg === '--') {
@@ -89,6 +109,7 @@ class CommandLine {
                 }
             }
         }
+
         return $this->get();
     }
 
@@ -139,6 +160,9 @@ class CommandLine {
     public function set($name, $value)
     {
         list($key, $extra) = $this->_splitOptionName($name);
+        if ($extra && !isset($this->_options[$key])) {
+            $this->option($key, ['group' => true, 'array' => true]);
+        }
         return $this->_values[$key][$extra] = $value;
     }
 
@@ -174,17 +198,6 @@ class CommandLine {
             return $this->_get($name);
         }
         $result = [];
-        foreach ($this->_options as $name => $value) {
-            list($key, $extra) = $this->_splitOptionName($name);
-            if (isset($value['default'])) {
-                if ($extra === '') {
-                    $result[$key] = $this->_get($name);
-                } else {
-                    $result[$key][$extra] = $this->_get($name);
-                }
-            }
-        }
-
         foreach ($this->_values as $key => $data) {
             foreach ($data as $extra => $value) {
                 if ($extra === '') {
@@ -207,7 +220,20 @@ class CommandLine {
     {
         $config = $this->option($name);
         list($key, $extra) = $this->_splitOptionName($name);
-        $value = isset($this->_values[$key][$extra]) ? $this->_values[$key][$extra] : $config['default'];
+
+        if ($extra === '' && $config['group']) {
+            $result = [];
+            if (!isset($this->_values[$key])) {
+                return $result;
+            }
+            foreach ($this->_values[$key] as $extra => $value) {
+                $result[$extra] = $this->_get($name . ':' . $extra);
+            }
+            return $result;
+        } else {
+            $value = isset($this->_values[$key][$extra]) ? $this->_values[$key][$extra] : $config['default'];
+        }
+
         $casted = $this->cast($value, $config['type'], $config['array']);
         if (!isset($config['value'])) {
             return $casted;
