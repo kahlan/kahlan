@@ -59,11 +59,11 @@ describe("Summary", function() {
 
         it("gets the total number of expectations", function() {
 
-            $log1 = new Log(['type' => 'passed']);
+            $log1 = new Log();
             $log1->add('passed', []);
             $log1->add('passed', []);
 
-            $log2 = new Log(['type' => 'failed']);
+            $log2 = new Log();
             $log2->add('failed', []);
             $log1->add('passed', []);
             $log2->add('failed', []);
@@ -139,6 +139,45 @@ describe("Summary", function() {
                 $value1,
                 $value2,
             ]);
+
+        });
+
+    });
+
+    describe("->logs()", function() {
+
+        it("returns the total number of specs of a specific type", function() {
+
+            $this->result->log(new Log(['type' => 'passed']));
+            $this->result->log(new Log(['type' => 'passed']));
+            $this->result->log(new Log(['type' => 'passed']));
+            $this->result->log(new Log(['type' => 'pending']));
+            $this->result->log(new Log(['type' => 'skipped']));
+            $this->result->log(new Log(['type' => 'excluded']));
+            $this->result->log(new Log(['type' => 'failed']));
+            $this->result->log(new Log(['type' => 'errored']));
+
+            expect($this->result->logs('passed'))->toHaveLength(3);
+            expect($this->result->logs('skipped'))->toHaveLength(1);
+            expect($this->result->logs('skipped'))->toHaveLength(1);
+            expect($this->result->logs('excluded'))->toHaveLength(1);
+            expect($this->result->logs('failed'))->toHaveLength(1);
+            expect($this->result->logs('errored'))->toHaveLength(1);
+
+        });
+
+        it("returns all spec logs", function() {
+
+            $this->result->log(new Log(['type' => 'passed']));
+            $this->result->log(new Log(['type' => 'passed']));
+            $this->result->log(new Log(['type' => 'passed']));
+            $this->result->log(new Log(['type' => 'pending']));
+            $this->result->log(new Log(['type' => 'skipped']));
+            $this->result->log(new Log(['type' => 'excluded']));
+            $this->result->log(new Log(['type' => 'failed']));
+            $this->result->log(new Log(['type' => 'errored']));
+
+            expect($this->result->logs())->toHaveLength(8);
 
         });
 
