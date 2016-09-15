@@ -90,7 +90,7 @@ class Method extends \Kahlan\Plugin\Call\Message
                 $closure = $closure->bindTo($self, get_class($self));
             }
             $this->_return = call_user_func_array($closure, $args);
-        } elseif (isset($this->_returns[$this->_returnIndex])) {
+        } elseif ($this->_returns && array_key_exists($this->_returnIndex, $this->_returns)) {
             $this->_return = $this->_returns[$this->_returnIndex++];
         } else {
             $this->_return = $this->_returns ? end($this->_returns) : null;
