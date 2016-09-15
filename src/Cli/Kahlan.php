@@ -526,6 +526,10 @@ EOD;
                 }
 
                 $class = 'Kahlan\Reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', trim($name))));
+                if (!class_exists($class)) {
+                    fwrite(STDERR, "Error: unexisting reporter `'{$name}'` can't find class `$class`.\n");
+                    exit(-1);
+                }
                 $collection->add($name, new $class($params));
             }
         });
