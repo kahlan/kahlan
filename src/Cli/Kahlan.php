@@ -499,11 +499,14 @@ EOD;
                 $name = $parts[0];
                 $output = isset($parts[1]) ? $parts[1] : null;
 
+                $args = $this->commandLine()->get('dot');
+                $args = $args ?: [];
+
                 if (!$name === null || $name === 'none') {
                     continue;
                 }
 
-                $params = [
+                $params = $args + [
                     'start'  => $this->_start,
                     'colors' => !$this->commandLine()->get('no-colors'),
                     'header' => !$this->commandLine()->get('no-header')
