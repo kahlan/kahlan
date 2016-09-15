@@ -62,4 +62,64 @@ describe("Log", function() {
 
     });
 
+    describe("->passed()", function() {
+
+        it("returns `true` type is `'passed'`", function() {
+
+            $log = new Log(['type' => 'passed']);
+            expect($log->passed())->toBe(true);
+
+        });
+
+        it("returns `true` type is `'skipped'`", function() {
+
+            $log = new Log(['type' => 'skipped']);
+            expect($log->passed())->toBe(true);
+
+        });
+
+        it("returns `true` type is `'excluded'`", function() {
+
+            $log = new Log(['type' => 'excluded']);
+            expect($log->passed())->toBe(true);
+
+        });
+
+        it("returns `false` type is `'failed'`", function() {
+
+            $log = new Log(['type' => 'failed']);
+            expect($log->passed())->toBe(false);
+
+        });
+
+        it("returns `false` type is `'errored'`", function() {
+
+            $log = new Log(['type' => 'errored']);
+            expect($log->passed())->toBe(false);
+
+        });
+
+        it("returns `true` when logged exceptions passed", function() {
+
+            $log = new Log();
+            $log->add('passed', []);
+            $log->add('passed', []);
+
+            expect($log->passed())->toBe(true);
+
+        });
+
+        it("returns `false` when some logged exceptions failed", function() {
+
+            $log = new Log();
+            $log->add('passed', []);
+            $log->add('passed', []);
+            $log->add('failed', []);
+
+            expect($log->passed())->toBe(false);
+
+        });
+
+    });
+
 });
