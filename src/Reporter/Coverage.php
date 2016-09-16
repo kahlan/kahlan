@@ -43,6 +43,13 @@ class Coverage extends Terminal
     protected $_enabled = true;
 
     /**
+     * Store prefix by level for tree rendering.
+     *
+     * @var array
+     */
+    protected $_prefixes = [];
+
+    /**
      * The Constructor.
      *
      * @param array $config The config for the reporter, the options are:
@@ -157,41 +164,128 @@ class Coverage extends Terminal
      *                           - 4      : overall coverage by methods and functions.
      *                           - string : coverage for a fully namespaced (class/method/namespace) string.
      */
-    protected function _renderChildMetrics($metrics, $verbosity = 1)
+    protected function _renderMetrics($metrics, $verbosity)
     {
-        $type = $metrics->type();
-        if ($verbosity === 2 && ($type === 'class' || $type === 'function')) {
-            return;
-        }
-        if ($verbosity === 3 && ($type === 'function' || $type === 'method')) {
-            return;
-        }
-        // If parent is null, this is the total so do not output as we will do this later
-        if (!is_null($metrics->parent())) {
-            $this->_renderMetric($metrics);
-        }
+        $maxLabelWidth = null;
         if ($verbosity === 1) {
             return;
         }
-        foreach ($metrics->children() as $child) {
-            $this->_renderChildMetrics($child, $verbosity);
-        }
-    }
-
-    /**
-     * Outputs some metrics info for a given metric.
-     *
-     * @param Metrics $metrics A metrics instance.
-     */
-    protected function _renderMetric($metrics)
-    {
-        $name = $metrics->name();
+        $metricsReport = $this->_getMetricsReport($metrics->children(), $verbosity, 0, 3, $maxLabelWidth);
+        $maxLabelWidth += 4;
         $stats = $metrics->data();
         $percent = number_format($stats['percent'], 2);
         $style = $this->_style($percent);
-        $this->write(str_pad("Lines: {$percent}%", 15), $style);
-        $this->write(trim(str_pad("({$stats['cloc']}/{$stats['lloc']})", 20) . "{$name}"));
+        $maxLineWidth = strlen($stats['lloc']);
+
+        $this->write(str_repeat(' ', $maxLabelWidth));
+        $this->write('  ');
+        $this->write(str_pad('Lines', $maxLineWidth * 2 + 3, ' ', STR_PAD_BOTH));
+        $this->write(str_pad('%', 12, ' ', STR_PAD_LEFT));
+        $this->write("\n\n");
+        $this->write(str_pad(' \\', $maxLabelWidth));
+        $this->write('  ');
+        $this->write(str_pad("{$stats['cloc']}", $maxLineWidth, ' ', STR_PAD_LEFT));
+        $this->write(' / ');
+        $this->write(str_pad("{$stats['lloc']}", $maxLineWidth, ' ', STR_PAD_LEFT));
+        $this->write('     ');
+        $this->write(str_pad("{$percent}%", 7, ' ', STR_PAD_LEFT), $style);
         $this->write("\n");
+        $this->_renderMetricsReport($metricsReport, $maxLabelWidth, $maxLineWidth, 0);
+    }
+
+    /**
+     * Outputs some metrics reports built using `::_getMetricsReport()`.
+     *
+     * @param array $metricsReport An array of nested metrics reports extracted according some verbosity.
+     * @param array $labelWidth    The width column of the label column used for padding.
+     * @param array $lineWidth     The width column of the covered lines data used for padding.
+     * @param array $depth         The actual depth in the reporting to build tree prefix.
+     */
+    protected function _renderMetricsReport($metricsReport, $labelWidth, $lineWidth, $depth)
+    {
+        $nbChilden = count($metricsReport);
+        $index = 0;
+        foreach ($metricsReport as $name => $data) {
+            $isLast = $index === $nbChilden - 1;
+            if ($isLast) {
+                $this->_prefixes[$depth] = '└──';
+            } else {
+                $this->_prefixes[$depth] = '├──';
+            }
+
+            $metrics = $data['metrics'];
+            $stats = $metrics->data();
+            $percent = number_format($stats['percent'], 2);
+            $style = $this->_style($percent);
+
+            $prefix = join('', $this->_prefixes) . ' ';
+            $diff = strlen($prefix) - strlen(utf8_decode($prefix));
+
+            $type = $metrics->type();
+            $color = $type === 'function' || $type === 'method' ? 'd' : '';
+            $this->write($prefix);
+            $this->write(str_pad($name, $labelWidth + $diff - strlen($prefix)), $color);
+            $this->write('  ');
+            $this->write(str_pad("{$stats['cloc']}", $lineWidth, ' ', STR_PAD_LEFT));
+            $this->write(' / ');
+            $this->write(str_pad("{$stats['lloc']}", $lineWidth, ' ', STR_PAD_LEFT));
+            $this->write('     ');
+            $this->write(str_pad("{$percent}%", 7, ' ', STR_PAD_LEFT), $style);
+            $this->write("\n");
+
+            if ($isLast) {
+                $this->_prefixes[$depth] = '   ';
+            } else {
+                $this->_prefixes[$depth] = '│  ';
+            }
+            $this->_renderMetricsReport($data['children'], $labelWidth, $lineWidth, $depth + 1);
+            $index++;
+        }
+        $this->_prefixes[$depth] = '';
+    }
+
+    /**
+     * Extract some metrics reports to display according to a verbosity parameter.
+     *
+     * @param Metrics[] $children A array of metrics.
+     * @param array     $options  The options for the reporter, the options are:
+     *                            - `'verbosity`' _integer|string_: The verbosity level:
+     *                              - 1      : overall coverage value for the whole code.
+     *                              - 2      : overall coverage by namespaces.
+     *                              - 3      : overall coverage by classes.
+     *                              - 4      : overall coverage by methods and functions.
+     *                              - string : coverage for a fully namespaced (class/method/namespace) string.
+     * @param array     $depth     The actual depth in the reporting.
+     * @param array     $tab       The size of the tab used for lablels.
+     * @param array     $maxWidth  Will contain the maximum width obtained for labels.
+     */
+    protected function _getMetricsReport($children, $verbosity, $depth = 0, $tab = 3, &$maxWidth = null)
+    {
+        $list = [];
+        foreach ($children as $child) {
+            $type = $child->type();
+
+            if ($verbosity === 2 && $type !== 'namespace') {
+                continue;
+            }
+            if ($verbosity === 3 && ($type === 'function' || $type === 'method')) {
+                continue;
+            }
+
+            $name = $child->name();
+            $pos = strrpos($name, '\\', $type === 'namespace' ? - 2 : 0);
+            $basename = substr($name, $pos !== false ? $pos + 1 : 0);
+
+            $len = strlen($basename) + ($depth + 1) * $tab;
+            if ($len > $maxWidth) {
+                $maxWidth = $len;
+            }
+            $list[$basename] = [
+                'metrics'  => $child,
+                'children' => $this->_getMetricsReport($child->children(), $verbosity, $depth + 1, $tab, $maxWidth)
+            ];
+        }
+        return $list;
     }
 
     /**
@@ -262,23 +356,36 @@ class Coverage extends Terminal
      */
     public function stop($summary)
     {
-        $this->write("Coverage Summary\n----------------\n\n");
-        if (is_numeric($this->_verbosity)) {
-            $metrics = $this->metrics();
-            $this->_renderChildMetrics($metrics, $this->_verbosity);
-        } else {
-            $metrics = $this->metrics()->get($this->_verbosity);
-            if ($metrics) {
-                $this->_renderChildMetrics($metrics);
-                $this->write("\n");
-                $this->_renderCoverage($metrics);
-            } else {
-                $this->write("\nUnexisting namespace: `{$this->_verbosity}`, coverage can't be generated.\n\n", "n;yellow");
-            }
+        $this->write("Coverage Summary\n----------------\n");
+
+        $verbosity = $this->_verbosity;
+        $metrics = is_numeric($this->_verbosity) ? $this->metrics() : $this->metrics()->get($verbosity);
+
+        if (!$metrics) {
+            $this->write("\nUnexisting namespace: `{$this->_verbosity}`, coverage can't be generated.\n\n", "n;yellow");
         }
+
+        $this->_renderMetrics($metrics, $verbosity);
+        $this->write("\n");
+
+        if (is_string($verbosity)) {
+            $this->_renderCoverage($metrics);
+            $this->write("\n");
+        }
+
         // Output the original stored metrics object (the total coverage)
-        $this->write("Total:\n");
-        $this->_renderMetric($metrics);
+        $name = $metrics->name();
+        $stats = $metrics->data();
+        $percent = number_format($stats['percent'], 2);
+        $this->write(str_repeat('  ', substr_count($name, '\\')));
+
+        $pos = strrpos($name, '\\');
+        $basename = substr($name, $pos !== false ? $pos + 1 : 0);
+        $this->write('Total: ');
+        $this->write("{$percent}% ", $this->_style($percent));
+        $this->write("({$stats['cloc']}/{$stats['lloc']})");
+        $this->write("\n");
+
         // Output the time to collect coverage
         $time = number_format($this->_time, 3);
         $this->write("\nCollected in {$time} seconds\n\n\n");
