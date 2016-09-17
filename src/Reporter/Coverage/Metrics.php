@@ -145,11 +145,10 @@ class Metrics
      * Adds some metrics to the current metrics.
      *
      * @param string $name The name reference of the metrics.
-     * @param string $type The type of metrics to add.
      *                     Possible values are: `'namespace'`, `'class' or 'function'.
      * @param array        The metrics array to add.
      */
-    public function add($name, $type, $metrics)
+    public function add($name, $metrics)
     {
         $parts = $this->_parseName($name);
         $this->_merge($metrics);

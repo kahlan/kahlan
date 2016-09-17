@@ -356,26 +356,22 @@ class Collector
      */
     protected function _processNode($file, $node, $coverage, $path)
     {
-        if ($node->hasMethods) {
-            $path = "{$path}" . $node->name;
-            return $this->_processTree($file, $node->tree, $coverage, $path);
-        } if ($node->type === 'namespace') {
+        if ($node->type === 'namespace') {
             $path = "{$path}" . $node->name . '\\';
-            return $this->_processTree($file, $node->tree, $coverage, $path);
-        } if ($node->type === 'function') {
+            $this->_processTree($file, $node->tree, $coverage, $path);
+        } elseif ($node->hasMethods) {
+            $path = "{$path}" . $node->name;
+            $this->_processTree($file, $node->tree, $coverage, $path);
+        } elseif ($node->type === 'function') {
             $prefix = $node->isMethod ? "{$path}::" : "{$path}";
             $path = $prefix . $node->name . '()';
-            $type = $node->type;
-        } if ($node->type === 'open') {
-            return $this->_processTree($file, $node->tree, $coverage, '');
-        } else {
-            $type = $node->parent ? $node->parent->type : 'namespace';
-        }
-        if ($type === 'interface') {
+        } elseif ($node->type === 'interface') {
             return;
+        } else {
+            $this->_processTree($file, $node->tree, $coverage, '');
         }
         $metrics = $this->_processMetrics($file, $node, $coverage);
-        $this->_metrics->add($path, $type, $metrics);
+        $this->_metrics->add($path, $metrics);
     }
 
     /**
