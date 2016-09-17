@@ -57,8 +57,8 @@ describe("Metrics", function() {
             unset($actual['files']);
 
             expect($actual)->toBe([
-                'loc'      => 49,
-                'nlloc'    => 33,
+                'loc'      => 53,
+                'nlloc'    => 37,
                 'lloc'     => 16,
                 'cloc'     => 8,
                 'coverage' => 8,
@@ -177,8 +177,8 @@ describe("Metrics", function() {
             unset($actual['files']);
 
             expect($actual)->toBe([
-                'loc'       => 9,
-                'nlloc'     => 5,
+                'loc'       => 8,
+                'nlloc'     => 4,
                 'lloc'      => 4,
                 'cloc'      => 2,
                 'coverage'  => 2,
@@ -267,8 +267,8 @@ describe("Metrics", function() {
             unset($actual['files']);
 
             expect($actual)->toBe([
-                'loc'      => 9,
-                'nlloc'    => 8,
+                'loc'      => 10,
+                'nlloc'    => 9,
                 'lloc'     => 1,
                 'cloc'     => 1,
                 'coverage' => 1,
