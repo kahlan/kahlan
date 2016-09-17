@@ -36,11 +36,11 @@ describe("Suite", function() {
 
     context("when inspecting flow", function() {
 
-        describe("->before()", function() {
+        describe("->beforeAll()", function() {
 
             $this->nb = 0;
 
-            before(function() {
+            beforeAll(function() {
                 $this->nb++;
             });
 
@@ -96,11 +96,11 @@ describe("Suite", function() {
 
         });
 
-        describe("->after()", function() {
+        describe("->afterAll()", function() {
 
             $this->nb = 0;
 
-            after(function() {
+            afterAll(function() {
                 $this->nb++;
             });
 
@@ -211,30 +211,30 @@ describe("Suite", function() {
 
     });
 
-    describe("->before()", function() {
+    describe("->beforeAll()", function() {
 
         it("creates a before callback", function() {
 
-            $callbacks = $this->suite->callbacks('before');
+            $callbacks = $this->suite->callbacks('beforeAll');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->before(function() {});
-            $callbacks = $this->suite->callbacks('before');
+            $this->suite->beforeAll(function() {});
+            $callbacks = $this->suite->callbacks('beforeAll');
             expect($callbacks)->toHaveLength(1);
 
         });
 
     });
 
-    describe("->after()", function() {
+    describe("->afterAll()", function() {
 
         it("creates a before callback", function() {
 
-            $callbacks = $this->suite->callbacks('after');
+            $callbacks = $this->suite->callbacks('afterAll');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->after(function() {});
-            $callbacks = $this->suite->callbacks('after');
+            $this->suite->afterAll(function() {});
+            $callbacks = $this->suite->callbacks('afterAll');
             expect($callbacks)->toHaveLength(1);
 
         });
@@ -800,7 +800,7 @@ describe("Suite", function() {
 
                 $this->exectuted = ['it' => 0];
 
-                before(function() {
+                beforeAll(function() {
                     skipIf(true);
                 });
 

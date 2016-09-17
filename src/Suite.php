@@ -45,8 +45,8 @@ class Suite extends Scope
      * @var array
      */
     protected $_callbacks = [
-        'before'     => [],
-        'after'      => [],
+        'beforeAll'  => [],
+        'afterAll'   => [],
         'beforeEach' => [],
         'afterEach'  => [],
     ];
@@ -242,10 +242,10 @@ class Suite extends Scope
      *
      * @return self
      */
-    public function before($closure)
+    public function beforeAll($closure)
     {
-        $this->_bind($closure, 'before');
-        $this->_callbacks['before'][] = $closure;
+        $this->_bind($closure, 'beforeAll');
+        $this->_callbacks['beforeAll'][] = $closure;
 
         return $this;
     }
@@ -257,10 +257,10 @@ class Suite extends Scope
      *
      * @return self
      */
-    public function after($closure)
+    public function afterAll($closure)
     {
-        $this->_bind($closure, 'after');
-        $this->_callbacks['after'][] = $closure;
+        $this->_bind($closure, 'afterAll');
+        $this->_callbacks['afterAll'][] = $closure;
 
         return $this;
     }
@@ -348,7 +348,7 @@ class Suite extends Scope
         if ($this->message()) {
             $this->report('suiteStart', $this);
         }
-        $this->runCallbacks('before', false);
+        $this->runCallbacks('beforeAll', false);
     }
 
     /**
@@ -356,7 +356,7 @@ class Suite extends Scope
      */
     protected function _suiteEnd()
     {
-        $this->runCallbacks('after', false);
+        $this->runCallbacks('afterAll', false);
         if ($this->message()) {
             $this->report('suiteEnd', $this);
         }

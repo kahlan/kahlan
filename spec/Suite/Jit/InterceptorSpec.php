@@ -11,7 +11,7 @@ use Kahlan\Spec\Mock\Patcher;
 
 describe("Interceptor", function() {
 
-    before(function() {
+    beforeAll(function() {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -30,7 +30,7 @@ describe("Interceptor", function() {
         Interceptor::unpatch();
     });
 
-    after(function() {
+    afterAll(function() {
         spl_autoload_register($this->composer);
         spl_autoload_unregister([$this->autoloader, 'loadClass']);
         Dir::remove($this->cachePath);

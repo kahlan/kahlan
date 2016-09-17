@@ -138,7 +138,7 @@ describe("Scope", function() {
 
         context("when used in a scope", function() use (&$executed) {
 
-            before(function() {
+            beforeAll(function() {
                 skipIf(true);
             });
 

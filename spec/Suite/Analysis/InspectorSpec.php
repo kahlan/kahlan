@@ -22,7 +22,7 @@ class Parameter
 
 describe("Inspector", function() {
 
-    before(function() {
+    beforeEach(function() {
         $this->class = 'Kahlan\Spec\Fixture\Analysis\SampleClass';
     });
 
