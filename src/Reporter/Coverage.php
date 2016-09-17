@@ -171,6 +171,8 @@ class Coverage extends Terminal
             return;
         }
         $metricsReport = $this->_getMetricsReport($metrics->children(), $verbosity, 0, 3, $maxLabelWidth);
+        $name = $metrics->name() ?: '\\';
+        $maxLabelWidth = max(strlen($name) + 1, $maxLabelWidth);
         $maxLabelWidth += 4;
         $stats = $metrics->data();
         $percent = number_format($stats['percent'], 2);
@@ -182,7 +184,7 @@ class Coverage extends Terminal
         $this->write(str_pad('Lines', $maxLineWidth * 2 + 3, ' ', STR_PAD_BOTH));
         $this->write(str_pad('%', 12, ' ', STR_PAD_LEFT));
         $this->write("\n\n");
-        $this->write(str_pad(' \\', $maxLabelWidth));
+        $this->write(str_pad(' ' . $name, $maxLabelWidth));
         $this->write('  ');
         $this->write(str_pad("{$stats['cloc']}", $maxLineWidth, ' ', STR_PAD_LEFT));
         $this->write(' / ');
