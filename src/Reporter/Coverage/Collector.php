@@ -363,9 +363,11 @@ class Collector
             $path = "{$path}" . $node->name . '\\';
             return $this->_processTree($file, $node->tree, $coverage, $path);
         } if ($node->type === 'function') {
-            $prefix = $node->isMethod ? "{$path}::" : "{$path}\\";
+            $prefix = $node->isMethod ? "{$path}::" : "{$path}";
             $path = $prefix . $node->name . '()';
             $type = $node->type;
+        } if ($node->type === 'open') {
+            return $this->_processTree($file, $node->tree, $coverage, '');
         } else {
             $type = $node->parent ? $node->parent->type : 'namespace';
         }
@@ -449,7 +451,6 @@ class Collector
 
         $metrics['line']['start'] = $node->lines['start'];
         $metrics['line']['stop'] = $node->lines['stop'];
-
         return $metrics;
     }
 

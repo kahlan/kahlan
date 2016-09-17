@@ -22,6 +22,7 @@ describe("Parser", function() {
     describe("->parse()", function() {
 
         it("parses consistently", function() {
+
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Sample.php');
             $parsed = Parser::parse($sample);
             expect(Parser::unparse($parsed))->toBe($sample);
