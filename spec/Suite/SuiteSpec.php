@@ -1114,14 +1114,18 @@ describe("Suite", function() {
 
         it("throws and exception if attempts to call the `run()` function inside a scope", function() {
 
-            $closure = function() {
-                $describe = $this->suite->describe("", function() {
-                    $this->run();
-                });
-                $this->suite->run();
-            };
+            $describe = $this->suite->describe("", function() {
+                $this->run();
+            });
+            $this->suite->run();
 
-            expect($closure)->toThrow(new Exception('Method not allowed in this context.'));
+            $results = $this->suite->summary()->logs('errored');
+            expect($results)->toHaveLength(1);
+
+            $report = reset($results);
+            expect($report->exception()->getMessage())->toBe('Method not allowed in this context.');
+            expect($report->type())->toBe('errored');
+            expect($report->messages())->toBe(['', '']);
 
             expect($this->suite->status())->toBe(-1);
             expect($this->suite->passed())->toBe(false);

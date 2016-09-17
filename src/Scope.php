@@ -9,11 +9,18 @@ use Kahlan\Plugin\Call\Message;
 class Scope
 {
     /**
+     * Indicates whether the scope has been runned or not.
+     *
+     * @var boolean
+     */
+    protected $_runned = false;
+
+    /**
      * Stores the success value.
      *
      * @var boolean
      */
-    protected $_passed = null;
+    protected $_passed = true;
 
     /**
      * Instances stack.
