@@ -149,9 +149,9 @@ class Metrics
      *                     Possible values are: `'namespace'`, `'class' or 'function'.
      * @param array        The metrics array to add.
      */
-    public function add($namet, $type, $metrics)
+    public function add($name, $type, $metrics)
     {
-        $parts = $this->_parseName($namet);
+        $parts = $this->_parseName($name);
         $this->_merge($metrics);
 
         $current = $this;
@@ -187,9 +187,6 @@ class Metrics
      */
     public function get($name = null)
     {
-        if (!$name) {
-            return $this;
-        }
         $parts = $this->_parseName($name);
 
         $child = $this;
