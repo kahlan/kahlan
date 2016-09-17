@@ -82,7 +82,7 @@ class Metrics
             case 'function':
             case 'trait':
             case 'class':
-                $this->_name = $pname ? $pname . '\\' . $options['name'] : $options['name'];
+                $this->_name = $pname ? $pname . $options['name'] : $options['name'];
             break;
             case 'method':
                 $this->_name = $pname ? $pname . '::' . $options['name'] : $options['name'];
@@ -149,24 +149,34 @@ class Metrics
      *                     Possible values are: `'namespace'`, `'class' or 'function'.
      * @param array        The metrics array to add.
      */
-    public function add($name, $type, $metrics)
+    public function add($namet, $type, $metrics)
     {
-        if (!$name) {
-            $this->_merge($metrics, true);
-            return;
-        }
-        list($name, $subname, $nameType) = $this->_parseName($name, $type);
-        if (!isset($this->_children[$name])) {
-            $parent = $this;
-            $this->_children[$name] = new Metrics([
-                'name'   => $name,
-                'parent' => $parent,
-                'type'   => $nameType
-            ]);
-        }
-        ksort($this->_children);
+        $parts = $this->_parseName($namet);
         $this->_merge($metrics);
-        $this->_children[$name]->add($subname, $type, $metrics);
+
+        $current = $this;
+        $length = count($parts);
+        foreach ($parts as $index => $part) {
+            list($name, $type) = $part;
+            if (!isset($current->_children[$name])) {
+                $current->_children[$name] = new static([
+                    'name'   => $name,
+                    'parent' => $current,
+                    'type'   => $type
+                ]);
+            }
+            uksort($current->_children, function($a, $b) {
+                $isFunction1 = substr($a, -2) === '()';
+                $isFunction2 = substr($b, -2) === '()';
+                if ($isFunction1 === $isFunction2) {
+                    return strcmp($a, $b);
+                }
+                return $isFunction1 ? -1 : 1;
+            });
+
+            $current = $current->_children[$name];
+            $current->_merge($metrics, $index === $length - 1);
+        }
     }
 
     /**
@@ -180,12 +190,17 @@ class Metrics
         if (!$name) {
             return $this;
         }
-        list($name, $subname, $type) = $this->_parseName($name);
+        $parts = $this->_parseName($name);
 
-        if (!isset($this->_children[$name])) {
-            return;
+        $child = $this;
+        foreach ($parts as $part) {
+            list($name, $type) = $part;
+            if (!isset($child->_children[$name])) {
+               return;
+            }
+            $child = $child->_children[$name];
         }
-        return $this->_children[$name]->get($subname);
+        return $child;
     }
 
     /**
@@ -196,15 +211,11 @@ class Metrics
      */
     public function children($name = null)
     {
-        if (!$name) {
-            return $this->_children;
+        $child = $this->get($name);
+        if (!$child) {
+            return [];
         }
-        list($name, $subname, $type) = $this->_parseName($name);
-
-        if (!isset($this->_children[$name])) {
-            return null;
-        }
-        return $this->_children[$name]->children($subname);
+        return $child->_children;
     }
 
     /**
@@ -214,19 +225,31 @@ class Metrics
      * @param  string $type The type to use by default if not auto detected.
      * @return array        The parsed name.
      */
-    protected function _parseName($name, $type = null)
+    protected function _parseName($name)
     {
-        $subname = '';
-        if (strpos($name, '\\') !== false) {
-            $type = 'namespace';
-            list($name, $subname) = explode('\\', $name, 2);
-        } elseif (strpos($name, '::') !== false) {
-            $type = 'class';
-            list($name, $subname) = explode('::', $name, 2);
-        } elseif (preg_match('~\(\)$~', $name)) {
-            $type = ($this->_type === 'class' || $this->_type === 'trait') ? 'method' : 'function';
+        $result = [];
+        $parts = preg_split('~([^\\\]*\\\?)~', $name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+        $last = array_pop($parts);
+
+        if (!$last) {
+            return [];
         }
-        return [$name, $subname, $type];
+
+        foreach ($parts as $name) {
+            $result[] = [$name, 'namespace'];
+        }
+
+        if (strpos($last, '::') !== false) {
+            list($name, $subname) = explode('::', $last, 2);
+            $result[] = [$name, 'class'];
+            $result[] = [$subname, 'method'];
+        } elseif (preg_match('~\(\)$~', $last)) {
+            $result[] = [$last, 'function'];
+        } else {
+            $result[] = [$last, substr($last, -1) === '\\' ? 'namespace' : 'class'];
+        }
+        return $result;
     }
 
     /**

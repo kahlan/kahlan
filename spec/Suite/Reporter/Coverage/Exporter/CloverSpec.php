@@ -57,7 +57,7 @@ $expected = <<<EOD
       <line num="12" type="stmt" count="1"/>
       <line num="13" type="stmt" count="0"/>
     </file>
-    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
+    <metrics loc="14" ncloc="10" statements="4" coveredstatements="2"/>
   </project>
 </coverage>
 
@@ -100,7 +100,7 @@ $expected = <<<EOD
       <line num="12" type="stmt" count="1"/>
       <line num="13" type="stmt" count="0"/>
     </file>
-    <metrics loc="16" ncloc="12" statements="4" coveredstatements="2"/>
+    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
   </project>
 </coverage>
 
@@ -161,7 +161,7 @@ $expected = <<<EOD
       <line num="12" type="stmt" count="1"/>
       <line num="13" type="stmt" count="0"/>
     </file>
-    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
+    <metrics loc="14" ncloc="10" statements="4" coveredstatements="2"/>
   </project>
 </coverage>
 
