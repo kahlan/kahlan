@@ -423,7 +423,8 @@ class Collector
      * @param  integer $increment The increment to perform if the line has not already been processed.
      * @return integer            The metric value.
      */
-    protected function _lineMetric($type, $index, $value, $increment = 1) {
+    protected function _lineMetric($type, $index, $value, $increment = 1)
+    {
         if ($this->_processed[$type] >= $index) {
             return $value;
         }

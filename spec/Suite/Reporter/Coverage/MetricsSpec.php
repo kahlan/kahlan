@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan\Spec\Suite\Reporter\Coverage;
 
+require 'spec/Fixture/Reporter/Coverage/GlobalFunctions.php';
+require 'spec/Fixture/Reporter/Coverage/Functions.php';
 use Kahlan\Reporter\Coverage\Collector;
 use Kahlan\Reporter\Coverage\Driver\Xdebug;
 use Kahlan\Reporter\Coverage\Driver\Phpdbg;
@@ -19,6 +21,8 @@ describe("Metrics", function() {
 
     beforeEach(function() {
         $this->path = [
+            'spec/Fixture/Reporter/Coverage/GlobalFunctions.php',
+            'spec/Fixture/Reporter/Coverage/Functions.php',
             'spec/Fixture/Reporter/Coverage/ExtraEmptyLine.php',
             'spec/Fixture/Reporter/Coverage/NoEmptyLine.php'
         ];
@@ -41,6 +45,8 @@ describe("Metrics", function() {
             $this->collector->start();
             $empty->shallNotPass();
             $noEmpty->shallNotPass();
+            \shallNotPass();
+            \Kahlan\Spec\Fixture\Reporter\Coverage\shallNotPass();
             $this->collector->stop();
 
             $metrics = $this->collector->metrics();
@@ -51,13 +57,13 @@ describe("Metrics", function() {
             unset($actual['files']);
 
             expect($actual)->toBe([
-                'loc'      => 29,
-                'nlloc'    => 21,
-                'lloc'     => 8,
-                'cloc'     => 4,
-                'coverage' => 4,
-                'methods'  => 2,
-                'cmethods' => 2,
+                'loc'      => 49,
+                'nlloc'    => 33,
+                'lloc'     => 16,
+                'cloc'     => 8,
+                'coverage' => 8,
+                'methods'  => 4,
+                'cmethods' => 4,
                 'percent'  => 50
             ]);
 
@@ -123,7 +129,7 @@ describe("Metrics", function() {
 
         });
 
-        it("returns function metrics", function() {
+        it("returns methods metrics", function() {
 
             $code = new ExtraEmptyLine();
 
@@ -157,7 +163,72 @@ describe("Metrics", function() {
             expect(isset($files[$path]))->toBe(true);
         });
 
-        it("return empty on unknown metric", function() {
+        it("returns global function metrics", function() {
+
+            $this->collector->start();
+            \shallNotPass();
+            $this->collector->stop();
+
+            $metrics = $this->collector->metrics();
+
+            $actual = $metrics->get('shallNotPass()')->data();
+
+            $files = $actual['files'];
+            unset($actual['files']);
+
+            expect($actual)->toBe([
+                'loc'       => 9,
+                'nlloc'     => 5,
+                'lloc'      => 4,
+                'cloc'      => 2,
+                'coverage'  => 2,
+                'methods'   => 1,
+                'cmethods'  => 1,
+                'line'      => [
+                    'start' => 1,
+                    'stop'  => 9
+                ],
+                'percent'   => 50
+            ]);
+
+            $path = realpath('spec/Fixture/Reporter/Coverage/GlobalFunctions.php');
+            expect(isset($files[$path]))->toBe(true);
+        });
+
+        it("returns function metrics", function() {
+
+            $this->collector->start();
+            \Kahlan\Spec\Fixture\Reporter\Coverage\shallNotPass();
+            $this->collector->stop();
+
+            $metrics = $this->collector->metrics();
+
+            $actual = $metrics->get('Kahlan\Spec\Fixture\Reporter\Coverage\shallNotPass()')->data();
+
+            $files = $actual['files'];
+            unset($actual['files']);
+
+            expect($actual)->toBe([
+                'loc'       => 8,
+                'nlloc'     => 4,
+                'lloc'      => 4,
+                'cloc'      => 2,
+                'coverage'  => 2,
+                'methods'   => 1,
+                'cmethods'  => 1,
+                'line'      => [
+                    'start' => 3,
+                    'stop'  => 11
+                ],
+                'percent'   => 50
+            ]);
+
+            $path = realpath('spec/Fixture/Reporter/Coverage/Functions.php');
+            expect(isset($files[$path]))->toBe(true);
+
+        });
+
+        it("returns empty for unknown metric", function() {
 
             $code = new ExtraEmptyLine();
 
