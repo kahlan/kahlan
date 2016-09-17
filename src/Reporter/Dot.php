@@ -114,8 +114,9 @@ class Dot extends Terminal
         $this->_counter++;
 
         if ($this->_counter % $this->_dotWidth === 0) {
-            $percent = min(floor(($this->_counter * 100) / $this->_total), 100) . '%';
-            $this->write(str_pad($this->_counter, strlen($this->_total) + 1, ' ', STR_PAD_LEFT));
+            $counter = min($this->_counter, $this->_total);
+            $percent = min(floor(($counter * 100) / $this->_total), 100) . '%';
+            $this->write(str_pad($counter, strlen($this->_total) + 1, ' ', STR_PAD_LEFT));
             $this->write(' / ' . $this->_total);
             $this->write(' (' . str_pad($percent, 4, ' ', STR_PAD_LEFT) . ")\n");
         }
