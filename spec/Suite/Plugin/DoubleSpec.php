@@ -22,7 +22,7 @@ describe("Double", function() {
     /**
      * Save current & reinitialize the Interceptor class.
      */
-    before(function() {
+    beforeAll(function() {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -36,7 +36,7 @@ describe("Double", function() {
     /**
      * Restore Interceptor class.
      */
-    after(function() {
+    afterAll(function() {
         Interceptor::load($this->previous);
     });
 
@@ -61,7 +61,7 @@ describe("Double", function() {
 
     describe("::create()", function() {
 
-        before(function() {
+        beforeAll(function() {
             $this->is_method_exists = function($instance, $method, $type = "public") {
                 if (!method_exists($instance, $method)) {
                     return false;

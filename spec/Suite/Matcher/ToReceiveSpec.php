@@ -24,7 +24,7 @@ describe("toReceive", function() {
         /**
          * Save current & reinitialize the Interceptor class.
          */
-        before(function() {
+        beforeAll(function() {
             $this->previous = Interceptor::instance();
             Interceptor::unpatch();
 
@@ -38,7 +38,7 @@ describe("toReceive", function() {
         /**
          * Restore Interceptor class.
          */
-        after(function() {
+        afterAll(function() {
             Interceptor::load($this->previous);
         });
 

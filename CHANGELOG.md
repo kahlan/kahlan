@@ -15,6 +15,7 @@
   * **BC break:** `Stub::on()` is now deprecated use `allow()` instead.
   * **BC break:** Rename `Stub::create()` to `Double::instance()`.
   * **BC break:** Rename `Stub::classname()` to `Double::classname()`.
+  * **BC break:** Rename `before()` and `after()` to `beforeAll()` and `afterAll()`.
   * **BC break:** Remove `toReceiveNext` matchers in flavor of `->ordered` attribute to be more close to rspec way.
 
 
