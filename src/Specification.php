@@ -83,7 +83,6 @@ class Specification extends Scope
      */
     protected function _process()
     {
-        $this->_passed = true;
         if ($this->_root->focused() && !$this->focused()) {
             return;
         }
@@ -100,7 +99,7 @@ class Specification extends Scope
             try {
                 $this->_specStart();
                 try {
-                    $result = $this->_run();
+                    $result = $this->_execute();
                 } catch (Throwable $exception) {
                     $this->_exception($exception);
                 }
@@ -113,7 +112,7 @@ class Specification extends Scope
             try {
                 $this->_specStart();
                 try {
-                    $result = $this->_run();
+                    $result = $this->_execute();
                 } catch (Exception $exception) {
                     $this->_exception($exception);
                 }
@@ -130,21 +129,26 @@ class Specification extends Scope
     /**
      * Processes the spec.
      */
-    protected function _run()
+    protected function _execute()
     {
         static::$_instances[] = $this;
 
         $result = null;
-        $closure = $this->_closure;
-        $this->_expectations = [];
+
+        $spec = function() {
+            $this->_expectations = [];
+            $closure = $this->_closure;
+            $result = $closure($this);
+            foreach ($this->_expectations as $expectation) {
+                $this->_passed = $expectation->passed() && $this->_passed;
+            }
+            array_pop(static::$_instances);
+            return $result;
+        };
 
         if (Suite::$PHP >= 7) {
             try {
-                $result = $closure($this);
-                foreach ($this->_expectations as $expectation) {
-                    $this->_passed = $expectation->passed() && $this->_passed;
-                }
-                array_pop(static::$_instances);
+                $result = $spec();
             } catch (Throwable $e) {
                 $this->_passed = false;
                 array_pop(static::$_instances);
@@ -152,11 +156,7 @@ class Specification extends Scope
             }
         } else {
             try {
-                $result = $closure($this);
-                foreach ($this->_expectations as $expectation) {
-                    $this->_passed = $expectation->passed() && $this->_passed;
-                }
-                array_pop(static::$_instances);
+                $result = $spec();
             } catch (Exception $e) {
                 $this->_passed = false;
                 array_pop(static::$_instances);
@@ -222,9 +222,10 @@ class Specification extends Scope
      */
     public function passed(&$return = null)
     {
-        if ($this->_passed === null) {
+        if (!$this->_runned) {
             $this->_process();
         }
+        $this->_runned = true;
         $return = $this->_return;
         return $this->_passed;
     }

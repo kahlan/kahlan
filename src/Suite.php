@@ -296,40 +296,36 @@ class Suite extends Scope
     }
 
     /**
-     * Suite run.
+     * Suite processing.
      *
      * @param array $options Process options.
      */
     protected function _process($options = [])
     {
-        $this->_passed = true;
         static::$_instances[] = $this;
         $this->_errorHandler(true, $options);
 
+        $suite = function() {
+            $this->_suiteStart();
+            foreach ($this->_children as $child) {
+                if ($this->failfast()) {
+                    break;
+                }
+                $this->_passed = $child->passed() && $this->_passed;
+            }
+            $this->_suiteEnd();
+        };
+
         if (Suite::$PHP >= 7) {
             try {
-                $this->_suiteStart();
-                foreach ($this->_children as $child) {
-                    if ($this->failfast()) {
-                        break;
-                    }
-                    $this->_passed = $child->passed() && $this->_passed;
-                }
-                $this->_suiteEnd();
+                $suite();
             } catch (Throwable $exception) {
                 $this->_exception($exception);
                 $this->_suiteEnd();
             }
         } else {
             try {
-                $this->_suiteStart();
-                foreach ($this->_children as $child) {
-                    if ($this->failfast()) {
-                        break;
-                    }
-                    $this->_passed = $child->passed() && $this->_passed;
-                }
-                $this->_suiteEnd();
+                $suite();
             } catch (Exception $exception) {
                 $this->_exception($exception);
                 $this->_suiteEnd();
@@ -459,9 +455,10 @@ class Suite extends Scope
      */
     public function passed()
     {
-        if ($this->_passed === null) {
+        if (!$this->_runned) {
             $this->_process();
         }
+        $this->_runned = true;
         return $this->_passed;
     }
 
@@ -507,50 +504,76 @@ class Suite extends Scope
     protected function stats()
     {
         static::$_instances[] = $this;
-        try {
-            if ($closure = $this->_closure) {
-                $closure($this);
-            }
+        if (Suite::$PHP >= 7) {
+            try {
+                $this->_stats = $this->_stats();
+            } catch (Throwable $exception) {
+                $this->_exception($exception);
+                $this->summary()->log($this->log());
 
-            $normal = 0;
-            $focused = 0;
-            $excluded = 0;
-            foreach ($this->children() as $child) {
-                if ($this->excluded()) {
-                    $child->type('exclude');
-                }
-                if ($child instanceof Suite) {
-                    $result = $child->stats();
-                    if ($child->focused() && !$result['focused']) {
-                        $focused += $result['normal'];
-                        $excluded += $result['excluded'];
-                        $child->_broadcastFocus();
-                    } else {
-                        $normal += $result['normal'];
-                        $focused += $result['focused'];
-                        $excluded += $result['excluded'];
-                    }
-                } else {
-                    switch($child->type()) {
-                        case 'exclude':
-                            $excluded++;
-                        break;
-                        case 'focus':
-                            $focused++;
-                        break;
-                        default:
-                            $normal++;
-                        break;
-                    }
-                }
+                $this->_stats = [
+                    'normal' => 0,
+                    'focused' => 0,
+                    'excluded' => 0
+                ];
             }
-        } catch (Exception $e) {
-            $this->_root->_passed = false;
-            array_pop(static::$_instances);
-            throw $e;
+        } else {
+            try {
+                $this->_stats = $this->_stats();
+            } catch (Exception $exception) {
+                $this->_passed = false;
+                array_pop(static::$_instances);
+                throw $exception;
+            }
         }
         array_pop(static::$_instances);
-        return $this->_stats = compact('normal', 'focused', 'excluded');
+        return $this->_stats;
+    }
+
+    /**
+     * Builds the suite.
+     *
+     * @return array The suite stats.
+     */
+    protected function _stats()
+    {
+        if ($closure = $this->_closure) {
+            $closure($this);
+        }
+
+        $normal = 0;
+        $focused = 0;
+        $excluded = 0;
+        foreach ($this->children() as $child) {
+            if ($this->excluded()) {
+                $child->type('exclude');
+            }
+            if ($child instanceof Suite) {
+                $result = $child->stats();
+                if ($child->focused() && !$result['focused']) {
+                    $focused += $result['normal'];
+                    $excluded += $result['excluded'];
+                    $child->_broadcastFocus();
+                } else {
+                    $normal += $result['normal'];
+                    $focused += $result['focused'];
+                    $excluded += $result['excluded'];
+                }
+            } else {
+                switch($child->type()) {
+                    case 'exclude':
+                        $excluded++;
+                    break;
+                    case 'focus':
+                        $focused++;
+                    break;
+                    default:
+                        $normal++;
+                    break;
+                }
+            }
+        }
+        return compact('normal', 'focused', 'excluded');
     }
 
     /**
