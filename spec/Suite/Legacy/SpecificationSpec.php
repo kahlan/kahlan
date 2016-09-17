@@ -10,11 +10,11 @@ use Kahlan\Plugin\Double;
 
 describe("Specification", function() {
 
-    before(function() {
+    beforeAll(function() {
         Suite::$PHP = 5;
     });
 
-    after(function() {
+    afterAll(function() {
         Suite::$PHP = PHP_MAJOR_VERSION;
     });
 

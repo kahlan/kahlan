@@ -42,12 +42,12 @@ if ($kahlanFuctions &&
 
     define('KAHLAN_FUNCTIONS_EXIST', true);
 
-    function before($closure) {
-        return Suite::current()->before($closure);
+    function beforeAll($closure) {
+        return Suite::current()->beforeAll($closure);
     }
 
-    function after($closure) {
-        return Suite::current()->after($closure);
+    function afterAll($closure) {
+        return Suite::current()->afterAll($closure);
     }
 
     function beforeEach($closure) {

@@ -7,7 +7,7 @@ describe("Cli", function() {
 
     describe('->color()', function() {
 
-        before(function() {
+        beforeAll(function() {
             $this->check = function($actual, $expected) {
                 expect(strlen($actual))->toBe(strlen($expected));
 

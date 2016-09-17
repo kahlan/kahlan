@@ -14,11 +14,11 @@ use Kahlan\Plugin\Double;
 
 describe("Suite", function() {
 
-    before(function() {
+    beforeAll(function() {
         Suite::$PHP = 5;
     });
 
-    after(function() {
+    afterAll(function() {
         Suite::$PHP = PHP_MAJOR_VERSION;
     });
 
@@ -190,7 +190,7 @@ describe("Suite", function() {
 
                 $this->exectuted = ['it' => 0];
 
-                before(function() {
+                beforeAll(function() {
                     skipIf(true);
                 });
 
