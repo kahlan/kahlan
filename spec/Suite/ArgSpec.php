@@ -9,13 +9,13 @@ use Kahlan\Arg;
 use Kahlan\Matcher;
 use Kahlan\Plugin\Double;
 
-describe("Arg", function() {
+describe("Arg", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->matchers = Matcher::get();
     });
 
-    afterEach(function() {
+    afterEach(function () {
         Matcher::reset();
         foreach ($this->matchers as $name => $value) {
             foreach ($value as $for => $class) {
@@ -24,9 +24,9 @@ describe("Arg", function() {
         }
     });
 
-    describe("::__callStatic()", function() {
+    describe("::__callStatic()", function () {
 
-        it("creates matcher", function() {
+        it("creates matcher", function () {
 
             $arg = Arg::toBe(true);
             expect($arg->match(true))->toBe(true);
@@ -34,7 +34,7 @@ describe("Arg", function() {
 
         });
 
-        it("creates a negative matcher", function() {
+        it("creates a negative matcher", function () {
 
             $arg = Arg::notToBe(true);
             expect($arg->match(true))->not->toBe(true);
@@ -42,7 +42,7 @@ describe("Arg", function() {
 
         });
 
-        it("registers a matcher for a specific class", function() {
+        it("registers a matcher for a specific class", function () {
 
             Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
 
@@ -54,7 +54,7 @@ describe("Arg", function() {
 
         });
 
-        it("makes registered matchers for a specific class available for sub classes", function() {
+        it("makes registered matchers for a specific class available for sub classes", function () {
 
             Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
 
@@ -63,20 +63,20 @@ describe("Arg", function() {
 
         });
 
-        it("throws an exception using an undefined matcher name", function() {
+        it("throws an exception using an undefined matcher name", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $arg = Arg::toHelloWorld(true);
             };
             expect($closure)->toThrow(new Exception("Unexisting matchers attached to `'toHelloWorld'`."));
 
         });
 
-        it("throws an exception using an matcher name which doesn't match actual", function() {
+        it("throws an exception using an matcher name which doesn't match actual", function () {
 
             Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
 
-            $closure = function() {
+            $closure = function () {
                 $arg = Arg::toEqualCustom(new SplMaxHeap());
                 $arg->match(true);
             };

@@ -83,10 +83,10 @@ class Metrics
             case 'trait':
             case 'class':
                 $this->_name = $pname ? $pname . $options['name'] : $options['name'];
-            break;
+                break;
             case 'method':
                 $this->_name = $pname ? $pname . '::' . $options['name'] : $options['name'];
-            break;
+                break;
         }
     }
 
@@ -164,7 +164,7 @@ class Metrics
                     'type'   => $type
                 ]);
             }
-            uksort($current->_children, function($a, $b) {
+            uksort($current->_children, function ($a, $b) {
                 $isFunction1 = substr($a, -2) === '()';
                 $isFunction2 = substr($b, -2) === '()';
                 if ($isFunction1 === $isFunction2) {
@@ -192,7 +192,7 @@ class Metrics
         foreach ($parts as $part) {
             list($name, $type) = $part;
             if (!isset($child->_children[$name])) {
-               return;
+                return;
             }
             $child = $child->_children[$name];
         }

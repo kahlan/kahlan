@@ -18,7 +18,8 @@ class Inspector
      * @param  string $class The class name to inspect.
      * @return object        The ReflectionClass instance.
      */
-    public static function inspect($class) {
+    public static function inspect($class)
+    {
         if (!isset(static::$_cache[$class])) {
             static::$_cache[$class] = new ReflectionClass($class);
         }
@@ -80,5 +81,4 @@ class Inspector
         }
         return $typehint;
     }
-
 }

@@ -67,5 +67,4 @@ class FunctionDef extends NodeDef
         }
         return join(', ', $args);
     }
-
 }

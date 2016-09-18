@@ -45,7 +45,7 @@ class PhpErrorException extends \Exception
      * @param string $code     The exception code.
      * @param string $previous The previous exception.
      */
-    public function __construct ($config = [], $code = 0)
+    public function __construct($config = [], $code = 0)
     {
         if (is_string($config)) {
             $this->message = $config;

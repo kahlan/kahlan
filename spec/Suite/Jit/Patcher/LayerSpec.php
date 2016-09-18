@@ -4,9 +4,9 @@ namespace Kahlan\Spec\Suite\Jit\Patcher;
 use Kahlan\Jit\Parser;
 use Kahlan\Jit\Patcher\Layer;
 
-describe("Layer", function() {
+describe("Layer", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->path = 'spec/Fixture/Jit/Patcher/Layer';
         $this->patcher = new Layer([
             'override' => [
@@ -15,9 +15,9 @@ describe("Layer", function() {
         ]);
     });
 
-    describe("->findFile()", function() {
+    describe("->findFile()", function () {
 
-        it("returns the file path to patch", function() {
+        it("returns the file path to patch", function () {
 
             $layer = new Layer();
             expect($layer->findFile(null, null, '/some/file/path.php'))->toBe('/some/file/path.php');
@@ -26,9 +26,9 @@ describe("Layer", function() {
 
     });
 
-    describe("->process()", function() {
+    describe("->process()", function () {
 
-        it("patches class's extends", function() {
+        it("patches class's extends", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Layer.php'));
             $actual = Parser::unparse($this->patcher->process($nodes));
@@ -48,7 +48,7 @@ EOD;
 
         });
 
-        it("bails out when `'override'` is empty", function() {
+        it("bails out when `'override'` is empty", function () {
 
             $this->patcher = new Layer([]);
             $nodes = Parser::parse(file_get_contents($this->path . '/Layer.php'));
@@ -58,7 +58,7 @@ EOD;
 
         });
 
-        it("doesn't patch classes which are not present in the `'override'` option", function() {
+        it("doesn't patch classes which are not present in the `'override'` option", function () {
 
             $this->patcher = new Layer([
                 'override' => [
@@ -85,9 +85,9 @@ EOD;
     });
 
 
-    describe("->patchable()", function() {
+    describe("->patchable()", function () {
 
-        it("return `true`", function() {
+        it("return `true`", function () {
 
             expect($this->patcher->patchable('SomeClass'))->toBe(true);
 

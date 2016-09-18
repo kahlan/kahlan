@@ -22,5 +22,4 @@ class AnyException extends \Exception
         $this->message = $message;
         $this->code = $code;
     }
-
 }

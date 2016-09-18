@@ -3,23 +3,23 @@ namespace Kahlan\Spec\Suite\Matcher;
 
 use Kahlan\Matcher\ToMatch;
 
-describe("toMatch", function() {
+describe("toMatch", function () {
 
-    describe("::match()", function() {
+    describe("::match()", function () {
 
-        it("passes if 'Hello World!' match '/^H(?*)!$/'", function() {
+        it("passes if 'Hello World!' match '/^H(?*)!$/'", function () {
 
             expect('Hello World!')->toMatch('/^H(.*?)!$/');
 
         });
 
-        it("passes if actual match the closure", function() {
+        it("passes if actual match the closure", function () {
 
-            expect('Hello World!')->toMatch(function($actual) {
+            expect('Hello World!')->toMatch(function ($actual) {
                 return $actual === 'Hello World!';
             });
 
-            expect('Hello')->not->toMatch(function($actual) {
+            expect('Hello')->not->toMatch(function ($actual) {
                 return $actual === 'Hello World!';
             });
 
@@ -27,9 +27,9 @@ describe("toMatch", function() {
 
     });
 
-    describe("::description()", function() {
+    describe("::description()", function () {
 
-        it("returns the description message", function() {
+        it("returns the description message", function () {
 
             $actual = ToMatch::description();
 

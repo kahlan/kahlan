@@ -5,25 +5,25 @@ use stdClass;
 use Kahlan\Spec\Mock\Collection;
 use Kahlan\Matcher\ToContain;
 
-describe("toContain", function() {
+describe("toContain", function () {
 
-    describe("::match()", function() {
+    describe("::match()", function () {
 
-        context("with an array", function() {
+        context("with an array", function () {
 
-            it("passes if 3 is in [1, 2, 3]", function() {
+            it("passes if 3 is in [1, 2, 3]", function () {
 
                 expect([1, 2, 3])->toContain(3);
 
             });
 
-            it("passes if 'a' is in ['a', 'b', 'c']", function() {
+            it("passes if 'a' is in ['a', 'b', 'c']", function () {
 
                 expect(['a', 'b', 'c'])->toContain('a');
 
             });
 
-            it("passes if 'd' is in ['a', 'b', 'c']", function() {
+            it("passes if 'd' is in ['a', 'b', 'c']", function () {
 
                 expect(['a', 'b', 'c'])->not->toContain('d');
 
@@ -31,21 +31,21 @@ describe("toContain", function() {
 
         });
 
-        context("with a traversable instance", function() {
+        context("with a traversable instance", function () {
 
-            it("passes if 3 is in [1, 2, 3]", function() {
+            it("passes if 3 is in [1, 2, 3]", function () {
 
                 expect(new Collection(['data' => [1, 2, 3]]))->toContain(3);
 
             });
 
-            it("passes if 'a' is in ['a', 'b', 'c']", function() {
+            it("passes if 'a' is in ['a', 'b', 'c']", function () {
 
                 expect(new Collection(['data' => ['a', 'b', 'c']]))->toContain('a');
 
             });
 
-            it("passes if 'd' is in ['a', 'b', 'c']", function() {
+            it("passes if 'd' is in ['a', 'b', 'c']", function () {
 
                 expect(new Collection(['data' => ['a', 'b', 'c']]))->not->toContain('d');
 
@@ -53,16 +53,16 @@ describe("toContain", function() {
 
         });
 
-        context("with a string", function() {
+        context("with a string", function () {
 
-            it("passes if contained in expected", function() {
+            it("passes if contained in expected", function () {
 
                 expect('Hello World!')->toContain('World');
                 expect('World')->toContain('World');
 
             });
 
-            it("fails if not contained in expected", function() {
+            it("fails if not contained in expected", function () {
 
                 expect('Hello World!')->not->toContain('world');
 
@@ -70,7 +70,7 @@ describe("toContain", function() {
 
         });
 
-        it("fails with non string/array", function() {
+        it("fails with non string/array", function () {
 
             expect(new stdClass())->not->toContain('Hello World!');
             expect(false)->not->toContain('0');
@@ -80,9 +80,9 @@ describe("toContain", function() {
 
     });
 
-    describe("::description()", function() {
+    describe("::description()", function () {
 
-        it("returns the description message", function() {
+        it("returns the description message", function () {
 
             $actual = ToContain::description();
 

@@ -3,15 +3,15 @@ namespace Kahlan\Spec\Suite\Plugin\Call;
 
 use Kahlan\Plugin\Call\Calls;
 
-describe("Calls", function() {
+describe("Calls", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         Calls::reset();
     });
 
-    describe("::log()", function() {
+    describe("::log()", function () {
 
-        it("logs a dynamic call", function() {
+        it("logs a dynamic call", function () {
 
             Calls::log('my\name\space\Class', [
                 'name' => 'methodName'
@@ -29,7 +29,7 @@ describe("Calls", function() {
 
         });
 
-        it("logs a static call", function() {
+        it("logs a static call", function () {
 
             Calls::log('my\name\space\Class', [
                 'name' => '::methodName'
@@ -49,9 +49,9 @@ describe("Calls", function() {
 
     });
 
-    describe("::lastFindIndex()", function() {
+    describe("::lastFindIndex()", function () {
 
-        it("gets/sets the last find index", function() {
+        it("gets/sets the last find index", function () {
 
             $index = Calls::lastFindIndex(100);
             expect($index)->toBe(100);

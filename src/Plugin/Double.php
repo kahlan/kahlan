@@ -150,7 +150,7 @@ class Double
         $openTag = $options['openTag'] ? "<?php\n" : '';
         $closeTag = $options['closeTag'] ? "?>" : '';
 
-return $openTag . $namespace . <<<EOT
+        return $openTag . $namespace . <<<EOT
 
 class {$class}{$extends}{$implements} {
 
@@ -159,7 +159,6 @@ class {$class}{$extends}{$implements} {
 }
 $closeTag
 EOT;
-
     }
 
     /**

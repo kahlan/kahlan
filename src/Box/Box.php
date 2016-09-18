@@ -26,7 +26,8 @@ class Box
      * @param array $config The instance configuration. Possible values:
      *                      - `'wrapper'` _string_: the the wrapper class name to use.
      */
-    public function __construct($config = []) {
+    public function __construct($config = [])
+    {
         $defaults = [
             'wrapper' => 'Kahlan\Box\Wrapper'
         ];

@@ -20,15 +20,15 @@ class Parameter
     }
 }
 
-describe("Inspector", function() {
+describe("Inspector", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->class = 'Kahlan\Spec\Fixture\Analysis\SampleClass';
     });
 
-    describe('::inspect()', function() {
+    describe('::inspect()', function () {
 
-        it("gets the reflexion layer of a class", function() {
+        it("gets the reflexion layer of a class", function () {
 
             $inspector = Inspector::inspect($this->class);
             expect($inspector)->toBeAnInstanceOf('ReflectionClass');
@@ -38,9 +38,9 @@ describe("Inspector", function() {
 
     });
 
-    describe('::parameters()', function() {
+    describe('::parameters()', function () {
 
-        it("gets method's parameters details", function() {
+        it("gets method's parameters details", function () {
 
             $inspector = Inspector::parameters($this->class, 'parametersExample');
             expect($inspector)->toBeA('array');
@@ -62,7 +62,7 @@ describe("Inspector", function() {
 
         });
 
-        it("merges defauts values with populated values when the third argument is not empty", function() {
+        it("merges defauts values with populated values when the third argument is not empty", function () {
 
             $inspector = Inspector::parameters($this->class, 'parametersExample', [
                 'first',
@@ -81,9 +81,9 @@ describe("Inspector", function() {
 
     });
 
-    describe("::typehint()", function() {
+    describe("::typehint()", function () {
 
-        it("returns an empty string when no typehint is present", function() {
+        it("returns an empty string when no typehint is present", function () {
 
             $inspector = Inspector::parameters($this->class, 'parametersExample');
             expect(Inspector::typehint($inspector[0]))->toBe('');
@@ -93,7 +93,7 @@ describe("Inspector", function() {
 
         });
 
-        it("returns parameter typehint", function() {
+        it("returns parameter typehint", function () {
 
             $inspector = Inspector::parameters($this->class, 'exceptionTypeHint');
             $typehint = Inspector::typehint(current($inspector));
@@ -112,7 +112,7 @@ describe("Inspector", function() {
 
         });
 
-        it("returns parameter typehint for scalar type hints", function() {
+        it("returns parameter typehint for scalar type hints", function () {
 
             $typehint = Inspector::typehint(new Parameter('Parameter #0 [ <required> integer $values ]'));
             expect($typehint)->toBeA('string');
@@ -124,7 +124,7 @@ describe("Inspector", function() {
 
         });
 
-        it("returns empty typehint for HHVM `mixed` type hint", function() {
+        it("returns empty typehint for HHVM `mixed` type hint", function () {
 
             $typehint = Inspector::typehint(new Parameter('Parameter #0 [ <required> mixed $values ]'));
             expect($typehint)->toBeA('string');

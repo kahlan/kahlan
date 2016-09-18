@@ -10,14 +10,14 @@ use Kahlan\Matcher\ToBeCalled;
 
 use Kahlan\Spec\Fixture\Plugin\Monkey\Mon;
 
-describe("ToBeCalled", function() {
+describe("ToBeCalled", function () {
 
-    describe("::match()", function() {
+    describe("::match()", function () {
 
         /**
          * Save current & reinitialize the Interceptor class.
          */
-        beforeAll(function() {
+        beforeAll(function () {
             $this->previous = Interceptor::instance();
             Interceptor::unpatch();
 
@@ -31,18 +31,18 @@ describe("ToBeCalled", function() {
         /**
          * Restore Interceptor class.
          */
-        afterAll(function() {
+        afterAll(function () {
             Interceptor::load($this->previous);
         });
 
-        it("expects uncalled function to be uncalled", function() {
+        it("expects uncalled function to be uncalled", function () {
 
             $mon = new Mon();
             expect('time')->not->toBeCalled();
 
         });
 
-        it("expects called function to be called", function() {
+        it("expects called function to be called", function () {
 
             $mon = new Mon();
             expect('time')->toBeCalled();
@@ -50,9 +50,9 @@ describe("ToBeCalled", function() {
 
         });
 
-        context("when using with()", function() {
+        context("when using with()", function () {
 
-            it("expects called function called with correct arguments to be called", function() {
+            it("expects called function called with correct arguments to be called", function () {
 
                 $mon = new Mon();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10);
@@ -60,7 +60,7 @@ describe("ToBeCalled", function() {
 
             });
 
-            it("expects called function called with correct arguments exactly a specified times to be called", function() {
+            it("expects called function called with correct arguments exactly a specified times to be called", function () {
 
                 $mon = new Mon();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(5, 10)->times(2);
@@ -69,7 +69,7 @@ describe("ToBeCalled", function() {
 
             });
 
-            it("expects called function called with correct arguments not exactly a specified times to be uncalled", function() {
+            it("expects called function called with correct arguments not exactly a specified times to be uncalled", function () {
 
                 $mon = new Mon();
                 expect('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->not->toBeCalled()->with(5, 10)->times(2);
@@ -80,9 +80,9 @@ describe("ToBeCalled", function() {
 
         });
 
-        context("when using times()", function() {
+        context("when using times()", function () {
 
-            it("expects called function to be called exactly once", function() {
+            it("expects called function to be called exactly once", function () {
 
                 $mon = new Mon();
                 expect('time')->toBeCalled()->once();
@@ -90,7 +90,7 @@ describe("ToBeCalled", function() {
 
             });
 
-            it("expects called function to be called exactly a specified times", function() {
+            it("expects called function to be called exactly a specified times", function () {
 
                 $mon = new Mon();
                 expect('time')->toBeCalled()->times(3);
@@ -100,7 +100,7 @@ describe("ToBeCalled", function() {
 
             });
 
-            it("expects called function not called exactly a specified times to be uncalled", function() {
+            it("expects called function not called exactly a specified times to be uncalled", function () {
 
                 $mon = new Mon();
                 expect('time')->not->toBeCalled()->times(1);
@@ -111,11 +111,11 @@ describe("ToBeCalled", function() {
 
         });
 
-        context("with ordered enabled", function() {
+        context("with ordered enabled", function () {
 
-            describe("::match()", function() {
+            describe("::match()", function () {
 
-                it("expects uncalled function to be uncalled in a defined order", function() {
+                it("expects uncalled function to be uncalled in a defined order", function () {
 
                     $mon = new Mon();
                     expect('time')->toBeCalled()->ordered;
@@ -124,7 +124,7 @@ describe("ToBeCalled", function() {
 
                 });
 
-                it("expects called function to be called in a defined order", function() {
+                it("expects called function to be called in a defined order", function () {
 
                     $mon = new Mon();
                     expect('time')->toBeCalled()->ordered;
@@ -136,7 +136,7 @@ describe("ToBeCalled", function() {
 
                 });
 
-                it("expects called function called in a different order to be uncalled", function() {
+                it("expects called function called in a different order to be uncalled", function () {
 
                     $mon = new Mon();
                     expect('time')->toBeCalled()->ordered;
@@ -152,9 +152,9 @@ describe("ToBeCalled", function() {
 
     });
 
-    describe("->description()", function() {
+    describe("->description()", function () {
 
-        it("returns the description message for not received call", function() {
+        it("returns the description message for not received call", function () {
 
             $mon = new Mon();
             $matcher = new ToBeCalled('time');
@@ -178,7 +178,7 @@ describe("ToBeCalled", function() {
 
         });
 
-        it("returns the description message for not received call the specified number of times", function() {
+        it("returns the description message for not received call the specified number of times", function () {
 
             $mon = new Mon();
             $matcher = new ToBeCalled('time');
@@ -204,7 +204,7 @@ describe("ToBeCalled", function() {
 
         });
 
-        it("returns the description message for wrong passed arguments", function() {
+        it("returns the description message for wrong passed arguments", function () {
 
             $mon = new Mon();
             $matcher = new ToBeCalled('time');
@@ -239,11 +239,11 @@ describe("ToBeCalled", function() {
 
     });
 
-    describe("->ordered()", function() {
+    describe("->ordered()", function () {
 
-        it("throw an exception when trying to play with core instance", function() {
+        it("throw an exception when trying to play with core instance", function () {
 
-            expect(function() {
+            expect(function () {
                 $matcher = new ToBeCalled('a');
                 $matcher->order;
             })->toThrow(new Exception("Unsupported attribute `order` only `ordered` is available."));

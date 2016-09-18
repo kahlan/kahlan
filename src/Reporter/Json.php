@@ -39,7 +39,7 @@ class Json extends Terminal
      */
     public function end($summary)
     {
-        $toString = function($instance) {
+        $toString = function ($instance) {
             return 'an instance of `' . get_class($instance) . '`';
         };
 
@@ -55,7 +55,7 @@ class Json extends Terminal
                         }
                         $data = [];
                         foreach ($log->data() as $key => $value) {
-                           $data[$key] = Text::toString($value, ['object' => ['method' => $toString]]);
+                            $data[$key] = Text::toString($value, ['object' => ['method' => $toString]]);
                         }
 
                         $this->_json['errors'][] = [
@@ -64,7 +64,7 @@ class Json extends Terminal
                             'data'  => $data
                         ];
                     }
-                break;
+                    break;
                 case 'errored':
                     $exception = $log->exception();
 
@@ -74,7 +74,7 @@ class Json extends Terminal
                         'exception' => '`' . get_class($exception) .'` Code(' . $exception->getCode() . ')',
                         'trace' => $exception->getMessage()
                     ];
-                break;
+                    break;
             }
         }
         $this->_json['summary'] = [

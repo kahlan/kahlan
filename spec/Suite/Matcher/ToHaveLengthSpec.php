@@ -3,23 +3,23 @@ namespace Kahlan\Spec\Suite\Matcher;
 
 use Kahlan\Matcher\ToHaveLength;
 
-describe("toHaveLength", function() {
+describe("toHaveLength", function () {
 
-    describe("::match()", function() {
+    describe("::match()", function () {
 
-        it("passes if 'Hello World' has a length of 11", function() {
+        it("passes if 'Hello World' has a length of 11", function () {
 
             expect('Hello World')->toHaveLength(11);
 
         });
 
-        it("passes if [1, 3, 7] has a length of 3", function() {
+        it("passes if [1, 3, 7] has a length of 3", function () {
 
             expect([1, 3, 7])->toHaveLength(3);
 
         });
 
-        it("passes if [] has a length of 0", function() {
+        it("passes if [] has a length of 0", function () {
 
             expect([])->toHaveLength(0);
 
@@ -27,9 +27,9 @@ describe("toHaveLength", function() {
 
     });
 
-    describe("::description()", function() {
+    describe("::description()", function () {
 
-        it("returns the description message", function() {
+        it("returns the description message", function () {
 
             ToHaveLength::match([1, 2, 3], 5);
             $actual = ToHaveLength::description();

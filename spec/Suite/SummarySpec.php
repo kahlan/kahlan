@@ -4,17 +4,17 @@ namespace Kahlan\Spec\Suite;
 use Kahlan\Log;
 use Kahlan\Summary;
 
-describe("Summary", function() {
+describe("Summary", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
 
         $this->result = new Summary();
 
     });
 
-    describe("->__construct()", function() {
+    describe("->__construct()", function () {
 
-        it("correctly sets default values", function() {
+        it("correctly sets default values", function () {
 
             expect($this->result->total())->toBe(0);
             expect($this->result->executable())->toBe(0);
@@ -39,9 +39,9 @@ describe("Summary", function() {
 
     });
 
-    describe("->total()", function() {
+    describe("->total()", function () {
 
-        it("gets the total number of specs", function() {
+        it("gets the total number of specs", function () {
 
             $this->result->log(new Log(['type' => 'passed']));
             $this->result->log(new Log(['type' => 'pending']));
@@ -56,9 +56,9 @@ describe("Summary", function() {
 
     });
 
-    describe("->expectation()", function() {
+    describe("->expectation()", function () {
 
-        it("gets the total number of expectations", function() {
+        it("gets the total number of expectations", function () {
 
             $log1 = new Log();
             $log1->add('passed', []);
@@ -80,44 +80,44 @@ describe("Summary", function() {
 
     });
 
-    describe("->__call()", function() {
+    describe("->__call()", function () {
 
-        it("gets number of passed specs", function() {
+        it("gets number of passed specs", function () {
 
             $this->result->log(new Log(['type' => 'passed']));
             expect($this->result->passed())->toBe(1);
 
         });
 
-        it("gets number of pending specs", function() {
+        it("gets number of pending specs", function () {
 
             $this->result->log(new Log(['type' => 'pending']));
             expect($this->result->pending())->toBe(1);
 
         });
 
-        it("gets number of skipped specs", function() {
+        it("gets number of skipped specs", function () {
 
             $this->result->log(new Log(['type' => 'skipped']));
             expect($this->result->skipped())->toBe(1);
 
         });
 
-        it("gets number of excluded specs", function() {
+        it("gets number of excluded specs", function () {
 
             $this->result->log(new Log(['type' => 'excluded']));
             expect($this->result->excluded())->toBe(1);
 
         });
 
-        it("gets number of failed specs", function() {
+        it("gets number of failed specs", function () {
 
             $this->result->log(new Log(['type' => 'failed']));
             expect($this->result->failed())->toBe(1);
 
         });
 
-        it("gets number of errored specs", function() {
+        it("gets number of errored specs", function () {
 
             $this->result->log(new Log(['type' => 'errored']));
             expect($this->result->errored())->toBe(1);
@@ -126,9 +126,9 @@ describe("Summary", function() {
 
     });
 
-    describe("->add()/->get()", function() {
+    describe("->add()/->get()", function () {
 
-        it("adds some custom data", function() {
+        it("adds some custom data", function () {
 
             $value1 = 'value1';
             $value2 = 'value2';
@@ -145,9 +145,9 @@ describe("Summary", function() {
 
     });
 
-    describe("->logs()", function() {
+    describe("->logs()", function () {
 
-        it("returns the total number of specs of a specific type", function() {
+        it("returns the total number of specs of a specific type", function () {
 
             $this->result->log(new Log(['type' => 'passed']));
             $this->result->log(new Log(['type' => 'passed']));
@@ -167,7 +167,7 @@ describe("Summary", function() {
 
         });
 
-        it("returns all spec logs", function() {
+        it("returns all spec logs", function () {
 
             $this->result->log(new Log(['type' => 'passed']));
             $this->result->log(new Log(['type' => 'passed']));
@@ -184,9 +184,9 @@ describe("Summary", function() {
 
     });
 
-    describe("->memoryUsage", function() {
+    describe("->memoryUsage", function () {
 
-        it("gets/adds some memory usage", function() {
+        it("gets/adds some memory usage", function () {
 
             $this->result->memoryUsage(1024);
             expect($this->result->memoryUsage())->toBe(1024);

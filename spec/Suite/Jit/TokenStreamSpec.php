@@ -4,9 +4,9 @@ namespace Kahlan\Spec\Jit\Suite;
 use Exception;
 use Kahlan\Jit\TokenStream;
 
-describe("TokenStream", function() {
+describe("TokenStream", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->code = <<<EOD
 <?php
 class HelloWorld
@@ -22,9 +22,9 @@ EOD;
         $this->len = count(token_get_all($this->code));
     });
 
-    describe("->load", function() {
+    describe("->load", function () {
 
-        it("wraps passed code with PHP tags when the `'wrap'` option is used", function() {
+        it("wraps passed code with PHP tags when the `'wrap'` option is used", function () {
 
             $stream = new TokenStream([
                 'source' => 'class HelloWorld {}',
@@ -37,16 +37,16 @@ EOD;
 
     });
 
-    describe("->current()", function() {
+    describe("->current()", function () {
 
-        it("gets the current token value", function() {
+        it("gets the current token value", function () {
 
             $actual = $this->stream->current();
             expect($actual)->toBe("<?php\n");
 
         });
 
-        it("gets the current token", function() {
+        it("gets the current token", function () {
 
             $actual = $this->stream->current(true);
             expect($actual)->toBe([T_OPEN_TAG, "<?php\n", 1]);
@@ -55,9 +55,9 @@ EOD;
 
     });
 
-    describe("->next()", function() {
+    describe("->next()", function () {
 
-        it("moves next", function() {
+        it("moves next", function () {
 
             $key = $this->stream->key();
             $this->stream->next();
@@ -65,21 +65,21 @@ EOD;
 
         });
 
-        it("gets the next token value", function() {
+        it("gets the next token value", function () {
 
             $actual = $this->stream->next();
             expect($actual)->toBe("class");
 
         });
 
-        it("gets the next token", function() {
+        it("gets the next token", function () {
 
             $actual = $this->stream->next(true);
             expect($actual)->toBe([T_CLASS, "class", 2]);
 
         });
 
-        it("iterates through all tokens", function() {
+        it("iterates through all tokens", function () {
 
             $i = 0;
             foreach ($this->stream as $value) {
@@ -91,12 +91,12 @@ EOD;
 
         });
 
-        it("returns the skipped content until the next correponding token", function() {
+        it("returns the skipped content until the next correponding token", function () {
             $actual = $this->stream->next(T_CLASS);
             expect($actual)->toBe("class");
         });
 
-        it("cancels the lookup if the token is not found", function() {
+        it("cancels the lookup if the token is not found", function () {
             $actual = $this->stream->next(999);
             expect($actual)->toBe(null);
 
@@ -106,16 +106,16 @@ EOD;
 
     });
 
-    describe("->nextSequence()", function() {
+    describe("->nextSequence()", function () {
 
-        it("moves to the next sequence", function() {
+        it("moves to the next sequence", function () {
 
             $actual = $this->stream->nextSequence('()');
             expect($actual)->toBe("class HelloWorld\n{\n    public function hello()");
 
         });
 
-        it("cancels the lookup if the token is not found", function() {
+        it("cancels the lookup if the token is not found", function () {
             $actual = $this->stream->nextSequence('()()');
             expect($actual)->toBe(null);
 
@@ -125,16 +125,16 @@ EOD;
 
     });
 
-    describe("->nextMatchingBracket()", function() {
+    describe("->nextMatchingBracket()", function () {
 
-        it("extracts the body between two correponding bracket", function() {
+        it("extracts the body between two correponding bracket", function () {
             $stream = new TokenStream(['source' => '<?php { rand(2,5); } ?>']);
             $stream->next('{');
             $actual = $stream->nextMatchingBracket();
             expect($actual)->toBe("{ rand(2,5); }");
         });
 
-        it("supports nested brackets", function() {
+        it("supports nested brackets", function () {
 
             $stream = new TokenStream(['source' => '<?php { { } } ?>']);
             $stream->next('{');
@@ -143,7 +143,7 @@ EOD;
 
         });
 
-        it("bails out nicely if there's no further tags", function() {
+        it("bails out nicely if there's no further tags", function () {
 
             $stream = new TokenStream(['source' => '']);
             $actual = $stream->nextMatchingBracket();
@@ -151,7 +151,7 @@ EOD;
 
         });
 
-        it("bails out nicely if the current tags is not an open tags", function() {
+        it("bails out nicely if the current tags is not an open tags", function () {
 
             $stream = new TokenStream(['source' => '<?php ?>']);
             $actual = $stream->nextMatchingBracket();
@@ -159,7 +159,7 @@ EOD;
 
         });
 
-        it("cancels the lookup if there's no closing tags", function() {
+        it("cancels the lookup if there's no closing tags", function () {
 
             $stream = new TokenStream(['source' => '<?php { { } ?>']);
             $stream->next('{');
@@ -171,9 +171,9 @@ EOD;
 
     });
 
-    describe("->prev()", function() {
+    describe("->prev()", function () {
 
-        it("moves prev", function() {
+        it("moves prev", function () {
 
             $key = $this->stream->key();
             $this->stream->next();
@@ -182,7 +182,7 @@ EOD;
 
         });
 
-        it("gets the previous token value", function() {
+        it("gets the previous token value", function () {
 
             $this->stream->seek(1);
             $actual = $this->stream->prev();
@@ -190,7 +190,7 @@ EOD;
 
         });
 
-        it("gets the previous token", function() {
+        it("gets the previous token", function () {
 
             $this->stream->seek(1);
             $actual = $this->stream->prev(true);
@@ -200,9 +200,9 @@ EOD;
 
     });
 
-    describe("->key()", function() {
+    describe("->key()", function () {
 
-        it("returns the current key", function() {
+        it("returns the current key", function () {
 
             expect($this->stream->key())->toBe(0);
             $this->stream->next();
@@ -212,9 +212,9 @@ EOD;
 
     });
 
-    describe("->seek()", function() {
+    describe("->seek()", function () {
 
-        it("correctly seeks inside the stream", function() {
+        it("correctly seeks inside the stream", function () {
 
             $this->stream->seek($this->len - 1);
             expect('?>')->toBe($this->stream->current());
@@ -223,9 +223,9 @@ EOD;
 
     });
 
-    describe("->rewind()", function() {
+    describe("->rewind()", function () {
 
-        it("resets the stream to the start", function() {
+        it("resets the stream to the start", function () {
 
             $key = $this->stream->key();
             $this->stream->next();
@@ -236,15 +236,15 @@ EOD;
 
     });
 
-    describe("->valid()", function() {
+    describe("->valid()", function () {
 
-        it("returns true if the the stream is iteratable", function() {
+        it("returns true if the the stream is iteratable", function () {
 
             expect($this->stream->valid())->toBe(true);
 
         });
 
-        it("returns false if the the stream is no more iteratable", function() {
+        it("returns false if the the stream is no more iteratable", function () {
 
             $this->stream->seek($this->len - 1);
             expect($this->stream->valid())->toBe(true);
@@ -255,9 +255,9 @@ EOD;
 
     });
 
-    describe("->count()", function() {
+    describe("->count()", function () {
 
-        it("returns the correct number of tokens", function() {
+        it("returns the correct number of tokens", function () {
 
             expect($this->stream->count())->toBe($this->len);
 
@@ -265,9 +265,9 @@ EOD;
 
     });
 
-    describe("->offsetGet()", function() {
+    describe("->offsetGet()", function () {
 
-        it("accesses token by key", function() {
+        it("accesses token by key", function () {
 
             $key = $this->stream->key();
             $value = $this->stream[$key][1];
@@ -277,16 +277,16 @@ EOD;
 
     });
 
-    describe("->offsetExist()", function() {
+    describe("->offsetExist()", function () {
 
-        it("returns true for an existing offset", function() {
+        it("returns true for an existing offset", function () {
 
             expect(isset($this->stream[0]))->toBe(true);
             expect(isset($this->stream[$this->len - 1]))->toBe(true);
 
         });
 
-        it("returns false for an unexisting offset", function() {
+        it("returns false for an unexisting offset", function () {
 
             expect(isset($this->stream[$this->len]))->toBe(false);
 
@@ -294,9 +294,9 @@ EOD;
 
     });
 
-    describe("->offsetSet()", function() {
+    describe("->offsetSet()", function () {
 
-        it("throws an exception", function() {
+        it("throws an exception", function () {
 
             expect(isset($this->stream[0]))->toBe(true);
             expect(isset($this->stream[$this->len - 1]))->toBe(true);
@@ -305,11 +305,11 @@ EOD;
 
     });
 
-    describe("->offsetUnset()", function() {
+    describe("->offsetUnset()", function () {
 
-        it("throws an exception", function() {
+        it("throws an exception", function () {
 
-            expect(function() {
+            expect(function () {
                 unset($this->stream[0]);
             })->toThrow(new Exception);
 
@@ -317,11 +317,11 @@ EOD;
 
     });
 
-    describe("->offsetSet()", function() {
+    describe("->offsetSet()", function () {
 
-        it("throws an exception", function() {
+        it("throws an exception", function () {
 
-            expect(function() {
+            expect(function () {
                 $this->stream[0] = [];
             })->toThrow(new Exception());
 
@@ -329,15 +329,15 @@ EOD;
 
     });
 
-    describe("->getType()", function() {
+    describe("->getType()", function () {
 
-        it("returns the correct token type", function() {
+        it("returns the correct token type", function () {
 
             expect($this->stream->getType(0))->toBe(T_OPEN_TAG);
 
         });
 
-        it("returns the current token type", function() {
+        it("returns the current token type", function () {
 
             expect($this->stream->getType())->toBe(T_OPEN_TAG);
 
@@ -345,15 +345,15 @@ EOD;
 
     });
 
-    describe("->getValue()", function() {
+    describe("->getValue()", function () {
 
-        it("returns the correct token value", function() {
+        it("returns the correct token value", function () {
 
             expect($this->stream->getValue(0))->toBe("<?php\n");
 
         });
 
-        it("returns the current token type", function() {
+        it("returns the current token type", function () {
 
             expect($this->stream->getValue())->toBe("<?php\n");
 
@@ -361,9 +361,9 @@ EOD;
 
     });
 
-    describe("->getName()", function() {
+    describe("->getName()", function () {
 
-        it("returns the correct token name", function() {
+        it("returns the correct token name", function () {
 
             expect($this->stream->getName(0))->toBe("T_OPEN_TAG");
 
@@ -371,15 +371,15 @@ EOD;
 
     });
 
-    describe("->is()", function() {
+    describe("->is()", function () {
 
-        it("returns true when type is correct", function() {
+        it("returns true when type is correct", function () {
 
             expect($this->stream->is(T_OPEN_TAG, 0))->toBe(true);
 
         });
 
-        it("returns false when type is incorrect", function() {
+        it("returns false when type is incorrect", function () {
 
             expect($this->stream->is(T_OPEN_TAG, 1))->toBe(false);
 
@@ -387,9 +387,9 @@ EOD;
 
     });
 
-    describe("->__toString()", function() {
+    describe("->__toString()", function () {
 
-        it("generates a string representation of the stream", function() {
+        it("generates a string representation of the stream", function () {
 
             $actual = (string) $this->stream;
             expect($actual)->toBe($this->code);

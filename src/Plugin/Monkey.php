@@ -73,7 +73,7 @@ class Monkey
             return $name;
         }
 
-        return function() use ($name, $method) {
+        return function () use ($name, $method) {
             $args = func_get_args();
 
             if (Suite::registered($name)) {

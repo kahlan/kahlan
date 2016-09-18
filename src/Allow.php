@@ -109,7 +109,8 @@ class Allow
         if ($this->_isClass) {
             Monkey::patch($this->_actual, Double::classname());
         } else {
-            Monkey::patch($this->_actual, function(){});
+            Monkey::patch($this->_actual, function () {
+            });
         }
     }
 

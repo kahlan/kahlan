@@ -17,12 +17,12 @@ use Kahlan\Spec\Fixture\Plugin\Monkey\User;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar;
 
-describe("Stub", function() {
+describe("Stub", function () {
 
     /**
      * Save current & reinitialize the Interceptor class.
      */
-    beforeAll(function() {
+    beforeAll(function () {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -36,15 +36,15 @@ describe("Stub", function() {
     /**
      * Restore Interceptor class.
      */
-    afterAll(function() {
+    afterAll(function () {
         Interceptor::load($this->previous);
     });
 
-    describe("__construct()", function() {
+    describe("__construct()", function () {
 
-        it("throws an exception when trying to stub an unexisting class", function() {
+        it("throws an exception when trying to stub an unexisting class", function () {
 
-            $closure = function() {
+            $closure = function () {
                 new Stub('My\Unexisting\Classname\Foo');
             };
             $message = "Can't Stub the unexisting class `My\\Unexisting\\Classname\\Foo`.";
@@ -54,18 +54,18 @@ describe("Stub", function() {
 
     });
 
-    describe("->methods()", function() {
+    describe("->methods()", function () {
 
-        context("with an instance", function() {
+        context("with an instance", function () {
 
-            it("stubs methods using an array", function() {
+            it("stubs methods using an array", function () {
 
                 $foo = new Foo();
                 Stub::on($foo)->methods([
-                    'message' => function() {
+                    'message' => function () {
                         return 'Good Evening World!';
                     },
-                    'bar' => function() {
+                    'bar' => function () {
                         return 'Hello Bar!';
                     }
                 ]);
@@ -74,9 +74,9 @@ describe("Stub", function() {
 
             });
 
-            it("throw an exception with invalid definition", function() {
+            it("throw an exception with invalid definition", function () {
 
-                $closure = function() {
+                $closure = function () {
                     $foo = new Foo();
                     Stub::on($foo)->methods([
                         'bar' => 'Hello Bar!'
@@ -89,9 +89,9 @@ describe("Stub", function() {
 
         });
 
-        context("with an class", function() {
+        context("with an class", function () {
 
-            it("stubs methods using return values as an array", function() {
+            it("stubs methods using return values as an array", function () {
 
                 Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->methods([
                     'message' => ['Good Evening World!', 'Good Bye World!'],
@@ -109,13 +109,13 @@ describe("Stub", function() {
 
             });
 
-            it("stubs methods using closure", function() {
+            it("stubs methods using closure", function () {
 
                 Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->methods([
-                    'message' => function() {
+                    'message' => function () {
                         return 'Good Evening World!';
                     },
-                    'bar' => function() {
+                    'bar' => function () {
                         return 'Hello Bar!';
                     }
                 ]);
@@ -128,9 +128,9 @@ describe("Stub", function() {
 
             });
 
-            it("throw an exception with invalid definition", function() {
+            it("throw an exception with invalid definition", function () {
 
-                $closure = function() {
+                $closure = function () {
                     $foo = new Foo();
                     Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->methods([
                         'bar' => 'Hello Bar!'
@@ -145,19 +145,19 @@ describe("Stub", function() {
 
     });
 
-    describe("::registered()", function() {
+    describe("::registered()", function () {
 
-        describe("without provided hash", function() {
+        describe("without provided hash", function () {
 
-            it("returns an empty array when no instance are registered", function() {
+            it("returns an empty array when no instance are registered", function () {
 
                 expect(Stub::registered())->toBe([]);
 
             });
 
-            it("returns an array of registered instances", function() {
+            it("returns an array of registered instances", function () {
 
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('foo', function() {});
+                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('foo', function () {});
 
                 expect(Stub::registered())->toBeA('array')->toBe([
                     'Kahlan\Spec\Fixture\Plugin\Pointcut\Foo'
@@ -167,17 +167,17 @@ describe("Stub", function() {
 
         });
 
-        describe("with provided hash", function() {
+        describe("with provided hash", function () {
 
-            it("returns `false` for registered stub", function() {
+            it("returns `false` for registered stub", function () {
 
                 expect(Stub::registered('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo'))->toBe(false);
 
             });
 
-            it("returns `true` for registered stub", function() {
+            it("returns `true` for registered stub", function () {
 
-                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('foo', function() {});
+                Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('foo', function () {});
 
                 expect(Stub::registered('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo'))->toBe(true);
 
@@ -187,36 +187,38 @@ describe("Stub", function() {
 
     });
 
-    describe("::on()", function() {
+    describe("::on()", function () {
 
-        it("throw when stub a method using closure and using andReturn()", function() {
+        it("throw when stub a method using closure and using andReturn()", function () {
 
-            expect(function() {
+            expect(function () {
                 $foo = new Foo();
-                Stub::on($foo)->method('message', function($param) { return $param; })->andReturn(true);
+                Stub::on($foo)->method('message', function ($param) {
+                    return $param;
+                })->andReturn(true);
             })->toThrow(new Exception("Some closure(s) has already been set."));
 
         });
 
     });
 
-    describe("::reset()", function() {
+    describe("::reset()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
 
-            Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('foo', function() {});
-            Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Bar')->method('bar', function() {});
+            Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->method('foo', function () {});
+            Stub::on('Kahlan\Spec\Fixture\Plugin\Pointcut\Bar')->method('bar', function () {});
 
         });
 
-        it("clears all stubs", function() {
+        it("clears all stubs", function () {
 
             Stub::reset();
             expect(Stub::registered())->toBe([]);
 
         });
 
-        it("clears one stub", function() {
+        it("clears one stub", function () {
 
             Stub::reset('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo');
             expect(Stub::registered())->toBe([

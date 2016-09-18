@@ -10,17 +10,18 @@ use Kahlan\Matcher;
 use Kahlan\Expectation;
 use Kahlan\Plugin\Double;
 
-function expectation($actual, $timeout = -1) {
+function expectation($actual, $timeout = -1)
+{
     return new Expectation(compact('actual', 'timeout'));
 }
 
-describe("Expectation", function() {
+describe("Expectation", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->matchers = Matcher::get();
     });
 
-    afterEach(function() {
+    afterEach(function () {
         Matcher::reset();
         foreach ($this->matchers as $name => $value) {
             foreach ($value as $for => $class) {
@@ -29,11 +30,11 @@ describe("Expectation", function() {
         }
     });
 
-    describe("->__call()", function() {
+    describe("->__call()", function () {
 
-        it("throws an exception when using an undefined matcher name", function() {
+        it("throws an exception when using an undefined matcher name", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $result = expectation(true)->toHelloWorld(true);
             };
 
@@ -41,11 +42,11 @@ describe("Expectation", function() {
 
         });
 
-        it("throws an exception when a specific class matcher doesn't match", function() {
+        it("throws an exception when a specific class matcher doesn't match", function () {
 
             Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
 
-            $closure = function() {
+            $closure = function () {
                 $result = expectation([])->toEqualCustom(new stdClass());
             };
 
@@ -75,7 +76,7 @@ describe("Expectation", function() {
         it("loops until the timeout is reached on failure using a sub spec with a return value", function () {
 
             $start = microtime(true);
-            $subspec = new Specification(['closure' => function() {
+            $subspec = new Specification(['closure' => function () {
                 return true;
             }]);
             $result = expectation($subspec, 0.1)->toBe(false);
@@ -96,18 +97,18 @@ describe("Expectation", function() {
 
     });
 
-    describe("->passed()", function() {
+    describe("->passed()", function () {
 
-        it("verifies the expectation", function() {
+        it("verifies the expectation", function () {
 
             $actual = expectation(true)->toBe(true)->passed();
             expect($actual)->toBe(true);
 
         });
 
-        it("verifies nested expectations inside a spec", function() {
+        it("verifies nested expectations inside a spec", function () {
 
-            $spec = new Specification(['closure' => function() {
+            $spec = new Specification(['closure' => function () {
                 return true;
             }]);
             $actual = expectation($spec)->toBe(true)->passed();
@@ -118,7 +119,7 @@ describe("Expectation", function() {
         it("loops until the timeout is reached on failure", function () {
 
             $start = microtime(true);
-            $spec = new Specification(['closure' => function() {
+            $spec = new Specification(['closure' => function () {
                 expect(true)->toBe(false);
             }]);
             $actual = expectation($spec, 0.1)->passed();
@@ -131,9 +132,9 @@ describe("Expectation", function() {
 
     });
 
-    describe("->__get()", function() {
+    describe("->__get()", function () {
 
-        it("sets the not value using `'not'`", function() {
+        it("sets the not value using `'not'`", function () {
 
             $expectation = new Expectation();
             expect($expectation->not())->toBe(false);
@@ -142,9 +143,9 @@ describe("Expectation", function() {
 
         });
 
-        it("throws an exception with unsupported attributes", function() {
+        it("throws an exception with unsupported attributes", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $expectation = new Expectation();
                 $expectation->abc;
             };
@@ -154,9 +155,9 @@ describe("Expectation", function() {
 
     });
 
-    describe("->clear()", function() {
+    describe("->clear()", function () {
 
-        it("clears an expectation", function() {
+        it("clears an expectation", function () {
 
             $actual = Double::instance();
             $expectation = expectation($actual, 10);

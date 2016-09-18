@@ -174,37 +174,37 @@ EOD;
         $messages = $log->messages();
         $message = end($messages);
 
-        switch($log->type()) {
+        switch ($log->type()) {
             case 'passed':
                 $this->write('✔', 'green');
                 $this->write(' ');
                 $this->write("{$message}\n", 'd');
-            break;
+                break;
             case 'skipped':
                 $this->write('✔', 'd');
                 $this->write(' ');
                 $this->write("{$message}\n", 'd');
-            break;
+                break;
             case 'pending':
                 $this->write('✔', 'cyan');
                 $this->write(' ');
                 $this->write("{$message}\n", 'cyan');
-            break;
+                break;
             case 'excluded':
                 $this->write('✔', 'yellow');
                 $this->write(' ');
                 $this->write("{$message}\n", 'yellow');
-            break;
+                break;
             case 'failed':
                 $this->write('✘', 'red');
                 $this->write(' ');
                 $this->write("{$message}\n", 'red');
-            break;
+                break;
             case 'errored':
                 $this->write('✘', 'red');
                 $this->write(' ');
                 $this->write("{$message}\n", 'red');
-            break;
+                break;
         }
     }
 
@@ -217,7 +217,7 @@ EOD;
     {
         $this->_indent++;
         $type = $log->type();
-        switch($type) {
+        switch ($type) {
             case "failed":
                 foreach ($log->children() as $expectation) {
                     if ($expectation->type() !== 'failed') {
@@ -229,7 +229,7 @@ EOD;
                     $this->write("\n\n");
                     $this->_reportDiff($expectation);
                 }
-            break;
+                break;
             case "errored":
                 $backtrace = Debugger::backtrace(['trace' => $log->exception()]);
                 $trace = reset($backtrace);
@@ -247,7 +247,7 @@ EOD;
                 $this->write(Debugger::trace(['trace' => $backtrace]));
                 $this->prefix('');
                 $this->write("\n\n");
-            break;
+                break;
         }
         $this->_indent--;
     }
@@ -282,7 +282,7 @@ EOD;
                 $this->write("{$key}:\n", 'yellow');
             }
             $type = gettype($value);
-            $toString = function($instance) {
+            $toString = function ($instance) {
                 return 'an instance of `' . get_class($instance) . '`';
             };
             $this->write("({$type}) " . Text::toString($value, ['object' => ['method' => $toString]]));
@@ -448,14 +448,14 @@ EOD;
             $this->write('(');
             $comma = false;
             if ($failed) {
-                $this->write('FAILURE: ' . $failed , 'red');
+                $this->write('FAILURE: ' . $failed, 'red');
                 $comma = true;
             }
             if ($errored) {
                 if ($comma) {
                     $this->write(', ');
                 }
-                $this->write('EXCEPTION: ' . $errored , 'magenta');
+                $this->write('EXCEPTION: ' . $errored, 'magenta');
             }
             $this->write(')');
         } else {
@@ -516,7 +516,6 @@ EOD;
             $this->prefix('');
             $this->write("\n");
         }
-
     }
 
     /**

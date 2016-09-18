@@ -8,12 +8,12 @@ use Kahlan\Jit\Patcher\Quit as QuitPatcher;
 
 use Kahlan\Spec\Fixture\Plugin\Quit\Foo;
 
-describe("Quit", function() {
+describe("Quit", function () {
 
     /**
      * Save current & reinitialize the Interceptor class.
      */
-    beforeAll(function() {
+    beforeAll(function () {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -26,13 +26,13 @@ describe("Quit", function() {
     /**
      * Restore Interceptor class.
      */
-    afterAll(function() {
+    afterAll(function () {
         Interceptor::load($this->previous);
     });
 
-    describe("::enable()", function() {
+    describe("::enable()", function () {
 
-        it("enables quit statements", function() {
+        it("enables quit statements", function () {
 
             Quit::disable();
             expect(Quit::enabled())->toBe(false);
@@ -44,9 +44,9 @@ describe("Quit", function() {
 
     });
 
-    describe("::disable()", function() {
+    describe("::disable()", function () {
 
-        it("disables quit statements", function() {
+        it("disables quit statements", function () {
 
             Quit::enable();
             expect(Quit::enabled())->toBe(true);
@@ -58,13 +58,13 @@ describe("Quit", function() {
 
     });
 
-    describe("::disable()", function() {
+    describe("::disable()", function () {
 
-        it("throws an exception when an exit statement occurs if not allowed", function() {
+        it("throws an exception when an exit statement occurs if not allowed", function () {
 
             Quit::disable();
 
-            $closure = function() {
+            $closure = function () {
                 $foo = new Foo();
                 $foo->exitStatement(-1);
             };

@@ -3,7 +3,8 @@ namespace Kahlan\Jit\Patcher;
 
 use Kahlan\Plugin\Double;
 
-class Layer {
+class Layer
+{
 
     /**
      * Class dependencies.
@@ -131,11 +132,9 @@ class Layer {
                 $parser = $this->_classes['parser'];
                 $root = $parser::parse($code, ['php' => true]);
                 $node->close .= str_replace("\n", '', $parser::unparse($this->_pointcut->process($root)));
-
             } elseif (count($node->tree)) {
                 $this->_processTree($node);
             }
         }
     }
-
 }

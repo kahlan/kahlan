@@ -337,7 +337,7 @@ class Dir extends \FilterIterator
      */
     protected function _excluded($path)
     {
-        foreach($this->_exclude as $exclude) {
+        foreach ($this->_exclude as $exclude) {
             if (fnmatch($exclude, $path)) {
                 return true;
             }
@@ -352,7 +352,7 @@ class Dir extends \FilterIterator
      */
     protected function _included($path)
     {
-        foreach($this->_include as $include) {
+        foreach ($this->_include as $include) {
             if (fnmatch($include, $path)) {
                 return true;
             }

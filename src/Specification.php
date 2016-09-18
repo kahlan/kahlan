@@ -38,7 +38,8 @@ class Specification extends Scope
         $config['message'] = 'it ' . $config['message'];
         parent::__construct($config);
 
-        $config['closure'] = $config['closure'] ?: function(){};
+        $config['closure'] = $config['closure'] ?: function () {
+        };
         $this->_closure = $this->_bind($config['closure'], 'it');
 
         if ($this->_type === 'focus') {
@@ -68,7 +69,7 @@ class Specification extends Scope
     public function waitsFor($actual, $timeout = 0)
     {
         $timeout = $timeout ?: $this->timeout();
-        $closure = $actual instanceof Closure ? $actual : function() use ($actual) {
+        $closure = $actual instanceof Closure ? $actual : function () use ($actual) {
             return $actual;
         };
         $spec = new static(['closure' => $closure]);
@@ -135,7 +136,7 @@ class Specification extends Scope
 
         $result = null;
 
-        $spec = function() {
+        $spec = function () {
             $this->_expectations = [];
             $closure = $this->_closure;
             $result = $closure($this);
@@ -245,5 +246,4 @@ class Specification extends Scope
         }
         return $logs;
     }
-
 }

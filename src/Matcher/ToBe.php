@@ -24,5 +24,4 @@ class ToBe
     {
         return "be identical to expected (===).";
     }
-
 }

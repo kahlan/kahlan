@@ -5,38 +5,48 @@ use Exception;
 use Kahlan\Scope;
 use Kahlan\Given;
 
-describe("Given", function() {
+describe("Given", function () {
 
-    given('scope', function() { return 'root'; });
+    given('scope', function () {
+        return 'root';
+    });
 
-    context("using the global `given()` function", function() {
+    context("using the global `given()` function", function () {
 
-        it("gets a lazy loadable variable", function() {
+        it("gets a lazy loadable variable", function () {
 
-            given('firstname', function() { return 'Willy'; });
+            given('firstname', function () {
+                return 'Willy';
+            });
             expect($this->firstname)->toBe('Willy');
 
         });
 
-        it("lazy loads variables in cascades", function() {
+        it("lazy loads variables in cascades", function () {
 
-            given('firstname', function() { return 'Johnny'; });
-            given('fullname', function() {
+            given('firstname', function () {
+                return 'Johnny';
+            });
+            given('fullname', function () {
                 return "{$this->firstname} {$this->lastname}";
             });
-            given('lastname', function() { return 'Boy'; });
+            given('lastname', function () {
+                return 'Boy';
+            });
             expect($this->fullname)->toBe('Johnny Boy');
 
         });
 
-        it("allows to reference a lazy loadable variable which get overrided", function() {
+        it("allows to reference a lazy loadable variable which get overrided", function () {
 
-            given('variable', function() { return []; });
-            given('variable', function() {
+            given('variable', function () {
+                return [];
+            });
+            given('variable', function () {
                 $this->variable[] = 1;
                 return $this->variable;
             });
-            given('variable', function() {
+            given('variable', function () {
                 $this->variable[] = 2;
                 return $this->variable;
             });
@@ -44,14 +54,14 @@ describe("Given", function() {
 
         });
 
-        context("with a nested scope", function() {
+        context("with a nested scope", function () {
 
             $count = 0;
-            given('count', function() use (&$count) {
+            given('count', function () use (&$count) {
                 return ++$count;
             });
 
-            it("caches lazy loaded variables", function() {
+            it("caches lazy loaded variables", function () {
 
                 expect($this->count)->toBe(1);
                 expect($this->count)->toBe(1);
@@ -59,7 +69,7 @@ describe("Given", function() {
 
             });
 
-            it("doesn't cache across specifications",  function() {
+            it("doesn't cache across specifications",  function () {
 
                 expect($this->count)->toBe(2);
                 expect($this->count)->toBe(2);
@@ -68,32 +78,36 @@ describe("Given", function() {
             });
         });
 
-        context('using a nested context', function() {
+        context('using a nested context', function () {
 
-            it("gets a lazy loadable variable defined in a parent context", function() {
+            it("gets a lazy loadable variable defined in a parent context", function () {
 
                 expect($this->scope)->toBe('root');
 
             });
 
-            it("can override a lazy loadable variable defined in a parent context", function() {
+            it("can override a lazy loadable variable defined in a parent context", function () {
 
-                given('scope', function() { return 'nested'; });
+                given('scope', function () {
+                    return 'nested';
+                });
                 expect($this->scope)->toBe('nested');
 
             });
 
         });
 
-        context("using lazy loadable variables through `beforeEach()`", function() {
+        context("using lazy loadable variables through `beforeEach()`", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
                 $this->value = $this->state;
             });
 
-            given('state',  function() { return 'some_state'; });
+            given('state',  function () {
+                return 'some_state';
+            });
 
-            it("makes lazy loadable variables loaded", function() {
+            it("makes lazy loadable variables loaded", function () {
 
                 expect($this->value)->toBe('some_state');
 
@@ -101,20 +115,22 @@ describe("Given", function() {
 
         });
 
-        it("throw an exception when the second parameter is not a closure", function() {
+        it("throw an exception when the second parameter is not a closure", function () {
 
-            $closure = function() {
+            $closure = function () {
                 given('some_name',  'some value');
             };
             expect($closure)->toThrow(new Exception("A closure is required by `Given` constructor."));
 
         });
 
-        it("throw an exception for reserved keywords", function() {
+        it("throw an exception for reserved keywords", function () {
 
             foreach (Scope::$blacklist as $keyword => $bool) {
-                $closure = function() use ($keyword) {
-                    given($keyword,  function() { return 'some value'; });
+                $closure = function () use ($keyword) {
+                    given($keyword,  function () {
+                        return 'some value';
+                    });
                 };
                 expect($closure)->toThrow(new Exception("Sorry `{$keyword}` is a reserved keyword, it can't be used as a scope variable."));
             }
@@ -123,12 +139,12 @@ describe("Given", function() {
 
     });
 
-    describe("->__get()", function() {
+    describe("->__get()", function () {
 
-        it("throw an new exception when trying to access an undefined variable through a given definition", function() {
+        it("throw an new exception when trying to access an undefined variable through a given definition", function () {
 
-            $closure = function() {
-                $given = new Given(function() {
+            $closure = function () {
+                $given = new Given(function () {
                     return $this->undefinedVariable;
                 });
                 $given();

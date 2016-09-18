@@ -102,7 +102,7 @@ class Debugger
         $back = [];
         $ignoreFunctions = ['call_user_func_array', 'trigger_error'];
 
-        foreach($backtrace as $i => $trace) {
+        foreach ($backtrace as $i => $trace) {
             $trace += $traceDefaults;
             if (strpos($trace['function'], '{closure}') !== false || in_array($trace['function'], $ignoreFunctions)) {
                 continue;
@@ -235,7 +235,8 @@ class Debugger
      * @return array             A cleaned backtrace.
      *
      */
-    public static function focus($pattern, $backtrace, $depth = null, $maxLookup = 10) {
+    public static function focus($pattern, $backtrace, $depth = null, $maxLookup = 10)
+    {
         if (!$pattern) {
             return $backtrace;
         }
@@ -277,8 +278,7 @@ class Debugger
 
     public static function errorType($value)
     {
-        switch($value)
-        {
+        switch ($value) {
             case E_ERROR:
                 return 'E_ERROR';
             case E_WARNING:
@@ -312,5 +312,4 @@ class Debugger
         }
         return '<INVALID>';
     }
-
 }
