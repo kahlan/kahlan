@@ -104,14 +104,13 @@ When writing your tests sometimes you want to **only execute** the test(s) you a
 
 ```php
 describe("test focused mode", function() {
-
     it("will be ignored", function() {
     });
 
     it("will be ignored", function() {
     });
 
-    fit("will be runned", function() {
+    fit("will be run", function() {
     });
 });
 ```
@@ -130,10 +129,8 @@ To skip a spec you should use a `skipIf()` function inside of it. This function 
 
 ```php
 it("should not run on weekends", function() {
-
     skipIf(date("w") == 0 || date("w") == 6);
 
     expect(true)->toBe(true);
-
 });
 ```
