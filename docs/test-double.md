@@ -13,11 +13,10 @@ When you are testing an application, sometimes you need a simple, polyvalent ins
 
 ```php
 it("makes a instance double", function() {
-
     $double = Double::instance();
+
     expect(is_object($double))->toBe(true);
     expect($double->something())->toBe(null);
-
 });
 ```
 
@@ -27,11 +26,10 @@ Examples using `'extends'`:
 
 ```php
 it("makes a instance double with a parent class", function() {
-
     $double = Double::instance(['extends' => 'Kahlan\Util\Text']);
+
     expect(is_object($double))->toBe(true);
     expect(get_parent_class($double))->toBe('Kahlan\Util\Text');
-
 });
 ```
 **Tip:** If you extend an abstract class, all missing methods will be automatically added to your stub.
@@ -42,7 +40,6 @@ However, if you still want to include magic methods with the `'extends'` option,
 
 ```php
 it("makes a instance double with a parent class and keeps magic methods", function() {
-
     $double = Double::instance([
         'extends'      => 'Kahlan\Util\Text',
         'magicMethods' => true
@@ -67,7 +64,6 @@ it("makes a instance double with a parent class and keeps magic methods", functi
     $double();
     unserialize($serialized);
     $double2 = clone $double;
-
 });
 ```
 
@@ -75,11 +71,10 @@ And it's also possible to extends built-in PHP classes.
 
 ```php
 it("makes a instance double of a PHP core class", function() {
-
     $redis = Double::instance(['extends' => 'Redis']);
     allow($redis)->method('connect')->andReturn(true);
-    expect($double->connect('127.0.0.1'))->toBe(true); //It passes
 
+    expect($double->connect('127.0.0.1'))->toBe(true);
 });
 ```
 
@@ -87,14 +82,13 @@ If you need your stub to implement a couple of interfaces you can use the `'impl
 
 ```php
 it("makes a instance double implementing some interfaces", function() {
-
     $double = Double::instance(['implements' => ['ArrayAccess', 'Iterator']]);
     $interfaces = class_implements($double);
+
     expect($interfaces)->toHaveLength(3);
     expect(isset($interfaces['ArrayAccess']))->toBe(true);
     expect(isset($interfaces['Iterator']))->toBe(true);
     expect(isset($interfaces['Traversable']))->toBe(true); //Comes with `'Iterator'`
-
 });
 ```
 
@@ -103,6 +97,7 @@ And if you need your stub to implement a couple of traits you can use the `'uses
 ```php
 it("makes a instance double using a trait", function() {
     $double = Double::instance(['uses' => 'spec\mock\plugin\stub\HelloTrait']);
+
     expect($double->hello())->toBe('Hello World From Trait!');
 });
 ```
@@ -113,10 +108,9 @@ So `allow()` on stubs can be applied on any method name. Under the hood `__call(
 
 ```php
 it("adds a custom endpoint", function() {
-
-    $double = Double::instance(['methods' => ['myMethod']]); // Adds the method `'myMethod'` as an existing "endpoint"
-    expect(method_exists($double, 'myMethod'))->toBe(true); // It works !
-
+    $double = Double::instance(['methods' => ['myMethod']]);
+    
+    expect(method_exists($double, 'myMethod'))->toBe(true);
 });
 ```
 
@@ -126,12 +120,10 @@ You can also create class double names (i.e a string) using `Double::classname()
 
 ```php
 it("makes a class double", function() {
-
     $class = Double::classname();
     expect(is_string($class))->toBe(true);
 
     $double = new $class()
     expect($double)->toBeAnInstanceOf($class);
-
 });
 ```
