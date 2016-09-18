@@ -33,6 +33,7 @@ describe("Summary", function() {
             expect($this->result->logs('excluded'))->toBe([]);
             expect($this->result->logs('failed'))->toBe([]);
             expect($this->result->logs('errored'))->toBe([]);
+            expect($this->result->memoryUsage())->toBe(0);
 
         });
 
@@ -178,6 +179,17 @@ describe("Summary", function() {
             $this->result->log(new Log(['type' => 'errored']));
 
             expect($this->result->logs())->toHaveLength(8);
+
+        });
+
+    });
+
+    describe("->memoryUsage", function() {
+
+        it("gets/adds some memory usage", function() {
+
+            $this->result->memoryUsage(1024);
+            expect($this->result->memoryUsage())->toBe(1024);
 
         });
 

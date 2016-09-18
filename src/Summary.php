@@ -18,6 +18,13 @@ class Summary
     protected $_data = [];
 
     /**
+     * The memory usage
+     *
+     * @var integer
+     */
+    protected $_memoryUsage = 0;
+
+    /**
      * Return the total number of specs.
      *
      * @return integer
@@ -126,5 +133,20 @@ class Summary
             $logs = array_merge($logs, $value);
         }
         return $logs;
+    }
+
+
+    /**
+     * Return the total number of specs.
+     *
+     * @return integer
+     */
+    public function memoryUsage($memoryUsage = null)
+    {
+        if (!func_get_args()) {
+            return $this->_memoryUsage;
+        }
+        $this->_memoryUsage = $memoryUsage;
+        return $this;
     }
 }

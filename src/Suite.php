@@ -440,6 +440,7 @@ class Suite extends Scope
         $this->report('start', ['total' => $this->enabled()], true);
 
         $success = $this->passed();
+        $this->summary()->memoryUsage(memory_get_peak_usage());
 
         $this->report('end', $this->summary(), true);
 
