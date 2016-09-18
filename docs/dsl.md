@@ -6,17 +6,11 @@ Because test organization is one of the key point of keeping clean and maintaina
 
 ```php
 describe("ToBe", function() {
-
     describe("::match()", function() {
-
         it("passes if true === true", function() {
-
             expect(true)->toBe(true);
-
         });
-
     });
-
 });
 ```
 
@@ -30,25 +24,19 @@ As the name implies, the `beforeEach` function is called once before **each** sp
 
 ```php
 describe("Setup and Teardown", function() {
-
     beforeEach(function() {
         $this->foo = 1;
     });
 
     describe("Nested level", function() {
-
         beforeEach(function() {
             $this->foo++;
         });
 
         it("expects that the foo variable is equal to 2", function() {
-
             expect($this->foo)->toBe(2);
-
         });
-
     });
-
 });
 ```
 
@@ -65,7 +53,6 @@ Since `beforeEach()` is runned before each spec, all defined variables are reini
 
 ```php
 describe("Lazy loadable variables", function() {
-
     given('firstname', function() { return 'Johnny'; });
     given('fullname', function() {
         return "{$this->firstname} {$this->lastname}";
@@ -75,7 +62,6 @@ describe("Lazy loadable variables", function() {
     it("lazy loads variables in cascades", function() {
         expect($this->fullname)->toBe('Johnny Boy');
     });
-
 });
 ```
 
@@ -85,13 +71,9 @@ Expectations are built using the `expect` function which takes a value, called t
 
 ```php
 describe("Positive Expectation", function() {
-
     it("expects that 5 > 4", function() {
-
         expect(5)->toBeGreaterThan(4);
-
     });
-
 });
 ```
 
@@ -137,17 +119,13 @@ You can use `$this` for making a variable **available** for a sub scope:
 
 ```php
 describe("Scope inheritance", function() {
-
     beforeEach(function() {
         $this->foo = 5;
     });
 
     it("accesses variable defined in the parent scope", function() {
-
         expect($this->foo)->toEqual(5);
-
     });
-
 });
 ```
 
@@ -155,27 +133,21 @@ You can also play with scope's data inside closures:
 
 ```php
 describe("Scope inheritance & closure", function() {
-
     it("sets a scope variables inside a closure", function() {
-
         $this->closure = function() {
             $this->foo = 'bar';
         };
         $this->closure();
         expect($this->foo)->toEqual('bar');
-
     });
 
     it("gets a scope variable inside closure", function() {
-
         $this->foo = 'bar';
         $this->closure = function() {
             return $this->foo;
         };
         expect($this->closure())->toEqual('bar');
-
     });
-
 });
 ```
 
@@ -185,20 +157,14 @@ describe("Scope inheritance & closure", function() {
 
 ```php
 describe("Scope isolation", function() {
-
     it("sets a variable in the scope", function() {
-
         $this->foo = 2;
         expect($this->foo)->toEqual(2);
-
     });
 
     it("doesn't find any foo variable in the scope", function() {
-
         expect(isset($this->foo))->toBe(false);
-
     });
-
 });
 ```
 
@@ -211,19 +177,24 @@ describe(function() {
     before(function() {
        //b1
     });
+
     describe(function() {
         before(function() {
            //b2
         });
+
         beforeEach(function() {
            //be1
         });
+
         it("runs a spec", function() {
            //it1
         });
+
         it("runs a spec", function() {
            //it2
         });
+
         afterEach(function() {
            //ae1
         });
