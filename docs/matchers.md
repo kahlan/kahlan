@@ -9,8 +9,8 @@ it("can chain up a lots of matchers", function() {
    expect([1, 2, 3])->toBeA('array')->toBe([1, 2, 3])->toContain(1);
 });
 ```
-
-### <a name="classic"></a>Classic matchers
+<a name="classic-matchers"></a>
+### Classic matchers
 
 **toBe($expected)**
 
