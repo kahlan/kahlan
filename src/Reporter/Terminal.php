@@ -389,6 +389,30 @@ EOD;
     }
 
     /**
+     * Humanizes values using an appropriate unit.
+     *
+     * @return integer $value     The value.
+     * @return integer $precision The required precision.
+     * @return integer $base      The unit base.
+     * @return string             The Humanized string value.
+     */
+    public function readableSize($value, $precision = 0, $base = 1024)
+    {
+        $i = 0;
+        if ($value < 1) {
+            return '0';
+        }
+
+        $units = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        while (($value / $base) >= 1) {
+            $value = $value / $base;
+            $i++;
+        }
+        $unit = isset($units[$i]) ? $units[$i] : '?';
+        return round($value, $precision) . $unit;
+    }
+
+    /**
      * Print a summary of specs execution to STDOUT
      *
      * @param object $summary The execution summary instance.
@@ -438,7 +462,8 @@ EOD;
             $this->write('PASS', 'green');
         }
         $time = number_format(microtime(true) - $this->_start, 3);
-        $this->write(" in {$time} seconds");
+        $memory = $this->readableSize($summary->memoryUsage());
+        $this->write(" in {$time} seconds (using {$memory}o)");
         $this->write("\n\n");
 
         $this->_summarizeFocused($summary);
