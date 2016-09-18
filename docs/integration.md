@@ -50,19 +50,13 @@ namespace Api\Spec\Contollers;
 use Api\Models\MyModel;
 
 describe("MyModel", function() {
-
-    it("stubs findFirst as an example", function() {
-
+    it("should stub findFirst as an example", function() {
         $article = new MyModel();
-
         allow('Api\Models\MyModel')->toReceive('::findFirst')->andReturn($article);
-
         $actual = MyModel::findFirst();
 
         expect($actual)->toBe($article);
-
     });
-
 });
 ```
 

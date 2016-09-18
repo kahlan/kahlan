@@ -7,7 +7,7 @@ Because test organization is one of the key point of keeping clean and maintaina
 ```php
 describe("ToBe", function() {
     describe("::match()", function() {
-        it("passes if true === true", function() {
+        it("should pass if true === true", function() {
             expect(true)->toBe(true);
         });
     });
@@ -33,7 +33,7 @@ describe("Setup and Teardown", function() {
             $this->foo++;
         });
 
-        it("expects that the foo variable is equal to 2", function() {
+        it("should pass when $this->foo is equal to 2", function() {
             expect($this->foo)->toBe(2);
         });
     });
@@ -59,7 +59,7 @@ describe("Lazy loadable variables", function() {
     });
     given('lastname', function() { return 'Boy'; });
 
-    it("lazy loads variables in cascades", function() {
+    it("should lazy loads variables in cascades", function() {
         expect($this->fullname)->toBe('Johnny Boy');
     });
 });
@@ -71,7 +71,7 @@ Expectations are built using the `expect` function which takes a value, called t
 
 ```php
 describe("Positive Expectation", function() {
-    it("expects that 5 > 4", function() {
+    it("should pass as 5 greater than 4", function() {
         expect(5)->toBeGreaterThan(4);
     });
 });
@@ -85,7 +85,7 @@ Any matcher can be evaluated negatively by chaining `expect` with `not` before c
 
 ```php
 describe("Negative Expectation", function() {
-    it("doesn't expect that 4 > 5", function() {
+    it("should pass as 4 it not greater than 5", function() {
         expect(4)->not->toBeGreaterThan(5);
     });
 });
@@ -97,13 +97,13 @@ To perform some asynchronous tests it's possible to use the `waitsFor` statement
 
 ```php
 describe("Asynchronous Expectations", function() {
-    it("will timeout for sure", function() {
+    it("should timeout for sure", function() {
         waitsFor(function() {
             expect(false)->toBe(true);
         });
     });
 
-    it("waits to be lucky", function() {
+    it("should wait to be lucky", function() {
         waitsFor(function() {
             return mt_rand(0, 10);
         })->toBe(10);
@@ -123,7 +123,7 @@ describe("Scope inheritance", function() {
         $this->foo = 5;
     });
 
-    it("accesses variable defined in the parent scope", function() {
+    it("should access variable defined in the parent scope", function() {
         expect($this->foo)->toEqual(5);
     });
 });
@@ -133,7 +133,7 @@ You can also play with scope's data inside closures:
 
 ```php
 describe("Scope inheritance & closure", function() {
-    it("sets a scope variables inside a closure", function() {
+    it("should set a scope variables inside a closure", function() {
         $this->closure = function() {
             $this->foo = 'bar';
         };
@@ -141,7 +141,7 @@ describe("Scope inheritance & closure", function() {
         expect($this->foo)->toEqual('bar');
     });
 
-    it("gets a scope variable inside closure", function() {
+    it("should get a scope variable inside closure", function() {
         $this->foo = 'bar';
         $this->closure = function() {
             return $this->foo;
@@ -157,12 +157,12 @@ describe("Scope inheritance & closure", function() {
 
 ```php
 describe("Scope isolation", function() {
-    it("sets a variable in the scope", function() {
+    it("should set a variable in the scope", function() {
         $this->foo = 2;
         expect($this->foo)->toEqual(2);
     });
 
-    it("doesn't find any foo variable in the scope", function() {
+    it("should not find any foo variable in the scope", function() {
         expect(isset($this->foo))->toBe(false);
     });
 });
@@ -187,11 +187,11 @@ describe(function() {
            //be1
         });
 
-        it("runs a spec", function() {
+        it("should run a spec", function() {
            //it1
         });
 
-        it("runs a spec", function() {
+        it("should run a spec", function() {
            //it2
         });
 

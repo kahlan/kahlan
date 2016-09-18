@@ -12,7 +12,7 @@ use Kahlan\Plugin\Quit;
 And then use `Quit::disable()` like so:
 
 ```php
-it("throws an exception when an exit statement occurs if not allowed", function() {
+it("should throw an exception when an exit statement occurs if not allowed", function() {
     Quit::disable();
 
     $closure = function() {

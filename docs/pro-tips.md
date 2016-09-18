@@ -92,7 +92,7 @@ Then you can get it in any scopes like in the following:
 
 ```php
 describe("My Spec", function() {
-    it("echoes the global", function() {
+    it("should echo the global", function() {
         echo $this->global;
     });
 });
@@ -104,13 +104,13 @@ When writing your tests sometimes you want to **only execute** the test(s) you a
 
 ```php
 describe("test focused mode", function() {
-    it("will be ignored", function() {
+    it("should be ignored", function() {
     });
 
-    it("will be ignored", function() {
+    it("should be ignored", function() {
     });
 
-    fit("will be run", function() {
+    fit("should be run", function() {
     });
 });
 ```

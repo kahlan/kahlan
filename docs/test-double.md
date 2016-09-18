@@ -12,7 +12,7 @@ use Kahlan\Plugin\Double;
 When you are testing an application, sometimes you need a simple, polyvalent instance for receiving a couple of calls. `Double::instance()` can create such polyvalent instance:
 
 ```php
-it("makes a instance double", function() {
+it("should make an instance double", function() {
     $double = Double::instance();
 
     expect(is_object($double))->toBe(true);
@@ -25,7 +25,7 @@ There are also a couple of options for creating some stubs which inherit a class
 Examples using `'extends'`:
 
 ```php
-it("makes a instance double with a parent class", function() {
+it("should make an instance double with a parent class", function() {
     $double = Double::instance(['extends' => 'Kahlan\Util\Text']);
 
     expect(is_object($double))->toBe(true);
@@ -39,7 +39,7 @@ it("makes a instance double with a parent class", function() {
 However, if you still want to include magic methods with the `'extends'` option, you can manually set the `'magicMethods'` option to `true`:
 
 ```php
-it("makes a instance double with a parent class and keeps magic methods", function() {
+it("should make an instance double with a parent class and keeps magic methods", function() {
     $double = Double::instance([
         'extends'      => 'Kahlan\Util\Text',
         'magicMethods' => true
@@ -70,7 +70,7 @@ it("makes a instance double with a parent class and keeps magic methods", functi
 And it's also possible to extends built-in PHP classes.
 
 ```php
-it("makes a instance double of a PHP core class", function() {
+it("should make an instance double of a PHP core class", function() {
     $redis = Double::instance(['extends' => 'Redis']);
     allow($redis)->method('connect')->andReturn(true);
 
@@ -81,7 +81,7 @@ it("makes a instance double of a PHP core class", function() {
 If you need your stub to implement a couple of interfaces you can use the `'implements'` option like so:
 
 ```php
-it("makes a instance double implementing some interfaces", function() {
+it("should make an instance double implementing some interfaces", function() {
     $double = Double::instance(['implements' => ['ArrayAccess', 'Iterator']]);
     $interfaces = class_implements($double);
 
@@ -95,7 +95,7 @@ it("makes a instance double implementing some interfaces", function() {
 And if you need your stub to implement a couple of traits you can use the `'uses'` option like so:
 
 ```php
-it("makes a instance double using a trait", function() {
+it("should make an instance double using a trait", function() {
     $double = Double::instance(['uses' => 'spec\mock\plugin\stub\HelloTrait']);
 
     expect($double->hello())->toBe('Hello World From Trait!');
@@ -107,9 +107,9 @@ it("makes a instance double using a trait", function() {
 So `allow()` on stubs can be applied on any method name. Under the hood `__call()` will catch everything. You should pay attention that `method_exists` won't work on this "virtual method stubs". To make it works, you will need to add the necessary "endpoint(s)" using the `'methods'` option like in the following example:
 
 ```php
-it("adds a custom endpoint", function() {
+it("should add a custom endpoint", function() {
     $double = Double::instance(['methods' => ['myMethod']]);
-    
+
     expect(method_exists($double, 'myMethod'))->toBe(true);
 });
 ```
@@ -119,7 +119,7 @@ it("adds a custom endpoint", function() {
 You can also create class double names (i.e a string) using `Double::classname()`:
 
 ```php
-it("makes a class double", function() {
+it("should make a class double", function() {
     $class = Double::classname();
     expect(is_string($class))->toBe(true);
 
