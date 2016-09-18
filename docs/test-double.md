@@ -6,12 +6,8 @@ First add the following `use` statement in the top of your specs to be able to c
 use Kahlan\Plugin\Double;
 ```
 
-### Table of content
-
-* [Instance Double](#instance-double)
-* [Class Double](#class-double)
-
-### <a name="instance-double"></a>Instance Double
+<a name="instance-double"></a>
+### Instance Double
 
 When you are testing an application, sometimes you need a simple, polyvalent instance for receiving a couple of calls. `Double::instance()` can create such polyvalent instance:
 
@@ -38,9 +34,9 @@ it("makes a instance double with a parent class", function() {
 
 });
 ```
-**Tip:** If you extends from an abstract class, all missing methods will be automatically added to your stub.
+**Tip:** If you extend an abstract class, all missing methods will be automatically added to your stub.
 
-**Note:** If the `'extends'` option is used, magic methods **won't be included**, so as to to avoid any conflict between your tested classes and the magic method behaviors.
+**Note:** If the `'extends'` option is used, magic methods **won't be included**, so as to avoid any conflict between your tested classes and the magic methods.
 
 However, if you still want to include magic methods with the `'extends'` option, you can manually set the `'magicMethods'` option to `true`:
 
