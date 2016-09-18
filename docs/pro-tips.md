@@ -126,7 +126,7 @@ To comment out a spec, you can use the `x` prefix i.e. `xdescribe`, `xcontext` o
 
 ### Skip a spec
 
-To skip a spec you should use a `skipIf()` function inside of it. This function takes a bolean, that mean you can provide a conditions to skip this spec up. In example:
+To skip a spec you should use a `skipIf()` function inside of it. This function takes a boolean, that mean you can provide a conditions to skip this spec up. In example:
 
 ```php
 it("should not run on weekends", function() {

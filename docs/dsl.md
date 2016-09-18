@@ -103,43 +103,33 @@ Any matcher can be evaluated negatively by chaining `expect` with `not` before c
 
 ```php
 describe("Negative Expectation", function() {
-
     it("doesn't expect that 4 > 5", function() {
-
         expect(4)->not->toBeGreaterThan(5);
-
     });
-
 });
 ```
 
 ### Asynchronous Expectations
 
-To perform some asynchronous tests it's possible to use the `waitsFor` statement. This statement runs a passed closure until all contained expectations passes or a timeout is reached. `waitsFor` can be useful to waits for elements to appear/disappear on a browser page during some functionnal testing for example.
+To perform some asynchronous tests it's possible to use the `waitsFor` statement. This statement runs a passed closure until all contained expectations passes or a timeout is reached. `waitsFor` can be useful to waits for elements to appear/disappear on a browser page during some functional testing for example.
 
 ```php
 describe("Asynchronous Expectations", function() {
-
     it("will timeout for sure", function() {
-
         waitsFor(function() {
             expect(false)->toBe(true);
         });
-
     });
 
     it("waits to be lucky", function() {
-
         waitsFor(function() {
             return mt_rand(0, 10);
         })->toBe(10);
-
     });
-
 }, 10);
 ```
 
-In the example above, the timeout has been setted globally at the bottom of `describe()` statement. However it can also be overrided at a `context()/it()` level or simply by setting the second parameter of `waitsFor()`. If no timeout is defined, the default timeout will be set to `0`.
+In the example above, the timeout has been set globally at the bottom of `describe()` statement. However it can also be overridden at a `context()/it()` level or simply by setting the second parameter of `waitsFor()`. If no timeout is defined, the default timeout will be set to `0`.
 
 ### Variable scope
 
