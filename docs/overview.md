@@ -5,8 +5,9 @@ Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses 
 
 **Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.**
 
-### Features
 
+<a name="features"></a>
+### Features
 - `describe-it` syntax similar to modern BDD testing frameworks
 - Code Coverage metrics ([xdebug](http://xdebug.org) or [phpdbg](http://phpdbg.com/docs) required)
 - Handy stubbing system ([mockery](https://github.com/padraic/mockery) or [prophecy](https://github.com/phpspec/prophecy) are no longer needed)
@@ -17,8 +18,9 @@ Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses 
 - Built-in Exporters (Coveralls, Code Climate, Scrutinizer, Clover)
 - Extensible, customizable workflow
 
-## License
 
+<a name="license"></a>
+## License
 Licensed using the [MIT license](http://opensource.org/licenses/MIT).
 
 > The MIT License (MIT)
@@ -31,13 +33,23 @@ Licensed using the [MIT license](http://opensource.org/licenses/MIT).
 >
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+<a name="contributing"></a>
 ## Contributing
 To contribute to Kahlan, [open a pull request](https://help.github.com/articles/creating-a-pull-request/) against the `master` branch with your change. Be sure to update the specs to verify your change works as expected and to prevent regressions.
 
-## Documentation
 
+## Documentation
+- [Overview](overview.md)
+  - [Features](overview.md#features)
+  - [License](overview.md#license)
+  - [Contributing](overview.md#contributing)
 - [Getting Started](getting-started.md)
-- [CLI Options](cli-options.md)
+  - [Requirements](getting-started.md#requirements)
+  - [Installation](getting-started.md#installation)
+  - [Running Kahlan](getting-started.md#running-kahlan)
+  - [Directory Structure](getting-started.md#directory-structure)
+- [DSL](dsl.md)
 - [Matchers](matchers.md)
   - [Classic matchers](matchers.md#classic)
   - [Method invocation matchers](matchers.md#method)
@@ -51,8 +63,8 @@ To contribute to Kahlan, [open a pull request](https://help.github.com/articles/
     - [Instance Double](test-double.md#instance-double)
     - [Class Double](test-double.md#class-double)
 - [Quit Statement Patching](quit.md)
+- [CLI Options](cli-options.md)
 - [Reporters](reporters.md)
 - [Pro Tips](pro-tips.md) - including CLI arguments
 - [The `kahlan-config.php` file](config-file.md)
 - [Integration with popular frameworks](integration.md)
-- [FAQ](faq.md)
