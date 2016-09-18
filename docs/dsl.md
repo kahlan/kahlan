@@ -42,10 +42,10 @@ describe("Setup and Teardown", function() {
 
 Setup and Teardown functions can be used at any `describe` or `context` level:
 
-* `before`: Run once inside a `describe` or `context` before all contained specs.
+* `beforeAll`: Run once inside a `describe` or `context` before all contained specs.
 * `beforeEach`: Run before each spec of the same level.
 * `afterEach`: Run after each spec of the same level.
-* `after`: Run once inside a `describe` or `context` after all contained specs.
+* `afterAll`: Run once inside a `describe` or `context` after all contained specs.
 
 ### Memoized Helper using `given()`
 
@@ -170,16 +170,16 @@ describe("Scope isolation", function() {
 
 ### Control-flow
 
-Spec control flow is similar to `Jasmine`. In other words functions executed on a scope level using the following order `before`, `beforeEach`, `after` and `afterEach`.
+Spec control flow is similar to `Jasmine`. In other words functions executed on a scope level using the following order `beforeAll`, `beforeEach`, `afterAll` and `afterEach`.
 
 ```php
 describe(function() {
-    before(function() {
+    beforeAll(function() {
        //b1
     });
 
     describe(function() {
-        before(function() {
+        beforeAll(function() {
            //b2
         });
 
@@ -198,11 +198,13 @@ describe(function() {
         afterEach(function() {
            //ae1
         });
-        after(function() {
+
+        afterAll(function() {
            //a2
         });
     });
-    after(function() {
+
+    afterAll(function() {
        //a1
     });
 });
