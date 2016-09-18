@@ -4,9 +4,9 @@ namespace dir\spec\suite;
 use Kahlan\Dir\Dir;
 use Exception;
 
-describe("Dir", function() {
+describe("Dir", function () {
 
-    $this->normalize = function($path) {
+    $this->normalize = function ($path) {
         if (!is_array($path)) {
             return str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
@@ -17,18 +17,18 @@ describe("Dir", function() {
         return $result;
     };
 
-    describe("::scan()", function() {
+    describe("::scan()", function () {
 
-        $sort = function($files) {
+        $sort = function ($files) {
             sort($files);
             return $files;
         };
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->path = 'spec/Fixture/Dir';
         });
 
-        it("scans files", function() {
+        it("scans files", function () {
 
             $files = Dir::scan($this->path, [
                 'type' => 'file',
@@ -38,7 +38,7 @@ describe("Dir", function() {
 
         });
 
-        it("scans and show dots", function() use ($sort) {
+        it("scans and show dots", function () use ($sort) {
 
             $files = Dir::scan($this->path, [
                 'skipDots' => false,
@@ -55,7 +55,7 @@ describe("Dir", function() {
 
         });
 
-        it("scans and follow symlinks", function() use ($sort) {
+        it("scans and follow symlinks", function () use ($sort) {
 
             $files = Dir::scan($this->path . DIRECTORY_SEPARATOR . 'Extensions', [
                 'followSymlinks' => false,
@@ -71,7 +71,7 @@ describe("Dir", function() {
 
         });
 
-        it("scans files recursively", function() use ($sort) {
+        it("scans files recursively", function () use ($sort) {
 
             $files = Dir::scan($this->path . DIRECTORY_SEPARATOR . 'Nested', [
                 'type' => 'file'
@@ -85,7 +85,7 @@ describe("Dir", function() {
 
         });
 
-        it("scans files & directores recursively", function() use ($sort) {
+        it("scans files & directores recursively", function () use ($sort) {
 
             $files = Dir::scan($this->path . DIRECTORY_SEPARATOR . 'Nested');
 
@@ -98,7 +98,7 @@ describe("Dir", function() {
 
         });
 
-        it("scans only leaves recursively", function() use ($sort) {
+        it("scans only leaves recursively", function () use ($sort) {
 
             $files = Dir::scan($this->path. DIRECTORY_SEPARATOR . 'Nested', [
                 'leavesOnly' => true
@@ -112,7 +112,7 @@ describe("Dir", function() {
 
         });
 
-        it("scans txt files recursively", function() use ($sort) {
+        it("scans txt files recursively", function () use ($sort) {
 
             $files = Dir::scan($this->path, [
                 'include' => '*.txt',
@@ -129,7 +129,7 @@ describe("Dir", function() {
 
         });
 
-        it("scans non nested txt files recursively", function() use ($sort) {
+        it("scans non nested txt files recursively", function () use ($sort) {
 
             $files = Dir::scan($this->path, [
                 'include' => '*.txt',
@@ -144,9 +144,9 @@ describe("Dir", function() {
 
         });
 
-        it("throws an exception if the path is invalid", function() {
+        it("throws an exception if the path is invalid", function () {
 
-            $closure = function() {
+            $closure = function () {
                 Dir::scan('Non/Existing/Path', [
                     'type' => 'file',
                     'recursive' => false
@@ -156,7 +156,7 @@ describe("Dir", function() {
 
         });
 
-        it("returns itself when the path is a file", function() {
+        it("returns itself when the path is a file", function () {
 
             $files = Dir::scan('spec/Fixture/Dir/file1.txt', [
                 'include' => '*.txt',
@@ -169,17 +169,17 @@ describe("Dir", function() {
 
     });
 
-    describe("::copy()", function() {
+    describe("::copy()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->tmpDir = Dir::tempnam(sys_get_temp_dir(), 'spec');
         });
 
-        afterEach(function() {
+        afterEach(function () {
             Dir::remove($this->tmpDir, ['recursive' => true]);
         });
 
-        it("copies a directory recursively", function() {
+        it("copies a directory recursively", function () {
 
             Dir::copy('spec/Fixture/Dir', $this->tmpDir);
 
@@ -192,7 +192,7 @@ describe("Dir", function() {
 
         });
 
-        it("copies a directory recursively but not following symlinks", function() {
+        it("copies a directory recursively but not following symlinks", function () {
 
             Dir::copy('spec/Fixture/Dir', $this->tmpDir, ['followSymlinks' => false]);
 
@@ -209,9 +209,9 @@ describe("Dir", function() {
 
         });
 
-        it("throws an exception if the destination directory doesn't exists", function() {
+        it("throws an exception if the destination directory doesn't exists", function () {
 
-            $closure = function() {
+            $closure = function () {
                 Dir::copy('spec/Fixture/Dir', 'Unexisting/Folder');
             };
 
@@ -221,9 +221,9 @@ describe("Dir", function() {
 
     });
 
-    describe("::remove()", function() {
+    describe("::remove()", function () {
 
-        it("removes a directory recursively", function() {
+        it("removes a directory recursively", function () {
 
             $this->tmpDir = Dir::tempnam(sys_get_temp_dir(), 'spec');
 
@@ -244,19 +244,19 @@ describe("Dir", function() {
 
     });
 
-    describe("::make()", function() {
+    describe("::make()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->umask = umask(0);
             $this->tmpDir = Dir::tempnam(sys_get_temp_dir(), 'spec');
         });
 
-        afterEach(function() {
+        afterEach(function () {
             Dir::remove($this->tmpDir, ['recursive' => true]);
             umask($this->umask);
         });
 
-        it("creates a nested directory", function() {
+        it("creates a nested directory", function () {
 
             $path = $this->tmpDir . '/My/Nested/Directory';
             $actual = Dir::make($path);
@@ -270,7 +270,7 @@ describe("Dir", function() {
 
         });
 
-        it("creates a nested directory with a specific mode", function() {
+        it("creates a nested directory with a specific mode", function () {
 
             $path = $this->tmpDir . '/My/Nested/Directory';
             $actual = Dir::make($path, ['mode' => 0777]);
@@ -284,7 +284,7 @@ describe("Dir", function() {
 
         });
 
-        it("creates multiple nested directories in a single call", function() {
+        it("creates multiple nested directories in a single call", function () {
 
             $paths = [
                 $this->tmpDir . '/My/Nested/Directory',
@@ -301,9 +301,9 @@ describe("Dir", function() {
 
     });
 
-    describe("::tempnam()", function() {
+    describe("::tempnam()", function () {
 
-        it("uses the system temp directory by default", function() {
+        it("uses the system temp directory by default", function () {
 
             $dir = Dir::tempnam(null, 'spec');
 

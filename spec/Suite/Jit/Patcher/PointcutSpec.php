@@ -4,16 +4,16 @@ namespace Kahlan\Spec\Suite\Jit\Patcher;
 use Kahlan\Jit\Parser;
 use Kahlan\Jit\Patcher\Pointcut;
 
-describe("Pointcut", function() {
+describe("Pointcut", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->path = 'spec/Fixture/Jit/Patcher/Pointcut';
         $this->patcher = new Pointcut();
     });
 
-    describe("->process()", function() {
+    describe("->process()", function () {
 
-        it("adds an entry point to methods and wrap function call for classes", function() {
+        it("adds an entry point to methods and wrap function call for classes", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Simple.php'));
             if (version_compare(phpversion(), '5.5', '<')) {
@@ -26,7 +26,7 @@ describe("Pointcut", function() {
 
         });
 
-        it("adds an entry point to methods and wrap function call for traits", function() {
+        it("adds an entry point to methods and wrap function call for traits", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/SimpleTrait.php'));
             $expected = file_get_contents($this->path . '/SimpleTraitProcessed.php');
@@ -37,9 +37,9 @@ describe("Pointcut", function() {
 
     });
 
-    describe("->patchable()", function() {
+    describe("->patchable()", function () {
 
-        it("return `true`", function() {
+        it("return `true`", function () {
 
             expect($this->patcher->patchable('SomeClass'))->toBe(true);
 

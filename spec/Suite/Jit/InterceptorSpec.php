@@ -9,9 +9,9 @@ use Kahlan\Jit\Interceptor;
 use Kahlan\Spec\Proxy\Autoloader;
 use Kahlan\Spec\Mock\Patcher;
 
-describe("Interceptor", function() {
+describe("Interceptor", function () {
 
-    beforeAll(function() {
+    beforeAll(function () {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -26,29 +26,29 @@ describe("Interceptor", function() {
         $this->cachePath = Dir::tempnam(null, 'cache');
     });
 
-    afterEach(function() {
+    afterEach(function () {
         Interceptor::unpatch();
     });
 
-    afterAll(function() {
+    afterAll(function () {
         spl_autoload_register($this->composer);
         spl_autoload_unregister([$this->autoloader, 'loadClass']);
         Dir::remove($this->cachePath);
         Interceptor::load($this->previous);
     });
 
-    describe("::patch()", function() {
+    describe("::patch()", function () {
 
-        it("patches the composer autoloader by default", function() {
+        it("patches the composer autoloader by default", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
             expect($interceptor->originalInstance())->toBeAnInstanceOf("Composer\Autoload\ClassLoader");
 
         });
 
-        it("throws an exception if the autoloader has already been patched", function() {
+        it("throws an exception if the autoloader has already been patched", function () {
 
-            $closure = function() {
+            $closure = function () {
                 Interceptor::patch(['cachePath' => $this->cachePath]);
                 Interceptor::patch(['cachePath' => $this->cachePath]);
             };
@@ -56,7 +56,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("throws an exception if the autoloader has already been patched", function() {
+        it("throws an exception if the autoloader has already been patched", function () {
 
             spl_autoload_unregister([$this->autoloader, 'loadClass']);
 
@@ -72,7 +72,7 @@ describe("Interceptor", function() {
             expect($message)->toBe("The loader option need to be a valid autoloader.");
         });
 
-        it("allows to configure the autoloader method", function() {
+        it("allows to configure the autoloader method", function () {
 
             $interceptor = Interceptor::patch([
                 'cachePath' => $this->cachePath,
@@ -83,7 +83,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("throws an exception if the autoloader has already been patched", function() {
+        it("throws an exception if the autoloader has already been patched", function () {
 
             $interceptor = Interceptor::patch([
                 'cachePath'       => $this->cachePath,
@@ -107,9 +107,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("::unpatch()", function() {
+    describe("::unpatch()", function () {
 
-        it("detaches the patched autoloader", function() {
+        it("detaches the patched autoloader", function () {
 
             Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -121,7 +121,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("returns `false` if there's no patched autoloader", function() {
+        it("returns `false` if there's no patched autoloader", function () {
 
             Interceptor::patch(['cachePath' => $this->cachePath]);
             Interceptor::unpatch();
@@ -133,9 +133,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("::load()", function() {
+    describe("::load()", function () {
 
-        it("auto unpatch when loading an interceptor autoloader", function() {
+        it("auto unpatch when loading an interceptor autoloader", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -153,9 +153,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("::instance()", function() {
+    describe("::instance()", function () {
 
-        it("returns the interceptor autoloader", function() {
+        it("returns the interceptor autoloader", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
             expect($interceptor)->toBeAnInstanceOf("Kahlan\Jit\Interceptor");
@@ -164,9 +164,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("::composer()", function() {
+    describe("::composer()", function () {
 
-        it("returns the composer autoloader", function() {
+        it("returns the composer autoloader", function () {
 
             $composer = Interceptor::composer()[0];
             expect($composer)->toBeAnInstanceOf("Composer\Autoload\ClassLoader");
@@ -175,9 +175,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->__construct()", function() {
+    describe("->__construct()", function () {
 
-        it("clear caches if `'clearCache'` is `true`", function() {
+        it("clear caches if `'clearCache'` is `true`", function () {
 
             touch($this->cachePath . DS . 'CachedFile.php');
 
@@ -190,7 +190,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("initializes watched files if passed to the constructor", function() {
+        it("initializes watched files if passed to the constructor", function () {
             $this->temp = Dir::tempnam(null, 'cache');
 
             touch($this->temp . DS . 'watched1.php');
@@ -213,9 +213,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->findFile()", function() {
+    describe("->findFile()", function () {
 
-        it("deletages finds to patched autoloader", function() {
+        it("deletages finds to patched autoloader", function () {
 
             Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -226,7 +226,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("still finds path even with no patchers defined", function() {
+        it("still finds path even with no patchers defined", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -237,9 +237,9 @@ describe("Interceptor", function() {
 
         });
 
-        context("with some patchers defined", function() {
+        context("with some patchers defined", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
 
                 $this->interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -252,12 +252,12 @@ describe("Interceptor", function() {
 
             });
 
-            it("delegates find to patchers", function() {
+            it("delegates find to patchers", function () {
 
-                allow($this->patcher1)->toReceive('findFile')->andRun(function($interceptor, $class, $file) {
+                allow($this->patcher1)->toReceive('findFile')->andRun(function ($interceptor, $class, $file) {
                     return $file . '1';
                 });
-                allow($this->patcher2)->toReceive('findFile')->andRun(function($interceptor, $class, $file) {
+                allow($this->patcher2)->toReceive('findFile')->andRun(function ($interceptor, $class, $file) {
                     return $file . '2';
                 });
 
@@ -271,24 +271,24 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->loadFile()", function() {
+    describe("->loadFile()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
             $this->loadFileNamespacePath = Dir::tempnam(null, 'loadFileNamespace');
             $this->interceptor->addPsr4('loadFileNamespace\\', $this->loadFileNamespacePath);
-            $this->classBuilder = function($name) {
+            $this->classBuilder = function ($name) {
                 return "<?php namespace loadFileNamespace; class {$name} {} ?>";
             };
         });
 
-        afterEach(function() {
+        afterEach(function () {
             Dir::remove($this->loadFileNamespacePath);
         });
 
-        context("when interceptor doesn't watch additional files", function() {
+        context("when interceptor doesn't watch additional files", function () {
 
-            it("loads a file", function() {
+            it("loads a file", function () {
 
                 $sourcePath = $this->loadFileNamespacePath . DS . 'ClassA.php';
                 file_put_contents($sourcePath, $this->classBuilder('ClassA'));
@@ -298,7 +298,7 @@ describe("Interceptor", function() {
 
             });
 
-            it("loads cached files", function() {
+            it("loads cached files", function () {
 
                 $sourcePath = $this->loadFileNamespacePath . DS . 'ClassCached.php';
                 $body = $this->classBuilder('ClassCached');
@@ -311,11 +311,11 @@ describe("Interceptor", function() {
 
             });
 
-            it("throws an exception for unexisting files", function() {
+            it("throws an exception for unexisting files", function () {
 
                 $path = $this->loadFileNamespacePath . DS . 'ClassUnexisting.php';
 
-                $closure= function() use ($path) {
+                $closure= function () use ($path) {
                     $interceptor = Interceptor::instance();
                     $interceptor->loadFile($path);
                 };
@@ -323,7 +323,7 @@ describe("Interceptor", function() {
 
             });
 
-            it("caches a loaded files and set the cached file motification time to be the same as the source file", function() {
+            it("caches a loaded files and set the cached file motification time to be the same as the source file", function () {
 
                 $sourcePath = $this->loadFileNamespacePath . DS . 'ClassB.php';
                 file_put_contents($sourcePath, $this->classBuilder('ClassB'));
@@ -343,9 +343,9 @@ describe("Interceptor", function() {
 
         });
 
-        context("when the interceptor watch some additional files", function() {
+        context("when the interceptor watch some additional files", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
                 $this->currentTimestamp = time();
                 $this->watched1Timestamp = $this->currentTimestamp - 1 * 60;
                 $this->watched2Timestamp = $this->currentTimestamp - 2 * 60;
@@ -359,7 +359,7 @@ describe("Interceptor", function() {
                 ]);
             });
 
-            it("caches a file and set the cached file motification time to be the max timestamp between the watched and the source file", function() {
+            it("caches a file and set the cached file motification time to be the max timestamp between the watched and the source file", function () {
 
                 file_put_contents($this->loadFileNamespacePath . DS . 'ClassC.php', $this->classBuilder('ClassC'));
 
@@ -379,9 +379,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->loadFiles()", function() {
+    describe("->loadFiles()", function () {
 
-        it("loads a file", function() {
+        it("loads a file", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -396,9 +396,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->loadClass()", function() {
+    describe("->loadClass()", function () {
 
-        it("loads a class", function() {
+        it("loads a class", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -407,7 +407,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("bails out the patching process if the class has been excluded from being patched", function() {
+        it("bails out the patching process if the class has been excluded from being patched", function () {
 
             $interceptor = Interceptor::patch([
                 'include' => ['allowed\\'],
@@ -420,7 +420,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("loads and proccess patchable class", function() {
+        it("loads and proccess patchable class", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
             $patcher = new Patcher();
@@ -431,7 +431,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("returns null when the class can't be loaded", function() {
+        it("returns null when the class can't be loaded", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -441,9 +441,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->findPath()", function() {
+    describe("->findPath()", function () {
 
-        it("finds a namespace path", function() {
+        it("finds a namespace path", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -452,7 +452,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("finds a PHP class path", function() {
+        it("finds a PHP class path", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -461,7 +461,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("finds a HH class path", function() {
+        it("finds a HH class path", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -470,7 +470,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("gives precedence to files", function() {
+        it("gives precedence to files", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -479,7 +479,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("forces the returned path to be a directory", function() {
+        it("forces the returned path to be a directory", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -490,9 +490,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->__call()", function() {
+    describe("->__call()", function () {
 
-        it("deletages calls to patched autoloader", function() {
+        it("deletages calls to patched autoloader", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -504,9 +504,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->allowed()", function() {
+    describe("->allowed()", function () {
 
-        it("returns true by default", function() {
+        it("returns true by default", function () {
 
             $interceptor = Interceptor::patch([
                 'include' => ['*'],
@@ -518,7 +518,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("returns true if the class match the include", function() {
+        it("returns true if the class match the include", function () {
 
             $interceptor = Interceptor::patch([
                 'include' => ['allowed\\'],
@@ -533,7 +533,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("processes exclude first", function() {
+        it("processes exclude first", function () {
 
             $interceptor = Interceptor::patch([
                 'exclude' => ['namespace\\notallowed\\'],
@@ -551,9 +551,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->cachePath()", function() {
+    describe("->cachePath()", function () {
 
-        it("returns the cache path", function() {
+        it("returns the cache path", function () {
 
             $interceptor = Interceptor::patch();
 
@@ -565,13 +565,13 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->cache()", function() {
+    describe("->cache()", function () {
 
-        it("throws an exception if no cache has been disabled", function() {
+        it("throws an exception if no cache has been disabled", function () {
 
             $this->temp = Dir::tempnam(null, 'cache');
 
-            $closure = function() {
+            $closure = function () {
                 $interceptor = Interceptor::patch(['cachePath' => false]);
                 $interceptor->cache($this->temp . DS . 'ClassToCache.php', '');
             };
@@ -581,19 +581,19 @@ describe("Interceptor", function() {
             Dir::remove($this->temp);
         });
 
-        context("with a valid cache path", function() {
+        context("with a valid cache path", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
                 $this->interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
                 $this->temp = Dir::tempnam(null, 'cache');
 
             });
 
-            afterEach(function() {
+            afterEach(function () {
                 Dir::remove($this->temp);
             });
 
-            it("caches a file and into a subtree similar to the source location", function() {
+            it("caches a file and into a subtree similar to the source location", function () {
 
                 $path = $this->temp . DS . 'ClassToCache.php';
                 $cached = $this->interceptor->cache($path, '');
@@ -605,9 +605,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->cached()", function() {
+    describe("->cached()", function () {
 
-        it("returns false when trying to get an unexisting file", function() {
+        it("returns false when trying to get an unexisting file", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
@@ -617,7 +617,7 @@ describe("Interceptor", function() {
 
         });
 
-        it("returns false when trying no cache path has been defined", function() {
+        it("returns false when trying no cache path has been defined", function () {
 
             $interceptor = Interceptor::patch(['cachePath' => false]);
 
@@ -627,45 +627,45 @@ describe("Interceptor", function() {
 
         });
 
-        context("when the interceptor doesn't watch some additional files", function() {
+        context("when the interceptor doesn't watch some additional files", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
                 $this->interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
                 $this->temp = Dir::tempnam(null, 'cache');
                 $this->cached = $this->interceptor->cache($this->temp . DS . 'CachedClass.php', '');
             });
 
-            afterEach(function() {
+            afterEach(function () {
                 Dir::remove($this->temp);
             });
 
-            it("returns the cached file path if the modified timestamp of the cached file is up to date", function() {
+            it("returns the cached file path if the modified timestamp of the cached file is up to date", function () {
                 touch($this->temp . DS . "CachedClass.php", time() - 1);
                 expect($this->interceptor->cached($this->temp . DS . 'CachedClass.php'))->not->toBe(false);
             });
 
-            it("returns false if the modified timestamp of the cached file is outdated", function() {
+            it("returns false if the modified timestamp of the cached file is outdated", function () {
                 touch($this->temp . DS . "CachedClass.php", time() + 1);
                 expect($this->interceptor->cached($this->temp . DS . 'CachedClass.php'))->toBe(false);
             });
 
         });
 
-        context("when the interceptor watch some additional files", function() {
+        context("when the interceptor watch some additional files", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
                 $this->interceptor = Interceptor::patch(['cachePath' => $this->cachePath]);
 
                 $this->temp = Dir::tempnam(null, 'cache');
                 $this->cached = $this->interceptor->cache($this->temp . DS . 'CachedClass.php', '');
             });
 
-            afterEach(function() {
+            afterEach(function () {
                 Dir::remove($this->temp);
             });
 
-            it("returns the cached file path if the modified timestamp of the cached file is up to date", function() {
+            it("returns the cached file path if the modified timestamp of the cached file is up to date", function () {
 
                 $time = time();
                 touch($this->temp . DS . 'watched1.php', $time - 1);
@@ -677,7 +677,7 @@ describe("Interceptor", function() {
                 expect($this->interceptor->cached($this->temp . DS . 'CachedClass.php'))->not->toBe(false);
             });
 
-            it("returns false if the modified timestamp of the cached file is outdated", function() {
+            it("returns false if the modified timestamp of the cached file is outdated", function () {
 
                 $time = time();
                 touch($this->temp . DS . 'watched1.php', $time - 1);
@@ -689,7 +689,7 @@ describe("Interceptor", function() {
                 expect($this->interceptor->cached($this->temp . DS . 'CachedClass.php'))->toBe(false);
             });
 
-            it("returns false if the modified timestamp of a watched file is outdated", function() {
+            it("returns false if the modified timestamp of a watched file is outdated", function () {
 
                 $time = time();
                 touch($this->temp . DS . 'watched1.php', $time - 1);
@@ -713,9 +713,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->clearCache()", function() {
+    describe("->clearCache()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->customCachePath = Dir::tempnam(null, 'cache');
             $this->interceptor = Interceptor::patch(['cachePath' => $this->customCachePath]);
 
@@ -724,18 +724,18 @@ describe("Interceptor", function() {
             $this->interceptor->cache($this->temp . DS . 'nestedDir/CachedClass2.php', '');
         });
 
-        afterEach(function() {
+        afterEach(function () {
             Dir::remove($this->temp);
         });
 
-        it("clears the cache", function() {
+        it("clears the cache", function () {
 
             $this->interceptor->clearCache();
             expect(file_exists($this->customCachePath))->toBe(false);
 
         });
 
-        it("bails out if the cache has already been cleared", function() {
+        it("bails out if the cache has already been cleared", function () {
 
             $this->interceptor->clearCache();
             $this->interceptor->clearCache();
@@ -745,9 +745,9 @@ describe("Interceptor", function() {
 
     });
 
-    describe("->watch()/unwatch()", function() {
+    describe("->watch()/unwatch()", function () {
 
-        it("add some file to be watched", function() {
+        it("add some file to be watched", function () {
             $this->temp = Dir::tempnam(null, 'cache');
 
             touch($this->temp . DS . 'watched1.php');

@@ -17,12 +17,12 @@ use Kahlan\Spec\Fixture\Plugin\Monkey\User;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar;
 
-describe("Double", function() {
+describe("Double", function () {
 
     /**
      * Save current & reinitialize the Interceptor class.
      */
-    beforeAll(function() {
+    beforeAll(function () {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -36,20 +36,20 @@ describe("Double", function() {
     /**
      * Restore Interceptor class.
      */
-    afterAll(function() {
+    afterAll(function () {
         Interceptor::load($this->previous);
     });
 
-    describe("::_generateAbstractMethods()", function() {
+    describe("::_generateAbstractMethods()", function () {
 
-        it("throws an exception when called with a non-existing class", function() {
+        it("throws an exception when called with a non-existing class", function () {
 
-            expect(function() {
+            expect(function () {
                 $double = Double::classname([
                     'extends' => 'Kahlan\Plugin\Double',
                     'methods' => ['::generateAbstractMethods']
                 ]);
-                allow($double)->toReceive('::generateAbstractMethods')->andRun(function($class) {
+                allow($double)->toReceive('::generateAbstractMethods')->andRun(function ($class) {
                     return static::_generateAbstractMethods($class);
                 });
                 $double::generateAbstractMethods('some\unexisting\Class');
@@ -59,30 +59,30 @@ describe("Double", function() {
 
     });
 
-    describe("::create()", function() {
+    describe("::create()", function () {
 
-        beforeAll(function() {
-            $this->is_method_exists = function($instance, $method, $type = "public") {
+        beforeAll(function () {
+            $this->is_method_exists = function ($instance, $method, $type = "public") {
                 if (!method_exists($instance, $method)) {
                     return false;
                 }
                 $refl = new ReflectionMethod($instance, $method);
-                switch($type) {
+                switch ($type) {
                     case "static":
-                    return $refl->isStatic();
+                        return $refl->isStatic();
                     break;
                     case "public":
-                    return $refl->isPublic();
+                        return $refl->isPublic();
                     break;
                     case "private":
-                    return $refl->isPrivate();
+                        return $refl->isPrivate();
                     break;
                 }
                 return false;
             };
         });
 
-        it("stubs an instance", function() {
+        it("stubs an instance", function () {
 
             $double = Double::instance();
             expect(is_object($double))->toBe(true);
@@ -90,7 +90,7 @@ describe("Double", function() {
 
         });
 
-        it("names a stub instance", function() {
+        it("names a stub instance", function () {
 
             $double = Double::instance(['class' => 'Kahlan\Spec\Double\MyDouble']);
             expect(is_object($double))->toBe(true);
@@ -98,7 +98,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs an instance with a parent class", function() {
+        it("stubs an instance with a parent class", function () {
 
             $double = Double::instance(['extends' => 'Kahlan\Util\Text']);
             expect(is_object($double))->toBe(true);
@@ -106,14 +106,14 @@ describe("Double", function() {
 
         });
 
-        it("stubs an instance using a trait", function() {
+        it("stubs an instance using a trait", function () {
 
             $double = Double::instance(['uses' => 'Kahlan\Spec\Mock\Plugin\Double\HelloTrait']);
             expect($double->hello())->toBe('Hello World From Trait!');
 
         });
 
-        it("stubs an instance implementing some interface", function() {
+        it("stubs an instance implementing some interface", function () {
 
             $double = Double::instance(['implements' => ['ArrayAccess', 'Iterator']]);
             $interfaces = class_implements($double);
@@ -123,7 +123,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs an instance with multiple stubbed methods", function() {
+        it("stubs an instance with multiple stubbed methods", function () {
 
             $double = Double::instance();
             allow($double)->toReceive('message')->andReturn('Good Evening World!', 'Good Bye World!');
@@ -135,7 +135,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs static methods on a stub instance", function() {
+        it("stubs static methods on a stub instance", function () {
 
             $double = Double::instance();
             allow($double)->toReceive('::magicCallStatic')->andReturn('Good Evening World!', 'Good Bye World!');
@@ -145,7 +145,7 @@ describe("Double", function() {
 
         });
 
-        it("produces unique instance", function() {
+        it("produces unique instance", function () {
 
             $double = Double::instance();
             $double2 = Double::instance();
@@ -154,7 +154,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs instances with some magic methods if no parent defined", function() {
+        it("stubs instances with some magic methods if no parent defined", function () {
 
             $double = Double::instance();
 
@@ -181,7 +181,7 @@ describe("Double", function() {
 
         });
 
-        it("defaults stub can be used as container", function() {
+        it("defaults stub can be used as container", function () {
 
             $double = Double::instance();
             $double->data = 'hello';
@@ -189,7 +189,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs an instance with an extra method", function() {
+        it("stubs an instance with an extra method", function () {
 
             $double = Double::instance([
                 'methods' => ['method1']
@@ -201,7 +201,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs an instance with an extra static method", function() {
+        it("stubs an instance with an extra static method", function () {
 
             $double = Double::instance([
                 'methods' => ['::method1']
@@ -213,7 +213,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs an instance with an extra method returning by reference", function() {
+        it("stubs an instance with an extra method returning by reference", function () {
 
             $double = Double::instance([
                 'methods' => ['&method1']
@@ -223,7 +223,7 @@ describe("Double", function() {
             expect(method_exists($double, 'method1'))->toBe(true);
 
             $array = [];
-            allow($double)->toReceive('method1')->andRun(function() use (&$array) {
+            allow($double)->toReceive('method1')->andRun(function () use (&$array) {
                 $array[] = 'in';
             });
 
@@ -245,7 +245,7 @@ describe("Double", function() {
 
         });
 
-        it("expects method called in the past to be uncalled", function() {
+        it("expects method called in the past to be uncalled", function () {
 
             $double = Double::instance();
             $double->message();
@@ -255,16 +255,16 @@ describe("Double", function() {
 
     });
 
-    describe("::classname()", function() {
+    describe("::classname()", function () {
 
-        it("stubs class", function() {
+        it("stubs class", function () {
 
             $double = Double::classname();
             expect($double)->toMatch("/^Kahlan\\\Spec\\\Plugin\\\Double\\\Double\d+$/");
 
         });
 
-        it("names a stub class", function() {
+        it("names a stub class", function () {
 
             $double = Double::classname(['class' => 'Kahlan\Spec\Double\MyStaticDouble']);
             expect(is_string($double))->toBe(true);
@@ -272,7 +272,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs a stub class with multiple methods", function() {
+        it("stubs a stub class with multiple methods", function () {
 
             $classname = Double::classname();
             allow($classname)->toReceive('message')->andReturn('Good Evening World!', 'Good Bye World!');
@@ -289,7 +289,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs static methods on a stub class", function() {
+        it("stubs static methods on a stub class", function () {
 
             $classname = Double::classname();
             allow($classname)->toReceive('::magicCallStatic')->andReturn('Good Evening World!', 'Good Bye World!');
@@ -299,7 +299,7 @@ describe("Double", function() {
 
         });
 
-        it("produces unique classname", function() {
+        it("produces unique classname", function () {
 
             $double = Double::classname();
             $double2 = Double::classname();
@@ -308,7 +308,7 @@ describe("Double", function() {
 
         });
 
-        it("stubs classes with `construct()` if no parent defined", function() {
+        it("stubs classes with `construct()` if no parent defined", function () {
 
             $class = Double::classname();
             expect($class)->toReceive('__construct');
@@ -316,7 +316,7 @@ describe("Double", function() {
 
         });
 
-        it("expects method called in the past to be uncalled", function() {
+        it("expects method called in the past to be uncalled", function () {
 
             $class = Double::classname();
             $class::message();
@@ -326,33 +326,33 @@ describe("Double", function() {
 
     });
 
-   describe("::generate()", function() {
+    describe("::generate()", function () {
 
-       it("throws an exception with an unexisting trait", function () {
+        it("throws an exception with an unexisting trait", function () {
 
-           expect(function() {
-               Double::generate(['uses' => ['an\unexisting\Trait']]);
-           })->toThrow();
+            expect(function () {
+                Double::generate(['uses' => ['an\unexisting\Trait']]);
+            })->toThrow();
 
-       });
+        });
 
-       it("throws an exception with an unexisting interface", function() {
+        it("throws an exception with an unexisting interface", function () {
 
-           expect(function() {
-               Double::generate(['implements' => ['an\unexisting\Interface']]);
-           })->toThrow();
+            expect(function () {
+                Double::generate(['implements' => ['an\unexisting\Interface']]);
+            })->toThrow();
 
-       });
+        });
 
-       it("throws an exception with an unexisting parent class", function() {
+        it("throws an exception with an unexisting parent class", function () {
 
-           expect(function() {
-               Double::generate(['extends' => 'an\unexisting\ParentClass']);
-           })->toThrow();
+            expect(function () {
+                Double::generate(['extends' => 'an\unexisting\ParentClass']);
+            })->toThrow();
 
-       });
+        });
 
-       it("overrides the construct method", function() {
+        it("overrides the construct method", function () {
 
             $result = Double::generate([
                 'class' => 'Kahlan\Spec\Plugin\Double\Double',
@@ -375,7 +375,7 @@ EOD;
 
         });
 
-        it("generates use statement", function() {
+        it("generates use statement", function () {
 
             $result = Double::generate([
                 'class'      => 'Kahlan\Spec\Plugin\Double\Double',
@@ -398,7 +398,7 @@ EOD;
 
         });
 
-        it("generates abstract parent class methods", function() {
+        it("generates abstract parent class methods", function () {
 
             $result = Double::generate([
                 'class'      => 'Kahlan\Spec\Plugin\Double\Double',
@@ -421,7 +421,7 @@ EOD;
 
         });
 
-        it("generates interface methods", function() {
+        it("generates interface methods", function () {
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -444,7 +444,7 @@ EOD;
 
         });
 
-        it("generates interface methods for multiple insterfaces", function() {
+        it("generates interface methods for multiple insterfaces", function () {
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -468,7 +468,7 @@ EOD;
 
         });
 
-        it("generates interface methods", function() {
+        it("generates interface methods", function () {
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -491,7 +491,7 @@ EOD;
 
         });
 
-        it("generates interface methods with return type", function() {
+        it("generates interface methods with return type", function () {
 
             skipIf(PHP_MAJOR_VERSION < 7);
 
@@ -517,7 +517,7 @@ EOD;
 
         });
 
-        it("generates interface methods with variadic variable", function() {
+        it("generates interface methods with variadic variable", function () {
 
             skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
 
@@ -542,7 +542,7 @@ EOD;
 
         });
 
-        it("manages methods inheritence", function() {
+        it("manages methods inheritence", function () {
 
             $result = Double::generate([
                 'class'      => 'Kahlan\Spec\Plugin\Double\Double',
@@ -607,7 +607,7 @@ EOD;
 
         });
 
-        it("overrides all parent class method and respect typehints using the layer option", function() {
+        it("overrides all parent class method and respect typehints using the layer option", function () {
 
             $result = Double::generate([
                 'class'   => 'Kahlan\Spec\Plugin\Double\Double',
@@ -636,7 +636,7 @@ EOD;
 
         });
 
-        it("overrides by default all parent class method of internal classes if the layer option is not defined", function() {
+        it("overrides by default all parent class method of internal classes if the layer option is not defined", function () {
 
             $double = Double::instance(['extends' => 'DateTime']);
 
@@ -646,7 +646,7 @@ EOD;
 
         });
 
-        it("adds ` = NULL` to optional parameter in PHP core method", function() {
+        it("adds ` = NULL` to optional parameter in PHP core method", function () {
 
             skipIf(defined('HHVM_VERSION'));
 
@@ -668,7 +668,7 @@ EOD;
 
         });
 
-        it("generates code without PHP tags", function() {
+        it("generates code without PHP tags", function () {
 
             $result = Double::generate([
                 'class' => 'Kahlan\Spec\Plugin\Double\Double',

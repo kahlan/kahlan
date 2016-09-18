@@ -3,7 +3,8 @@ namespace Kahlan\Spec\Fixture\Plugin\Monkey;
 
 use Kahlan\Util\Text;
 
-function rand($min, $max) {
+function rand($min, $max)
+{
     return ($max - $min) / 2;
 }
 

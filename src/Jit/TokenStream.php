@@ -309,7 +309,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  array $skips The elements array to skip.
      * @return              The skipped string.
      */
-    protected function _skip($skips) {
+    protected function _skip($skips)
+    {
         $skipped = '';
         $count = $this->count();
         while ($this->_current < $count) {
@@ -416,5 +417,4 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
     {
         return $this->source();
     }
-
 }

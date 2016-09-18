@@ -45,7 +45,8 @@ class Xdebug
         //@see bug https://github.com/facebook/hhvm/issues/4752
         try {
             xdebug_start_code_coverage($this->_config['coverage']);
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
     }
 
     /**

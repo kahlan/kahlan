@@ -3,14 +3,14 @@ namespace Kahlan\Jit\Node;
 
 class BlockDef extends NodeDef
 {
-	/**
+    /**
      * The node's type.
      *
      * @var string
      */
     public $type = null;
 
-	/**
+    /**
      * Boolean indicating if this node has methods (i.e class, trait or interface)
      *
      * @var boolean
@@ -24,7 +24,7 @@ class BlockDef extends NodeDef
      */
     public $name = '';
 
-	/**
+    /**
      * The defined uses (for class only)
      *
      * @var array
@@ -44,5 +44,4 @@ class BlockDef extends NodeDef
      * @var array|null
      */
     public $implements = null;
-
 }

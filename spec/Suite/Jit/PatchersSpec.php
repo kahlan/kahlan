@@ -6,15 +6,15 @@ use Kahlan\Plugin\Double;
 
 use Kahlan\Jit\Patchers;
 
-describe("Patchers", function() {
+describe("Patchers", function () {
 
-    beforeEach(function(){
+    beforeEach(function () {
         $this->patchers = new Patchers;
     });
 
-    describe("->add/get()", function() {
+    describe("->add/get()", function () {
 
-        it("stores a patcher", function() {
+        it("stores a patcher", function () {
 
             $stub = Double::instance();
             $this->patchers->add('my_patcher', $stub);
@@ -24,7 +24,7 @@ describe("Patchers", function() {
 
         });
 
-        it("returns `false` if patcher are not objects", function() {
+        it("returns `false` if patcher are not objects", function () {
 
             expect($this->patchers->add('my_patcher', "not an object"))->toBe(false);
 
@@ -32,9 +32,9 @@ describe("Patchers", function() {
 
     });
 
-    describe("->get()", function() {
+    describe("->get()", function () {
 
-        it("returns `null` for an unexisting patcher", function() {
+        it("returns `null` for an unexisting patcher", function () {
 
             $actual = $this->patchers->get('my_patcher');
             expect($actual)->toBe(null);
@@ -43,9 +43,9 @@ describe("Patchers", function() {
 
     });
 
-    describe("->exists()", function() {
+    describe("->exists()", function () {
 
-        it("returns `true` for an existing patcher", function() {
+        it("returns `true` for an existing patcher", function () {
 
             $stub = Double::instance();
             $this->patchers->add('my_patcher', $stub);
@@ -55,7 +55,7 @@ describe("Patchers", function() {
 
         });
 
-        it("returns `false` for an unexisting patcher", function() {
+        it("returns `false` for an unexisting patcher", function () {
 
             $actual = $this->patchers->exists('my_patcher');
             expect($actual)->toBe(false);
@@ -64,9 +64,9 @@ describe("Patchers", function() {
 
     });
 
-    describe("->remove()", function() {
+    describe("->remove()", function () {
 
-        it("removes a patcher", function() {
+        it("removes a patcher", function () {
 
             $stub = Double::instance();
             $this->patchers->add('my_patcher', $stub);
@@ -83,9 +83,9 @@ describe("Patchers", function() {
 
     });
 
-    describe("->clear()", function() {
+    describe("->clear()", function () {
 
-        it("clears all patchers", function() {
+        it("clears all patchers", function () {
 
             $stub = Double::instance();
             $this->patchers->add('my_patcher', $stub);
@@ -102,9 +102,9 @@ describe("Patchers", function() {
 
     });
 
-    describe("->patchable()", function() {
+    describe("->patchable()", function () {
 
-        it("runs `true` when at least one patcher consider a class as patchable", function() {
+        it("runs `true` when at least one patcher consider a class as patchable", function () {
 
             $stub1 = Double::instance();
             allow($stub1)->toReceive('patchable')->andReturn(false);
@@ -121,7 +121,7 @@ describe("Patchers", function() {
 
         });
 
-        it("runs `false` when at no patcher consider a class as patchable", function() {
+        it("runs `false` when at no patcher consider a class as patchable", function () {
 
             $stub1 = Double::instance();
             allow($stub1)->toReceive('patchable')->andReturn(false);
@@ -140,9 +140,9 @@ describe("Patchers", function() {
 
     });
 
-    describe("->process()", function() {
+    describe("->process()", function () {
 
-        it("runs a method on all patchers", function() {
+        it("runs a method on all patchers", function () {
 
             $stub1 = Double::instance();
             $this->patchers->add('patcher1', $stub1);
@@ -153,7 +153,7 @@ describe("Patchers", function() {
             $path = 'tmp/hello_world.php';
             $code = "<?php\necho 'Hello World!';\n";
 
-            $matcher = function($actual) use ($code) {
+            $matcher = function ($actual) use ($code) {
                 return $code === (string) $actual;
             };
 
@@ -164,7 +164,7 @@ describe("Patchers", function() {
 
         });
 
-        it("bails out if code to process is an empty string", function() {
+        it("bails out if code to process is an empty string", function () {
 
             expect($this->patchers->process(''))->toBe('');
 
@@ -173,9 +173,9 @@ describe("Patchers", function() {
     });
 
 
-    describe("->findFile()", function() {
+    describe("->findFile()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->loader = Double::instance();
             $this->class = Double::classname();
             $this->file = 'some/path/file.php';
@@ -188,16 +188,16 @@ describe("Patchers", function() {
 
             $file = $this->file;
 
-            allow($this->stub1)->toReceive('findFile')->andRun(function() use ($file) {
+            allow($this->stub1)->toReceive('findFile')->andRun(function () use ($file) {
                 return $file;
             });
 
-            allow($this->stub2)->toReceive('findFile')->andRun(function() use ($file) {
+            allow($this->stub2)->toReceive('findFile')->andRun(function () use ($file) {
                 return $file;
             });
         });
 
-        it("runs findFile() on all patchers", function() {
+        it("runs findFile() on all patchers", function () {
 
             expect($this->stub1)->toReceive('findFile')->with($this->loader, $this->class, $this->file);
             expect($this->stub2)->toReceive('findFile')->with($this->loader, $this->class, $this->file);
@@ -207,11 +207,11 @@ describe("Patchers", function() {
 
         });
 
-        it("returns patchers overriding if available", function() {
+        it("returns patchers overriding if available", function () {
 
             $path = 'new/path/file.php';
 
-            allow($this->stub2)->toReceive('findFile')->andRun(function() use ($path) {
+            allow($this->stub2)->toReceive('findFile')->andRun(function () use ($path) {
                 return $path;
             });
 

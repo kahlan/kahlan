@@ -6,13 +6,13 @@ use InvalidArgumentException;
 use Kahlan\Code\TimeoutException;
 use Kahlan\Code\Code;
 
-describe("Code", function() {
+describe("Code", function () {
 
     declare(ticks = 1) {
 
-        describe("::run()", function() {
+        describe("::run()", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
                 if (!function_exists('pcntl_signal')) {
                     skipIf(true);
                 }
@@ -22,16 +22,18 @@ describe("Code", function() {
 
                 $start = microtime(true);
 
-                expect(Code::run(function() {return true;}, 1))->toBe(true);
+                expect(Code::run(function () {
+                    return true;
+                }, 1))->toBe(true);
 
                 $end = microtime(true);
                 expect($end - $start)->toBeLessThan(1);
 
             });
 
-            it("throws an exception if an invalid closure is provided", function() {
+            it("throws an exception if an invalid closure is provided", function () {
 
-                $closure = function() {
+                $closure = function () {
                     Code::run("invalid", 1);
                 };
 
@@ -39,13 +41,15 @@ describe("Code", function() {
 
             });
 
-            it("throws an exception on timeout", function() {
+            it("throws an exception on timeout", function () {
 
                 $start = microtime(true);
 
-                $closure = function() {
-                    Code::run(function() {
-                        while(true) sleep(1);
+                $closure = function () {
+                    Code::run(function () {
+                        while (true) {
+                            sleep(1);
+                        }
                     }, 1);
                 };
 
@@ -56,10 +60,10 @@ describe("Code", function() {
 
             });
 
-            it("throws all unexpected exceptions", function() {
+            it("throws all unexpected exceptions", function () {
 
-                $closure = function() {
-                    Code::run(function() {
+                $closure = function () {
+                    Code::run(function () {
                         throw new Exception("Error Processing Request");
                     }, 1);
                 };
@@ -72,22 +76,24 @@ describe("Code", function() {
 
     }
 
-    describe("::spin()", function() {
+    describe("::spin()", function () {
 
         it("runs the passed closure", function () {
 
             $start = microtime(true);
 
-            expect(Code::spin(function() {return true;}, 1))->toBe(true);
+            expect(Code::spin(function () {
+                return true;
+            }, 1))->toBe(true);
 
             $end = microtime(true);
             expect($end - $start)->toBeLessThan(1);
 
         });
 
-        it("throws an exception if an invalid closure is provided", function() {
+        it("throws an exception if an invalid closure is provided", function () {
 
-            $closure = function() {
+            $closure = function () {
                 Code::spin("invalid", 1);
             };
 
@@ -95,12 +101,12 @@ describe("Code", function() {
 
         });
 
-        it("throws an exception on timeout", function() {
+        it("throws an exception on timeout", function () {
 
             $start = microtime(true);
 
-            $closure = function() {
-                Code::spin(function() {}, 1);
+            $closure = function () {
+                Code::spin(function () {}, 1);
             };
 
             expect($closure)->toThrow(new TimeoutException('Timeout reached, execution aborted after 1 second(s).'));
@@ -110,13 +116,15 @@ describe("Code", function() {
 
         });
 
-        it("respects the delay delay", function() {
+        it("respects the delay delay", function () {
 
             $start = microtime(true);
 
             $counter = 0;
-            $closure = function() use (&$counter) {
-                Code::spin(function() use (&$counter) { $counter++; }, 1, 250000);
+            $closure = function () use (&$counter) {
+                Code::spin(function () use (&$counter) {
+                    $counter++;
+                }, 1, 250000);
             };
 
             expect($closure)->toThrow(new TimeoutException('Timeout reached, execution aborted after 1 second(s).'));

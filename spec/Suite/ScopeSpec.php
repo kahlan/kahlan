@@ -7,17 +7,17 @@ use Kahlan\Scope;
 use Kahlan\Summary;
 use Kahlan\Log;
 
-describe("Scope", function() {
+describe("Scope", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
 
         $this->scope = new Scope(['message' => 'it runs a spec']);
 
     });
 
-    describe("->__construct()", function() {
+    describe("->__construct()", function () {
 
-        it("sets passed options", function() {
+        it("sets passed options", function () {
 
             $log = new Log();
             $summary = new Summary();
@@ -42,9 +42,9 @@ describe("Scope", function() {
 
     });
 
-    describe("->parent()", function() {
+    describe("->parent()", function () {
 
-        it("returns the parent node", function() {
+        it("returns the parent node", function () {
 
             $parent = new Scope();
             $this->scope = new Scope(['parent' => $parent]);
@@ -54,9 +54,9 @@ describe("Scope", function() {
 
     });
 
-    describe("->backtrace()", function() {
+    describe("->backtrace()", function () {
 
-        it("returns the backtrace", function() {
+        it("returns the backtrace", function () {
 
             $this->scope = new Scope();
             expect(basename($this->scope->backtrace()[1]['file']))->toBe('ScopeSpec.php');
@@ -65,25 +65,25 @@ describe("Scope", function() {
 
     });
 
-    describe("->__get/__set()", function() {
+    describe("->__get/__set()", function () {
 
-        it("defines a value in the current scope", function() {
+        it("defines a value in the current scope", function () {
 
             $this->foo = 2;
             expect($this->foo)->toEqual(2);
 
         });
 
-        it("is not influenced by the previous spec", function() {
+        it("is not influenced by the previous spec", function () {
 
             expect(isset($this->foo))->toBe(false);
 
         });
 
-        it("throw an new exception for reserved keywords", function() {
+        it("throw an new exception for reserved keywords", function () {
 
             foreach (Scope::$blacklist as $keyword => $bool) {
-                $closure = function() use ($keyword) {
+                $closure = function () use ($keyword) {
                     $this->{$keyword} = 'some value';
                 };
                 expect($closure)->toThrow(new Exception("Sorry `{$keyword}` is a reserved keyword, it can't be used as a scope variable."));
@@ -91,9 +91,9 @@ describe("Scope", function() {
 
         });
 
-        it("throws an exception on undefined variables", function() {
+        it("throws an exception on undefined variables", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $a = $this->unexisting;
             };
 
@@ -101,9 +101,9 @@ describe("Scope", function() {
 
         });
 
-        it("throws properly message on expect() usage inside of describe()", function() {
+        it("throws properly message on expect() usage inside of describe()", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $this->expect;
             };
 
@@ -112,13 +112,13 @@ describe("Scope", function() {
 
         });
 
-        context("when nested", function() {
+        context("when nested", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
                 $this->bar = 1;
             });
 
-            it("can access variable from the parent scope", function() {
+            it("can access variable from the parent scope", function () {
 
                 expect($this->bar)->toBe(1);
 
@@ -126,9 +126,9 @@ describe("Scope", function() {
         });
     });
 
-    describe("skipIf", function() {
+    describe("skipIf", function () {
 
-        it("returns none if provided false/null", function() {
+        it("returns none if provided false/null", function () {
 
             expect(skipIf(false))->toBe(null);
 
@@ -136,20 +136,20 @@ describe("Scope", function() {
 
         $executed = 0;
 
-        context("when used in a scope", function() use (&$executed) {
+        context("when used in a scope", function () use (&$executed) {
 
-            beforeAll(function() {
+            beforeAll(function () {
                 skipIf(true);
             });
 
-            it("skips this spec", function() use (&$executed) {
+            it("skips this spec", function () use (&$executed) {
 
                 expect(true)->toBe(false);
                 $executed++;
 
             });
 
-            it("skips this spec too", function() use (&$executed) {
+            it("skips this spec too", function () use (&$executed) {
 
                 expect(true)->toBe(false);
                 $executed++;
@@ -158,15 +158,15 @@ describe("Scope", function() {
 
         });
 
-        it("expects that no spec have been runned", function() use (&$executed) {
+        it("expects that no spec have been runned", function () use (&$executed) {
 
             expect($executed)->toBe(0);
 
         });
 
-        context("when used in a spec", function() use (&$executed) {
+        context("when used in a spec", function () use (&$executed) {
 
-            it("skips this spec", function() use (&$executed) {
+            it("skips this spec", function () use (&$executed) {
 
                 skipIf(true);
                 expect(true)->toBe(false);
@@ -174,7 +174,7 @@ describe("Scope", function() {
 
             });
 
-            it("doesn't skip this spec", function() use (&$executed) {
+            it("doesn't skip this spec", function () use (&$executed) {
 
                 $executed++;
                 expect(true)->toBe(true);
@@ -182,7 +182,7 @@ describe("Scope", function() {
 
         });
 
-        it("expects that only one test have been runned", function() use (&$executed) {
+        it("expects that only one test have been runned", function () use (&$executed) {
 
             expect($executed)->toBe(1);
 
@@ -190,14 +190,14 @@ describe("Scope", function() {
 
     });
 
-    describe("__call", function() {
+    describe("__call", function () {
 
-        $this->customMethod = function($self) {
+        $this->customMethod = function ($self) {
             $self->called = true;
             return 'called';
         };
 
-        it("calls closure assigned to scope property to be inkovable", function() {
+        it("calls closure assigned to scope property to be inkovable", function () {
 
             $actual = $this->customMethod($this);
             expect($actual)->toBe('called');
@@ -205,9 +205,9 @@ describe("Scope", function() {
 
         });
 
-        it("throws an exception on no closure variable", function() {
+        it("throws an exception on no closure variable", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $this->mystring = 'hello';
                 $a = $this->mystring();
             };
@@ -218,9 +218,9 @@ describe("Scope", function() {
 
     });
 
-    describe("->pass()", function() {
+    describe("->pass()", function () {
 
-        it("logs a pass", function() {
+        it("logs a pass", function () {
 
             $this->scope->log('passed', ['matcher' => 'Kahlan\Matcher\ToBe']);
             $expectation = $this->scope->log()->children()[0];
@@ -232,9 +232,9 @@ describe("Scope", function() {
 
     });
 
-    describe("->fail()", function() {
+    describe("->fail()", function () {
 
-        it("logs a fail", function() {
+        it("logs a fail", function () {
 
             $this->scope->log('failed', ['matcher' => 'Kahlan\Matcher\ToBe']);
             $expectation = $this->scope->log()->children()[0];
@@ -246,9 +246,9 @@ describe("Scope", function() {
 
     });
 
-    describe("->timeout()", function() {
+    describe("->timeout()", function () {
 
-        it("gets/sets the timeout value", function() {
+        it("gets/sets the timeout value", function () {
 
             $this->scope->timeout(5);
             expect($this->scope->timeout())->toBe(5);

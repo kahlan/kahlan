@@ -57,25 +57,25 @@ class Dot extends Terminal
      */
     public function specEnd($log = null)
     {
-        switch($log->type()) {
+        switch ($log->type()) {
             case 'passed':
                 $this->_write('.');
-            break;
+                break;
             case 'skipped':
                 $this->_write('S', 'd');
-            break;
+                break;
             case 'pending':
                 $this->_write('P', 'cyan');
-            break;
+                break;
             case 'excluded':
                 $this->_write('X', 'yellow');
-            break;
+                break;
             case 'failed':
                 $this->_write('F', 'red');
-            break;
+                break;
             case 'errored':
                 $this->_write('E', 'magenta');
-            break;
+                break;
         }
     }
 

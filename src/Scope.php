@@ -406,19 +406,19 @@ class Scope
      */
     protected function _exception($exception, $inEachHook = false)
     {
-        switch(get_class($exception)) {
+        switch (get_class($exception)) {
             case 'Kahlan\SkipException':
                 if ($inEachHook) {
                     $this->log()->type('skipped');
                 } else {
                     $this->_skipChildren($exception);
                 }
-            break;
+                break;
             default:
                 $this->_passed = false;
                 $this->log()->type('errored');
                 $this->log()->exception($exception);
-            break;
+                break;
         }
     }
 

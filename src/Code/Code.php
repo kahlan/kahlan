@@ -25,7 +25,7 @@ class Code
             throw new Exception("PCNTL threading is not supported by your system.");
         }
 
-        pcntl_signal(SIGALRM, function($signal) use ($timeout) {
+        pcntl_signal(SIGALRM, function ($signal) use ($timeout) {
             throw new TimeoutException("Timeout reached, execution aborted after {$timeout} second(s).");
         }, true);
 
@@ -57,8 +57,7 @@ class Code
             throw new InvalidArgumentException();
         }
 
-        $closure = function() use ($callable, $timeout, $delay) {
-
+        $closure = function () use ($callable, $timeout, $delay) {
             $timeout = (float) $timeout;
             $result = false;
             $start = microtime(true);
@@ -69,7 +68,6 @@ class Code
                 }
                 usleep($delay);
                 $current = microtime(true);
-
             } while ($current - $start < $timeout);
 
             throw new TimeoutException("Timeout reached, execution aborted after {$timeout} second(s).");

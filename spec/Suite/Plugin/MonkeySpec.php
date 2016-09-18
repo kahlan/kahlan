@@ -9,42 +9,22 @@ use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 
 use Kahlan\Spec\Fixture\Plugin\Monkey\Mon;
 
-function mytime() {
+function mytime()
+{
     return 245026800;
 }
 
-function myrand($min, $max) {
+function myrand($min, $max)
+{
     return 101;
 }
 
-class MyDateTime {
-    protected $_datetime;
-
-    public function __construct() {
-        date_default_timezone_set('UTC');
-        $this->_datetime = new DateTime();
-        $this->_datetime->setTimestamp(245026800);
-    }
-
-    public function __call($name, $args) {
-        return call_user_func_array([$this->_datetime, $name], $args);
-    }
-}
-
-class MyString {
-
-    public static function dump($value) {
-        return 'myhashvalue';
-    }
-
-}
-
-describe("Monkey", function() {
+describe("Monkey", function () {
 
     /**
      * Save current & reinitialize the Interceptor class.
      */
-    beforeAll(function() {
+    beforeAll(function () {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -58,11 +38,11 @@ describe("Monkey", function() {
     /**
      * Restore Interceptor class.
      */
-    afterAll(function() {
+    afterAll(function () {
         Interceptor::load($this->previous);
     });
 
-    it("patches a core function", function() {
+    it("patches a core function", function () {
 
         $mon = new Mon();
         Monkey::patch('time', 'Kahlan\Spec\Suite\Plugin\mytime');
@@ -70,25 +50,27 @@ describe("Monkey", function() {
 
     });
 
-    describe("::patch()", function() {
+    describe("::patch()", function () {
 
-        it("patches a core function with a closure", function() {
+        it("patches a core function with a closure", function () {
 
             $mon = new Mon();
-            Monkey::patch('time', function(){return 123;});
+            Monkey::patch('time', function () {
+                return 123;
+            });
             expect($mon->time())->toBe(123);
 
         });
 
-        it("patches a core class", function() {
+        it("patches a core class", function () {
 
             $mon = new Mon();
-            Monkey::patch('DateTime', 'Kahlan\Spec\Suite\Plugin\MyDateTime');
+            Monkey::patch('DateTime', 'Kahlan\Spec\Mock\Plugin\Monkey\MyDateTime');
             expect($mon->datetime()->getTimestamp())->toBe(245026800);
 
         });
 
-        it("patches a core class using substitutes", function() {
+        it("patches a core class using substitutes", function () {
 
             $mon = new Mon();
             $patch = Monkey::patch('DateTime');
@@ -98,7 +80,7 @@ describe("Monkey", function() {
 
         });
 
-        it("patches a function", function() {
+        it("patches a function", function () {
 
             $mon = new Mon();
             Monkey::patch('Kahlan\Spec\Fixture\Plugin\Monkey\rand', 'Kahlan\Spec\Suite\Plugin\myrand');
@@ -106,15 +88,15 @@ describe("Monkey", function() {
 
         });
 
-        it("patches a class", function() {
+        it("patches a class", function () {
 
             $mon = new Mon();
-            Monkey::patch('Kahlan\Util\Text', 'Kahlan\Spec\Suite\Plugin\MyString');
+            Monkey::patch('Kahlan\Util\Text', 'Kahlan\Spec\Mock\Plugin\Monkey\MyString');
             expect($mon->dump((object)'hello'))->toBe('myhashvalue');
 
         });
 
-        it("can unpatch a monkey patch", function() {
+        it("can unpatch a monkey patch", function () {
 
             $mon = new Mon();
             Monkey::patch('Kahlan\Spec\Fixture\Plugin\Monkey\rand', 'Kahlan\Spec\Suite\Plugin\myrand');
@@ -125,10 +107,12 @@ describe("Monkey", function() {
 
         });
 
-        it("throws an exception with trying to patch an unsupported functions or core langage statements", function() {
+        it("throws an exception with trying to patch an unsupported functions or core langage statements", function () {
 
-            $closure = function() {
-                Monkey::patch('func_get_args', function(){return [];});
+            $closure = function () {
+                Monkey::patch('func_get_args', function () {
+                    return [];
+                });
             };
 
             expect($closure)->toThrow(new Exception('Monkey patching `func_get_args()` is not supported by Kahlan.'));

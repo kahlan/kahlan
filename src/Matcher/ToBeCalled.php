@@ -206,5 +206,4 @@ class ToBeCalled
     {
         return $this->_description;
     }
-
 }

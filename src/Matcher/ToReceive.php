@@ -317,7 +317,7 @@ class ToReceive
 
         if (!$calledTimes) {
             $logged = [];
-            foreach(Calls::logs($reference, $startIndex) as $log) {
+            foreach (Calls::logs($reference, $startIndex) as $log) {
                 $logged[] = $log['static'] ? '::' . $log['name'] : $log['name'];
             }
             $this->_description['data']['actual received calls'] = $logged;
@@ -325,7 +325,7 @@ class ToReceive
             $this->_description['data']['actual received'] = $expected;
             $this->_description['data']['actual received times'] = $calledTimes;
             if ($with !== null) {
-               $this->_description['data']['actual received parameters list'] = $report['args'];
+                $this->_description['data']['actual received parameters list'] = $report['args'];
             }
         }
 
@@ -347,5 +347,4 @@ class ToReceive
     {
         return $this->_description;
     }
-
 }

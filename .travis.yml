@@ -23,7 +23,9 @@ before_script:
   - if [[ $TRAVIS_PHP_VERSION =~ ^hhvm ]]; then echo 'hhvm.php7.all = 1' >> /etc/hhvm/php.ini; fi
   - if [[ $TRAVIS_PHP_VERSION =~ ^7 ]]; then pecl install xdebug; fi
 
-script: bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml
+script:
+  - vendor/bin/phpcs
+  - bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml
 
 after_success:
   - "if [ $(phpenv version-name) = '7.0' ]; then curl -X POST -d @codeclimate.json -H 'Content-Type:application/json' https://codeclimate.com/test_reports --verbose; fi"

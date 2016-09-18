@@ -82,5 +82,4 @@ class Wrapper
         array_unshift($params, $this->__name);
         return $this->__dependency = call_user_func_array([$this->__box, 'get'], $params);
     }
-
 }

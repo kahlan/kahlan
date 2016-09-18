@@ -125,7 +125,8 @@ class Collector
      *
      * @return object
      */
-    public function driver() {
+    public function driver()
+    {
         return $this->_driver;
     }
 
@@ -134,7 +135,8 @@ class Collector
      *
      * @return string
      */
-    public function base() {
+    public function base()
+    {
         return rtrim($this->_base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
@@ -464,5 +466,4 @@ class Collector
         $parser = $this->_classes['parser'];
         return $this->_tree[$file] = $parser::parse(file_get_contents($file), ['lines' => true]);
     }
-
 }

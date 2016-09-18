@@ -3,11 +3,11 @@ namespace Kahlan\Spec\Suite\Jit\Node;
 
 use Kahlan\Jit\Node\FunctionDef;
 
-describe("FunctionDef", function() {
+describe("FunctionDef", function () {
 
-    describe("->argsToParams()", function() {
+    describe("->argsToParams()", function () {
 
-        it("builds a list of params from function arguments", function() {
+        it("builds a list of params from function arguments", function () {
             $node = new FunctionDef();
             $node->args = [
                 '$required',

@@ -17,14 +17,14 @@ use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar;
 use Kahlan\Spec\Fixture\Plugin\Monkey\User;
 
-describe("toReceive", function() {
+describe("toReceive", function () {
 
-    describe("::match()", function() {
+    describe("::match()", function () {
 
         /**
          * Save current & reinitialize the Interceptor class.
          */
-        beforeAll(function() {
+        beforeAll(function () {
             $this->previous = Interceptor::instance();
             Interceptor::unpatch();
 
@@ -38,13 +38,13 @@ describe("toReceive", function() {
         /**
          * Restore Interceptor class.
          */
-        afterAll(function() {
+        afterAll(function () {
             Interceptor::load($this->previous);
         });
 
-        context("with dynamic call", function() {
+        context("with dynamic call", function () {
 
-            it("expects called method to be called", function() {
+            it("expects called method to be called", function () {
 
                 $foo = new Foo();
                 expect($foo)->toReceive('message');
@@ -52,14 +52,14 @@ describe("toReceive", function() {
 
             });
 
-            it("expects uncalled method to be uncalled", function() {
+            it("expects uncalled method to be uncalled", function () {
 
                 $foo = new Foo();
                 expect($foo)->not->toReceive('message');
 
             });
 
-            it("expects method called in the past to be uncalled", function() {
+            it("expects method called in the past to be uncalled", function () {
 
                 $foo = new Foo();
                 $foo->message();
@@ -67,7 +67,7 @@ describe("toReceive", function() {
 
             });
 
-            it("expects static method called using non-static way to still called (PHP behavior)", function() {
+            it("expects static method called using non-static way to still called (PHP behavior)", function () {
 
                 $foo = new Foo();
                 expect($foo)->toReceive('::version');
@@ -75,7 +75,7 @@ describe("toReceive", function() {
 
             });
 
-            it("expects static method called using non-static way to be not called on instance", function() {
+            it("expects static method called using non-static way to be not called on instance", function () {
 
                 $foo = new Foo();
                 expect($foo)->not->toReceive('version');
@@ -83,27 +83,27 @@ describe("toReceive", function() {
 
             });
 
-            it("throws an exception when trying to spy an invalid empty method", function() {
+            it("throws an exception when trying to spy an invalid empty method", function () {
 
-                expect(function() {
+                expect(function () {
                     $foo = new Foo();
                     expect($foo)->toReceive();
                 })->toThrow(new InvalidArgumentException("Method name can't be empty."));
 
             });
 
-            it("throws an exception when trying to play with core instance", function() {
+            it("throws an exception when trying to play with core instance", function () {
 
-                expect(function() {
+                expect(function () {
                     $date = new DateTime();
                     expect($date)->toReceive('getTimestamp');
                 })->toThrow(new InvalidArgumentException("Can't Spy built-in PHP instances, create a test double using `Double::instance()`."));
 
             });
 
-            context("when using with()", function() {
+            context("when using with()", function () {
 
-                it("expects called method to be called with correct arguments", function() {
+                it("expects called method to be called with correct arguments", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->with('My Message', 'My Other Message');
@@ -111,7 +111,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method with incorrect arguments to not be called", function() {
+                it("expects called method with incorrect arguments to not be called", function () {
 
                     $foo = new Foo();
                     expect($foo)->not->toReceive('message')->with('My Message');
@@ -119,7 +119,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method with missing arguments to not be called", function() {
+                it("expects called method with missing arguments to not be called", function () {
 
                     $foo = new Foo();
                     expect($foo)->not->toReceive('message')->with('My Message');
@@ -127,7 +127,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects arguments match the toContain argument matcher", function() {
+                it("expects arguments match the toContain argument matcher", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->with(Arg::toContain('My Message'));
@@ -135,7 +135,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects arguments match the argument matchers", function() {
+                it("expects arguments match the argument matchers", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->with(Arg::toBeA('boolean'));
@@ -145,7 +145,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects arguments to not match the toContain argument matcher", function() {
+                it("expects arguments to not match the toContain argument matcher", function () {
 
                     $foo = new Foo();
                     expect($foo)->not->toReceive('message')->with(Arg::toContain('Message'));
@@ -155,9 +155,9 @@ describe("toReceive", function() {
 
             });
 
-            context("when using times()", function() {
+            context("when using times()", function () {
 
-                it("expects called method to be called exactly once", function() {
+                it("expects called method to be called exactly once", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->once();
@@ -165,7 +165,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method to be called exactly a specified times", function() {
+                it("expects called method to be called exactly a specified times", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->times(3);
@@ -175,7 +175,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method not called exactly a specified times to be uncalled", function() {
+                it("expects called method not called exactly a specified times to be uncalled", function () {
 
                     $foo = new Foo();
                     expect($foo)->not->toReceive('message')->times(1);
@@ -186,9 +186,9 @@ describe("toReceive", function() {
 
             });
 
-            context("when using classname", function() {
+            context("when using classname", function () {
 
-                it("expects called method to be called", function() {
+                it("expects called method to be called", function () {
 
                     $foo = new Foo();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message');
@@ -196,7 +196,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects method called in the past to be called", function() {
+                it("expects method called in the past to be called", function () {
 
                     $foo = new Foo();
                     $foo->message();
@@ -204,13 +204,13 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects uncalled method to be uncalled", function() {
+                it("expects uncalled method to be uncalled", function () {
 
                     $foo = new Foo();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('message');
                 });
 
-                it("expects called method to be called exactly once", function() {
+                it("expects called method to be called exactly once", function () {
 
                     $foo = new Foo();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->once();
@@ -218,7 +218,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method to be called exactly a specified times", function() {
+                it("expects called method to be called exactly a specified times", function () {
 
                     $foo = new Foo();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->times(3);
@@ -228,7 +228,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called method not called exactly a specified times to be uncalled", function() {
+                it("expects called method not called exactly a specified times to be uncalled", function () {
 
                     $foo = new Foo();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('message')->times(1);
@@ -237,14 +237,14 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects uncalled method to be uncalled", function() {
+                it("expects uncalled method to be uncalled", function () {
 
                     $foo = new Foo();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('message');
 
                 });
 
-                it("expects not overrided method to also be called on method's __CLASS__", function() {
+                it("expects not overrided method to also be called on method's __CLASS__", function () {
 
                     $bar = new SubBar();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Bar')->toReceive('send');
@@ -253,7 +253,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects overrided method to not be called on method's __CLASS__", function() {
+                it("expects overrided method to not be called on method's __CLASS__", function () {
 
                     $bar = new SubBar();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Bar')->not->toReceive('overrided');
@@ -264,9 +264,9 @@ describe("toReceive", function() {
 
             });
 
-            context("with chain of methods", function() {
+            context("with chain of methods", function () {
 
-                it("expects called chain to be called", function() {
+                it("expects called chain to be called", function () {
 
                     $foo = new Foo();
                     allow($foo)->toReceive('a', 'b', 'c')->andReturn('something');
@@ -277,7 +277,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects not called chain to be uncalled", function() {
+                it("expects not called chain to be uncalled", function () {
 
                     $foo = new Foo();
                     allow($foo)->toReceive('a', 'b', 'c')->andReturn('something');
@@ -288,7 +288,7 @@ describe("toReceive", function() {
 
                 });
 
-                it('auto monkey patch core classes using a stub when possible', function() {
+                it('auto monkey patch core classes using a stub when possible', function () {
 
                     allow('PDO')->toReceive('prepare', 'fetchAll')->andReturn([['name' => 'bob']]);
                     expect('PDO')->toReceive('prepare')->once();
@@ -297,7 +297,7 @@ describe("toReceive", function() {
 
                 });
 
-                it('allows to mix static/dynamic methods', function() {
+                it('allows to mix static/dynamic methods', function () {
 
                     allow('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create', 'all')->andReturn([['name' => 'bob']]);
                     expect('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create', 'all')->once();
@@ -308,9 +308,9 @@ describe("toReceive", function() {
 
             });
 
-            context("with chain of methods and arguments requirements", function() {
+            context("with chain of methods and arguments requirements", function () {
 
-                it("expects called method to be called with correct arguments", function() {
+                it("expects called method to be called with correct arguments", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->where(['message' => ['My Message', 'My Other Message']]);
@@ -318,7 +318,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects stubbed chain called with matching arguments are called", function() {
+                it("expects stubbed chain called with matching arguments are called", function () {
 
                     $foo = new Foo();
                     allow($foo)->toReceive('a', 'b', 'c');
@@ -334,7 +334,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects stubbed chain not called with matching arguments are uncalled", function() {
+                it("expects stubbed chain not called with matching arguments are uncalled", function () {
 
                     $foo = new Foo();
                     allow($foo)->toReceive('a', 'b', 'c');
@@ -350,7 +350,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects stubbed chain to be called if one path exists", function() {
+                it("expects stubbed chain to be called if one path exists", function () {
 
                     $foo = new Foo();
                     $double = Double::instance();
@@ -370,18 +370,18 @@ describe("toReceive", function() {
                 });
 
 
-                it("throws an exception when required arguments are applied on a method not present in the chain", function() {
+                it("throws an exception when required arguments are applied on a method not present in the chain", function () {
 
-                    expect(function() {
+                    expect(function () {
                         $foo = new Foo();
                         expect($foo)->not->toReceive('a')->where(['b' => [2]]);
                     })->toThrow(new InvalidArgumentException("Unexisting `b` as method as part of the chain definition."));
 
                 });
 
-                it("throws an exception when required arguments are not an array", function() {
+                it("throws an exception when required arguments are not an array", function () {
 
-                    expect(function() {
+                    expect(function () {
                         $foo = new Foo();
                         expect($foo)->not->toReceive('a')->where(['a' => 2]);
                     })->toThrow(new InvalidArgumentException("Argument requirements must be an arrays for `a` method."));
@@ -392,36 +392,36 @@ describe("toReceive", function() {
 
         });
 
-        context("with static call", function() {
+        context("with static call", function () {
 
-            it("expects called method to be called", function() {
+            it("expects called method to be called", function () {
 
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::version');
                 Foo::version();
 
             });
 
-            it("expects method called in the past to be uncalled", function() {
+            it("expects method called in the past to be uncalled", function () {
 
                 Foo::version();
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::version');
 
             });
 
-            it("expects uncalled method to be uncalled", function() {
+            it("expects uncalled method to be uncalled", function () {
 
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::version');
 
             });
 
-            it("expects called method to be called exactly once", function() {
+            it("expects called method to be called exactly once", function () {
 
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::version')->once();
                 Foo::version();
 
             });
 
-            it("expects called method to be called exactly a specified times", function() {
+            it("expects called method to be called exactly a specified times", function () {
 
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::version')->times(3);
                 Foo::version();
@@ -430,7 +430,7 @@ describe("toReceive", function() {
 
             });
 
-            it("expects called method not called exactly a specified times to be uncalled", function() {
+            it("expects called method not called exactly a specified times to be uncalled", function () {
 
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::version')->times(1);
                 Foo::version();
@@ -438,14 +438,14 @@ describe("toReceive", function() {
 
             });
 
-            it("expects called method to not be dynamically called", function() {
+            it("expects called method to not be dynamically called", function () {
 
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('version');
                 Foo::version();
 
             });
 
-            it("expects called method on instance to be called on classname", function() {
+            it("expects called method on instance to be called on classname", function () {
 
                 $foo = new Foo();
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::version');
@@ -453,7 +453,7 @@ describe("toReceive", function() {
 
             });
 
-            it("expects called method on instance to not be dynamically called", function() {
+            it("expects called method on instance to not be dynamically called", function () {
 
                 $foo = new Foo();
                 expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('version');
@@ -461,7 +461,7 @@ describe("toReceive", function() {
 
             });
 
-            it("expects called method on instance to be called on classname (alternative syntax)", function() {
+            it("expects called method on instance to be called on classname (alternative syntax)", function () {
 
                 $foo = new Foo();
                 expect($foo)->toReceive('::version');
@@ -469,9 +469,9 @@ describe("toReceive", function() {
 
             });
 
-            it("throws an exception when trying to spy an unexisting class", function() {
+            it("throws an exception when trying to spy an unexisting class", function () {
 
-                $closure = function() {
+                $closure = function () {
                     expect('My\Unexisting\Classname\Foo')->toReceive('::test');
                 };
                 $message = "Can't Spy the unexisting class `My\\Unexisting\\Classname\\Foo`.";
@@ -479,9 +479,9 @@ describe("toReceive", function() {
 
             });
 
-            context("with chain of methods", function() {
+            context("with chain of methods", function () {
 
-                it("expects called chain to be called", function() {
+                it("expects called chain to be called", function () {
 
                     allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->andReturn('something');
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from');
@@ -491,7 +491,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects not called chain to be uncalled", function() {
+                it("expects not called chain to be uncalled", function () {
 
                     allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::from', '::newQuery')->andReturn('something');
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('::getQuery', '::from', '::newQuery');
@@ -503,9 +503,9 @@ describe("toReceive", function() {
 
             });
 
-            context("with chain of methods and arguments requirements", function() {
+            context("with chain of methods and arguments requirements", function () {
 
-                it("expects stubbed chain called with matching arguments are called", function() {
+                it("expects stubbed chain called with matching arguments are called", function () {
 
                     $foo = new Foo();
                     allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from');
@@ -521,7 +521,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects stubbed chain not called with matching arguments are uncalled", function() {
+                it("expects stubbed chain not called with matching arguments are uncalled", function () {
 
                     $foo = new Foo();
                     allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from');
@@ -541,11 +541,11 @@ describe("toReceive", function() {
 
         });
 
-        context("with ordered enabled", function() {
+        context("with ordered enabled", function () {
 
-            describe("::match()", function() {
+            describe("::match()", function () {
 
-                it("expects called methods to be called in a defined order", function() {
+                it("expects called methods to be called in a defined order", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->ordered;
@@ -557,7 +557,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called methods to be called in a defined order only once", function() {
+                it("expects called methods to be called in a defined order only once", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->ordered->once();
@@ -569,7 +569,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called methods to be called in a defined order a specific number of times", function() {
+                it("expects called methods to be called in a defined order a specific number of times", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->ordered->times(1);
@@ -584,7 +584,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called methods called in a different order to be uncalled", function() {
+                it("expects called methods called in a different order to be uncalled", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->ordered;
@@ -594,7 +594,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called methods called a specific number of times but in a different order to be uncalled", function() {
+                it("expects called methods called a specific number of times but in a different order to be uncalled", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->ordered->times(1);
@@ -607,7 +607,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects to work as `toReceive` for the first call", function() {
+                it("expects to work as `toReceive` for the first call", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message');
@@ -615,7 +615,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called methods are consumated", function() {
+                it("expects called methods are consumated", function () {
 
                     $foo = new Foo();
                     expect($foo)->toReceive('message')->ordered;
@@ -624,7 +624,7 @@ describe("toReceive", function() {
 
                 });
 
-                it("expects called methods are consumated using classname", function() {
+                it("expects called methods are consumated using classname", function () {
 
                     $foo = new Foo();
                     expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->ordered;
@@ -639,9 +639,9 @@ describe("toReceive", function() {
 
     });
 
-    describe("->description()", function() {
+    describe("->description()", function () {
 
-        it("returns the description message for not received call", function() {
+        it("returns the description message for not received call", function () {
 
             $stub = Double::instance();
             $matcher = new ToReceive($stub, 'method');
@@ -665,7 +665,7 @@ describe("toReceive", function() {
 
         });
 
-        it("returns the description message for not received call the specified number of times", function() {
+        it("returns the description message for not received call the specified number of times", function () {
 
             $stub = Double::instance();
             $matcher = new ToReceive($stub, 'method');
@@ -691,7 +691,7 @@ describe("toReceive", function() {
 
         });
 
-        it("returns the description message for wrong passed arguments", function() {
+        it("returns the description message for wrong passed arguments", function () {
 
             $stub = Double::instance();
             $matcher = new ToReceive($stub, 'method');
@@ -723,11 +723,11 @@ describe("toReceive", function() {
 
     });
 
-    describe("->ordered()", function() {
+    describe("->ordered()", function () {
 
-        it("throw an exception when trying to play with core instance", function() {
+        it("throw an exception when trying to play with core instance", function () {
 
-            expect(function() {
+            expect(function () {
                 $foo = new Foo();
                 $matcher = new ToReceive($foo, 'a');
                 $matcher->order;
@@ -737,11 +737,11 @@ describe("toReceive", function() {
 
     });
 
-    describe("->resolve()", function() {
+    describe("->resolve()", function () {
 
-        it("throw an exception when not explicitly defining the stub value", function() {
+        it("throw an exception when not explicitly defining the stub value", function () {
 
-            expect(function() {
+            expect(function () {
                 $foo = new Foo();
                 $matcher = new ToReceive($foo, ['a', 'b', 'c']);
                 $matcher->resolve([

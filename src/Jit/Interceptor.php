@@ -7,7 +7,8 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Composer\Autoload\ClassLoader;
 
-class Interceptor {
+class Interceptor
+{
 
     /**
      * Cache path. If `false` the caching is not enable.
@@ -438,7 +439,6 @@ class Interceptor {
 
         $success = true;
         foreach ($files as $file) {
-
             $this->loadFile($file);
         }
         return true;
@@ -520,7 +520,7 @@ class Interceptor {
         $dir = new RecursiveDirectoryIterator($cachePath, RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $path = $file->getRealPath();
             $file->isDir() ? rmdir($path) : unlink($path);
         }
@@ -565,7 +565,8 @@ class Interceptor {
      *
      * @return array
      */
-    public function getPrefixes() {
+    public function getPrefixes()
+    {
         $ds = DIRECTORY_SEPARATOR;
         $getPrefixes = $this->_getPrefixes;
         $getPrefixesPsr4 = $this->_getPrefixesPsr4;

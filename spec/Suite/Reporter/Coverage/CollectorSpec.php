@@ -6,16 +6,16 @@ use Kahlan\Reporter\Coverage\Driver\Xdebug;
 use Kahlan\Reporter\Coverage\Driver\Phpdbg;
 use Kahlan\Spec\Fixture\Reporter\Coverage\CodeCoverage;
 
-describe("Coverage", function() {
+describe("Coverage", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
         $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->path = 'spec/Fixture/Reporter/Coverage/CodeCoverage.php';
 
         $this->collector = new Collector([
@@ -32,9 +32,9 @@ describe("Coverage", function() {
 
     });
 
-    describe("->export()", function() {
+    describe("->export()", function () {
 
-        it("exports covered lines", function() {
+        it("exports covered lines", function () {
 
             $code = new CodeCoverage();
 
@@ -51,7 +51,7 @@ describe("Coverage", function() {
             ]);
         });
 
-        it("exports multiline array", function() {
+        it("exports multiline array", function () {
 
             $code = new CodeCoverage();
 
@@ -69,7 +69,7 @@ describe("Coverage", function() {
             ]);
         });
 
-        it("exports covered lines and append coverage to parent's coverage data", function() {
+        it("exports covered lines and append coverage to parent's coverage data", function () {
 
             $code = new CodeCoverage();
 
@@ -100,7 +100,7 @@ describe("Coverage", function() {
             ]);
         });
 
-        it("exports covered lines and doesn't append coverage to parent's coverage data", function() {
+        it("exports covered lines and doesn't append coverage to parent's coverage data", function () {
 
             $code = new CodeCoverage();
 
@@ -130,9 +130,9 @@ describe("Coverage", function() {
 
     });
 
-    describe("->start/stop()", function() {
+    describe("->start/stop()", function () {
 
-        it("return `true` on success", function() {
+        it("return `true` on success", function () {
 
             expect($this->collector->start())->toBe(true);
             expect($this->collector->stop())->toBe(true);
@@ -141,15 +141,15 @@ describe("Coverage", function() {
 
     });
 
-    describe("->stop()", function() {
+    describe("->stop()", function () {
 
-        it("does nothing if not the collector has not been started", function() {
+        it("does nothing if not the collector has not been started", function () {
 
             expect($this->collector->stop())->toBe(false);
 
         });
 
-        it("does nothing if not the collector has not been started", function() {
+        it("does nothing if not the collector has not been started", function () {
 
             $this->parent->start();
             $this->child->start();
@@ -164,9 +164,9 @@ describe("Coverage", function() {
 
     });
 
-    describe("->metrics()", function() {
+    describe("->metrics()", function () {
 
-        it("returns the metrics", function() {
+        it("returns the metrics", function () {
 
             $code = new CodeCoverage();
 
@@ -180,9 +180,9 @@ describe("Coverage", function() {
 
     });
 
-    describe("->realpath()", function() {
+    describe("->realpath()", function () {
 
-        it("supports special chars", function() {
+        it("supports special chars", function () {
 
             $collector = new Collector([
                 'driver' => $this->driver,

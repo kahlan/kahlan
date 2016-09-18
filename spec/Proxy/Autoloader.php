@@ -5,7 +5,8 @@ use Kahlan\Plugin\Pointcut;
 
 class Autoloader extends \Composer\Autoload\ClassLoader
 {
-    public function __construct($composer) {
+    public function __construct($composer)
+    {
         //Hack to early load somes classes.
         class_exists('Kahlan\Plugin\Pointcut');
         class_exists('Kahlan\Plugin\Stub');

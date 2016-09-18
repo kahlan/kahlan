@@ -1,8 +1,8 @@
 <?php
 namespace Kahlan\Cli;
 
-
-class CommandLine {
+class CommandLine
+{
 
     /**
      * Arguments attributes
@@ -43,7 +43,8 @@ class CommandLine {
      *
      * @return array
      */
-    public function options() {
+    public function options()
+    {
         return $this->_options;
     }
 
@@ -98,12 +99,12 @@ class CommandLine {
         $exists = [];
         $override ? $this->_values = $this->_defaults : $exists = array_fill_keys(array_keys($this->_values), true);
 
-        foreach($argv as $arg) {
+        foreach ($argv as $arg) {
             if ($arg === '--') {
                 break;
             }
             if ($arg[0] === '-') {
-                list($name, $value) = $this->_parse(ltrim($arg,'-'));
+                list($name, $value) = $this->_parse(ltrim($arg, '-'));
                 if ($override || !isset($exists[$name])) {
                     $this->add($name, $value, $override);
                 }

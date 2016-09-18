@@ -9,18 +9,18 @@ use Kahlan\Spec\Fixture\Reporter\Coverage\NoEmptyLine;
 use Kahlan\Spec\Fixture\Reporter\Coverage\ExtraEmptyLine;
 use RuntimeException;
 
-describe("Lcov", function() {
+describe("Lcov", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
         $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
-    describe("::export()", function() {
+    describe("::export()", function () {
 
-        it("exports the coverage of a file with no extra end line", function() {
+        it("exports the coverage of a file with no extra end line", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'NoEmptyLine.php';
 
@@ -43,7 +43,7 @@ describe("Lcov", function() {
             ]);
             $ds = DS;
 
-$expected = <<<EOD
+            $expected = <<<EOD
 TN:
 SF:/home/crysalead/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
 1,shallNotPass
@@ -62,7 +62,7 @@ EOD;
             expect($txt)->toBe($expected);
         });
 
-        it("exports the coverage of a file with an extra line at the end", function() {
+        it("exports the coverage of a file with an extra line at the end", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'ExtraEmptyLine.php';
 
@@ -85,7 +85,7 @@ EOD;
             ]);
             $ds = DS;
 
-$expected = <<<EOD
+            $expected = <<<EOD
 TN:
 SF:/home/crysalead/kahlan/spec/Fixture/Reporter/Coverage/ExtraEmptyLine.php
 1,shallNotPass
@@ -107,17 +107,17 @@ EOD;
 
     });
 
-    describe("::write()", function() {
+    describe("::write()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->output = tempnam("/tmp", "KAHLAN");
         });
 
-        afterEach(function() {
+        afterEach(function () {
             unlink($this->output);
         });
 
-        it("writes the coverage to a file", function() {
+        it("writes the coverage to a file", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'NoEmptyLine.php';
 
@@ -145,7 +145,7 @@ EOD;
             $txt = file_get_contents($this->output);
             $ds = DS;
 
-$expected = <<<EOD
+            $expected = <<<EOD
 TN:
 SF:/home/crysalead/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
 1,shallNotPass
@@ -165,9 +165,9 @@ EOD;
 
         });
 
-        it("throws exception when no file is set", function() {
+        it("throws exception when no file is set", function () {
 
-            expect(function() {
+            expect(function () {
                 Lcov::write([]);
             })->toThrow(new RuntimeException('Missing file name'));
 

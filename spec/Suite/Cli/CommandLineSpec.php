@@ -3,11 +3,11 @@ namespace Kahlan\Spec\Suite\Cli;
 
 use Kahlan\Cli\CommandLine;
 
-describe("CommandLine", function() {
+describe("CommandLine", function () {
 
-    describe("->option", function() {
+    describe("->option", function () {
 
-        it("sets an option config", function() {
+        it("sets an option config", function () {
 
             $commandLine = new CommandLine();
             $commandLine->option('option1', ['type' => 'boolean']);
@@ -32,7 +32,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("gets the default config", function() {
+        it("gets the default config", function () {
 
             $commandLine = new CommandLine();
             expect($commandLine->option('option1'))->toEqual([
@@ -45,7 +45,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("sets/updates an attribute of an option", function() {
+        it("sets/updates an attribute of an option", function () {
 
             $commandLine = new CommandLine();
             $commandLine->option('option1', ['type' => 'boolean']);
@@ -70,9 +70,9 @@ describe("CommandLine", function() {
 
     });
 
-    describe("->parse()", function() {
+    describe("->parse()", function () {
 
-        it("parses command line options", function() {
+        it("parses command line options", function () {
 
             $commandLine = new CommandLine();
             $actual = $commandLine->parse([
@@ -85,7 +85,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("parses command line options with dashed names", function() {
+        it("parses command line options with dashed names", function () {
 
             $commandLine = new CommandLine([
                 'double-dashed-option' => ['type' => 'boolean']
@@ -100,7 +100,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("provides an array when some multiple occurences of a same option are present", function() {
+        it("provides an array when some multiple occurences of a same option are present", function () {
 
             $commandLine = new CommandLine(['option1' => ['array' => true]]);
             $actual = $commandLine->parse([
@@ -116,7 +116,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("casts booleans", function() {
+        it("casts booleans", function () {
 
             $commandLine = new CommandLine([
                 'option1' => ['type' => 'boolean'],
@@ -139,7 +139,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("casts integers", function() {
+        it("casts integers", function () {
 
             $commandLine = new CommandLine([
                 'option'  => ['type' => 'numeric'],
@@ -159,7 +159,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("casts string", function() {
+        it("casts string", function () {
 
             $commandLine = new CommandLine([
                 'option1' => ['type' => 'string'],
@@ -181,7 +181,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("provides an array when some multiple occurences of a same option are present", function() {
+        it("provides an array when some multiple occurences of a same option are present", function () {
 
             $commandLine = new CommandLine([
                 'option1:sub1' => ['array' => true],
@@ -204,9 +204,9 @@ describe("CommandLine", function() {
 
         });
 
-        context("with defaults options", function() {
+        context("with defaults options", function () {
 
-            it("allows boolean casting", function() {
+            it("allows boolean casting", function () {
 
                 $commandLine = new CommandLine([
                     'option1' => ['type' => 'boolean', 'default' => true],
@@ -229,9 +229,9 @@ describe("CommandLine", function() {
 
         });
 
-        context("with override set to `false`", function() {
+        context("with override set to `false`", function () {
 
-            it("doesn't override existing options when the override params is set to `false`", function() {
+            it("doesn't override existing options when the override params is set to `false`", function () {
 
                 $commandLine = new CommandLine();
                 $commandLine->set('option1', 'value1');
@@ -249,9 +249,9 @@ describe("CommandLine", function() {
 
     });
 
-    describe("->get()", function() {
+    describe("->get()", function () {
 
-        it("ignores option value if the value option is set", function() {
+        it("ignores option value if the value option is set", function () {
 
             $commandLine = new CommandLine(['option1' => [
                 'type'    => 'string',
@@ -269,12 +269,12 @@ describe("CommandLine", function() {
 
         });
 
-        it("formats value according to value function", function() {
+        it("formats value according to value function", function () {
 
             $commandLine = new CommandLine(['option1' => [
                 'type'    => 'string',
                 'default' => 'default_value',
-                'value'   => function($value, $name, $commandLine) {
+                'value'   => function ($value, $name, $commandLine) {
                     if (!$value) {
                         return  'empty_value';
                     }
@@ -296,7 +296,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("returns a group subset", function() {
+        it("returns a group subset", function () {
 
             $commandLine = new CommandLine([
                 'option1:sub1' => ['array' => true],
@@ -318,7 +318,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("returns a group subset even when no explicitly defined", function() {
+        it("returns a group subset even when no explicitly defined", function () {
 
             $commandLine = new CommandLine();
             $actual = $commandLine->parse([
@@ -332,7 +332,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("returns an array by default for group subsets", function() {
+        it("returns an array by default for group subsets", function () {
 
             $commandLine = new CommandLine(['option1:sub1' => ['array' => true],]);
             $actual = $commandLine->parse(['command']);
@@ -343,9 +343,9 @@ describe("CommandLine", function() {
 
     });
 
-    describe("->exists()", function() {
+    describe("->exists()", function () {
 
-        it("returns `true` if the option exists", function() {
+        it("returns `true` if the option exists", function () {
 
             $commandLine = new CommandLine();
             $actual = $commandLine->parse([
@@ -359,7 +359,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("returns `true` if the option as a default value", function() {
+        it("returns `true` if the option as a default value", function () {
 
             $commandLine = new CommandLine();
             $commandLine->option('option1', ['type' => 'boolean']);
@@ -372,20 +372,20 @@ describe("CommandLine", function() {
 
     });
 
-    describe("->cast()", function() {
+    describe("->cast()", function () {
 
-        it("casts array", function() {
+        it("casts array", function () {
 
             $commandLine = new CommandLine();
             $cast = $commandLine->cast(["some", "string", "and", 10], "string");
             expect($cast)->toBeAn('array');
-            foreach($cast as $c) {
+            foreach ($cast as $c) {
                 expect($c)->toBeA('string');
             }
 
         });
 
-        it("casts boolean", function() {
+        it("casts boolean", function () {
 
             $commandLine = new CommandLine();
             $cast = $commandLine->cast(["true", "false", "some_string", null, 10], "boolean");
@@ -400,7 +400,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("casts numeric", function() {
+        it("casts numeric", function () {
 
             $commandLine = new CommandLine();
             $cast = $commandLine->cast([true, "false", "some_string", null, 10], "numeric");
@@ -410,7 +410,7 @@ describe("CommandLine", function() {
 
         });
 
-        it("casts value into array", function() {
+        it("casts value into array", function () {
 
             $commandLine = new CommandLine();
             $cast = $commandLine->cast("string", "string", true);

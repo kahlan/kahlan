@@ -6,7 +6,8 @@ use BadMethodCallException;
 /**
  * Patcher manager
  */
-class Patchers {
+class Patchers
+{
 
     /**
      * The registered patchers.
@@ -120,5 +121,4 @@ class Patchers {
         }
         return Parser::unparse($nodes);
     }
-
 }

@@ -1,7 +1,8 @@
 <?php
 namespace Kahlan\Jit\Patcher;
 
-class Rebase {
+class Rebase
+{
 
     /**
      * The JIT find file patcher.
@@ -66,5 +67,4 @@ class Rebase {
             }
         }
     }
-
 }

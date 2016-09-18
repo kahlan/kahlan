@@ -25,5 +25,4 @@ trait Filterable
         }
         return $this->_methodFilters;
     }
-
 }

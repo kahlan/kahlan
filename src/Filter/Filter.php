@@ -172,8 +172,8 @@ class Filter
      * @param  string  $method  The name of the method to get the filters from.
      * @return array            The whole filters data or filters associated to a class/instance's method.
      */
-    public static function _classFilters($context, $method) {
-
+    public static function _classFilters($context, $method)
+    {
         if (isset(static::$_cachedFilters[$context][$method])) {
             return static::$_cachedFilters[$context][$method];
         }

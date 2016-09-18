@@ -5,15 +5,15 @@ use Exception;
 use Kahlan\Reporters;
 use Kahlan\Plugin\Double;
 
-describe("Reporters", function() {
+describe("Reporters", function () {
 
-    beforeEach(function(){
+    beforeEach(function () {
         $this->reporters = new Reporters;
     });
 
-    describe("->add/get()", function() {
+    describe("->add/get()", function () {
 
-        it("stores a reporter", function() {
+        it("stores a reporter", function () {
 
             $stub = Double::instance();
             $this->reporters->add('my_reporter', $stub);
@@ -23,9 +23,9 @@ describe("Reporters", function() {
 
         });
 
-        it("throws an exception with a scalar value", function() {
+        it("throws an exception with a scalar value", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $this->reporters->add('my_reporter', 'Hello World!');
             };
 
@@ -35,9 +35,9 @@ describe("Reporters", function() {
 
     });
 
-    describe("->get()", function() {
+    describe("->get()", function () {
 
-        it("returns `null` for an unexisting reporter", function() {
+        it("returns `null` for an unexisting reporter", function () {
 
             $actual = $this->reporters->get('my_reporter');
             expect($actual)->toBe(null);
@@ -46,9 +46,9 @@ describe("Reporters", function() {
 
     });
 
-    describe("->exists()", function() {
+    describe("->exists()", function () {
 
-        it("returns `true` for an existing reporter", function() {
+        it("returns `true` for an existing reporter", function () {
 
             $stub = Double::instance();
             $this->reporters->add('my_reporter', $stub);
@@ -58,7 +58,7 @@ describe("Reporters", function() {
 
         });
 
-        it("returns `false` for an unexisting reporter", function() {
+        it("returns `false` for an unexisting reporter", function () {
 
             $actual = $this->reporters->exists('my_reporter');
             expect($actual)->toBe(false);
@@ -67,9 +67,9 @@ describe("Reporters", function() {
 
     });
 
-    describe("->remove()", function() {
+    describe("->remove()", function () {
 
-        it("removes a reporter", function() {
+        it("removes a reporter", function () {
 
             $stub = Double::instance();
             $this->reporters->add('my_reporter', $stub);
@@ -86,9 +86,9 @@ describe("Reporters", function() {
 
     });
 
-    describe("->clear()", function() {
+    describe("->clear()", function () {
 
-        it("clears all reporters", function() {
+        it("clears all reporters", function () {
 
             $stub = Double::instance();
             $this->reporters->add('my_reporter', $stub);
@@ -105,9 +105,9 @@ describe("Reporters", function() {
 
     });
 
-    describe("->dispatch()", function() {
+    describe("->dispatch()", function () {
 
-        it("runs a method on all reporters", function() {
+        it("runs a method on all reporters", function () {
 
             $stub1 = Double::instance();
             $this->reporters->add('reporter1', $stub1);

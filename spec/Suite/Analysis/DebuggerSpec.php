@@ -5,19 +5,19 @@ use Exception;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Plugin\Double;
 
-describe("Debugger", function() {
+describe("Debugger", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->loader = Debugger::loader();
     });
 
-    afterEach(function() {
+    afterEach(function () {
         Debugger::loader($this->loader);
     });
 
-    describe("::trace()", function() {
+    describe("::trace()", function () {
 
-        it("returns a default backtrace string", function() {
+        it("returns a default backtrace string", function () {
 
             $backtrace = Debugger::trace();
             expect($backtrace)->toBeA('string');
@@ -27,7 +27,7 @@ describe("Debugger", function() {
 
         });
 
-        it("returns a custom backtrace string", function() {
+        it("returns a custom backtrace string", function () {
 
             $backtrace = Debugger::trace(['trace' => debug_backtrace()]);
             expect($backtrace)->toBeA('string');
@@ -37,7 +37,7 @@ describe("Debugger", function() {
 
         });
 
-        it("returns a backtrace of an Exception", function() {
+        it("returns a backtrace of an Exception", function () {
 
             $backtrace = Debugger::trace(['trace' => new Exception('World Destruction Error!')]);
             expect($backtrace)->toBeA('string');
@@ -47,7 +47,7 @@ describe("Debugger", function() {
 
         });
 
-        it("returns a trace from eval'd code", function() {
+        it("returns a trace from eval'd code", function () {
 
             $trace = debug_backtrace();
             $trace[1]['file']  = "eval()'d code";
@@ -60,20 +60,20 @@ describe("Debugger", function() {
 
         });
 
-        describe("::_line()", function() {
+        describe("::_line()", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
                 $this->debugger = Double::classname([
                     'extends' => 'Kahlan\Analysis\Debugger',
                     'methods' => ['::line']
                 ]);
-                allow($this->debugger)->toReceive('::line')->andRun(function($trace) {
+                allow($this->debugger)->toReceive('::line')->andRun(function ($trace) {
                     return static::_line($trace);
                 });
             });
 
 
-            it("returns `null` with non-existing files", function() {
+            it("returns `null` with non-existing files", function () {
 
                 $debugger = $this->debugger;
 
@@ -85,7 +85,7 @@ describe("Debugger", function() {
 
             });
 
-            it("returns `null` when a line can't be found", function() {
+            it("returns `null` when a line can't be found", function () {
 
                 $debugger = $this->debugger;
 
@@ -103,16 +103,16 @@ describe("Debugger", function() {
 
     });
 
-    describe("::message()", function() {
+    describe("::message()", function () {
 
-        it("formats an exception as a string message", function() {
+        it("formats an exception as a string message", function () {
 
             $message = Debugger::message(new Exception('World Destruction Error!'));
             expect($message)->toBe('`Exception` Code(0): World Destruction Error!');
 
         });
 
-        it("formats a backtrace array as a string message", function() {
+        it("formats a backtrace array as a string message", function () {
 
             $backtrace = [
                 'message' => 'E_ERROR Error!',
@@ -134,9 +134,9 @@ describe("Debugger", function() {
 
     });
 
-    describe("::loader()", function() {
+    describe("::loader()", function () {
 
-        it("gets/sets a loader", function() {
+        it("gets/sets a loader", function () {
 
             $loader = Double::instance();
             expect(Debugger::loader($loader))->toBe($loader);
@@ -145,9 +145,9 @@ describe("Debugger", function() {
 
     });
 
-    describe("::errorType()", function() {
+    describe("::errorType()", function () {
 
-        it("returns some reader-friendly error type string", function() {
+        it("returns some reader-friendly error type string", function () {
 
             expect(Debugger::errorType(E_ERROR))->toBe('E_ERROR');
             expect(Debugger::errorType(E_WARNING))->toBe('E_WARNING');
@@ -169,7 +169,7 @@ describe("Debugger", function() {
 
         });
 
-        it("returns <INVALID> for undefined error type", function() {
+        it("returns <INVALID> for undefined error type", function () {
 
             expect(Debugger::errorType(123456))->toBe('<INVALID>');
 

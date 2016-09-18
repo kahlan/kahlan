@@ -337,7 +337,7 @@ class Coverage extends Terminal
      */
     protected function _style($percent)
     {
-        switch(true) {
+        switch (true) {
             case $percent >= 80:
                 return 'n;green';
             break;

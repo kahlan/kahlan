@@ -51,5 +51,4 @@ class ToBeCloseTo
     {
         return static::$_description;
     }
-
 }
