@@ -5,11 +5,11 @@ use Exception;
 use Kahlan\Log;
 use Kahlan\Scope;
 
-describe("Log", function() {
+describe("Log", function () {
 
-    describe("->__construct()", function() {
+    describe("->__construct()", function () {
 
-        it("correctly sets default values", function() {
+        it("correctly sets default values", function () {
 
             $log = new Log();
             expect($log->scope())->toBe(null);
@@ -29,9 +29,9 @@ describe("Log", function() {
 
     });
 
-    describe("->add()", function() {
+    describe("->add()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->scope = new Scope();
             $this->pattern = '*Suite.php';
             $this->regExp = strtr(preg_quote($this->pattern, '~'), ['\*' => '.*', '\?' => '.']);
@@ -41,7 +41,7 @@ describe("Log", function() {
             ]);
         });
 
-        it("rebases backtrace on fail report", function() {
+        it("rebases backtrace on fail report", function () {
 
             $this->reports->add('fail', [
                 'backtrace' => debug_backtrace()
@@ -53,7 +53,7 @@ describe("Log", function() {
 
         });
 
-        it("doesn't rebase backtrace on an exception report", function() {
+        it("doesn't rebase backtrace on an exception report", function () {
 
             $this->reports->exception(new Exception());
             expect($this->reports->backtrace()[0]['file'])->not->toMatch("~^{$this->regExp}$~");
@@ -62,44 +62,44 @@ describe("Log", function() {
 
     });
 
-    describe("->passed()", function() {
+    describe("->passed()", function () {
 
-        it("returns `true` type is `'passed'`", function() {
+        it("returns `true` type is `'passed'`", function () {
 
             $log = new Log(['type' => 'passed']);
             expect($log->passed())->toBe(true);
 
         });
 
-        it("returns `true` type is `'skipped'`", function() {
+        it("returns `true` type is `'skipped'`", function () {
 
             $log = new Log(['type' => 'skipped']);
             expect($log->passed())->toBe(true);
 
         });
 
-        it("returns `true` type is `'excluded'`", function() {
+        it("returns `true` type is `'excluded'`", function () {
 
             $log = new Log(['type' => 'excluded']);
             expect($log->passed())->toBe(true);
 
         });
 
-        it("returns `false` type is `'failed'`", function() {
+        it("returns `false` type is `'failed'`", function () {
 
             $log = new Log(['type' => 'failed']);
             expect($log->passed())->toBe(false);
 
         });
 
-        it("returns `false` type is `'errored'`", function() {
+        it("returns `false` type is `'errored'`", function () {
 
             $log = new Log(['type' => 'errored']);
             expect($log->passed())->toBe(false);
 
         });
 
-        it("returns `true` when logged exceptions passed", function() {
+        it("returns `true` when logged exceptions passed", function () {
 
             $log = new Log();
             $log->add('passed', []);
@@ -109,7 +109,7 @@ describe("Log", function() {
 
         });
 
-        it("returns `false` when some logged exceptions failed", function() {
+        it("returns `false` when some logged exceptions failed", function () {
 
             $log = new Log();
             $log->add('passed', []);

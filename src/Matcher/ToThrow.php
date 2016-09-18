@@ -130,5 +130,4 @@ class ToThrow
     {
         return static::$_description;
     }
-
 }

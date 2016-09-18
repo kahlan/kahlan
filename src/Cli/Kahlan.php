@@ -21,8 +21,8 @@ use Kahlan\Reporter\Coverage\Exporter\Istanbul;
 use Kahlan\Reporter\Coverage\Exporter\Lcov;
 use Composer\Script\Event;
 
-class Kahlan {
-
+class Kahlan
+{
     use Filterable;
 
     const VERSION = '3.0.0';
@@ -112,14 +112,14 @@ class Kahlan {
         $commandLine->option('include',   [
             'array' => true,
             'default' => ['*'],
-            'value' => function($value) {
+            'value' => function ($value) {
                 return array_filter($value);
             }
         ]);
         $commandLine->option('exclude',    [
             'array' => true,
             'default' => [],
-            'value' => function($value) {
+            'value' => function ($value) {
                 return array_filter($value);
             }
         ]);
@@ -185,7 +185,7 @@ class Kahlan {
         $commandLine->option('version', ['type'     => 'boolean']);
         $commandLine->parse($argv);
 
-        $run = function($commandLine) {
+        $run = function ($commandLine) {
             if (file_exists($commandLine->get('config'))) {
                 require $commandLine->get('config');
             }
@@ -228,10 +228,10 @@ class Kahlan {
         }
 
         $terminal->write("version ");
-        $terminal->write(static::VERSION , 'green');
+        $terminal->write(static::VERSION, 'green');
         $terminal->write("\n\n");
         $terminal->write("For additional help you must use ");
-        $terminal->write("--help" , 'green');
+        $terminal->write("--help", 'green');
         $terminal->write("\n\n");
         QuitStatement::quit();
     }
@@ -308,7 +308,8 @@ EOD;
     /**
      * Regiter built-in matchers.
      */
-    public static function registerMatchers() {
+    public static function registerMatchers()
+    {
         Matcher::register('toBe',             'Kahlan\Matcher\ToBe');
         Matcher::register('toBeA',            'Kahlan\Matcher\ToBeA');
         Matcher::register('toBeAn',           'Kahlan\Matcher\ToBeA');
@@ -344,8 +345,7 @@ EOD;
         }
 
         $this->_start = microtime(true);
-        return Filter::on($this, 'workflow', [], function($chain) {
-
+        return Filter::on($this, 'workflow', [], function ($chain) {
             $this->_bootstrap();
 
             $this->_interceptor();
@@ -367,7 +367,6 @@ EOD;
             $this->_stop();
 
             $this->_quit();
-
         });
     }
 
@@ -386,7 +385,7 @@ EOD;
      */
     protected function _bootstrap()
     {
-        return Filter::on($this, 'bootstrap', [], function($chain) {
+        return Filter::on($this, 'bootstrap', [], function ($chain) {
             $this->suite()->backtraceFocus($this->commandLine()->get('pattern'));
             if (!$this->commandLine()->exists('coverage')) {
                 if ($this->commandLine()->exists('clover') || $this->commandLine()->exists('istanbul') || $this->commandLine()->exists('lcov')) {
@@ -401,7 +400,7 @@ EOD;
      */
     protected function _interceptor()
     {
-        return Filter::on($this, 'interceptor', [], function($chain) {
+        return Filter::on($this, 'interceptor', [], function ($chain) {
             Interceptor::patch([
                 'loader'     => [$this->autoloader(), 'loadClass'],
                 'include'    => $this->commandLine()->get('include'),
@@ -418,7 +417,7 @@ EOD;
      */
     protected function _namespaces()
     {
-        return Filter::on($this, 'namespaces', [], function($chain) {
+        return Filter::on($this, 'namespaces', [], function ($chain) {
             $paths = $this->commandLine()->get('spec');
             foreach ($paths as $path) {
                 $path = realpath($path);
@@ -436,7 +435,7 @@ EOD;
         if (!$interceptor = Interceptor::instance()) {
             return;
         }
-        return Filter::on($this, 'patchers', [], function($chain) {
+        return Filter::on($this, 'patchers', [], function ($chain) {
             $interceptor = Interceptor::instance();
             $patchers = $interceptor->patchers();
             $patchers->add('pointcut', new Pointcut());
@@ -451,7 +450,7 @@ EOD;
      */
     protected function _load()
     {
-        return Filter::on($this, 'load', [], function($chain) {
+        return Filter::on($this, 'load', [], function ($chain) {
             $specDirs = $this->commandLine()->get('spec');
             foreach ($specDirs as $dir) {
                 if (!file_exists($dir)) {
@@ -464,7 +463,7 @@ EOD;
                 'exclude' => '*/.*',
                 'type' => 'file'
             ]);
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 require $file;
             }
         });
@@ -475,7 +474,7 @@ EOD;
      */
     protected function _reporters()
     {
-        return Filter::on($this, 'reporters', [], function($chain) {
+        return Filter::on($this, 'reporters', [], function ($chain) {
             $this->_console();
             $this->_coverage();
         });
@@ -486,7 +485,7 @@ EOD;
      */
     protected function _console()
     {
-        return Filter::on($this, 'console', [], function($chain) {
+        return Filter::on($this, 'console', [], function ($chain) {
             $collection = $this->reporters();
 
             $reporters = $this->commandLine()->get('reporter');
@@ -494,7 +493,7 @@ EOD;
                 return;
             }
 
-            foreach($reporters as $reporter) {
+            foreach ($reporters as $reporter) {
                 $parts = explode(":", $reporter);
                 $name = $parts[0];
                 $output = isset($parts[1]) ? $parts[1] : null;
@@ -540,7 +539,7 @@ EOD;
      */
     protected function _coverage()
     {
-        return Filter::on($this, 'coverage', [], function($chain) {
+        return Filter::on($this, 'coverage', [], function ($chain) {
             if (!$this->commandLine()->exists('coverage')) {
                 return;
             }
@@ -577,7 +576,7 @@ EOD;
      */
     protected function _matchers()
     {
-        return Filter::on($this, 'matchers', [], function($chain) {
+        return Filter::on($this, 'matchers', [], function ($chain) {
             static::registerMatchers();
         });
     }
@@ -587,7 +586,7 @@ EOD;
      */
     protected function _run()
     {
-        return Filter::on($this, 'run', [], function($chain) {
+        return Filter::on($this, 'run', [], function ($chain) {
             $this->suite()->run([
                 'reporters' => $this->reporters(),
                 'autoclear' => $this->commandLine()->get('autoclear'),
@@ -601,7 +600,7 @@ EOD;
      */
     protected function _reporting()
     {
-        return Filter::on($this, 'reporting', [], function($chain) {
+        return Filter::on($this, 'reporting', [], function ($chain) {
             $reporter = $this->reporters()->get('coverage');
             if (!$reporter) {
                 return;
@@ -632,7 +631,7 @@ EOD;
      */
     protected function _stop()
     {
-        return Filter::on($this, 'stop', [], function($chain) {
+        return Filter::on($this, 'stop', [], function ($chain) {
             $this->suite()->stop();
         });
     }
@@ -643,10 +642,9 @@ EOD;
      */
     protected function _quit()
     {
-        return Filter::on($this, 'quit', [$this->suite()->passed()], function($chain, $success) {
+        return Filter::on($this, 'quit', [$this->suite()->passed()], function ($chain, $success) {
         });
     }
-
 }
 
 define('KAHLAN_VERSION', Kahlan::VERSION);

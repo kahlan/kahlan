@@ -38,7 +38,8 @@ class HHVM
         //@see bug https://github.com/facebook/hhvm/issues/4752
         try {
             fb_enable_code_coverage();
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
     }
 
     /**

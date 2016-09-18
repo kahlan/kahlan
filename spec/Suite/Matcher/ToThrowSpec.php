@@ -5,64 +5,64 @@ use Exception;
 use RuntimeException;
 use Kahlan\Matcher\ToThrow;
 
-describe("toThrow", function() {
+describe("toThrow", function () {
 
-    describe("::match()", function() {
+    describe("::match()", function () {
 
-        it("catches any kind of exception", function() {
+        it("catches any kind of exception", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException();
             };
             expect($closure)->toThrow();
 
-            $closure = function() {
+            $closure = function () {
                 throw new Exception('exception message');
             };
             expect($closure)->toThrow();
 
         });
 
-        it("catches any kind of exception but with a specific code", function() {
+        it("catches any kind of exception but with a specific code", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('runtime error', 500);
             };
             expect($closure)->toThrow(null, 500);
 
-            $closure = function() {
+            $closure = function () {
                 throw new Exception('exception message', 500);
             };
             expect($closure)->toThrow(null, 500);
 
         });
 
-        it("doesn't catches any kind of exception with a specific code", function() {
+        it("doesn't catches any kind of exception with a specific code", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new Exception('exception message');
             };
             expect($closure)->not->toThrow(null, 400);
 
-            $closure = function() {
+            $closure = function () {
                 throw new Exception('exception message', 500);
             };
             expect($closure)->not->toThrow(null, 400);
 
         });
 
-        it("catches a detailed exception", function() {
+        it("catches a detailed exception", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception message');
             };
             expect($closure)->toThrow(new RuntimeException('exception message'));
 
         });
 
-        it("catches a detailed exception with some specific code", function() {
+        it("catches a detailed exception with some specific code", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception message', 500);
             };
             expect($closure)->not->toThrow(new RuntimeException('exception message'));
@@ -70,69 +70,69 @@ describe("toThrow", function() {
 
         });
 
-        it("catches a detailed exception using the message name only", function() {
+        it("catches a detailed exception using the message name only", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception message');
             };
             expect($closure)->toThrow('exception message');
 
         });
 
-        it("catches an exception message using a regular expression", function() {
+        it("catches an exception message using a regular expression", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception stuff message');
             };
             expect($closure)->toThrow('/exception (.*?) message/');
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception stuff message');
             };
             expect($closure)->toThrow('~exception (.*?) message~');
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception stuff message');
             };
             expect($closure)->toThrow('#exception (.*?) message#');
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception stuff message');
             };
             expect($closure)->toThrow('@exception (.*?) message@');
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception stuff message');
             };
             expect($closure)->not->toThrow('@exception (.*?) message#');
 
         });
 
-        it("doesn't catch not an exception", function() {
-            $closure = function() {
+        it("doesn't catch not an exception", function () {
+            $closure = function () {
                 return true;
             };
 
             expect($closure)->not->toThrow(new Exception());
         });
 
-        it("doesn't catch whatever exception if a detailed one is expected", function() {
+        it("doesn't catch whatever exception if a detailed one is expected", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException();
             };
             expect($closure)->not->toThrow(new RuntimeException('exception message'));
 
         });
 
-        it("doesn't catch the exception if the expected exception has a different class name", function() {
+        it("doesn't catch the exception if the expected exception has a different class name", function () {
 
-            $closure = function() {
+            $closure = function () {
                 throw new Exception('exception message');
             };
             expect($closure)->not->toThrow(new RuntimeException('exception message'));
 
-            $closure = function() {
+            $closure = function () {
                 throw new RuntimeException('exception message');
             };
             expect($closure)->not->toThrow(new Exception('exception message'));
@@ -141,14 +141,14 @@ describe("toThrow", function() {
 
     });
 
-    describe("::description()", function() {
+    describe("::description()", function () {
 
-        it("returns the description message", function() {
+        it("returns the description message", function () {
 
             $actualException = new Exception();
             $expectedException = new Exception();
 
-            $actual = function() use ($actualException) {
+            $actual = function () use ($actualException) {
                 throw $actualException;
             };
 
@@ -161,11 +161,11 @@ describe("toThrow", function() {
 
         });
 
-        it("returns the description message when actual doesn't throw any exception", function() {
+        it("returns the description message when actual doesn't throw any exception", function () {
 
             $exception = new Exception();
 
-            ToThrow::match(function() {}, $exception, 0);
+            ToThrow::match(function () {}, $exception, 0);
             $actual = ToThrow::description();
 
             expect($actual['description'])->toBe('throw a compatible exception.');
@@ -174,9 +174,9 @@ describe("toThrow", function() {
 
         });
 
-        it("returns the description message when the expected value is a string", function() {
+        it("returns the description message when the expected value is a string", function () {
 
-            ToThrow::match(function() {}, 'Expected exception message', 0);
+            ToThrow::match(function () {}, 'Expected exception message', 0);
             $actual = ToThrow::description();
 
             expect($actual['description'])->toBe('throw a compatible exception.');

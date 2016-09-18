@@ -9,18 +9,18 @@ use Kahlan\Spec\Fixture\Reporter\Coverage\NoEmptyLine;
 use Kahlan\Spec\Fixture\Reporter\Coverage\ExtraEmptyLine;
 use RuntimeException;
 
-describe("Istanbul", function() {
+describe("Istanbul", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
         $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
-    describe("::export()", function() {
+    describe("::export()", function () {
 
-        it("exports the coverage of a file with no extra end line", function() {
+        it("exports the coverage of a file with no extra end line", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'NoEmptyLine.php';
 
@@ -43,14 +43,14 @@ describe("Istanbul", function() {
             ]);
             $ds = DS;
 
-$expected = <<<EOD
+            $expected = <<<EOD
 {"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php":{"path":"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
 EOD;
 
             expect($json)->toBe($expected);
         });
 
-        it("exports the coverage of a file with an extra line at the end", function() {
+        it("exports the coverage of a file with an extra line at the end", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'ExtraEmptyLine.php';
 
@@ -73,7 +73,7 @@ EOD;
             ]);
             $ds = DS;
 
-$expected = <<<EOD
+            $expected = <<<EOD
 {"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/ExtraEmptyLine.php":{"path":"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/ExtraEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
 EOD;
 
@@ -83,17 +83,17 @@ EOD;
 
     });
 
-    describe("::write()", function() {
+    describe("::write()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->output = tempnam("/tmp", "KAHLAN");
         });
 
-        afterEach(function() {
+        afterEach(function () {
             unlink($this->output);
         });
 
-        it("writes the coverage to a file", function() {
+        it("writes the coverage to a file", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'NoEmptyLine.php';
 
@@ -121,7 +121,7 @@ EOD;
             $json = file_get_contents($this->output);
             $ds = DS;
 
-$expected = <<<EOD
+            $expected = <<<EOD
 {"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php":{"path":"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
 EOD;
 
@@ -129,9 +129,9 @@ EOD;
 
         });
 
-        it("throws exception when no file is set", function() {
+        it("throws exception when no file is set", function () {
 
-            expect(function() {
+            expect(function () {
                 Istanbul::write([]);
             })->toThrow(new RuntimeException('Missing file name'));
 

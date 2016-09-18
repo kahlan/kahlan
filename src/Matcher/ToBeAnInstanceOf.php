@@ -24,5 +24,4 @@ class ToBeAnInstanceOf
     {
         return "be an instance of expected.";
     }
-
 }

@@ -15,31 +15,35 @@ class MyTestClass
     }
 }
 
-describe("Box", function() {
+describe("Box", function () {
 
-    describe("->factory()", function() {
+    describe("->factory()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->box = new Box();
         });
 
-        it("binds a closure", function() {
+        it("binds a closure", function () {
 
-            $this->box->factory('spec.stdClass', function() { return new stdClass; });
+            $this->box->factory('spec.stdClass', function () {
+                return new stdClass;
+            });
             expect($this->box->get('spec.stdClass'))->toBeAnInstanceOf("stdClass");
 
         });
 
-        it("binds a classname", function() {
+        it("binds a classname", function () {
 
             $this->box->factory('spec.stdClass', "stdClass");
             expect($this->box->get('spec.stdClass'))->toBeAnInstanceOf("stdClass");
 
         });
 
-        it("passes all arguments to the Closure", function() {
+        it("passes all arguments to the Closure", function () {
 
-            $this->box->factory('spec.arguments', function() { return func_get_args(); });
+            $this->box->factory('spec.arguments', function () {
+                return func_get_args();
+            });
             $params = [
                 'params1',
                 'params2'
@@ -48,7 +52,7 @@ describe("Box", function() {
 
         });
 
-        it("passes all arguments to the constructor", function() {
+        it("passes all arguments to the constructor", function () {
 
             $this->box->factory('spec.arguments', 'box\spec\suite\MyTestClass');
             $params = [
@@ -59,7 +63,7 @@ describe("Box", function() {
 
         });
 
-        it("creates different instances", function() {
+        it("creates different instances", function () {
 
             $this->box->factory('spec.stdClass', "stdClass");
 
@@ -69,16 +73,16 @@ describe("Box", function() {
 
         });
 
-        it("throws an exception if the definition is not a string or a Closure", function() {
+        it("throws an exception if the definition is not a string or a Closure", function () {
 
             $expected = new BoxException("Error `spec.instance` is not a closure definition dependency can't use it as a factory definition.");
 
-            $closure = function(){
+            $closure = function () {
                 $this->box->factory('spec.instance', new stdClass);
             };
             expect($closure)->toThrow($expected);
 
-            $closure = function(){
+            $closure = function () {
                 $this->box->factory('spec.instance', []);
             };
             expect($closure)->toThrow($expected);
@@ -87,20 +91,20 @@ describe("Box", function() {
 
     });
 
-    describe("->service()", function() {
+    describe("->service()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->box = new Box();
         });
 
-        it("shares a string", function() {
+        it("shares a string", function () {
 
             $this->box->service('spec.stdClass', "stdClass");
             expect($this->box->get('spec.stdClass'))->toBe("stdClass");
 
         });
 
-        it("shares an instance", function() {
+        it("shares an instance", function () {
 
             $instance = new stdClass;
             $this->box->service('spec.instance', $instance);
@@ -108,7 +112,7 @@ describe("Box", function() {
 
         });
 
-        it("gets the same instance", function() {
+        it("gets the same instance", function () {
 
             $this->box->service('spec.stdClass', new stdClass);
             $instance1 = $this->box->get('spec.stdClass');
@@ -117,9 +121,11 @@ describe("Box", function() {
 
         });
 
-        it("shares a singleton using the closure syntax", function() {
+        it("shares a singleton using the closure syntax", function () {
 
-            $this->box->service('spec.stdClass', function() { return new stdClass; });
+            $this->box->service('spec.stdClass', function () {
+                return new stdClass;
+            });
             $instance1 = $this->box->get('spec.stdClass');
             $instance2 = $this->box->get('spec.stdClass');
             expect($instance1)->toBe($instance2);
@@ -127,12 +133,14 @@ describe("Box", function() {
 
         });
 
-        it("shares a closure", function() {
+        it("shares a closure", function () {
 
-            $closure = function() {
+            $closure = function () {
                 return "Hello World!";
             };
-            $this->box->service('spec.closure', function() use ($closure) { return $closure; });
+            $this->box->service('spec.closure', function () use ($closure) {
+                return $closure;
+            });
 
             $closure1 = $this->box->get('spec.closure');
             $closure2 = $this->box->get('spec.closure');
@@ -144,36 +152,38 @@ describe("Box", function() {
 
     });
 
-    describe("has", function() {
+    describe("has", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->box = new Box();
         });
 
-        it("returns `false` if the Box is empty", function() {
+        it("returns `false` if the Box is empty", function () {
             expect($this->box->has('spec.hello'))->toBe(false);
         });
 
-        it("returns `true` if the Box contain the bind dependency", function() {
-            $this->box->factory('spec.stdClass', function() { return new stdClass; });
+        it("returns `true` if the Box contain the bind dependency", function () {
+            $this->box->factory('spec.stdClass', function () {
+                return new stdClass;
+            });
             expect($this->box->has('spec.stdClass'))->toBe(true);
         });
 
-        it("returns `true` if the Box contain the share dependency", function() {
+        it("returns `true` if the Box contain the share dependency", function () {
             $this->box->service('spec.hello', "Hello World!");
             expect($this->box->has('spec.hello'))->toBe(true);
         });
     });
 
-    describe("->get()", function() {
+    describe("->get()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->box = new Box();
         });
 
-        it("throws an exception if the dependency doesn't exists", function() {
+        it("throws an exception if the dependency doesn't exists", function () {
 
-            $closure = function(){
+            $closure = function () {
                 $this->box->get('spec.stdUnexistingClass');
             };
             expect($closure)->toThrow(new BoxException("Unexisting `spec.stdUnexistingClass` definition dependency."));
@@ -181,15 +191,17 @@ describe("Box", function() {
         });
     });
 
-    describe("->wrap()", function() {
+    describe("->wrap()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->box = new Box();
         });
 
-        it("returns a dependency container", function() {
+        it("returns a dependency container", function () {
 
-            $this->box->factory('spec.stdClass', function() { return new stdClass; });
+            $this->box->factory('spec.stdClass', function () {
+                return new stdClass;
+            });
             $wrapper = $this->box->wrap('spec.stdClass');
             expect($wrapper)->toBeAnInstanceOf('Kahlan\Box\Wrapper');
 
@@ -200,9 +212,9 @@ describe("Box", function() {
 
         });
 
-        it("throws an exception if the dependency definition is not a closure doesn't exists", function() {
+        it("throws an exception if the dependency definition is not a closure doesn't exists", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $this->box->service('spec.stdClass', new stdClass);
                 $wrapper = $this->box->wrap('spec.stdClass');
             };
@@ -211,9 +223,9 @@ describe("Box", function() {
 
         });
 
-        it("throws an exception if the dependency doesn't exists", function() {
+        it("throws an exception if the dependency doesn't exists", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $this->box->wrap('spec.stdUnexistingClass');
             };
 
@@ -222,15 +234,17 @@ describe("Box", function() {
         });
     });
 
-    describe("->remove()", function() {
+    describe("->remove()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->box = new Box();
         });
 
-        it("remove a bind", function() {
+        it("remove a bind", function () {
 
-            $this->box->factory('spec.stdClass', function() { return new stdClass; });
+            $this->box->factory('spec.stdClass', function () {
+                return new stdClass;
+            });
             expect($this->box->has('spec.stdClass'))->toBe(true);
 
             $this->box->remove('spec.stdClass');
@@ -240,13 +254,13 @@ describe("Box", function() {
 
     });
 
-    describe("->clear()", function() {
+    describe("->clear()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->box = new Box();
         });
 
-        it("clears all binds & shares", function() {
+        it("clears all binds & shares", function () {
 
             $this->box->factory('spec.stdClass', "stdClass");
             $this->box->service('spec.hello', "Hello World!");
@@ -257,12 +271,12 @@ describe("Box", function() {
             expect($this->box->has('spec.stdClass'))->toBe(false);
             expect($this->box->has('spec.hello'))->toBe(false);
 
-            $closure = function() {
+            $closure = function () {
                 $this->box->get('spec.stdClass');
             };
             expect($closure)->toThrow(new BoxException("Unexisting `spec.stdClass` definition dependency."));
 
-            $closure = function() {
+            $closure = function () {
                 $this->box->get('spec.hello');
             };
             expect($closure)->toThrow(new BoxException("Unexisting `spec.hello` definition dependency."));
@@ -273,13 +287,13 @@ describe("Box", function() {
 
 });
 
-describe("box()", function() {
+describe("box()", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         box(false);
     });
 
-    it("adds a box", function() {
+    it("adds a box", function () {
 
         $box = new Box();
         $actual = box('box.spec', $box);
@@ -287,7 +301,7 @@ describe("box()", function() {
         expect($actual)->toBe($box);
     });
 
-    it("gets a box", function() {
+    it("gets a box", function () {
 
         $box = new Box();
         box('box.spec', $box);
@@ -296,7 +310,7 @@ describe("box()", function() {
         expect($actual)->toBe($box);
     });
 
-    it("adds a default box", function() {
+    it("adds a default box", function () {
 
         $box = new Box();
 
@@ -305,7 +319,7 @@ describe("box()", function() {
 
     });
 
-    it("gets a default box", function() {
+    it("gets a default box", function () {
 
         $box = box();
         expect($box)->toBeAnInstanceOf('Kahlan\Box\Box');
@@ -313,38 +327,38 @@ describe("box()", function() {
 
     });
 
-    it("removes a box", function() {
+    it("removes a box", function () {
 
         $box = new Box();
         box('box.spec', $box);
         box('box.spec', false);
 
-        $closure = function() {
+        $closure = function () {
             box('box.spec');
         };
         expect($closure)->toThrow(new BoxException("Unexisting box `'box.spec'`."));
     });
 
-    it("removes all boxes", function() {
+    it("removes all boxes", function () {
 
         $box = new Box();
         box('box.spec1', $box);
         box('box.spec2', $box);
         box(false);
 
-        $closure = function() {
+        $closure = function () {
             box('box.spec1');
         };
         expect($closure)->toThrow(new BoxException("Unexisting box `'box.spec1'`."));
 
-        $closure = function() {
+        $closure = function () {
             box('box.spec2');
         };
         expect($closure)->toThrow(new BoxException("Unexisting box `'box.spec2'`."));
     });
 
-    it("throws an exception when trying to get an unexisting box", function() {
-        $closure = function() {
+    it("throws an exception when trying to get an unexisting box", function () {
+        $closure = function () {
             box('box.spec');
         };
         expect($closure)->toThrow(new BoxException("Unexisting box `'box.spec'`."));

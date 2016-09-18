@@ -169,5 +169,4 @@ class Cli
 
         return $format . $string . "\e[0m";
     }
-
 }

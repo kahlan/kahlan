@@ -4,16 +4,16 @@ namespace Kahlan\Spec\Suite\Jit\Patcher;
 use Kahlan\Jit\Parser;
 use Kahlan\Jit\Patcher\Monkey;
 
-describe("Monkey", function() {
+describe("Monkey", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->path = 'spec/Fixture/Jit/Patcher/Monkey';
         $this->patcher = new Monkey();
     });
 
-    describe("->process()", function() {
+    describe("->process()", function () {
 
-        it("patches class's methods", function() {
+        it("patches class's methods", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Class.php'));
             $expected = file_get_contents($this->path . '/ClassProcessed.php');
@@ -22,7 +22,7 @@ describe("Monkey", function() {
 
         });
 
-        it("patches trait's methods", function() {
+        it("patches trait's methods", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Trait.php'));
             $expected = file_get_contents($this->path . '/TraitProcessed.php');
@@ -31,7 +31,7 @@ describe("Monkey", function() {
 
         });
 
-        it("patches plain php file", function() {
+        it("patches plain php file", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Plain.php'));
             $expected = file_get_contents($this->path . '/PlainProcessed.php');
@@ -40,7 +40,7 @@ describe("Monkey", function() {
 
         });
 
-        it("patches errored php file", function() {
+        it("patches errored php file", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Errored.php'));
             $expected = file_get_contents($this->path . '/ErroredProcessed.php');
@@ -51,9 +51,9 @@ describe("Monkey", function() {
 
     });
 
-    describe("->patchable()", function() {
+    describe("->patchable()", function () {
 
-        it("return `true`", function() {
+        it("return `true`", function () {
 
             expect($this->patcher->patchable('SomeClass'))->toBe(true);
 
@@ -61,9 +61,9 @@ describe("Monkey", function() {
 
     });
 
-    describe("::blacklisted()", function() {
+    describe("::blacklisted()", function () {
 
-        it("checks that blacklisted function returns `false`", function() {
+        it("checks that blacklisted function returns `false`", function () {
 
             foreach (Monkey::blacklisted() as $name) {
                 expect(Monkey::blacklisted($name))->toBe(true);

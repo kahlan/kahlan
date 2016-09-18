@@ -1,7 +1,6 @@
 <?php
 namespace Kahlan\Reporter;
 
-
 class Verbose extends Terminal
 {
     /**

@@ -10,16 +10,16 @@ use Kahlan\Spec\Fixture\Reporter\Coverage\NoEmptyLine;
 use Kahlan\Spec\Fixture\Reporter\Coverage\ExtraEmptyLine;
 use Kahlan\Spec\Fixture\Reporter\Coverage\ImplementsCoverage;
 
-describe("Metrics", function() {
+describe("Metrics", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
         $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->path = [
             'spec/Fixture/Reporter/Coverage/GlobalFunctions.php',
             'spec/Fixture/Reporter/Coverage/Functions.php',
@@ -35,9 +35,9 @@ describe("Metrics", function() {
         ]);
     });
 
-    describe("->metrics()", function() {
+    describe("->metrics()", function () {
 
-        it("returns the global metrics", function() {
+        it("returns the global metrics", function () {
 
             $empty = new ExtraEmptyLine();
             $noEmpty = new NoEmptyLine();
@@ -57,8 +57,8 @@ describe("Metrics", function() {
             unset($actual['files']);
 
             expect($actual)->toBe([
-                'loc'      => 53,
-                'nlloc'    => 37,
+                'loc'      => 55,
+                'nlloc'    => 39,
                 'lloc'     => 16,
                 'cloc'     => 8,
                 'coverage' => 8,
@@ -73,7 +73,7 @@ describe("Metrics", function() {
             }
         });
 
-        it("returns class metrics", function() {
+        it("returns class metrics", function () {
 
             $code = new ExtraEmptyLine();
 
@@ -103,7 +103,7 @@ describe("Metrics", function() {
             expect(isset($files[$path]))->toBe(true);
         });
 
-        it("returns type of metrics", function() {
+        it("returns type of metrics", function () {
 
             $code = new ExtraEmptyLine();
 
@@ -116,7 +116,7 @@ describe("Metrics", function() {
 
         });
 
-        it("returns a parent of metrics", function() {
+        it("returns a parent of metrics", function () {
 
             $code = new ExtraEmptyLine();
 
@@ -129,7 +129,7 @@ describe("Metrics", function() {
 
         });
 
-        it("returns methods metrics", function() {
+        it("returns methods metrics", function () {
 
             $code = new ExtraEmptyLine();
 
@@ -163,7 +163,7 @@ describe("Metrics", function() {
             expect(isset($files[$path]))->toBe(true);
         });
 
-        it("returns global function metrics", function() {
+        it("returns global function metrics", function () {
 
             $this->collector->start();
             \shallNotPass();
@@ -195,7 +195,7 @@ describe("Metrics", function() {
             expect(isset($files[$path]))->toBe(true);
         });
 
-        it("returns function metrics", function() {
+        it("returns function metrics", function () {
 
             $this->collector->start();
             \Kahlan\Spec\Fixture\Reporter\Coverage\shallNotPass();
@@ -228,7 +228,7 @@ describe("Metrics", function() {
 
         });
 
-        it("returns empty for unknown metric", function() {
+        it("returns empty for unknown metric", function () {
 
             $code = new ExtraEmptyLine();
 
@@ -242,7 +242,7 @@ describe("Metrics", function() {
 
         });
 
-        it("doesn't store interfaces in metrics", function() {
+        it("doesn't store interfaces in metrics", function () {
 
             $path = [
                 'spec/Fixture/Reporter/Coverage/ImplementsCoverage.php',
@@ -267,8 +267,8 @@ describe("Metrics", function() {
             unset($actual['files']);
 
             expect($actual)->toBe([
-                'loc'      => 10,
-                'nlloc'    => 9,
+                'loc'      => 11,
+                'nlloc'    => 10,
                 'lloc'     => 1,
                 'cloc'     => 1,
                 'coverage' => 1,
@@ -282,9 +282,9 @@ describe("Metrics", function() {
 
         });
 
-        describe("->children()", function() {
+        describe("->children()", function () {
 
-            beforeEach(function() {
+            beforeEach(function () {
 
                 $code = new ExtraEmptyLine();
 
@@ -296,7 +296,7 @@ describe("Metrics", function() {
 
             });
 
-            it("returns root's children", function() {
+            it("returns root's children", function () {
 
                 $children = $this->metrics->children();
                 expect(is_array($children))->toBe(true);
@@ -304,7 +304,7 @@ describe("Metrics", function() {
 
             });
 
-            it("returns specified child", function() {
+            it("returns specified child", function () {
 
                 $children = $this->metrics->children('Kahlan\\');
                 expect(is_array($children))->toBe(true);
@@ -329,7 +329,7 @@ describe("Metrics", function() {
 
             });
 
-            it("returns `null` on unknown child", function() {
+            it("returns `null` on unknown child", function () {
 
                 $children = $this->metrics->children('unknown_child');
                 expect($children)->toBe([]);

@@ -33,15 +33,15 @@ class Tap extends Terminal
     {
         $isOk = $log->passed() ? "ok" : "not ok";
 
-        switch($log->type()) {
-            case 'skipped';
-            case 'pending';
-            case 'excluded';
+        switch ($log->type()) {
+            case 'skipped':
+            case 'pending':
+            case 'excluded':
                 $prefix = "# {$log->type()} ";
-            break;
+                break;
             default:
                 $prefix = '- ';
-            break;
+                break;
         }
         $message = $prefix . trim(implode(" ", $log->messages()));
         $this->_counter++;
@@ -56,7 +56,7 @@ class Tap extends Terminal
                 if ($log->passed()) {
                     continue;
                 }
-                $toString = function($instance) {
+                $toString = function ($instance) {
                     return 'an instance of `' . get_class($instance) . '`';
                 };
                 foreach ($log->data() as $key => $value) {
@@ -65,7 +65,6 @@ class Tap extends Terminal
                     $this->write("# {$key}: {$value}\n");
                 }
             }
-
         }
     }
 

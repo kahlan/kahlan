@@ -92,11 +92,11 @@ class Bar extends Terminal
     public function specEnd($log = null)
     {
         $this->_current++;
-        switch($log->type()) {
+        switch ($log->type()) {
             case 'failed':
             case 'errored':
                 $this->_color = $this->_preferences['failed'];
-            break;
+                break;
         }
         $this->_progressBar();
     }

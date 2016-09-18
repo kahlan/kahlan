@@ -18,12 +18,12 @@ use Kahlan\Spec\Fixture\Plugin\Monkey\User;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
 use Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar;
 
-describe("Allow", function() {
+describe("Allow", function () {
 
     /**
      * Save current & reinitialize the Interceptor class.
      */
-    beforeAll(function() {
+    beforeAll(function () {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -37,11 +37,11 @@ describe("Allow", function() {
     /**
      * Restore Interceptor class.
      */
-    afterAll(function() {
+    afterAll(function () {
         Interceptor::load($this->previous);
     });
 
-    it("monkey patches a class", function() {
+    it("monkey patches a class", function () {
 
         $bar = Double::instance();
         allow($bar)->toReceive('send')->andReturn('EOF');
@@ -52,37 +52,37 @@ describe("Allow", function() {
 
     });
 
-    it("monkey patches a function", function() {
+    it("monkey patches a function", function () {
 
         $mon = new Mon();
-        allow('time')->toBe(function() {
+        allow('time')->toBe(function () {
             return 123;
         });
         expect($mon->time())->toBe(123);
 
     });
 
-    it("throws an exception when trying to monkey patch an instance", function() {
+    it("throws an exception when trying to monkey patch an instance", function () {
 
-        expect(function() {
+        expect(function () {
             $foo = new Foo();
             allow($foo)->toBe(Double::instance());
         })->toThrow(new Exception("Error `toBe()` need to be applied on a fully-namespaced class or function name."));
 
     });
 
-    it("throws an exception when trying to monkey patch an instance using a generic stub", function() {
+    it("throws an exception when trying to monkey patch an instance using a generic stub", function () {
 
-        expect(function() {
+        expect(function () {
             $foo = new Foo();
             allow($foo)->toBeOK();
         })->toThrow(new Exception("Error `toBeOK()` need to be applied on a fully-namespaced class or function name."));
 
     });
 
-    context("with an instance", function() {
+    context("with an instance", function () {
 
-        it("stubs a method", function() {
+        it("stubs a method", function () {
 
             $foo = new Foo();
             allow($foo)->toReceive('message')->andReturn('Good Bye!');
@@ -90,7 +90,7 @@ describe("Allow", function() {
 
         });
 
-        it("stubs with multiple return value", function() {
+        it("stubs with multiple return value", function () {
 
             $foo = new Foo();
             allow($foo)->toReceive('message')->andReturn(null, 'Hello World!', 'Good Bye!');
@@ -100,7 +100,7 @@ describe("Allow", function() {
 
         });
 
-        it("stubs only on the stubbed instance", function() {
+        it("stubs only on the stubbed instance", function () {
 
             $foo = new Foo();
             allow($foo)->toReceive('message')->andReturn('Good Bye!');
@@ -111,15 +111,17 @@ describe("Allow", function() {
 
         });
 
-        it("stubs a method using a closure", function() {
+        it("stubs a method using a closure", function () {
 
             $foo = new Foo();
-            allow($foo)->toReceive('message')->andRun(function($param) { return $param; });
+            allow($foo)->toReceive('message')->andRun(function ($param) {
+                return $param;
+            });
             expect($foo->message('Good Bye!'))->toBe('Good Bye!');
 
         });
 
-        it("stubs a magic method", function() {
+        it("stubs a magic method", function () {
 
             $foo = new Foo();
             allow($foo)->toReceive('magicCall')->andReturn('Magic Call!');
@@ -127,15 +129,17 @@ describe("Allow", function() {
 
         });
 
-        it("stubs a magic method using a closure", function() {
+        it("stubs a magic method using a closure", function () {
 
             $foo = new Foo();
-            allow($foo)->toReceive('magicHello')->andRun(function($message) { return $message; });
+            allow($foo)->toReceive('magicHello')->andRun(function ($message) {
+                return $message;
+            });
             expect($foo->magicHello('Hello World!'))->toBe('Hello World!');
 
         });
 
-        it("stubs a static magic method", function() {
+        it("stubs a static magic method", function () {
 
             $foo = new Foo();
             allow($foo)->toReceive('::magicCallStatic')->andReturn('Magic Call Static!');
@@ -143,15 +147,17 @@ describe("Allow", function() {
 
         });
 
-        it("stubs a static magic method using a closure", function() {
+        it("stubs a static magic method using a closure", function () {
 
             $foo = new Foo();
-            allow($foo)->toReceive('::magicHello')->andRun(function($message) { return $message; });
+            allow($foo)->toReceive('::magicHello')->andRun(function ($message) {
+                return $message;
+            });
             expect($foo::magicHello('Hello World!'))->toBe('Hello World!');
 
         });
 
-        it("overrides previously applied stubs", function() {
+        it("overrides previously applied stubs", function () {
 
             $foo = new Foo();
             allow($foo)->toReceive('magicHello')->andReturn('Hello World!');
@@ -160,27 +166,27 @@ describe("Allow", function() {
 
         });
 
-        it("throws an exception when trying to spy an invalid empty method", function() {
+        it("throws an exception when trying to spy an invalid empty method", function () {
 
-            expect(function() {
+            expect(function () {
                 $foo = new Foo();
                 allow($foo)->toReceive();
             })->toThrow(new InvalidArgumentException("Method name can't be empty."));
 
         });
 
-        it("throws an exception when trying to call `toReceive()`", function() {
+        it("throws an exception when trying to call `toReceive()`", function () {
 
-            expect(function() {
+            expect(function () {
                 $foo = new Foo();
                 allow($foo)->toBeCalled('magicHello')->andReturn('Hello World!');
             })->toThrow(new Exception("Error `toBeCalled()` are are only available on functions not classes/instances."));
 
         });
 
-        context("with several applied stubs on a same method", function() {
+        context("with several applied stubs on a same method", function () {
 
-            it("stubs a magic method multiple times", function() {
+            it("stubs a magic method multiple times", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('magic')->with('hello')->andReturn('world');
@@ -190,7 +196,7 @@ describe("Allow", function() {
 
             });
 
-            it("stubs a static magic method multiple times", function() {
+            it("stubs a static magic method multiple times", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('::magic')->with('hello')->andReturn('world');
@@ -202,9 +208,9 @@ describe("Allow", function() {
 
         });
 
-        context("using the with() parameter", function() {
+        context("using the with() parameter", function () {
 
-            it("stubs on matched arguments", function() {
+            it("stubs on matched arguments", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->with('Hello World!')->andReturn('Good Bye!');
@@ -212,7 +218,7 @@ describe("Allow", function() {
 
             });
 
-            it("doesn't stubs on unmatched arguments", function() {
+            it("doesn't stubs on unmatched arguments", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->with('Hello World!')->andReturn('Good Bye!');
@@ -223,9 +229,9 @@ describe("Allow", function() {
 
         });
 
-        context("using the with() parameter and the argument matchers", function() {
+        context("using the with() parameter and the argument matchers", function () {
 
-            it("stubs on matched arguments", function() {
+            it("stubs on matched arguments", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->with(Arg::toBeA('string'))->andReturn('Good Bye!');
@@ -234,7 +240,7 @@ describe("Allow", function() {
 
             });
 
-            it("doesn't stubs on unmatched arguments", function() {
+            it("doesn't stubs on unmatched arguments", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->with(Arg::toBeA('string'))->andReturn('Good Bye!');
@@ -245,9 +251,9 @@ describe("Allow", function() {
 
         });
 
-        context("with multiple return values", function() {
+        context("with multiple return values", function () {
 
-            it("stubs a method", function() {
+            it("stubs a method", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->andReturn('Good Evening World!', 'Good Bye World!');
@@ -259,9 +265,9 @@ describe("Allow", function() {
 
         });
 
-        context("with chain of methods", function() {
+        context("with chain of methods", function () {
 
-            it("expects stubbed chain to be stubbed", function() {
+            it("expects stubbed chain to be stubbed", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('a', 'b', 'c')->andReturn('something');
@@ -271,7 +277,7 @@ describe("Allow", function() {
 
             });
 
-            it('auto monkey patch core classes using a stub when possible', function() {
+            it('auto monkey patch core classes using a stub when possible', function () {
 
                 allow('PDO')->toReceive('prepare', 'fetchAll')->andReturn([['name' => 'bob']]);
                 $user = new User();
@@ -279,7 +285,7 @@ describe("Allow", function() {
 
             });
 
-            it('allows to stubs a same method twice', function() {
+            it('allows to stubs a same method twice', function () {
 
                 allow('PDO')->toReceive('prepare', 'fetchAll')->andReturn([['name' => 'bob']]);
                 allow('PDO')->toReceive('prepare', 'execute')->andReturn(true);
@@ -289,7 +295,7 @@ describe("Allow", function() {
 
             });
 
-            it('allows to mix static/dynamic methods', function() {
+            it('allows to mix static/dynamic methods', function () {
 
                 allow('Kahlan\Spec\Fixture\Plugin\Monkey\User')->toReceive('::create', 'all')->andReturn([['name' => 'bob']]);
                 $user = User::create();
@@ -297,9 +303,9 @@ describe("Allow", function() {
 
             });
 
-            it("throws an exception when trying to stub an instance of a built-in class", function() {
+            it("throws an exception when trying to stub an instance of a built-in class", function () {
 
-                expect(function() {
+                expect(function () {
                     allow(new DateTime());
                 })->toThrow(new InvalidArgumentException("Can't Stub built-in PHP instances, create a test double using `Double::instance()`."));
 
@@ -307,9 +313,9 @@ describe("Allow", function() {
 
         });
 
-        context("with chain of methods and arguments requirements", function() {
+        context("with chain of methods and arguments requirements", function () {
 
-            it("stubs on matched arguments", function() {
+            it("stubs on matched arguments", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('message')->where(['message' => ['Hello World!']])->andReturn('Good Bye!');
@@ -317,7 +323,7 @@ describe("Allow", function() {
 
             });
 
-            it("expects stubbed chain to return the stubbed value when required arguments are matching", function() {
+            it("expects stubbed chain to return the stubbed value when required arguments are matching", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('a', 'b', 'c')->where([
@@ -330,7 +336,7 @@ describe("Allow", function() {
 
             });
 
-            it("expects stubbed chain to not return the stubbed value when required arguments doesn't match", function() {
+            it("expects stubbed chain to not return the stubbed value when required arguments doesn't match", function () {
 
                 $foo = new Foo();
                 allow($foo)->toReceive('a', 'b', 'c')->where([
@@ -344,18 +350,18 @@ describe("Allow", function() {
             });
 
 
-            it("throws an exception when required arguments are applied on a method not present in the chain", function() {
+            it("throws an exception when required arguments are applied on a method not present in the chain", function () {
 
-                expect(function() {
+                expect(function () {
                     $foo = new Foo();
                     allow($foo)->toReceive('a')->where(['b' => [2]])->andReturn('something');
                 })->toThrow(new InvalidArgumentException("Unexisting `b` as method as part of the chain definition."));
 
             });
 
-            it("throws an exception when required arguments are not an array", function() {
+            it("throws an exception when required arguments are not an array", function () {
 
-                expect(function() {
+                expect(function () {
                     $foo = new Foo();
                     allow($foo)->toReceive('a')->where(['a' => 2])->andReturn('something');
                 })->toThrow(new InvalidArgumentException("Argument requirements must be an arrays for `a` method."));
@@ -366,9 +372,9 @@ describe("Allow", function() {
 
     });
 
-    context("with an class", function() {
+    context("with an class", function () {
 
-        it("stubs a method", function() {
+        it("stubs a method", function () {
 
             allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')
                 ->toReceive('message')
@@ -381,29 +387,33 @@ describe("Allow", function() {
 
         });
 
-        it("stubs a static method", function() {
+        it("stubs a static method", function () {
 
             allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::messageStatic')->andReturn('Good Bye!');
             expect(Foo::messageStatic())->toBe('Good Bye!');
 
         });
 
-        it("stubs a method using a closure", function() {
+        it("stubs a method using a closure", function () {
 
-            allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->andRun(function($param) { return $param; });
+            allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('message')->andRun(function ($param) {
+                return $param;
+            });
             $foo = new Foo();
             expect($foo->message('Good Bye!'))->toBe('Good Bye!');
 
         });
 
-        it("stubs a static method using a closure", function() {
+        it("stubs a static method using a closure", function () {
 
-            allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::messageStatic')->andRun(function($param) { return $param; });
+            allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::messageStatic')->andRun(function ($param) {
+                return $param;
+            });
             expect(Foo::messageStatic('Good Bye!'))->toBe('Good Bye!');
 
         });
 
-        it("stubs a magic method multiple times", function() {
+        it("stubs a magic method multiple times", function () {
 
             allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::magic')->with('hello')->andReturn('world');
             allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::magic')->with('world')->andReturn('hello');
@@ -412,17 +422,17 @@ describe("Allow", function() {
 
         });
 
-        it("throws an exception when trying to call `toReceive()`", function() {
+        it("throws an exception when trying to call `toReceive()`", function () {
 
-            expect(function() {
+            expect(function () {
                 allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toBeCalled('magicHello')->andReturn('Hello World!');
             })->toThrow(new Exception("Error `toBeCalled()` are are only available on functions not classes/instances."));
 
         });
 
-        context("with multiple return values", function(){
+        context("with multiple return values", function () {
 
-            it("stubs a method", function() {
+            it("stubs a method", function () {
 
                 allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')
                     ->toReceive('message')
@@ -438,9 +448,9 @@ describe("Allow", function() {
 
         });
 
-        context("with chain of methods", function() {
+        context("with chain of methods", function () {
 
-            it("expects called chain to be called", function() {
+            it("expects called chain to be called", function () {
 
                 allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->andReturn('something');
                 $query = Foo::getQuery();
@@ -451,9 +461,9 @@ describe("Allow", function() {
 
         });
 
-        context("with chain of methods and arguments requirements", function() {
+        context("with chain of methods and arguments requirements", function () {
 
-            it("expects stubbed chain to return the stubbed value when required arguments are matching", function() {
+            it("expects stubbed chain to return the stubbed value when required arguments are matching", function () {
 
                 allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->where([
                     '::getQuery' => [1],
@@ -467,7 +477,7 @@ describe("Allow", function() {
 
             });
 
-            it("expects stubbed chain to not return the stubbed value when required arguments doesn't match", function() {
+            it("expects stubbed chain to not return the stubbed value when required arguments doesn't match", function () {
 
                 allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->toReceive('::getQuery', '::newQuery', '::from')->where([
                     '::getQuery' => [1],
@@ -483,7 +493,7 @@ describe("Allow", function() {
 
         });
 
-        it('makes built-in PHP class to work', function() {
+        it('makes built-in PHP class to work', function () {
 
             allow('PDO')->toBeOK();
             $user = new User();
@@ -493,9 +503,9 @@ describe("Allow", function() {
 
     });
 
-    context("with a trait", function() {
+    context("with a trait", function () {
 
-        it("stubs a method", function() {
+        it("stubs a method", function () {
 
             allow('Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar')
                 ->toReceive('traitMethod')
@@ -510,9 +520,9 @@ describe("Allow", function() {
 
     });
 
-    context("with functions", function() {
+    context("with functions", function () {
 
-        it("expects stubbed method to be stubbed as expected", function() {
+        it("expects stubbed method to be stubbed as expected", function () {
 
             $mon = new Mon();
             allow('time')->toBeCalled()->andReturn(123, 456);
@@ -521,25 +531,33 @@ describe("Allow", function() {
 
         });
 
-        it("expects stubbed method to be stubbed as expected using return closures", function() {
+        it("expects stubbed method to be stubbed as expected using return closures", function () {
 
             $mon = new Mon();
-            allow('time')->toBeCalled()->andRun(function() {return 123;}, function() {return 456;});
+            allow('time')->toBeCalled()->andRun(function () {
+                return 123;
+            }, function () {
+                return 456;
+            });
             expect($mon->time())->toBe(123);
             expect($mon->time())->toBe(456);
 
         });
 
-        it("expects stubbed method to be stubbed as expected using closures", function() {
+        it("expects stubbed method to be stubbed as expected using closures", function () {
 
             $mon = new Mon();
-            allow('time')->toBe(function() {return 123;}, function() {return 456;});
+            allow('time')->toBe(function () {
+                return 123;
+            }, function () {
+                return 456;
+            });
             expect($mon->time())->toBe(123);
             expect($mon->time())->toBe(456);
 
         });
 
-        it("expects stubbed method to be stubbed only when the with constraint is respected", function() {
+        it("expects stubbed method to be stubbed only when the with constraint is respected", function () {
 
             $mon = new Mon();
             allow('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(10, 20)->andReturn(40);
@@ -547,7 +565,7 @@ describe("Allow", function() {
             expect($mon->rand(10, 20))->toBe(40);
         });
 
-        it('makes built-in PHP function to work', function() {
+        it('makes built-in PHP function to work', function () {
 
             allow('file_get_contents')->toBeOK();
 
@@ -556,9 +574,9 @@ describe("Allow", function() {
 
         });
 
-        it("throws an exception when trying to call `toReceive()`", function() {
+        it("throws an exception when trying to call `toReceive()`", function () {
 
-            expect(function() {
+            expect(function () {
                 allow('time')->toReceive('something')->andReturn(123, 456);
             })->toThrow(new Exception("Error `toReceive()` are only available on classes/instances not functions."));
 
@@ -566,18 +584,18 @@ describe("Allow", function() {
 
     });
 
-    it("throws an exception when trying to call `andReturn()` right away", function() {
+    it("throws an exception when trying to call `andReturn()` right away", function () {
 
-        expect(function() {
+        expect(function () {
             allow('time')->andReturn(123);
         })->toThrow(new Exception("You must to call `toReceive()/toBeCalled()` before defining a return value."));
 
     });
 
-    it("throws an exception when trying to call `andReturn()` right away", function() {
+    it("throws an exception when trying to call `andReturn()` right away", function () {
 
-        expect(function() {
-            allow('time')->andRun(function(){});
+        expect(function () {
+            allow('time')->andRun(function (){});
         })->toThrow(new Exception("You must to call `toReceive()/toBeCalled()` before defining a return value."));
 
     });

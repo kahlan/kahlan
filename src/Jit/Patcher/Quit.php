@@ -1,7 +1,8 @@
 <?php
 namespace Kahlan\Jit\Patcher;
 
-class Quit {
+class Quit
+{
 
     /**
      * The JIT find file patcher.
@@ -59,5 +60,4 @@ class Quit {
             }
         }
     }
-
 }

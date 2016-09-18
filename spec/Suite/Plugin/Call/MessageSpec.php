@@ -3,11 +3,11 @@ namespace Kahlan\Spec\Suite\Plugin\Call;
 
 use Kahlan\Plugin\Call\Message;
 
-describe("Message", function() {
+describe("Message", function () {
 
-    describe("->parent()", function() {
+    describe("->parent()", function () {
 
-        it("Gets the message parent", function() {
+        it("Gets the message parent", function () {
 
             $message = new Message([
                 'parent' => 'parent',
@@ -18,9 +18,9 @@ describe("Message", function() {
 
     });
 
-    describe("->reference()", function() {
+    describe("->reference()", function () {
 
-        it("Gets the message reference", function() {
+        it("Gets the message reference", function () {
 
             $message = new Message([
                 'reference' => 'reference',
@@ -31,9 +31,9 @@ describe("Message", function() {
 
     });
 
-    describe("->name()", function() {
+    describe("->name()", function () {
 
-        it("Gets the message name", function() {
+        it("Gets the message name", function () {
 
             $message = new Message([
                 'name' => 'message_name',
@@ -44,9 +44,9 @@ describe("Message", function() {
 
     });
 
-    describe("->args()", function() {
+    describe("->args()", function () {
 
-        it('Gets the message args', function() {
+        it('Gets the message args', function () {
 
             $message = new Message([
                 'args'  => ['a', 'b', 'c'],
@@ -57,9 +57,9 @@ describe("Message", function() {
 
     });
 
-    describe("->isStatic()", function() {
+    describe("->isStatic()", function () {
 
-        it('Checks if the message is static', function() {
+        it('Checks if the message is static', function () {
 
             $message = new Message([
                 'static'  => true

@@ -8,17 +8,17 @@ use Kahlan\Box\Box;
 use Kahlan\Box\Wrapper;
 use Kahlan\Box\BoxException;
 
-describe("Wrapper", function() {
+describe("Wrapper", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
             $this->box = new Box();
     });
 
-    describe("->__construct()", function() {
+    describe("->__construct()", function () {
 
-        it("throws an exception if the `'box'` parameter is empty", function() {
+        it("throws an exception if the `'box'` parameter is empty", function () {
 
-            $closure = function(){
+            $closure = function () {
                 $wrapper = new Wrapper(['box' => null, 'name' => 'spec.stdClass']);
             };
 
@@ -26,11 +26,13 @@ describe("Wrapper", function() {
 
         });
 
-        it("throws an exception if the `'name'` parameter is empty", function() {
+        it("throws an exception if the `'name'` parameter is empty", function () {
 
-            $this->box->factory('spec.stdClass', function() { return new stdClass; });
+            $this->box->factory('spec.stdClass', function () {
+                return new stdClass;
+            });
 
-            $closure = function(){
+            $closure = function () {
                 $wrapper = new Wrapper(['box' => $this->box, 'name' => '']);
             };
 
@@ -40,11 +42,13 @@ describe("Wrapper", function() {
 
     });
 
-    describe("->get()", function() {
+    describe("->get()", function () {
 
-        it("resolve a dependency", function() {
+        it("resolve a dependency", function () {
 
-            $this->box->factory('spec.stdClass', function() { return new stdClass; });
+            $this->box->factory('spec.stdClass', function () {
+                return new stdClass;
+            });
             $wrapper = new Wrapper(['box' => $this->box, 'name' => 'spec.stdClass']);
 
             $dependency = $wrapper->get();
@@ -54,16 +58,20 @@ describe("Wrapper", function() {
 
         });
 
-        it("throws an exception if the dependency doesn't exists", function() {
+        it("throws an exception if the dependency doesn't exists", function () {
 
             $wrapper = new Wrapper(['box' => $this->box, 'name' => 'spec.stdUnexistingClass']);
-            expect(function() use ($wrapper) { $wrapper->get(); })->toThrow(new BoxException());
+            expect(function () use ($wrapper) {
+                $wrapper->get();
+            })->toThrow(new BoxException());
 
         });
 
-        it("passes parameters to the Closure", function() {
+        it("passes parameters to the Closure", function () {
 
-            $this->box->factory('spec.arguments', function() { return func_get_args(); });
+            $this->box->factory('spec.arguments', function () {
+                return func_get_args();
+            });
             $params = [
                 'param1',
                 'param2'
@@ -77,9 +85,11 @@ describe("Wrapper", function() {
 
         });
 
-        it("override passed parameters to the Closure", function() {
+        it("override passed parameters to the Closure", function () {
 
-            $this->box->factory('spec.arguments', function() { return func_get_args(); });
+            $this->box->factory('spec.arguments', function () {
+                return func_get_args();
+            });
             $params = [
                 'param1',
                 'param2'

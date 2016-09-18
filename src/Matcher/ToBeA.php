@@ -78,5 +78,4 @@ class ToBeA
     {
         return static::$_description;
     }
-
 }

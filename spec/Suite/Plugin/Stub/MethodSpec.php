@@ -9,12 +9,12 @@ use Kahlan\Plugin\Stub;
 
 use Kahlan\Spec\Fixture\Plugin\Pointcut\Foo;
 
-describe("Method", function() {
+describe("Method", function () {
 
     /**
      * Save current & reinitialize the Interceptor class.
      */
-    beforeAll(function() {
+    beforeAll(function () {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
 
@@ -28,13 +28,13 @@ describe("Method", function() {
     /**
      * Restore Interceptor class.
      */
-    afterAll(function() {
+    afterAll(function () {
         Interceptor::load($this->previous);
     });
 
-    describe("->andReturn()", function() {
+    describe("->andReturn()", function () {
 
-        it("sets a return value", function() {
+        it("sets a return value", function () {
 
             $foo = new Foo();
             $stub = allow($foo)->toReceive('message');
@@ -45,7 +45,7 @@ describe("Method", function() {
 
         });
 
-        it("sets return values", function() {
+        it("sets return values", function () {
 
             $foo = new Foo();
             $stub = allow($foo)->toReceive('message');
@@ -60,12 +60,12 @@ describe("Method", function() {
 
         });
 
-        it("throws when return is already set", function() {
+        it("throws when return is already set", function () {
 
-            expect(function() {
+            expect(function () {
                 $foo = new Foo();
                 $stub = allow($foo)->toReceive('message');
-                $stub->andRun(function($param) {
+                $stub->andRun(function ($param) {
                     return $param;
                 });
 
@@ -77,13 +77,13 @@ describe("Method", function() {
 
     });
 
-    describe("->andRun()", function() {
+    describe("->andRun()", function () {
 
-        it("sets a closure", function() {
+        it("sets a closure", function () {
 
             $foo = new Foo();
             $stub = allow($foo)->toReceive('message');
-            $stub->andRun(function($param) {
+            $stub->andRun(function ($param) {
                 return $param;
             });
 
@@ -92,13 +92,13 @@ describe("Method", function() {
 
         });
 
-        it("sets closures", function() {
+        it("sets closures", function () {
 
             $foo = new Foo();
             $stub = allow($foo)->toReceive('message');
-            $stub->andRun(function() {
+            $stub->andRun(function () {
                 return 'Aloha!';
-            }, function() {
+            }, function () {
                 return 'Hello!';
             });
 
@@ -111,23 +111,23 @@ describe("Method", function() {
 
         });
 
-        it("throws when return is already set", function() {
+        it("throws when return is already set", function () {
 
-            expect(function() {
+            expect(function () {
                 $foo = new Foo();
                 $stub = allow($foo)->toReceive('message');
                 $stub->andReturn('Ahoy!');
 
-                $stub->andRun(function($param) {
+                $stub->andRun(function ($param) {
                     return $param;
                 });
             })->toThrow(new Exception('Some return value(s) has already been set.'));
 
         });
 
-        it("throws when trying to pass non callable", function() {
+        it("throws when trying to pass non callable", function () {
 
-            expect(function() {
+            expect(function () {
                 $foo = new Foo();
                 $stub = allow($foo)->toReceive('message');
 

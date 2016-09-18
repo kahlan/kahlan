@@ -9,18 +9,18 @@ use Kahlan\Spec\Fixture\Reporter\Coverage\NoEmptyLine;
 use Kahlan\Spec\Fixture\Reporter\Coverage\ExtraEmptyLine;
 use RuntimeException;
 
-describe("Coveralls", function() {
+describe("Coveralls", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
             skipIf(true);
         }
         $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
     });
 
-    describe("::export()", function() {
+    describe("::export()", function () {
 
-        it("exports the coverage of a file with no extra end line", function() {
+        it("exports the coverage of a file with no extra end line", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'NoEmptyLine.php';
 
@@ -54,17 +54,17 @@ describe("Coveralls", function() {
             expect($coverage['coverage'])->toHaveLength(15);
             expect(array_filter($coverage['coverage']))->toHaveLength(2);
 
-            expect(array_filter($coverage['coverage'], function($value){
+            expect(array_filter($coverage['coverage'], function ($value) {
                 return $value === 0;
             }))->toHaveLength(2);
 
-            expect(array_filter($coverage['coverage'], function($value){
+            expect(array_filter($coverage['coverage'], function ($value) {
                 return $value === null;
             }))->toHaveLength(11);
 
         });
 
-        it("exports the coverage of a file with an extra line at the end", function() {
+        it("exports the coverage of a file with an extra line at the end", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'ExtraEmptyLine.php';
 
@@ -97,11 +97,11 @@ describe("Coveralls", function() {
             expect($coverage['source'])->toBe(file_get_contents($path));
             expect($coverage['coverage'])->toHaveLength(16);
 
-            expect(array_filter($coverage['coverage'], function($value){
+            expect(array_filter($coverage['coverage'], function ($value) {
                 return $value === 0;
             }))->toHaveLength(2);
 
-            expect(array_filter($coverage['coverage'], function($value){
+            expect(array_filter($coverage['coverage'], function ($value) {
                 return $value === null;
             }))->toHaveLength(12);
 
@@ -109,17 +109,17 @@ describe("Coveralls", function() {
 
     });
 
-    describe("::write()", function() {
+    describe("::write()", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             $this->output = tempnam("/tmp", "KAHLAN");
         });
 
-        afterEach(function() {
+        afterEach(function () {
             unlink($this->output);
         });
 
-        it("writes the coverage to a file", function() {
+        it("writes the coverage to a file", function () {
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'ExtraEmptyLine.php';
 
@@ -159,9 +159,9 @@ describe("Coveralls", function() {
 
         });
 
-        it("throws an exception no file is set", function() {
+        it("throws an exception no file is set", function () {
 
-            expect(function() {
+            expect(function () {
                 Coveralls::write([]);
             })->toThrow(new RuntimeException("Missing file name"));
 

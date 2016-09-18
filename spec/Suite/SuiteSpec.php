@@ -13,17 +13,17 @@ use Kahlan\Reporters;
 use Kahlan\Arg;
 use Kahlan\Plugin\Double;
 
-describe("Suite", function() {
+describe("Suite", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->suite = new Suite(['matcher' => new Matcher()]);
         $this->reporters = new Reporters();
     });
 
-    describe("->__construct()", function() {
+    describe("->__construct()", function () {
 
-        it("throws an exception with invalid closure", function() {
-            $closure = function() {
+        it("throws an exception with invalid closure", function () {
+            $closure = function () {
                 $this->suite = new Suite([
                     'closure' => null,
                     'parent'  => new Suite()
@@ -34,23 +34,23 @@ describe("Suite", function() {
 
     });
 
-    context("when inspecting flow", function() {
+    context("when inspecting flow", function () {
 
-        describe("->beforeAll()", function() {
+        describe("->beforeAll()", function () {
 
             $this->nb = 0;
 
-            beforeAll(function() {
+            beforeAll(function () {
                 $this->nb++;
             });
 
-            it("passes if `before` has been executed", function() use (&$nb) {
+            it("passes if `before` has been executed", function () use (&$nb) {
 
                 expect($this->nb)->toBe(1);
 
             });
 
-            it("passes if `before` has not been executed twice", function() use (&$nb) {
+            it("passes if `before` has not been executed twice", function () use (&$nb) {
 
                 expect($this->nb)->toBe(1);
 
@@ -58,29 +58,29 @@ describe("Suite", function() {
 
         });
 
-        describe("->beforeEach()", function() {
+        describe("->beforeEach()", function () {
 
             $this->nb = 0;
 
-            beforeEach(function() {
+            beforeEach(function () {
                 $this->nb++;
             });
 
-            it("passes if `beforeEach` has been executed", function() {
+            it("passes if `beforeEach` has been executed", function () {
 
                 expect($this->nb)->toBe(1);
 
             });
 
-            it("passes if `beforeEach` has been executed twice", function() {
+            it("passes if `beforeEach` has been executed twice", function () {
 
                 expect($this->nb)->toBe(2);
 
             });
 
-            context("with sub scope", function() {
+            context("with sub scope", function () {
 
-                it("passes if `beforeEach` has been executed once more", function() {
+                it("passes if `beforeEach` has been executed once more", function () {
 
                     expect($this->nb)->toBe(3);
 
@@ -88,7 +88,7 @@ describe("Suite", function() {
 
             });
 
-            it("passes if `beforeEach` has been executed once more", function() {
+            it("passes if `beforeEach` has been executed once more", function () {
 
                 expect($this->nb)->toBe(4);
 
@@ -96,15 +96,15 @@ describe("Suite", function() {
 
         });
 
-        describe("->afterAll()", function() {
+        describe("->afterAll()", function () {
 
             $this->nb = 0;
 
-            afterAll(function() {
+            afterAll(function () {
                 $this->nb++;
             });
 
-            it("passes if `after` has not been executed", function() {
+            it("passes if `after` has not been executed", function () {
 
                 expect($this->nb)->toBe(0);
 
@@ -112,29 +112,29 @@ describe("Suite", function() {
 
         });
 
-        describe("->afterEach()", function() {
+        describe("->afterEach()", function () {
 
             $this->nb = 0;
 
-            afterEach(function() {
+            afterEach(function () {
                 $this->nb++;
             });
 
-            it("passes if `afterEach` has not been executed", function() {
+            it("passes if `afterEach` has not been executed", function () {
 
                 expect($this->nb)->toBe(0);
 
             });
 
-            it("passes if `afterEach` has been executed", function() {
+            it("passes if `afterEach` has been executed", function () {
 
                 expect($this->nb)->toBe(1);
 
             });
 
-            context("with sub scope", function() {
+            context("with sub scope", function () {
 
-                it("passes if `afterEach` has been executed once more", function() {
+                it("passes if `afterEach` has been executed once more", function () {
 
                     expect($this->nb)->toBe(2);
 
@@ -142,7 +142,7 @@ describe("Suite", function() {
 
             });
 
-            it("passes if `afterEach` has been executed once more", function() {
+            it("passes if `afterEach` has been executed once more", function () {
 
                 expect($this->nb)->toBe(3);
 
@@ -152,27 +152,11 @@ describe("Suite", function() {
 
     });
 
-    describe("->describe()", function() {
+    describe("->describe()", function () {
 
-        it("creates a sub suite of specs inside the root suite", function() {
+        it("creates a sub suite of specs inside the root suite", function () {
 
-            $suite = $this->suite->describe("->method()", function() {});
-
-            expect($suite->message())->toBe('->method()');
-            expect($suite->parent())->toBe($this->suite);
-
-            $suites = $this->suite->children();
-            expect($suite)->toBe(end($suites));
-
-        });
-
-    });
-
-    describe("->context()", function() {
-
-        it("creates a contextualized suite of specs inside the root suite", function() {
-
-            $suite = $this->suite->context("->method()", function() {});
+            $suite = $this->suite->describe("->method()", function () {});
 
             expect($suite->message())->toBe('->method()');
             expect($suite->parent())->toBe($this->suite);
@@ -184,11 +168,27 @@ describe("Suite", function() {
 
     });
 
-    describe("->it()", function() {
+    describe("->context()", function () {
 
-        it("creates a spec", function() {
+        it("creates a contextualized suite of specs inside the root suite", function () {
 
-            $this->suite->it("does some things", function() {});
+            $suite = $this->suite->context("->method()", function () {});
+
+            expect($suite->message())->toBe('->method()');
+            expect($suite->parent())->toBe($this->suite);
+
+            $suites = $this->suite->children();
+            expect($suite)->toBe(end($suites));
+
+        });
+
+    });
+
+    describe("->it()", function () {
+
+        it("creates a spec", function () {
+
+            $this->suite->it("does some things", function () {});
 
             $specs = $this->suite->children();
             $it = end($specs);
@@ -198,9 +198,9 @@ describe("Suite", function() {
 
         });
 
-        it("creates a spec with a random message if not set", function() {
+        it("creates a spec with a random message if not set", function () {
 
-            $this->suite->it(function() {});
+            $this->suite->it(function () {});
 
             $specs = $this->suite->children();
             $it = end($specs);
@@ -211,14 +211,14 @@ describe("Suite", function() {
 
     });
 
-    describe("->beforeAll()", function() {
+    describe("->beforeAll()", function () {
 
-        it("creates a before callback", function() {
+        it("creates a before callback", function () {
 
             $callbacks = $this->suite->callbacks('beforeAll');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->beforeAll(function() {});
+            $this->suite->beforeAll(function () {});
             $callbacks = $this->suite->callbacks('beforeAll');
             expect($callbacks)->toHaveLength(1);
 
@@ -226,14 +226,14 @@ describe("Suite", function() {
 
     });
 
-    describe("->afterAll()", function() {
+    describe("->afterAll()", function () {
 
-        it("creates a before callback", function() {
+        it("creates a before callback", function () {
 
             $callbacks = $this->suite->callbacks('afterAll');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->afterAll(function() {});
+            $this->suite->afterAll(function () {});
             $callbacks = $this->suite->callbacks('afterAll');
             expect($callbacks)->toHaveLength(1);
 
@@ -241,14 +241,14 @@ describe("Suite", function() {
 
     });
 
-    describe("->beforeEach()", function() {
+    describe("->beforeEach()", function () {
 
-        it("creates a beforeEach callback", function() {
+        it("creates a beforeEach callback", function () {
 
             $callbacks = $this->suite->callbacks('beforeEach');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->beforeEach(function() {});
+            $this->suite->beforeEach(function () {});
             $callbacks = $this->suite->callbacks('beforeEach');
             expect($callbacks)->toHaveLength(1);
 
@@ -256,14 +256,14 @@ describe("Suite", function() {
 
     });
 
-    describe("->afterEach()", function() {
+    describe("->afterEach()", function () {
 
-        it("creates a before callback", function() {
+        it("creates a before callback", function () {
 
             $callbacks = $this->suite->callbacks('afterEach');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->afterEach(function() {});
+            $this->suite->afterEach(function () {});
             $callbacks = $this->suite->callbacks('afterEach');
             expect($callbacks)->toHaveLength(1);
 
@@ -271,27 +271,27 @@ describe("Suite", function() {
 
     });
 
-    describe("->total()/->enabled()", function() {
+    describe("->total()/->enabled()", function () {
 
-        it("return the total/enabled number of specs", function() {
+        it("return the total/enabled number of specs", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->describe("fdescribe", function() {
+                $this->describe("fdescribe", function () {
 
-                    $this->it("it", function() {
+                    $this->it("it", function () {
                         $this->exectuted['it']++;
                     });
 
-                    $this->describe("describe", function() {
+                    $this->describe("describe", function () {
 
-                        $this->fit("fit", function() {
+                        $this->fit("fit", function () {
                             $this->exectuted['fit']++;
                         });
 
-                        $this->it("it", function() {
+                        $this->it("it", function () {
                             $this->exectuted['it']++;
                         });
 
@@ -308,29 +308,29 @@ describe("Suite", function() {
 
     });
 
-    describe("->fdescribe()", function() {
+    describe("->fdescribe()", function () {
 
-        it("executes only the `it` in focused mode", function() {
+        it("executes only the `it` in focused mode", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->describe("->describe()", function() {
+                $this->describe("->describe()", function () {
 
-                    $this->it("it", function() {
+                    $this->it("it", function () {
                         $this->exectuted['it']++;
                     });
 
                 });
 
-                $this->fdescribe("->fdescribe()", function() {
+                $this->fdescribe("->fdescribe()", function () {
 
-                    $this->fit("fit", function() {
+                    $this->fit("fit", function () {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->it("it", function() {
+                    $this->it("it", function () {
                         $this->exectuted['it']++;
                     });
 
@@ -349,19 +349,19 @@ describe("Suite", function() {
 
         });
 
-        it("executes all `it` in focused mode if no one is focused", function() {
+        it("executes all `it` in focused mode if no one is focused", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->fdescribe("->fdescribe()", function() {
+                $this->fdescribe("->fdescribe()", function () {
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
@@ -380,29 +380,29 @@ describe("Suite", function() {
 
         });
 
-        it("executes all `it` in focused mode if no one is focused in a nested way", function() {
+        it("executes all `it` in focused mode if no one is focused in a nested way", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->fdescribe("->fdescribe()", function() {
+                $this->fdescribe("->fdescribe()", function () {
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->describe("->describe()", function() {
+                    $this->describe("->describe()", function () {
 
-                        $this->it("assumes fit due to the parent", function() {
+                        $this->it("assumes fit due to the parent", function () {
                             $this->exectuted['fit']++;
                         });
 
-                        $this->it("assumes fit due to the parent", function() {
+                        $this->it("assumes fit due to the parent", function () {
                             $this->exectuted['fit']++;
                         });
 
@@ -425,21 +425,21 @@ describe("Suite", function() {
 
     });
 
-    describe("->fcontext()", function() {
+    describe("->fcontext()", function () {
 
-        it("executes only the `it` in focused mode", function() {
+        it("executes only the `it` in focused mode", function () {
 
-            $context = $this->suite->context("", function() {
+            $context = $this->suite->context("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->fcontext("->fcontext()", function() {
+                $this->fcontext("->fcontext()", function () {
 
-                    $this->fit("assumes fit due to the parent", function() {
+                    $this->fit("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['it']++;
                     });
 
@@ -458,19 +458,19 @@ describe("Suite", function() {
 
         });
 
-        it("executes all `it` in focused mode if no one is focused", function() {
+        it("executes all `it` in focused mode if no one is focused", function () {
 
-            $context = $this->suite->context("", function() {
+            $context = $this->suite->context("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->fcontext("->fcontext()", function() {
+                $this->fcontext("->fcontext()", function () {
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
@@ -489,29 +489,29 @@ describe("Suite", function() {
 
         });
 
-        it("executes all `it` in focused mode if no one is focused in a nested way", function() {
+        it("executes all `it` in focused mode if no one is focused in a nested way", function () {
 
-            $context = $this->suite->context("", function() {
+            $context = $this->suite->context("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->fcontext("->fcontext()", function() {
+                $this->fcontext("->fcontext()", function () {
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->it("assumes fit due to the parent", function() {
+                    $this->it("assumes fit due to the parent", function () {
                         $this->exectuted['fit']++;
                     });
 
-                    $this->context("->context()", function() {
+                    $this->context("->context()", function () {
 
-                        $this->it("assumes fit due to the parent", function() {
+                        $this->it("assumes fit due to the parent", function () {
                             $this->exectuted['fit']++;
                         });
 
-                        $this->it("assumes fit due to the parent", function() {
+                        $this->it("assumes fit due to the parent", function () {
                             $this->exectuted['fit']++;
                         });
 
@@ -534,27 +534,27 @@ describe("Suite", function() {
 
     });
 
-    describe("->fit()", function() {
+    describe("->fit()", function () {
 
-        it("executes only the focused `it`", function() {
+        it("executes only the focused `it`", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->fit("an fit", function() {
+                $this->fit("an fit", function () {
                     $this->exectuted['fit']++;
                 });
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->fit("an fit", function() {
+                $this->fit("an fit", function () {
                     $this->exectuted['fit']++;
                 });
 
@@ -571,21 +571,21 @@ describe("Suite", function() {
 
         });
 
-        it("propagates the exclusivity up to parents", function() {
+        it("propagates the exclusivity up to parents", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->fdescribe("fdescribe", function() {
+                $this->fdescribe("fdescribe", function () {
 
-                    $this->describe("describe", function() {
+                    $this->describe("describe", function () {
 
-                        $this->it("it", function() {
+                        $this->it("it", function () {
                             $this->exectuted['it']++;
                         });
 
-                        $this->fit("fit", function() {
+                        $this->fit("fit", function () {
                             $this->exectuted['fit']++;
                         });
 
@@ -606,25 +606,25 @@ describe("Suite", function() {
 
         });
 
-        it("propagates the exclusivity up to parents", function() {
+        it("propagates the exclusivity up to parents", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->describe("fdescribe", function() {
+                $this->describe("fdescribe", function () {
 
-                    $this->it("it", function() {
+                    $this->it("it", function () {
                         $this->exectuted['it']++;
                     });
 
-                    $this->describe("describe", function() {
+                    $this->describe("describe", function () {
 
-                        $this->fit("fit", function() {
+                        $this->fit("fit", function () {
                             $this->exectuted['fit']++;
                         });
 
-                        $this->it("it", function() {
+                        $this->it("it", function () {
                             $this->exectuted['it']++;
                         });
 
@@ -647,27 +647,27 @@ describe("Suite", function() {
 
     });
 
-    describe("->focused()", function() {
+    describe("->focused()", function () {
 
-        it("returns the references of runned focused specs", function() {
+        it("returns the references of runned focused specs", function () {
 
-            $describe = $this->suite->describe("focused suite", function() {
+            $describe = $this->suite->describe("focused suite", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->fit("an fit", function() {
+                $this->fit("an fit", function () {
                     $this->exectuted['fit']++;
                 });
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->fit("an fit", function() {
+                $this->fit("an fit", function () {
                     $this->exectuted['fit']++;
                 });
 
@@ -681,25 +681,25 @@ describe("Suite", function() {
 
     });
 
-    describe("->xdecribe()", function() {
+    describe("->xdecribe()", function () {
 
-        it("propagates the exclusion down to children", function() {
+        it("propagates the exclusion down to children", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0];
 
-                $this->it("it1", function() {
+                $this->it("it1", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->xdescribe("xdescribe", function() {
+                $this->xdescribe("xdescribe", function () {
 
-                    $this->it("it2", function() {
+                    $this->it("it2", function () {
                         $this->exectuted['it']++;
                     });
 
-                    $this->it("it3", function() {
+                    $this->it("it3", function () {
                         $this->exectuted['it']++;
                     });
 
@@ -719,25 +719,25 @@ describe("Suite", function() {
 
     });
 
-    describe("->xcontext()", function() {
+    describe("->xcontext()", function () {
 
-        it("propagates the exclusion down to children", function() {
+        it("propagates the exclusion down to children", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0];
 
-                $this->it("it1", function() {
+                $this->it("it1", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->xcontext("xcontext", function() {
+                $this->xcontext("xcontext", function () {
 
-                    $this->it("it2", function() {
+                    $this->it("it2", function () {
                         $this->exectuted['it']++;
                     });
 
-                    $this->it("it3", function() {
+                    $this->it("it3", function () {
                         $this->exectuted['it']++;
                     });
 
@@ -757,23 +757,23 @@ describe("Suite", function() {
 
     });
 
-    describe("->xit()", function() {
+    describe("->xit()", function () {
 
-        it("skips excluded `it`", function() {
+        it("skips excluded `it`", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->exectuted = ['it' => 0];
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->xit("an xit", function() {
+                $this->xit("an xit", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
@@ -792,23 +792,23 @@ describe("Suite", function() {
 
     });
 
-    describe("skipIf", function() {
+    describe("skipIf", function () {
 
-        it("skips specs in a before", function() {
+        it("skips specs in a before", function () {
 
-            $describe = $this->suite->describe("skip suite", function() {
+            $describe = $this->suite->describe("skip suite", function () {
 
                 $this->exectuted = ['it' => 0];
 
-                beforeAll(function() {
+                beforeAll(function () {
                     skipIf(true);
                 });
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
@@ -834,21 +834,21 @@ describe("Suite", function() {
 
         });
 
-        it("skips specs in a beforeEach", function() {
+        it("skips specs in a beforeEach", function () {
 
-            $describe = $this->suite->describe("skip suite", function() {
+            $describe = $this->suite->describe("skip suite", function () {
 
                 $this->exectuted = ['it' => 0];
 
-                beforeEach(function() {
+                beforeEach(function () {
                     skipIf(true);
                 });
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->it("an it", function() {
+                $this->it("an it", function () {
                     $this->exectuted['it']++;
                 });
 
@@ -875,9 +875,9 @@ describe("Suite", function() {
 
     });
 
-    describe("::hash()", function() {
+    describe("::hash()", function () {
 
-        it("creates an hash from objects", function() {
+        it("creates an hash from objects", function () {
 
             $instance = new stdClass();
 
@@ -890,7 +890,7 @@ describe("Suite", function() {
 
         });
 
-        it("creates an hash from class names", function() {
+        it("creates an hash from class names", function () {
 
             $class = 'hello\world\class';
             $hash = Suite::hash($class);
@@ -898,9 +898,9 @@ describe("Suite", function() {
 
         });
 
-        it("Throws an exception if values are not string or objects", function() {
+        it("Throws an exception if values are not string or objects", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $hash = Suite::hash([]);
             };
 
@@ -910,9 +910,9 @@ describe("Suite", function() {
 
     });
 
-    describe("::register()", function() {
+    describe("::register()", function () {
 
-        it("registers an hash", function() {
+        it("registers an hash", function () {
 
             $instance = new stdClass();
 
@@ -925,9 +925,9 @@ describe("Suite", function() {
 
     });
 
-    describe("::register()", function() {
+    describe("::register()", function () {
 
-        it("return `false` if the hash is not registered", function() {
+        it("return `false` if the hash is not registered", function () {
 
             $instance = new stdClass();
 
@@ -939,9 +939,9 @@ describe("Suite", function() {
 
     });
 
-    describe("::reset()", function() {
+    describe("::reset()", function () {
 
-        it("clears registered hashes", function() {
+        it("clears registered hashes", function () {
 
             $instance = new stdClass();
 
@@ -958,12 +958,12 @@ describe("Suite", function() {
 
     });
 
-    describe("->status()", function() {
+    describe("->status()", function () {
 
-        it("returns `0` if a specs suite passes", function() {
+        it("returns `0` if a specs suite passes", function () {
 
-            $describe = $this->suite->describe("", function() {
-                $this->it("passes", function() {
+            $describe = $this->suite->describe("", function () {
+                $this->it("passes", function () {
                     $this->expect(true)->toBe(true);
                 });
             });
@@ -973,10 +973,10 @@ describe("Suite", function() {
 
         });
 
-        it("returns `-1` if a specs suite fails", function() {
+        it("returns `-1` if a specs suite fails", function () {
 
-            $describe = $this->suite->describe("", function() {
-                $this->it("fails", function() {
+            $describe = $this->suite->describe("", function () {
+                $this->it("fails", function () {
                     $this->expect(true)->toBe(false);
                 });
             });
@@ -986,10 +986,10 @@ describe("Suite", function() {
 
         });
 
-        it("forces a specified return status", function() {
+        it("forces a specified return status", function () {
 
-            $describe = $this->suite->describe("", function() {
-                $this->it("passes", function() {
+            $describe = $this->suite->describe("", function () {
+                $this->it("passes", function () {
                     $this->expect(true)->toBe(true);
                 });
             });
@@ -1004,13 +1004,13 @@ describe("Suite", function() {
 
     });
 
-    describe("->run()", function() {
+    describe("->run()", function () {
 
-        it("run the suite", function() {
+        it("run the suite", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
-                $this->it("runs a spec", function() {
+                $this->it("runs a spec", function () {
                     $this->expect(true)->toBe(true);
                 });
 
@@ -1022,20 +1022,20 @@ describe("Suite", function() {
 
         });
 
-        it("calls `afterEach` callbacks if an exception occurs during callbacks", function() {
+        it("calls `afterEach` callbacks if an exception occurs during callbacks", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
                 $this->inAfterEach = 0;
 
-                $this->beforeEach(function() {
+                $this->beforeEach(function () {
                     throw new Exception('Breaking the flow should execute afterEach anyway.');
                 });
 
-                $this->it("does nothing", function() {
+                $this->it("does nothing", function () {
                 });
 
-                $this->afterEach(function() {
+                $this->afterEach(function () {
                     $this->inAfterEach++;
                 });
 
@@ -1057,14 +1057,14 @@ describe("Suite", function() {
 
         });
 
-        it("logs error if an exception is occuring during an `afterEach` callbacks", function() {
+        it("logs error if an exception is occuring during an `afterEach` callbacks", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
-                $this->it("does nothing", function() {
+                $this->it("does nothing", function () {
                 });
 
-                $this->afterEach(function() {
+                $this->afterEach(function () {
                     throw new Exception('Errors occured in afterEach should be logged anyway.');
                 });
 
@@ -1085,13 +1085,13 @@ describe("Suite", function() {
 
         });
 
-        it("logs `MissingImplementationException` when thrown", function() {
+        it("logs `MissingImplementationException` when thrown", function () {
 
             $missing = new MissingImplementationException();
 
-            $describe = $this->suite->describe("", function() use ($missing) {
+            $describe = $this->suite->describe("", function () use ($missing) {
 
-                $this->it("throws an `MissingImplementationException`", function() use ($missing) {
+                $this->it("throws an `MissingImplementationException`", function () use ($missing) {
                     throw $missing;
                 });
 
@@ -1112,11 +1112,11 @@ describe("Suite", function() {
 
         });
 
-        it("throws and exception if attempts to call the `run()` function inside a scope", function() {
+        it("throws and exception if attempts to call the `run()` function inside a scope", function () {
 
             skipIf(PHP_MAJOR_VERSION < 7);
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
                 $this->run();
             });
             $this->suite->run();
@@ -1134,19 +1134,19 @@ describe("Suite", function() {
 
         });
 
-        it("fails fast", function() {
+        it("fails fast", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
-                $this->it("fails1", function() {
+                $this->it("fails1", function () {
                     $this->expect(true)->toBe(false);
                 });
 
-                $this->it("fails2", function() {
+                $this->it("fails2", function () {
                     $this->expect(true)->toBe(false);
                 });
 
-                $this->it("fails3", function() {
+                $this->it("fails3", function () {
                     $this->expect(true)->toBe(false);
                 });
 
@@ -1163,19 +1163,19 @@ describe("Suite", function() {
 
         });
 
-        it("fails after two failures", function() {
+        it("fails after two failures", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
-                $this->it("fails1", function() {
+                $this->it("fails1", function () {
                     $this->expect(true)->toBe(false);
                 });
 
-                $this->it("fails2", function() {
+                $this->it("fails2", function () {
                     $this->expect(true)->toBe(false);
                 });
 
-                $this->it("fails3", function() {
+                $this->it("fails3", function () {
                     $this->expect(true)->toBe(false);
                 });
 
@@ -1194,34 +1194,34 @@ describe("Suite", function() {
 
     });
 
-    describe("->_errorHandler()", function() {
+    describe("->_errorHandler()", function () {
 
-        it("converts E_NOTICE error to an exception", function() {
+        it("converts E_NOTICE error to an exception", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $a = $b;
             };
             expect($closure)->toThrow(new PhpErrorException("`E_NOTICE` Undefined variable: b"));
 
         });
 
-        it("converts E_WARNING error to an exception", function() {
+        it("converts E_WARNING error to an exception", function () {
 
-            $closure = function() {
+            $closure = function () {
                 $a = array_merge();
             };
             expect($closure)->toThrow(new PhpErrorException("`E_WARNING` array_merge() expects at least 1 parameter, 0 given"));
 
         });
 
-        it("uses default error reporting settings", function() {
+        it("uses default error reporting settings", function () {
 
-            $describe = $this->suite->describe("", function() {
+            $describe = $this->suite->describe("", function () {
 
-                $this->describe("->_errorHandler()", function() {
+                $this->describe("->_errorHandler()", function () {
 
-                    $this->it("ignores E_NOTICE", function() {
-                        $closure = function() {
+                    $this->it("ignores E_NOTICE", function () {
+                        $closure = function () {
                             $a = $b;
                         };
                         $this->expect($closure)->not->toThrow();
@@ -1241,11 +1241,11 @@ describe("Suite", function() {
 
     });
 
-    describe("->reporters()", function() {
+    describe("->reporters()", function () {
 
-        it("returns the reporters", function() {
+        it("returns the reporters", function () {
 
-            $describe = $this->suite->describe("", function() {});
+            $describe = $this->suite->describe("", function () {});
 
             $reporters = Double::instance();
             $this->suite->run(['reporters' => $reporters]);
@@ -1256,11 +1256,11 @@ describe("Suite", function() {
 
     });
 
-    describe("->stop()", function() {
+    describe("->stop()", function () {
 
-        it("sends the stop event", function() {
+        it("sends the stop event", function () {
 
-            $describe = $this->suite->describe("", function() {});
+            $describe = $this->suite->describe("", function () {});
 
             $reporters = Double::instance();
 

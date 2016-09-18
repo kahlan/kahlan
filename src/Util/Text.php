@@ -82,7 +82,7 @@ class Text
         $begin = $escape ? '(?<!' . preg_quote($escape) . ')' . preg_quote($before) : preg_quote($before);
         $end = preg_quote($options['after']);
 
-        $callback = function($matches) use ($replacement) {
+        $callback = function ($matches) use ($replacement) {
             if (isset($matches[2]) && isset($matches[3]) && trim($matches[2]) === trim($matches[3])) {
                 if (trim($matches[2]) || ($matches[2] && $matches[3])) {
                     return $matches[2] . $replacement;
@@ -162,7 +162,7 @@ class Text
 
         $string = "[\n";
 
-        foreach($datas as $key => $value) {
+        foreach ($datas as $key => $value) {
             if ($comma) {
                 $string .= ",\n";
             }
@@ -186,7 +186,8 @@ class Text
      * @param  array  $value The object.
      * @return string        The dumped string.
      */
-    protected static function _objectToString($value, $options) {
+    protected static function _objectToString($value, $options)
+    {
         if ($value instanceof Exception) {
             $msg = '`' . get_class($value) .'` Code(' . $value->getCode() . ') with ';
             $message = $value->getMessage();
@@ -213,7 +214,8 @@ class Text
      * @param  mixed  $value The scalar data to dump
      * @return string        The dumped string.
      */
-    public static function dump($value, $quote = '"') {
+    public static function dump($value, $quote = '"')
+    {
         if (is_bool($value)) {
             return $value ? 'true' : 'false';
         }
@@ -255,5 +257,4 @@ class Text
         }
         return $unescaped;
     }
-
 }

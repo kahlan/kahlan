@@ -4,17 +4,17 @@ namespace Kahlan\Spec\Suite\Matcher;
 use stdClass;
 use Kahlan\Matcher\ToBeAnInstanceOf;
 
-describe("toBeAnInstanceOf", function() {
+describe("toBeAnInstanceOf", function () {
 
-    describe("::match()", function() {
+    describe("::match()", function () {
 
-        it("passes if an instance of stdClass is an object", function() {
+        it("passes if an instance of stdClass is an object", function () {
 
             expect(new stdClass())->toBeAnInstanceOf('stdClass');
 
         });
 
-        it("passes if an instance of stdClass is not a Exception", function() {
+        it("passes if an instance of stdClass is not a Exception", function () {
 
             expect(new stdClass())->not->toBeAnInstanceOf('Exception');
 
@@ -23,9 +23,9 @@ describe("toBeAnInstanceOf", function() {
     });
 
 
-    describe("::description()", function() {
+    describe("::description()", function () {
 
-        it("returns the description message", function() {
+        it("returns the description message", function () {
 
             $actual = ToBeAnInstanceOf::description();
 

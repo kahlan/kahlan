@@ -68,5 +68,4 @@ class Pointcut
 
         return $method ?: false;
     }
-
 }

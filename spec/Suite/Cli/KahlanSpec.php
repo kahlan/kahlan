@@ -9,12 +9,12 @@ use Kahlan\Matcher;
 use Kahlan\Cli\Kahlan;
 use Kahlan\Plugin\Quit;
 
-describe("Kahlan", function() {
+describe("Kahlan", function () {
 
     /**
      * Save current & reinitialize the Interceptor class.
      */
-    beforeAll(function() {
+    beforeAll(function () {
         $this->previous = Interceptor::instance();
         Interceptor::unpatch();
     });
@@ -22,11 +22,11 @@ describe("Kahlan", function() {
     /**
      * Restore Interceptor class.
      */
-    afterAll(function() {
+    afterAll(function () {
         Interceptor::load($this->previous);
     });
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->specs = new Kahlan([
             'autoloader' => Interceptor::composer()[0],
             'suite' => new Suite([
@@ -35,9 +35,9 @@ describe("Kahlan", function() {
         ]);
     });
 
-    describe("->loadConfig()", function() {
+    describe("->loadConfig()", function () {
 
-        it("sets passed arguments to specs", function() {
+        it("sets passed arguments to specs", function () {
 
             $argv = [
                 '--src=src',
@@ -86,7 +86,7 @@ describe("Kahlan", function() {
 
         });
 
-        it("loads the config file", function() {
+        it("loads the config file", function () {
 
             $this->specs->loadConfig([
                 '--spec=spec/Fixture/Kahlan/Spec/PassTest.php',
@@ -102,7 +102,7 @@ describe("Kahlan", function() {
 
         });
 
-        it("echoes version if --version if provided", function() {
+        it("echoes version if --version if provided", function () {
 
             $version = Kahlan::VERSION;
 
@@ -122,10 +122,11 @@ For additional help you must use \033[0;32;49m--help\033[0m
 
 EOD;
 
-            $closure = function() {
+            $closure = function () {
                 try {
                     $this->specs->loadConfig(['--version']);
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             };
 
             Quit::disable();
@@ -133,7 +134,7 @@ EOD;
 
         });
 
-        it("echoes the help if --help is provided", function() {
+        it("echoes the help if --help is provided", function () {
 
             $help = <<<EOD
             _     _
@@ -198,11 +199,10 @@ To add additionnal values, just repeat the same option many times in the command
 
 EOD;
 
-            $closure = function() {
+            $closure = function () {
                 try {
                     $this->specs->loadConfig(['--help']);
                 } catch (Exception $e) {
-
                 }
             };
 
@@ -211,7 +211,7 @@ EOD;
 
         });
 
-        it("doesn't display header with --no-header", function() {
+        it("doesn't display header with --no-header", function () {
 
             $version = Kahlan::VERSION;
 
@@ -223,10 +223,11 @@ For additional help you must use \033[0;32;49m--help\033[0m
 
 EOD;
 
-            $closure = function() {
+            $closure = function () {
                 try {
                     $this->specs->loadConfig(['--version', '--no-header']);
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             };
 
             Quit::disable();
@@ -234,7 +235,7 @@ EOD;
 
         });
 
-        it("isolates `kahlan-config.php` execution in a dedicated scope", function() {
+        it("isolates `kahlan-config.php` execution in a dedicated scope", function () {
 
             $version = Kahlan::VERSION;
 
@@ -246,14 +247,15 @@ For additional help you must use \033[0;32;49m--help\033[0m
 
 EOD;
 
-            $closure = function() {
+            $closure = function () {
                 try {
                     $this->specs->loadConfig([
                         '--config=spec/Fixture/Kahlan/kahlan-config.php',
                         '--version',
                         '--no-header'
                     ]);
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             };
 
             Quit::disable();
@@ -261,7 +263,7 @@ EOD;
 
         });
 
-        it("doesn't filter empty string from include & exclude", function() {
+        it("doesn't filter empty string from include & exclude", function () {
 
             $argv = [
                 '--include=',
@@ -276,15 +278,15 @@ EOD;
 
     });
 
-    describe("->run()", function() {
+    describe("->run()", function () {
 
-        it("defines the KAHLAN_VERSION constant", function() {
+        it("defines the KAHLAN_VERSION constant", function () {
 
             expect(KAHLAN_VERSION)->toBe(Kahlan::VERSION);
 
         });
 
-        it("runs a spec which pass", function() {
+        it("runs a spec which pass", function () {
 
             $this->specs->loadConfig([
                 '--spec=spec/Fixture/Kahlan/Spec/PassTest.php',
@@ -299,7 +301,7 @@ EOD;
 
         });
 
-        it("runs a spec which fail", function() {
+        it("runs a spec which fail", function () {
 
             $this->specs->loadConfig([
                 '--spec=spec/Fixture/Kahlan/Spec/FailTest.php',
@@ -314,7 +316,7 @@ EOD;
 
         });
 
-        it("runs filters in the correct order", function() {
+        it("runs filters in the correct order", function () {
 
             $this->specs->loadConfig([
                 '--spec=spec/Fixture/Kahlan/Spec/PassTest.php',
@@ -324,41 +326,61 @@ EOD;
 
             $order = [];
 
-            Filter::register('spec.bootstrap', function($chain) use (&$order) { $order[] = 'bootstrap';});
+            Filter::register('spec.bootstrap', function ($chain) use (&$order) {
+                $order[] = 'bootstrap';
+            });
             Filter::apply($this->specs, 'bootstrap', 'spec.bootstrap');
 
             $previous = $this->previous;
-            Filter::register('spec.interceptor', function($chain) use (&$order, $previous) {
+            Filter::register('spec.interceptor', function ($chain) use (&$order, $previous) {
                 Interceptor::load($previous);
                 $order[] = 'interceptor';
             });
             Filter::apply($this->specs, 'interceptor', 'spec.interceptor');
 
-            Filter::register('spec.namespaces', function($chain) use (&$order) { $order[] = 'namespaces';});
+            Filter::register('spec.namespaces', function ($chain) use (&$order) {
+                $order[] = 'namespaces';
+            });
             Filter::apply($this->specs, 'namespaces', 'spec.namespaces');
 
-            Filter::register('spec.patchers', function($chain) use (&$order) { $order[] = 'patchers';});
+            Filter::register('spec.patchers', function ($chain) use (&$order) {
+                $order[] = 'patchers';
+            });
             Filter::apply($this->specs, 'patchers', 'spec.patchers');
 
-            Filter::register('spec.load', function($chain) use (&$order) { $order[] = 'load';});
+            Filter::register('spec.load', function ($chain) use (&$order) {
+                $order[] = 'load';
+            });
             Filter::apply($this->specs, 'load', 'spec.load');
 
-            Filter::register('spec.reporters', function($chain) use (&$order) { $order[] = 'reporters';});
+            Filter::register('spec.reporters', function ($chain) use (&$order) {
+                $order[] = 'reporters';
+            });
             Filter::apply($this->specs, 'reporters', 'spec.reporters');
 
-            Filter::register('spec.matchers', function($chain) use (&$order) { $order[] = 'matchers';});
+            Filter::register('spec.matchers', function ($chain) use (&$order) {
+                $order[] = 'matchers';
+            });
             Filter::apply($this->specs, 'matchers', 'spec.matchers');
 
-            Filter::register('spec.run', function($chain) use (&$order) { $order[] = 'run';});
+            Filter::register('spec.run', function ($chain) use (&$order) {
+                $order[] = 'run';
+            });
             Filter::apply($this->specs, 'run', 'spec.run');
 
-            Filter::register('spec.reporting', function($chain) use (&$order) { $order[] = 'reporting';});
+            Filter::register('spec.reporting', function ($chain) use (&$order) {
+                $order[] = 'reporting';
+            });
             Filter::apply($this->specs, 'reporting', 'spec.reporting');
 
-            Filter::register('spec.stop', function($chain) use (&$order) { $order[] = 'stop';});
+            Filter::register('spec.stop', function ($chain) use (&$order) {
+                $order[] = 'stop';
+            });
             Filter::apply($this->specs, 'stop', 'spec.stop');
 
-            Filter::register('spec.quit', function($chain) use (&$order) { $order[] = 'quit';});
+            Filter::register('spec.quit', function ($chain) use (&$order) {
+                $order[] = 'quit';
+            });
             Filter::apply($this->specs, 'quit', 'spec.quit');
 
             $this->specs->run();

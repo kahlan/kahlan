@@ -36,5 +36,4 @@ class ToMatchEcho extends ToEcho
 
         static::$_description = compact('description', 'data');
     }
-
 }

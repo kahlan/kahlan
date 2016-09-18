@@ -45,7 +45,8 @@ class Calls
      * @param object|string $reference An instance or a fully-namespaced class name.
      * @param string $call             The method name.
      */
-    public static function _call($reference, $call) {
+    public static function _call($reference, $call)
+    {
         $static = false;
         if (preg_match('/^::.*/', $call['name'])) {
             $call['name'] = substr($call['name'], 2);

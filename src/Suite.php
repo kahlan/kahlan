@@ -305,7 +305,7 @@ class Suite extends Scope
         static::$_instances[] = $this;
         $this->_errorHandler(true, $options);
 
-        $suite = function() {
+        $suite = function () {
             $this->_suiteStart();
             foreach ($this->_children as $child) {
                 if ($this->failfast()) {
@@ -561,16 +561,16 @@ class Suite extends Scope
                     $excluded += $result['excluded'];
                 }
             } else {
-                switch($child->type()) {
+                switch ($child->type()) {
                     case 'exclude':
                         $excluded++;
-                    break;
+                        break;
                     case 'focus':
                         $focused++;
-                    break;
+                        break;
                     default:
                         $normal++;
-                    break;
+                        break;
                 }
             }
         }
@@ -705,5 +705,4 @@ class Suite extends Scope
     {
         static::$_registered = [];
     }
-
 }

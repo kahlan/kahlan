@@ -8,17 +8,17 @@ use Kahlan\Specification;
 use Kahlan\Matcher;
 use Kahlan\Plugin\Double;
 
-describe("Specification", function() {
+describe("Specification", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
 
-        $this->spec = new Specification(['closure' => function() {}]);
+        $this->spec = new Specification(['closure' => function () {}]);
 
     });
 
-    describe("->__construct()", function() {
+    describe("->__construct()", function () {
 
-        it("sets spec as pending with empty closure", function() {
+        it("sets spec as pending with empty closure", function () {
 
             $this->spec = new Specification(['closure' => null]);
 
@@ -31,9 +31,9 @@ describe("Specification", function() {
 
     });
 
-    describe("->expect()", function() {
+    describe("->expect()", function () {
 
-        it("returns the matcher instance", function() {
+        it("returns the matcher instance", function () {
 
             $matcher = $this->spec->expect('actual');
             expect($matcher)->toBeAnInstanceOf('Kahlan\Expectation');
@@ -42,13 +42,13 @@ describe("Specification", function() {
 
     });
 
-    describe("->waitsFor()", function() {
+    describe("->waitsFor()", function () {
 
-        it("allows non closure", function() {
+        it("allows non closure", function () {
 
             $this->spec = new Specification([
                 'message' => 'allows non closure',
-                'closure' => function() {
+                'closure' => function () {
                     $this->waitsFor('something')->toBe('something');
                 }
             ]);
@@ -57,13 +57,13 @@ describe("Specification", function() {
 
         });
 
-        it("returns the matcher instance setted with the correct timeout", function() {
+        it("returns the matcher instance setted with the correct timeout", function () {
 
-            $matcher = $this->spec->waitsFor(function(){}, 10);
+            $matcher = $this->spec->waitsFor(function (){}, 10);
             expect($matcher)->toBeAnInstanceOf('Kahlan\Expectation');
             expect($matcher->timeout())->toBe(10);
 
-            $matcher = $this->spec->waitsFor(function(){});
+            $matcher = $this->spec->waitsFor(function (){});
             expect($matcher)->toBeAnInstanceOf('Kahlan\Expectation');
             expect($matcher->timeout())->toBe(0);
 
@@ -71,12 +71,12 @@ describe("Specification", function() {
 
     });
 
-    describe("->passed()", function() {
+    describe("->passed()", function () {
 
-        it("returns the closure return value", function() {
+        it("returns the closure return value", function () {
 
             $this->spec = new Specification([
-                'closure' => function() {
+                'closure' => function () {
                     return 'hello world';
                 }
             ]);
@@ -87,10 +87,10 @@ describe("Specification", function() {
 
         });
 
-        it("fails when an expectation is not verified", function() {
+        it("fails when an expectation is not verified", function () {
 
             $this->spec = new Specification([
-                'closure' => function() {
+                'closure' => function () {
                     $this->expect(true)->toBe(true);
                     $this->expect(true);
                 }
@@ -100,13 +100,13 @@ describe("Specification", function() {
 
         });
 
-        context("when the specs passed", function() {
+        context("when the specs passed", function () {
 
-            it("logs a pass", function() {
+            it("logs a pass", function () {
 
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
-                    'closure' => function() {
+                    'closure' => function () {
                         $this->expect(true)->toBe(true);
                     }
                 ]);
@@ -131,11 +131,11 @@ describe("Specification", function() {
 
             });
 
-            it("logs a pass with a deferred matcher", function() {
+            it("logs a pass with a deferred matcher", function () {
 
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
-                    'closure' => function() {
+                    'closure' => function () {
                         $stub = Double::instance();
                         $this->expect($stub)->toReceive('methodName');
                         $stub->methodName();
@@ -164,10 +164,10 @@ describe("Specification", function() {
 
             });
 
-            it("logs the not attribute", function() {
+            it("logs the not attribute", function () {
 
                 $this->spec = new Specification([
-                    'closure' => function() {
+                    'closure' => function () {
                         $this->expect(true)->not->toBe(false);
                     }
                 ]);
@@ -184,13 +184,13 @@ describe("Specification", function() {
 
             });
 
-            it("logs deferred matcher backtrace", function() {
+            it("logs deferred matcher backtrace", function () {
 
                 $root = new Suite();
                 $root->backtraceFocus(['*Spec.php', '*.spec.php']);
                 $this->spec = new Specification([
                     'parent'  => $root,
-                    'closure' => function() {
+                    'closure' => function () {
                         $this->expect(Double::instance())->not->toReceive('helloWorld');
                     }
                 ]);
@@ -208,10 +208,10 @@ describe("Specification", function() {
 
             });
 
-            it("logs the not attribute with a deferred matcher", function() {
+            it("logs the not attribute with a deferred matcher", function () {
 
                 $this->spec = new Specification([
-                    'closure' => function() {
+                    'closure' => function () {
                         $stub = Double::instance();
                         $this->expect($stub)->not->toReceive('methodName');
                     }
@@ -240,13 +240,13 @@ describe("Specification", function() {
 
         });
 
-        context("when the specs failed", function() {
+        context("when the specs failed", function () {
 
-            it("logs a fail", function() {
+            it("logs a fail", function () {
 
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
-                    'closure' => function() {
+                    'closure' => function () {
                         $this->expect(true)->toBe(false);
                     }
                 ]);
@@ -270,11 +270,11 @@ describe("Specification", function() {
 
             });
 
-            it("logs a fail with a deferred matcher", function() {
+            it("logs a fail with a deferred matcher", function () {
 
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
-                    'closure' => function() {
+                    'closure' => function () {
                         $stub = Double::instance();
                         $this->expect($stub)->toReceive('methodName');
                     }
@@ -301,10 +301,10 @@ describe("Specification", function() {
 
             });
 
-            it("logs the not attribute", function() {
+            it("logs the not attribute", function () {
 
                 $this->spec = new Specification([
-                    'closure' => function() {
+                    'closure' => function () {
                         $this->expect(true)->not->toBe(true);
                     }
                 ]);
@@ -321,10 +321,10 @@ describe("Specification", function() {
 
             });
 
-            it("logs the not attribute with a deferred matcher", function() {
+            it("logs the not attribute with a deferred matcher", function () {
 
                 $this->spec = new Specification([
-                    'closure' => function() {
+                    'closure' => function () {
                         $stub = Double::instance();
                         $this->expect($stub)->not->toReceive('methodName');
                         $stub->methodName();
@@ -344,12 +344,12 @@ describe("Specification", function() {
 
             });
 
-            it("logs sub spec fails", function() {
+            it("logs sub spec fails", function () {
 
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
-                    'closure' => function() {
-                        $this->waitsFor(function(){
+                    'closure' => function () {
+                        $this->waitsFor(function () {
                             $this->expect(true)->toBe(false);
                         });
                     }
@@ -375,12 +375,12 @@ describe("Specification", function() {
 
             });
 
-            it("logs the first failing spec only", function() {
+            it("logs the first failing spec only", function () {
 
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
-                    'closure' => function() {
-                        $this->waitsFor(function(){
+                    'closure' => function () {
+                        $this->waitsFor(function () {
                             $this->expect(true)->toBe(false);
                             return true;
                         })->toBe(false);

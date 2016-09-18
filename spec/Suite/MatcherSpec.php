@@ -9,13 +9,13 @@ use Kahlan\Specification;
 use Kahlan\Matcher;
 use Kahlan\Plugin\Double;
 
-describe("Matcher", function() {
+describe("Matcher", function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
         $this->matchers = Matcher::get();
     });
 
-    afterEach(function() {
+    afterEach(function () {
         Matcher::reset();
         foreach ($this->matchers as $name => $value) {
             foreach ($value as $for => $class) {
@@ -24,9 +24,9 @@ describe("Matcher", function() {
         }
     });
 
-    describe("::register()", function() {
+    describe("::register()", function () {
 
-        it("registers a matcher", function() {
+        it("registers a matcher", function () {
 
             Matcher::register('toBeOrNotToBe', Double::classname(['extends' => 'Kahlan\Matcher\ToBe']));
             expect(Matcher::exists('toBeOrNotToBe'))->toBe(true);
@@ -36,7 +36,7 @@ describe("Matcher", function() {
 
         });
 
-        it("registers a matcher for a specific class", function() {
+        it("registers a matcher for a specific class", function () {
 
             Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'stdClass');
             expect(Matcher::exists('toEqualCustom', 'stdClass'))->toBe(true);
@@ -47,7 +47,7 @@ describe("Matcher", function() {
 
         });
 
-        it("makes registered matchers for a specific class available for sub classes", function() {
+        it("makes registered matchers for a specific class available for sub classes", function () {
 
             Matcher::register('toEqualCustom', Double::classname(['extends' => 'Kahlan\Matcher\ToEqual']), 'SplHeap');
             expect(Matcher::exists('toEqualCustom', 'SplHeap'))->toBe(true);
@@ -59,9 +59,9 @@ describe("Matcher", function() {
 
     });
 
-    describe("::get()", function() {
+    describe("::get()", function () {
 
-        it("returns all registered matchers", function() {
+        it("returns all registered matchers", function () {
 
             Matcher::reset();
             Matcher::register('toBe', 'Kahlan\Matcher\ToBe');
@@ -72,13 +72,13 @@ describe("Matcher", function() {
 
         });
 
-        it("returns a registered matcher", function() {
+        it("returns a registered matcher", function () {
 
             expect(Matcher::get('toBe'))->toBe('Kahlan\Matcher\ToBe');
 
         });
 
-        it("returns all registered matchers for a specific matcher", function() {
+        it("returns all registered matchers for a specific matcher", function () {
 
             Matcher::register('toBe', 'Kahlan\Matcher\ToEqual', 'stdClass');
 
@@ -89,13 +89,13 @@ describe("Matcher", function() {
 
         });
 
-        it("returns the default registered matcher", function() {
+        it("returns the default registered matcher", function () {
 
             expect(Matcher::get('toBe', 'stdClass'))->toBe('Kahlan\Matcher\ToBe');
 
         });
 
-        it("returns a custom matcher when defined for a specific class", function() {
+        it("returns a custom matcher when defined for a specific class", function () {
 
             Matcher::register('toBe', 'Kahlan\Matcher\ToEqual', 'stdClass');
 
@@ -104,9 +104,9 @@ describe("Matcher", function() {
 
         });
 
-        it("throws an exception when using an undefined matcher name", function() {
+        it("throws an exception when using an undefined matcher name", function () {
 
-            $closure = function() {
+            $closure = function () {
                 Matcher::get('toHelloWorld');
             };
 
@@ -114,9 +114,9 @@ describe("Matcher", function() {
 
         });
 
-        it("throws an exception when using an undefined matcher name for a specific class", function() {
+        it("throws an exception when using an undefined matcher name for a specific class", function () {
 
-            $closure = function() {
+            $closure = function () {
                 Matcher::get('toHelloWorld', 'stdClass');
             };
 
@@ -126,9 +126,9 @@ describe("Matcher", function() {
 
     });
 
-    describe("::unregister()", function() {
+    describe("::unregister()", function () {
 
-        it("unregisters a matcher", function() {
+        it("unregisters a matcher", function () {
 
             Matcher::register('toBeOrNotToBe', Double::classname(['extends' => 'Kahlan\Matcher\ToBe']));
             expect(Matcher::exists('toBeOrNotToBe'))->toBe(true);
@@ -138,7 +138,7 @@ describe("Matcher", function() {
 
         });
 
-        it("unregisters all matchers", function() {
+        it("unregisters all matchers", function () {
 
             expect(Matcher::get())->toBeGreaterThan(1);
             Matcher::unregister(true);
@@ -149,16 +149,16 @@ describe("Matcher", function() {
 
     });
 
-    describe("::reset()", function() {
+    describe("::reset()", function () {
 
-         it("unregisters all matchers", function() {
+         it("unregisters all matchers", function () {
 
             expect(Matcher::get())->toBeGreaterThan(1);
             Matcher::reset();
             Matcher::register('toHaveLength', 'Kahlan\Matcher\ToHaveLength');
             expect(Matcher::get())->toHaveLength(1);
 
-        });
+         });
 
     });
 
