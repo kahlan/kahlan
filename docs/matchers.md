@@ -1,16 +1,8 @@
 ## Matchers
 
-* [Overview](#overview)
-* [Classic matchers](#classic)
-* [Method invocation matchers](#method)
-* [Argument matchers](#argument)
-* [Custom matchers](#custom)
-
-### <a name="overview"></a>Overview
-
 **Note:** Expectations can only be done inside `it` blocks.
 
-Kahlan have a lot of matchers, that can help you up in your testing journey. All matchers can be chained up. It shown in a code below.
+Kahlan has a lot of matchers that can help you in your testing journey. All matchers can be chained.
 
 ```php
 it("can chain up a lots of matchers", function() {

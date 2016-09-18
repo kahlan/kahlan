@@ -1,16 +1,10 @@
 ## Stubs & Monkey Patching DSL
 
-A method stub or simply stub in software development is used to stand in for some other programming functionality. This section explain how to perform such replacement with Kahlan.
+A method stub or simply stub in software development is used to stand in for some other programming functionality. This section explains how to perform such replacement with Kahlan.
 
-### Table of content
+### Method Stubbing
 
-* [Replacing a method](#method-stubbing)
-* [Replacing a function](#function-stubbing)
-* [Replacing a class](#monkey-patching)
-
-### <a name="method-stubbing"></a>Method Stubbing
-
-Use `allow()` to stub an existing methods on any class like so:
+Use `allow()` to stub an existing method on any class like so:
 
 ```php
 it("stubs a method by setting a return value", function() {
@@ -33,7 +27,7 @@ it("stubs a method by setting a return value only when some arguments matches", 
 });
 ```
 
-You can apply multiple return values with:
+You can specify multiple return values with:
 
 ```php
 it("stubs a method with multiple return values", function() {
@@ -107,7 +101,7 @@ class User
 }
 ```
 
-In practice method chaining is more considered as code smells because it tends to violate the Law of Demeter. So use it wisely when it makes sense.
+In practice method chaining is considered as code smells because it tends to violate the Law of Demeter. So use it wisely.
 
 Finally, `where()` can be used to specify some arguments requirement for a chain of methods:
 
