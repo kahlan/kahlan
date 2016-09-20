@@ -362,13 +362,14 @@ class Collector
             $path = "{$path}" . $node->name . '\\';
             $this->_processTree($file, $node->tree, $coverage, $path);
         } elseif ($node->hasMethods) {
+            if ($node->type === 'interface') {
+                return;
+            }
             $path = "{$path}" . $node->name;
             $this->_processTree($file, $node->tree, $coverage, $path);
         } elseif ($node->type === 'function') {
             $prefix = $node->isMethod ? "{$path}::" : "{$path}";
             $path = $prefix . $node->name . '()';
-        } elseif ($node->type === 'interface') {
-            return;
         } else {
             $this->_processTree($file, $node->tree, $coverage, '');
         }
