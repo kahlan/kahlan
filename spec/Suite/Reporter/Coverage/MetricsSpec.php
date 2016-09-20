@@ -242,7 +242,7 @@ describe("Metrics", function () {
 
         });
 
-        it("doesn't store interfaces in metrics", function () {
+        it("ignores interfaces metrics", function () {
 
             $path = [
                 'spec/Fixture/Reporter/Coverage/ImplementsCoverage.php',
@@ -261,14 +261,14 @@ describe("Metrics", function () {
             $collector->stop();
 
             $metrics = $collector->metrics();
-            $actual = $metrics->get()->data();
+            $actual = $metrics->get('Kahlan\Spec\Fixture\Reporter\Coverage\ImplementsCoverage')->data();
 
             $files = $actual['files'];
             unset($actual['files']);
 
             expect($actual)->toBe([
-                'loc'      => 11,
-                'nlloc'    => 10,
+                'loc'      => 6,
+                'nlloc'    => 5,
                 'lloc'     => 1,
                 'cloc'     => 1,
                 'coverage' => 1,
@@ -279,6 +279,8 @@ describe("Metrics", function () {
 
             $path = realpath('spec/Fixture/Reporter/Coverage/ImplementsCoverage.php');
             expect(isset($files[$path]))->toBe(true);
+
+            expect($metrics->get('Kahlan\Spec\Fixture\Reporter\Coverage\ImplementsCoverageInterface'))->toBe(null);
 
         });
 
