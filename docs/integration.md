@@ -1,12 +1,12 @@
 ## Integration with popular frameworks
 
-Kahlan fits perfectly with the composer autoloader. However a couple of popular frameworks still use their own autoloader and you will need to make all your namespaces to be autoloaded correctly in the test environment to make it works.
+Kahlan relies on the Composer autoloader. As such, it is compatible with most frameworks. However a couple popular frameworks use their own autoloader, so you will need to add your namespaces to be autoloaded correctly in the test environment.
 
-Hopefully It's easy and simple. Indeed almost all popular frameworks autoloaders are **PSR-0**/**PSR-4** compatible, so the only thing you will need to do is to correctly configure your **kahlan-config.php** config file to manually add to the composer autoloader all namespaces which are "ouside the composer scope".
+You will need to configure your Kahlan config file to manually add to the Composer autoloader which are "outside the composer scope".
 
 ### Working with a PSR-0 compatible architecture.
 
-Let's take a situation where you have the following directories: `app/models/` and  `app/controllers/` and each one are respectively attached to the `Api\Models` and `Api\Controllers` namespaces. To make them autoloaded with Kahlan you will need to manually add this **PSR-4** based namespaces in your **kahlan-config.php** config file:
+Let's take a situation where you have the following directories: `app/models/` and  `app/controllers/` and each one are respectively attached to the `Api\Models` and `Api\Controllers` namespaces. To autoload them with Kahlan you will need to manually add these PSR-4 namespaces in your **kahlan-config.php** config file:
 
 ```php
 use Kahlan\Filter\Filter;
@@ -26,42 +26,9 @@ Filter::apply($this, 'namespaces', 'mycustom.namespaces');
 
 To import all Laravel "test facilities" into Kahlan you can make use of [this dedicated plugin](https://github.com/jarektkaczyk/laravel-kahlan) through the following steps:
 
-```
-composer require --dev sofa/laravel-kahlan:"~5.3"
-```
-
-** Note: ** For Laravel 5.2/5.1 version use the appropriate version of the package above.
-
-The second step is to set up you kahlan config file (create it if necessary) like so:
-
-```php
-/*  /path/to/your/app/kahlan-config.php  */
-<?php
-
-Sofa\LaravelKahlan\Env::bootstrap($this);
-```
-
-And then you can create your first spec in /spec folder and run test suite with `kahlan`:
-
-Example of spec:
-```php
-/*  /path/to/your/app/spec/AppSpec.php  */
-<?php
-
-describe('My awesome Kahlan driven Laravel app', function () {
-    it("provides the same testing API as Laravel's own TestCase", function () {
-        $this->laravel->get('/')
-                      ->see('Laravel 5')
-                      ->assertResponseOk();
-    });
-}
-```
-
-[You can find the whole example here.](https://github.com/jarektkaczyk/kahlan-driven-laravel).
-
 ### Phalcon
 
-When a class extends a built-in class (i.e. a non PHP class) it's not possible to stub parent class methods right away since they are not in PHP userland.
+When a class extends a built-in class (i.e. a non PHP class) it's not possible to stub parent class methods since they are not in PHP userland.
 
 Long story short, let's take the following example as an illustration:
 
@@ -75,7 +42,7 @@ class MyModel extends \Phalcon\Mvc\Model
 }
 ```
 
-And we want `findFirst()` to return a stubbed result. This can be tranlsated into the following spec:
+And we want `findFirst()` to return a stubbed result. This can be translated into the following spec:
 
 ```php
 namespace Api\Spec\Contollers;
@@ -83,29 +50,21 @@ namespace Api\Spec\Contollers;
 use Api\Models\MyModel;
 
 describe("MyModel", function() {
-
-    it("stubs findFirst as an example", function() {
-
+    it("should stub findFirst as an example", function() {
         $article = new MyModel();
-
         allow('Api\Models\MyModel')->toReceive('::findFirst')->andReturn($article);
-
         $actual = MyModel::findFirst();
 
         expect($actual)->toBe($article);
-
     });
-
 });
 ```
 
-Unfortunalty it doesn't work out of the box because `MyModel` extends `Phalcon\Mvc\Model` which is a core class (i.e a class compiled from C sources). So `MyModel::findFirst()` doesn't exists in PHP userland and can't be stubbed.
+Unfortunately it doesn't work out of the box because `MyModel` extends `Phalcon\Mvc\Model` which is a core class (i.e a class compiled from C sources). So `MyModel::findFirst()` doesn't exist in PHP userland and can't be stubbed.
 
-The workaround here is to add the Kahlan's `Layer` patcher in [your `kahlan-config.php` file](config-file.md).
+The workaround here is to add the Kahlan's `Layer` patcher in [your `kahlan-config.php` file](config-file.md). The `Layer` patcher will dynamically replace all `extends` done on core class to an intermediate layer class in PHP.
 
-However Kahlan can support this use case through the configuration of the `Layer` patcher. The `Layer` patcher will dynamically replace all `extends` done on core class to an intermediate layer class in PHP.
-
-So for our example above, the `Layer` patcher can be configured like the following in in [your `kahlan-config.php` file](config-file.md):
+So for our example above, the `Layer` patcher can be configured like the following in [your `kahlan-config.php` file](config-file.md):
 
 ```php
 use Kahlan\Filter\Filter;

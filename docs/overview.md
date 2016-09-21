@@ -1,250 +1,70 @@
-## Overview
-
-### Describe Your Specs
-
-Because test organization is one of the key point of keeping clean and maintainable tests, Kahlan allow to group tests syntactically using a closure syntax.
-
-```php
-describe("ToBe", function() {
-
-    describe("::match()", function() {
-
-        it("passes if true === true", function() {
-
-            expect(true)->toBe(true);
-
-        });
-
-    });
-
-});
-```
-
-* `describe`: generally contains all specs for a method. Using the class method's name is probably the best option for a clean description.
-* `context`: is used to group tests related to a specific use case. Using "when" or "with" followed by the description of the use case is generally a good practice.
-* `it`: contains the code to test. Keep its description short and clear.
-
-### Setup and Teardown
-
-As the name implies, the `beforeEach` function is called once before **each** spec contained in a `describe`.
-
-```php
-describe("Setup and Teardown", function() {
-
-    beforeEach(function() {
-        $this->foo = 1;
-    });
-
-    describe("Nested level", function() {
-
-        beforeEach(function() {
-            $this->foo++;
-        });
-
-        it("expects that the foo variable is equal to 2", function() {
-
-            expect($this->foo)->toBe(2);
-
-        });
-
-    });
-
-});
-```
-
-Setup and Teardown functions can be used at any `describe` or `context` level:
-
-* `before`: Run once inside a `describe` or `context` before all contained specs.
-* `beforeEach`: Run before each spec of the same level.
-* `afterEach`: Run after each spec of the same level.
-* `after`: Run once inside a `describe` or `context` after all contained specs.
-
-### Memoized Helper using `given()`
-
-Since `beforeEach()` is runned before each spec, all defined variables are reinitialised on each specs even when not needed. So in this case it's possible to use `given()` instead. Given's blocks are only executed when referenced (i.e. lazy loading), which mean that ordering of these blocks are irrelevant.
-
-```php
-describe("Lazy loadable variables", function() {
-
-    given('firstname', function() { return 'Johnny'; });
-    given('fullname', function() {
-        return "{$this->firstname} {$this->lastname}";
-    });
-    given('lastname', function() { return 'Boy'; });
-
-    it("lazy loads variables in cascades", function() {
-        expect($this->fullname)->toBe('Johnny Boy');
-    });
-
-});
-```
-
-### Expectations
-
-Expectations are built using the `expect` function which takes a value, called the **actual**, as parameter and chained with a matcher function taking the **expected** value and some optional extra arguments as parameters.
-
-```php
-describe("Positive Expectation", function() {
-
-    it("expects that 5 > 4", function() {
-
-        expect(5)->toBeGreaterThan(4);
-
-    });
-
-});
-```
-
-You can find [all built-in matchers here](matchers.md).
-
-### Negative Expectations
-
-Any matcher can be evaluated negatively by chaining `expect` with `not` before calling the matcher:
-
-```php
-describe("Negative Expectation", function() {
-
-    it("doesn't expect that 4 > 5", function() {
-
-        expect(4)->not->toBeGreaterThan(5);
-
-    });
-
-});
-```
-
-### Asynchronous Expectations
-
-To perform some asynchronous tests it's possible to use the `waitsFor` statement. This statement runs a passed closure until all contained expectations passes or a timeout is reached. `waitsFor` can be useful to waits for elements to appear/disappear on a browser page during some functionnal testing for example.
-
-```php
-describe("Asynchronous Expectations", function() {
-
-    it("will timeout for sure", function() {
-
-        waitsFor(function() {
-            expect(false)->toBe(true);
-        });
-
-    });
-
-    it("waits to be lucky", function() {
-
-        waitsFor(function() {
-            return mt_rand(0, 10);
-        })->toBe(10);
-
-    });
-
-}, 10);
-```
-
-In the example above, the timeout has been setted globally at the bottom of `describe()` statement. However it can also be overrided at a `context()/it()` level or simply by setting the second parameter of `waitsFor()`. If no timeout is defined, the default timeout will be set to `0`.
-
-### Variable scope
-
-You can use `$this` for making a variable **available** for a sub scope:
-
-```php
-describe("Scope inheritance", function() {
-
-    beforeEach(function() {
-        $this->foo = 5;
-    });
-
-    it("accesses variable defined in the parent scope", function() {
-
-        expect($this->foo)->toEqual(5);
-
-    });
-
-});
-```
-
-You can also play with scope's data inside closures:
-
-```php
-describe("Scope inheritance & closure", function() {
-
-    it("sets a scope variables inside a closure", function() {
-
-        $this->closure = function() {
-            $this->foo = 'bar';
-        };
-        $this->closure();
-        expect($this->foo)->toEqual('bar');
-
-    });
-
-    it("gets a scope variable inside closure", function() {
-
-        $this->foo = 'bar';
-        $this->closure = function() {
-            return $this->foo;
-        };
-        expect($this->closure())->toEqual('bar');
-
-    });
-
-});
-```
-
-#### Scope isolation
-
-**Note:** A variable assigned with `$this` inside either a `describe/context` or an `it` will **not** be available to a parent scope.
-
-```php
-describe("Scope isolation", function() {
-
-    it("sets a variable in the scope", function() {
-
-        $this->foo = 2;
-        expect($this->foo)->toEqual(2);
-
-    });
-
-    it("doesn't find any foo variable in the scope", function() {
-
-        expect(isset($this->foo))->toBe(false);
-
-    });
-
-});
-```
-
-### Control-flow
-
-Spec control flow is similar to `Jasmine`. In other words functions executed on a scope level using the following order `before`, `beforeEach`, `after` and `afterEach`.
-
-```php
-describe(function() {
-    before(function() {
-       //b1
-    });
-    describe(function() {
-        before(function() {
-           //b2
-        });
-        beforeEach(function() {
-           //be1
-        });
-        it("runs a spec", function() {
-           //it1
-        });
-        it("runs a spec", function() {
-           //it2
-        });
-        afterEach(function() {
-           //ae1
-        });
-        after(function() {
-           //a2
-        });
-    });
-    after(function() {
-       //a1
-    });
-});
-```
-
-That code will give a following execution flow: `b1 - b2 - be1 - it1 - ae1 - be1 - it2 - ae1 - a2 - a1`
+# Kahlan
+> The Unit/BDD PHP Test Framework for Freedom, Truth, and Justice
+
+Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses a `describe-it` syntax and moves testing in PHP one step forward.
+
+**Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.**
+
+
+<a name="features"></a>
+### Features
+- `describe-it` syntax similar to modern BDD testing frameworks
+- Code Coverage metrics ([xdebug](http://xdebug.org) or [phpdbg](http://phpdbg.com/docs) required)
+- Handy stubbing system ([mockery](https://github.com/padraic/mockery) or [prophecy](https://github.com/phpspec/prophecy) are no longer needed)
+- Set stubs on your class methods directly (i.e allows dynamic mocking)
+- Ability to Monkey Patch your code (i.e. allows replacement of core functions/classes on the fly)
+- Check called methods on your classes/instances
+- Built-in Reporters (Terminal or HTML reporting through [istanbul](https://gotwarlost.github.io/istanbul/) or [lcov](http://ltp.sourceforge.net/coverage/lcov.php))
+- Built-in Exporters (Coveralls, Code Climate, Scrutinizer, Clover)
+- Extensible, customizable workflow
+
+
+<a name="license"></a>
+## License
+Licensed using the [MIT license](http://opensource.org/licenses/MIT).
+
+> The MIT License (MIT)
+>
+> Copyright (c) 2014 CrysaLEAD
+>
+> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+<a name="contributing"></a>
+## Contributing
+To contribute to Kahlan, [open a pull request](https://help.github.com/articles/creating-a-pull-request/) against the `master` branch with your change. Be sure to update the specs to verify your change works as expected and to prevent regressions.
+
+
+## Documentation
+- [Overview](overview.md)
+  - [Features](overview.md#features)
+  - [License](overview.md#license)
+  - [Contributing](overview.md#contributing)
+- [Getting Started](getting-started.md)
+  - [Requirements](getting-started.md#requirements)
+  - [Installation](getting-started.md#installation)
+  - [Running Kahlan](getting-started.md#running-kahlan)
+  - [Directory Structure](getting-started.md#directory-structure)
+- [DSL](dsl.md)
+- [Matchers](matchers.md)
+  - [Classic matchers](matchers.md#classic)
+  - [Method invocation matchers](matchers.md#method)
+  - [Argument matchers](matchers.md#argument)
+  - [Custom matchers](matchers.md#custom)
+- [Method Stubbing & Monkey Patching](allow.md)
+    - [Replacing a method](allow.md#method-stubbing)
+    - [Replacing a function](allow.md#function-stubbing)
+    - [Replacing a class](allow.md#monkey-patching)
+- [Test Double](test-double.md)
+    - [Instance Double](test-double.md#instance-double)
+    - [Class Double](test-double.md#class-double)
+- [Quit Statement Patching](quit.md)
+- [CLI Options](cli-options.md)
+- [Reporters](reporters.md)
+- [Pro Tips](pro-tips.md) - including CLI arguments
+- [The `kahlan-config.php` file](config-file.md)
+- [Integration with popular frameworks](integration.md)

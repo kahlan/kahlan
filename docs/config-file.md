@@ -1,8 +1,8 @@
 ## The `kahlan-config.php` file
 
-If you want to set some default options, change the execution workflow or load some custom plugins at a boostrap level, you will need to setup you own config file.
+If you want to set some default options, change the execution workflow or load some custom plugins at a bootstrap level, you will need to setup you own config file.
 
-Kahlan attempt to load the `kahlan-config.php` file from the current directory as the default config file. However you can define your own path using the `--config=myconfigfile.php` option in the command line. Custom `--config` can be useful if you want to use some specific configuration for Travis or something else.
+Kahlan attempts to load the `kahlan-config.php` file from the current directory as the default config file. However you can define your own path using the `--config=myconfigfile.php` option in the command line. Custom `--config` can be useful if you want to use some specific configuration for Travis or something else.
 
 Example of a config file:
 
@@ -47,7 +47,7 @@ Filter::apply($this, 'reporting', 'kahlan.coveralls');
 ?>
 ```
 
-Above `'kahlan.coveralls'` is just a custom name and could be whatever as long as `Filter::register()` and `Filter::apply()` are consistent on the namings.
+Above `'kahlan.coveralls'` is just a custom name and could be whatever as long as `Filter::register()` and `Filter::apply()` are named consistently.
 
 `$this` refer to the Kahlan instance so `$this->reporters()->get('coverage')` will give you the instance of the coverage reporter. This coverage reporter will contain all raw data which is passed to the `Coveralls` exporter to be formatter.
 
@@ -74,9 +74,9 @@ The filterable entry points are the following:
 
 Kahlan acts like a wrapper. It intercepts loaded classes Just It Time (i.e. during the autoloading step) and rewrites the source code on the fly to make it easily testable with PHP. That's why Monkey Patching or redefining a class's method can be done inside the testing environment without any PECL extensions like runkit, aop, etc.
 
-Notice that this approach will make your code run a bit slower than your original code. However you can optimize Kahlan's interceptor to only patch the namespaces you want:
+Notice that this approach will make your code run a bit slower. However you can optimize Kahlan's interceptor to only patch the namespaces you want.
 
-For example, the following configuration will only limit the patching to a bunch of namespaces/classes:
+For example, the following configuration will only limit the patching to a set of namespaces/classes:
 
 ```php
 $this->commandLine()->set('include', [
@@ -87,7 +87,8 @@ $this->commandLine()->set('include', [
 ]);
 ```
 
-Conversely you can also exclude some external dependencies to speed up performances if you don't intend to Monkey Patch/Stub some namespaces/classes:
+Conversely you can exclude some external dependencies to improve performance if you don't intend to Monkey Patch/Stub some namespaces/classes:
+
 ```php
 $this->commandLine()->set('exclude', [
     'Symfony',
@@ -95,8 +96,9 @@ $this->commandLine()->set('exclude', [
 ]);
 ```
 
-Finally you can also disable all the patching everywhere if you prefer to deal with DI only and are not interested by Kahlan's features:
+Finally, you can disable all the patching if you prefer to deal with DI only and are not interested by Kahlan's features:
+
 ```php
 $this->commandLine()->set('include', []);
 ```
-**Note:** You will still able to stub instances and classes created with `Double::instance()`/`Double::classname()` anyway.
+**Note:** You will still able to stub instances and classes created with `Double::instance()`/`Double::classname()`.

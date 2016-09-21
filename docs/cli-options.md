@@ -1,9 +1,6 @@
 ## CLI Options
 
-* [Overview](#overview)
-
-### <a name="overview"></a>Overview
-You can see below all Kahlan's option obtained through the `kahlan --help` command line.
+Below are all of Kahlan's option obtained through the `kahlan --help` command line.
 
 ```
 Configuration Options:
@@ -15,10 +12,10 @@ Configuration Options:
 
 Reporter Options:
 
-  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the buit-in text reporters
+  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the built-in text reporters
                                       are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
                                       You can optionally redirect the reporter output to a file by using the
-                                      colon syntax (muliple --reporter options are also supported).
+                                      colon syntax (multiple --reporter options are also supported).
 
 Code Coverage Options:
 
@@ -52,5 +49,5 @@ Miscellaneous Options:
   --version              Prints Kahlan version
 
 Note: The `[]` notation in default values mean that the related option can accepts an array of values.
-To add additionnal values, just repeat the same option many times in the command line.
+To add additional values, just repeat the same option many times in the command line.
 ```

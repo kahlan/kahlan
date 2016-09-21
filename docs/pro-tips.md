@@ -92,7 +92,7 @@ Then you can get it in any scopes like in the following:
 
 ```php
 describe("My Spec", function() {
-    it("echoes the global", function() {
+    it("should echo the global", function() {
         echo $this->global;
     });
 });
@@ -104,14 +104,13 @@ When writing your tests sometimes you want to **only execute** the test(s) you a
 
 ```php
 describe("test focused mode", function() {
-
-    it("will be ignored", function() {
+    it("should be ignored", function() {
     });
 
-    it("will be ignored", function() {
+    it("should be ignored", function() {
     });
 
-    fit("will be runned", function() {
+    fit("should be run", function() {
     });
 });
 ```
@@ -126,14 +125,12 @@ To comment out a spec, you can use the `x` prefix i.e. `xdescribe`, `xcontext` o
 
 ### Skip a spec
 
-To skip a spec you should use a `skipIf()` function inside of it. This function takes a bolean, that mean you can provide a conditions to skip this spec up. In example:
+To skip a spec you should use a `skipIf()` function inside of it. This function takes a boolean, that mean you can provide a conditions to skip this spec up. In example:
 
 ```php
 it("should not run on weekends", function() {
-
     skipIf(date("w") == 0 || date("w") == 6);
 
     expect(true)->toBe(true);
-
 });
 ```

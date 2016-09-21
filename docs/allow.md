@@ -1,72 +1,60 @@
 ## Stubs & Monkey Patching DSL
 
-A method stub or simply stub in software development is used to stand in for some other programming functionality. This section explain how to perform such replacement with Kahlan.
+A method stub or simply stub in software development is used to stand in for some other programming functionality. This section explains how to perform such replacement with Kahlan.
 
-### Table of content
+### Method Stubbing
 
-* [Replacing a method](#method-stubbing)
-* [Replacing a function](#function-stubbing)
-* [Replacing a class](#monkey-patching)
-
-### <a name="method-stubbing"></a>Method Stubbing
-
-Use `allow()` to stub an existing methods on any class like so:
+Use `allow()` to stub an existing method on any class like so:
 
 ```php
-it("stubs a method by setting a return value", function() {
-
+it("should stub a method by setting a return value", function() {
     $instance = new MyClass();
     allow($instance)->toReceive('myMethod')->andReturn('Good Morning World!');
-    expect($instance->myMethod())->toBe('Good Morning World!');
 
+    expect($instance->myMethod())->toBe('Good Morning World!');
 });
 ```
 
 ```php
-it("stubs a method by setting a return value only when some arguments matches", function() {
-
+it("should stub a method by setting a return value only when some arguments matches", function() {
     $instance = new MyClass();
     allow($instance)->toReceive('myMethod')->with('Hello!')->andReturn('Good Morning World!');
+
     expect($instance->myMethod('Hello!'))->toBe('Good Morning World!');
     expect($instance->myMethod())->toBe(null);
-
 });
 ```
 
-You can apply multiple return values with:
+You can specify multiple return values with:
 
 ```php
-it("stubs a method with multiple return values", function() {
-
+it("should stub a method with multiple return values", function() {
     $instance = new MyClass();
     allow($instance)->toReceive('sequential')->andReturn(1, 3, 2);
+
     expect($instance->sequential())->toBe(1);
     expect($instance->sequential())->toBe(3);
     expect($instance->sequential())->toBe(2);
-
 });
 ```
 
 You can also stub `static` methods using `::`:
 
 ```php
-it("stubs a static method", function() {
-
+it("should stub a static method", function() {
     $instance = new MyClass();
     allow($instance)->toReceive('::myMethod')->andReturn('Good Morning World!');
-    expect($instance::myMethod())->toBe('Good Morning World!');
 
+    expect($instance::myMethod())->toBe('Good Morning World!');
 });
 ```
 
 It's also possible to use a closure to replace the whole method logic:
 
 ```php
-it("stubs a method using a closure", function() {
-
+it("should stub a method using a closure", function() {
     allow($foo)->toReceive('myMethod')->andRun(function($param) { return $param; });
     expect($instance->myMethod('Hello World!'))->toBe('Hello World!');
-
 });
 ```
 
@@ -107,12 +95,12 @@ class User
 }
 ```
 
-In practice method chaining is more considered as code smells because it tends to violate the Law of Demeter. So use it wisely when it makes sense.
+In practice method chaining is considered as code smells because it tends to violate the Law of Demeter. So use it wisely.
 
 Finally, `where()` can be used to specify some arguments requirement for a chain of methods:
 
 ```php
-it('returns the stubbed return value when arguments requirement match', function() {
+it('should return the stubbed return value when arguments requirement match', function() {
     $query = new MyQuery();
     allow($query)
       ->toReceive('find', 'where', 'order', 'limit')
@@ -131,34 +119,26 @@ it('returns the stubbed return value when arguments requirement match', function
 });
 ```
 
-### <a name="function-stubbing"></a>Function Stubbing
+### Function Stubbing
 
 Use `allow()` to stub almost all functions like so:
 
 ```php
-it("shows some examples of function stubbing", function() {
-
-    // Stub a function
+it("should show some examples of function stubbing", function() {
     allow('time')->toBeCalled()->andReturn(123);
     allow('time')->toBeCalled()->andReturn(123, 456, 789);
     allow('time')->toBeCalled()->andRun(function() { return 123; });
 
-    // Stub a function only when arguments match
     allow('rand')->toBeCalled()->with(0, 10)->andReturn(5);
-
-    // Bail out with a `null` return value
-    allow('getmxrr')->toBeOK();
-
 });
 ```
 
-### <a name="monkey-patching"></a>Monkey Patching
+### Monkey Patching
 
 Use `allow()` to monkey patch classes like so:
 
 ```php
-it("shows some examples of function stubbing", function() {
-
+it("should show some examples of function stubbing", function() {
     // Monkey patch `PDO` and stub chained methods under the hood.
     allow('PDO')->toReceive('prepare->fetchAll')->andReturn([['name' => 'bob']]);
     allow('PDO')->toReceive('prepare->fetchAll')->andRun(function() {
@@ -173,6 +153,5 @@ it("shows some examples of function stubbing", function() {
 
     // Monkey patch `PDO` with a generic stub instance.
     allow('PDO')->toBeOK();
-
 });
 ```
