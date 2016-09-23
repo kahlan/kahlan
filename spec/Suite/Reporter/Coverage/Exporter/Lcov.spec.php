@@ -4,18 +4,15 @@ namespace Kahlan\Spec\Suite\Reporter\Coverage;
 use Kahlan\Reporter\Coverage\Collector;
 use Kahlan\Reporter\Coverage\Driver\Xdebug;
 use Kahlan\Reporter\Coverage\Driver\Phpdbg;
-use Kahlan\Reporter\Coverage\Exporter\Clover;
+use Kahlan\Reporter\Coverage\Exporter\Lcov;
 use Kahlan\Spec\Fixture\Reporter\Coverage\NoEmptyLine;
 use Kahlan\Spec\Fixture\Reporter\Coverage\ExtraEmptyLine;
 use RuntimeException;
 
-describe("Clover", function () {
+describe("Lcov", function () {
 
     beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
-            skipIf(true);
-        }
-        if (!class_exists('DOMDocument', false)) {
             skipIf(true);
         }
         $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
@@ -40,30 +37,29 @@ describe("Clover", function () {
 
             $time = time();
 
-            $xml = Clover::export([
+            $txt = Lcov::export([
                 'collector' => $collector,
-                'time'      => $time,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
             $ds = DS;
 
             $expected = <<<EOD
-<?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="{$time}">
-  <project timestamp="{$time}">
-    <file name="{$ds}home{$ds}crysalead{$ds}kahlan{$ds}spec{$ds}Fixture{$ds}Reporter{$ds}Coverage{$ds}NoEmptyLine.php">
-      <line num="8" type="stmt" count="1"/>
-      <line num="10" type="stmt" count="0"/>
-      <line num="12" type="stmt" count="1"/>
-      <line num="13" type="stmt" count="0"/>
-    </file>
-    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
-  </project>
-</coverage>
-
+TN:
+SF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
+1,shallNotPass
+FNDA:1,shallNotPass
+FNF:1
+FNH:1
+DA:8,1
+DA:10,0
+DA:12,1
+DA:13,0
+LF:4
+LH:2
+end_of_record
 EOD;
 
-            expect($xml)->toBe($expected);
+            expect($txt)->toBe($expected);
         });
 
         it("exports the coverage of a file with an extra line at the end", function () {
@@ -83,30 +79,29 @@ EOD;
 
             $time = time();
 
-            $xml = Clover::export([
+            $txt = Lcov::export([
                 'collector' => $collector,
-                'time'      => $time,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
             $ds = DS;
 
             $expected = <<<EOD
-<?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="{$time}">
-  <project timestamp="{$time}">
-    <file name="{$ds}home{$ds}crysalead{$ds}kahlan{$ds}spec{$ds}Fixture{$ds}Reporter{$ds}Coverage{$ds}ExtraEmptyLine.php">
-      <line num="8" type="stmt" count="1"/>
-      <line num="10" type="stmt" count="0"/>
-      <line num="12" type="stmt" count="1"/>
-      <line num="13" type="stmt" count="0"/>
-    </file>
-    <metrics loc="16" ncloc="12" statements="4" coveredstatements="2"/>
-  </project>
-</coverage>
-
+TN:
+SF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/ExtraEmptyLine.php
+1,shallNotPass
+FNDA:1,shallNotPass
+FNF:1
+FNH:1
+DA:8,1
+DA:10,0
+DA:12,1
+DA:13,0
+LF:4
+LH:2
+end_of_record
 EOD;
 
-            expect($xml)->toBe($expected);
+            expect($txt)->toBe($expected);
 
         });
 
@@ -139,42 +134,41 @@ EOD;
 
             $time = time();
 
-            $success = Clover::write([
+            $success = Lcov::write([
                 'collector' => $collector,
                 'file'      => $this->output,
-                'time'      => $time,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
 
-            expect($success)->toBe(484);
+            expect($success)->toBe(175);
 
-            $xml = file_get_contents($this->output);
+            $txt = file_get_contents($this->output);
             $ds = DS;
 
             $expected = <<<EOD
-<?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="{$time}">
-  <project timestamp="{$time}">
-    <file name="{$ds}home{$ds}crysalead{$ds}kahlan{$ds}spec{$ds}Fixture{$ds}Reporter{$ds}Coverage{$ds}NoEmptyLine.php">
-      <line num="8" type="stmt" count="1"/>
-      <line num="10" type="stmt" count="0"/>
-      <line num="12" type="stmt" count="1"/>
-      <line num="13" type="stmt" count="0"/>
-    </file>
-    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
-  </project>
-</coverage>
-
+TN:
+SF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
+1,shallNotPass
+FNDA:1,shallNotPass
+FNF:1
+FNH:1
+DA:8,1
+DA:10,0
+DA:12,1
+DA:13,0
+LF:4
+LH:2
+end_of_record
 EOD;
 
-            expect($xml)->toBe($expected);
+            expect($txt)->toBe($expected);
 
         });
 
         it("throws exception when no file is set", function () {
 
             expect(function () {
-                Clover::write([]);
+                Lcov::write([]);
             })->toThrow(new RuntimeException('Missing file name'));
 
         });

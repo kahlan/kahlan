@@ -89,10 +89,10 @@ describe("Debugger", function () {
 
                 $debugger = $this->debugger;
 
-                $nbline = count(file('spec' . DS . 'Suite' . DS . 'Analysis' . DS . 'DebuggerSpec.php')) + 1;
+                $nbline = count(file('spec' . DS . 'Suite' . DS . 'Analysis' . DS . 'Debugger.spec.php')) + 1;
 
                 $trace = [
-                    'file' => 'spec' . DS . 'Suite' . DS . 'Analysis' . DS . 'DebuggerSpec.php',
+                    'file' => 'spec' . DS . 'Suite' . DS . 'Analysis' . DS . 'Debugger.spec.php',
                     'line' => $nbline + 1
                 ];
                 expect($debugger::line($trace))->toBe(null);

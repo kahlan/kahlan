@@ -59,7 +59,7 @@ describe("Scope", function () {
         it("returns the backtrace", function () {
 
             $this->scope = new Scope();
-            expect(basename($this->scope->backtrace()[1]['file']))->toBe('ScopeSpec.php');
+            expect(basename($this->scope->backtrace()[1]['file']))->toBe('Scope.spec.php');
 
         });
 
