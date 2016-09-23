@@ -18,7 +18,7 @@ Kahlan embraces the [KISS principle](http://en.wikipedia.org/wiki/KISS_principle
 
 ## Download
 
-[Download Kahlan on Github](https://github.com/crysalead/kahlan)
+[Download Kahlan on Github](https://github.com/kahlan/kahlan)
 
 ## Documentation
 

@@ -1,13 +1,13 @@
 ![Kahlan](docs/assets/logo.png "Kahlan")
 <hr/>
 
-![Build Status](https://img.shields.io/badge/branch-master-blue.svg) [![Build Status](https://travis-ci.org/crysalead/kahlan.svg?branch=master)](https://travis-ci.org/crysalead/kahlan) [![HHVM Status](http://hhvm.h4cc.de/badge/crysalead/kahlan.svg?style=flat)](http://hhvm.h4cc.de/package/crysalead/kahlan) [![License](https://poser.pugx.org/crysalead/kahlan/license.svg)](https://packagist.org/packages/crysalead/kahlan)
+![Build Status](https://img.shields.io/badge/branch-master-blue.svg) [![Build Status](https://travis-ci.org/kahlan/kahlan.svg?branch=master)](https://travis-ci.org/kahlan/kahlan) [![HHVM Status](http://hhvm.h4cc.de/badge/kahlan/kahlan.svg?style=flat)](http://hhvm.h4cc.de/package/kahlan/kahlan) [![License](https://poser.pugx.org/kahlan/kahlan/license.svg)](https://packagist.org/packages/kahlan/kahlan)
 
-[![Latest Stable Version](https://poser.pugx.org/crysalead/kahlan/v/stable.svg)](https://packagist.org/packages/crysalead/kahlan)
-[![Total Downloads](https://poser.pugx.org/crysalead/kahlan/downloads.svg)](https://packagist.org/packages/crysalead/kahlan)
-[![Code Climate Coverage Status](https://codeclimate.com/github/crysalead/kahlan/badges/coverage.svg)](https://codeclimate.com/github/crysalead/kahlan)
-[![Coveralls Coverage Status](https://coveralls.io/repos/crysalead/kahlan/badge.svg?branch=master)](https://coveralls.io/r/crysalead/kahlan?branch=master)
-[![Scrutinizer Coverage Status](https://scrutinizer-ci.com/g/crysalead/kahlan/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/crysalead/kahlan/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/kahlan/kahlan/v/stable.svg)](https://packagist.org/packages/kahlan/kahlan)
+[![Total Downloads](https://poser.pugx.org/kahlan/kahlan/downloads.svg)](https://packagist.org/packages/kahlan/kahlan)
+[![Code Climate Coverage Status](https://codeclimate.com/github/kahlan/kahlan/badges/coverage.svg)](https://codeclimate.com/github/kahlan/kahlan)
+[![Coveralls Coverage Status](https://coveralls.io/repos/kahlan/kahlan/badge.svg?branch=master)](https://coveralls.io/r/kahlan/kahlan?branch=master)
+[![Scrutinizer Coverage Status](https://scrutinizer-ci.com/g/kahlan/kahlan/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/kahlan/kahlan/?branch=master)
 
 Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses a `describe-it` syntax and moves testing in PHP one step forward.
 
@@ -85,7 +85,7 @@ describe("Example", function() {
 ### via Composer
 
 ```bash
-$ composer require --dev crysalead/kahlan
+$ composer require --dev kahlan/kahlan
 ```
 
 Note:
@@ -94,7 +94,7 @@ Kahlan uses the [ferver](https://github.com/jonathanong/ferver) versioning so a 
 ### via Git clone
 
 ```
-git clone git://github.com/crysalead/kahlan.git
+git clone git://github.com/kahlan/kahlan.git
 cd kahlan
 composer install
 bin/kahlan              # to run specs or,

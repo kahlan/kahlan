@@ -59,7 +59,7 @@ Filter::register('kahlan.coverage-exporter', function($chain) {
         'collector'  => $reporter,
         'file'       => 'codeclimate.json',
         'branch'     => getenv('TRAVIS_BRANCH') ?: null,
-        'repo_token' => 'a4b5637db5629f60a5d3fc1a070b2339479ff8989c6491dfc6a19cada5e4ffaa'
+        'repo_token' => '422174e17459424c0dc0dfdd720eb17324b283a204b093e85ba21400f1414536'
     ]);
     return $chain->next();
 });
