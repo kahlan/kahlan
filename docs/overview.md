@@ -36,7 +36,7 @@ Licensed using the [MIT license](http://opensource.org/licenses/MIT).
 
 <a name="contributing"></a>
 ## Contributing
-To contribute to Kahlan, [open a pull request](https://help.github.com/articles/creating-a-pull-request/) against the `master` branch with your change. Be sure to update the specs to verify your change works as expected and to prevent regressions.
+To contribute to Kahlan, [open a pull request](https://help.github.com/articles/creating-a-pull-request/) against the `dev` branch with your change. Be sure to update the specs to verify your change works as expected and to prevent regressions.
 
 
 ## Documentation
