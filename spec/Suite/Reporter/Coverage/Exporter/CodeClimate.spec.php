@@ -167,7 +167,7 @@ describe("CodeClimate", function () {
                 'collector'   => $collector,
                 'file'        => $this->output,
                 'environment' => [
-                    'pwd'     => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                    'pwd'     => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
                 ],
                 'repo_token'  => 'ABC'
             ]);

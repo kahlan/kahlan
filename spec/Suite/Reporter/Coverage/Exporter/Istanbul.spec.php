@@ -4,12 +4,12 @@ namespace Kahlan\Spec\Suite\Reporter\Coverage;
 use Kahlan\Reporter\Coverage\Collector;
 use Kahlan\Reporter\Coverage\Driver\Xdebug;
 use Kahlan\Reporter\Coverage\Driver\Phpdbg;
-use Kahlan\Reporter\Coverage\Exporter\Lcov;
+use Kahlan\Reporter\Coverage\Exporter\Istanbul;
 use Kahlan\Spec\Fixture\Reporter\Coverage\NoEmptyLine;
 use Kahlan\Spec\Fixture\Reporter\Coverage\ExtraEmptyLine;
 use RuntimeException;
 
-describe("Lcov", function () {
+describe("Istanbul", function () {
 
     beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
@@ -37,29 +37,17 @@ describe("Lcov", function () {
 
             $time = time();
 
-            $txt = Lcov::export([
+            $json = Istanbul::export([
                 'collector' => $collector,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
             $ds = DS;
 
             $expected = <<<EOD
-TN:
-SF:/home/crysalead/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
-1,shallNotPass
-FNDA:1,shallNotPass
-FNF:1
-FNH:1
-DA:8,1
-DA:10,0
-DA:12,1
-DA:13,0
-LF:4
-LH:2
-end_of_record
+{"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php":{"path":"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
 EOD;
 
-            expect($txt)->toBe($expected);
+            expect($json)->toBe($expected);
         });
 
         it("exports the coverage of a file with an extra line at the end", function () {
@@ -79,29 +67,17 @@ EOD;
 
             $time = time();
 
-            $txt = Lcov::export([
+            $json = Istanbul::export([
                 'collector' => $collector,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
             $ds = DS;
 
             $expected = <<<EOD
-TN:
-SF:/home/crysalead/kahlan/spec/Fixture/Reporter/Coverage/ExtraEmptyLine.php
-1,shallNotPass
-FNDA:1,shallNotPass
-FNF:1
-FNH:1
-DA:8,1
-DA:10,0
-DA:12,1
-DA:13,0
-LF:4
-LH:2
-end_of_record
+{"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/ExtraEmptyLine.php":{"path":"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/ExtraEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
 EOD;
 
-            expect($txt)->toBe($expected);
+            expect($json)->toBe($expected);
 
         });
 
@@ -134,41 +110,29 @@ EOD;
 
             $time = time();
 
-            $success = Lcov::write([
+            $success = Istanbul::write([
                 'collector' => $collector,
                 'file'      => $this->output,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
 
-            expect($success)->toBe(178);
+            expect($success)->toBe(629);
 
-            $txt = file_get_contents($this->output);
+            $json = file_get_contents($this->output);
             $ds = DS;
 
             $expected = <<<EOD
-TN:
-SF:/home/crysalead/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
-1,shallNotPass
-FNDA:1,shallNotPass
-FNF:1
-FNH:1
-DA:8,1
-DA:10,0
-DA:12,1
-DA:13,0
-LF:4
-LH:2
-end_of_record
+{"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php":{"path":"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
 EOD;
 
-            expect($txt)->toBe($expected);
+            expect($json)->toBe($expected);
 
         });
 
         it("throws exception when no file is set", function () {
 
             expect(function () {
-                Lcov::write([]);
+                Istanbul::write([]);
             })->toThrow(new RuntimeException('Missing file name'));
 
         });

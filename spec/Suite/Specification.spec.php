@@ -204,7 +204,7 @@ describe("Specification", function () {
                 $expectation = $pass->children()[0];
 
                 $file = $expectation->file();
-                expect($file)->toMatch('~SpecificationSpec.php$~');
+                expect($file)->toMatch('~Specification.spec.php$~');
 
             });
 

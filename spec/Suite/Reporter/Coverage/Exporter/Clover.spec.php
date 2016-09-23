@@ -4,15 +4,18 @@ namespace Kahlan\Spec\Suite\Reporter\Coverage;
 use Kahlan\Reporter\Coverage\Collector;
 use Kahlan\Reporter\Coverage\Driver\Xdebug;
 use Kahlan\Reporter\Coverage\Driver\Phpdbg;
-use Kahlan\Reporter\Coverage\Exporter\Istanbul;
+use Kahlan\Reporter\Coverage\Exporter\Clover;
 use Kahlan\Spec\Fixture\Reporter\Coverage\NoEmptyLine;
 use Kahlan\Spec\Fixture\Reporter\Coverage\ExtraEmptyLine;
 use RuntimeException;
 
-describe("Istanbul", function () {
+describe("Clover", function () {
 
     beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
+            skipIf(true);
+        }
+        if (!class_exists('DOMDocument', false)) {
             skipIf(true);
         }
         $this->driver = PHP_SAPI !== 'phpdbg' ? new Xdebug() : new Phpdbg();
@@ -37,17 +40,30 @@ describe("Istanbul", function () {
 
             $time = time();
 
-            $json = Istanbul::export([
+            $xml = Clover::export([
                 'collector' => $collector,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'time'      => $time,
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
             $ds = DS;
 
             $expected = <<<EOD
-{"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php":{"path":"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="{$time}">
+  <project timestamp="{$time}">
+    <file name="{$ds}home{$ds}kahlan{$ds}kahlan{$ds}spec{$ds}Fixture{$ds}Reporter{$ds}Coverage{$ds}NoEmptyLine.php">
+      <line num="8" type="stmt" count="1"/>
+      <line num="10" type="stmt" count="0"/>
+      <line num="12" type="stmt" count="1"/>
+      <line num="13" type="stmt" count="0"/>
+    </file>
+    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
+  </project>
+</coverage>
+
 EOD;
 
-            expect($json)->toBe($expected);
+            expect($xml)->toBe($expected);
         });
 
         it("exports the coverage of a file with an extra line at the end", function () {
@@ -67,17 +83,30 @@ EOD;
 
             $time = time();
 
-            $json = Istanbul::export([
+            $xml = Clover::export([
                 'collector' => $collector,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'time'      => $time,
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
             $ds = DS;
 
             $expected = <<<EOD
-{"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/ExtraEmptyLine.php":{"path":"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/ExtraEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="{$time}">
+  <project timestamp="{$time}">
+    <file name="{$ds}home{$ds}kahlan{$ds}kahlan{$ds}spec{$ds}Fixture{$ds}Reporter{$ds}Coverage{$ds}ExtraEmptyLine.php">
+      <line num="8" type="stmt" count="1"/>
+      <line num="10" type="stmt" count="0"/>
+      <line num="12" type="stmt" count="1"/>
+      <line num="13" type="stmt" count="0"/>
+    </file>
+    <metrics loc="16" ncloc="12" statements="4" coveredstatements="2"/>
+  </project>
+</coverage>
+
 EOD;
 
-            expect($json)->toBe($expected);
+            expect($xml)->toBe($expected);
 
         });
 
@@ -110,29 +139,42 @@ EOD;
 
             $time = time();
 
-            $success = Istanbul::write([
+            $success = Clover::write([
                 'collector' => $collector,
                 'file'      => $this->output,
-                'base_path' => DS . 'home' . DS . 'crysalead' . DS . 'kahlan'
+                'time'      => $time,
+                'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
 
-            expect($success)->toBe(635);
+            expect($success)->toBe(481);
 
-            $json = file_get_contents($this->output);
+            $xml = file_get_contents($this->output);
             $ds = DS;
 
             $expected = <<<EOD
-{"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php":{"path":"\/home\/crysalead\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="{$time}">
+  <project timestamp="{$time}">
+    <file name="{$ds}home{$ds}kahlan{$ds}kahlan{$ds}spec{$ds}Fixture{$ds}Reporter{$ds}Coverage{$ds}NoEmptyLine.php">
+      <line num="8" type="stmt" count="1"/>
+      <line num="10" type="stmt" count="0"/>
+      <line num="12" type="stmt" count="1"/>
+      <line num="13" type="stmt" count="0"/>
+    </file>
+    <metrics loc="15" ncloc="11" statements="4" coveredstatements="2"/>
+  </project>
+</coverage>
+
 EOD;
 
-            expect($json)->toBe($expected);
+            expect($xml)->toBe($expected);
 
         });
 
         it("throws exception when no file is set", function () {
 
             expect(function () {
-                Istanbul::write([]);
+                Clover::write([]);
             })->toThrow(new RuntimeException('Missing file name'));
 
         });
