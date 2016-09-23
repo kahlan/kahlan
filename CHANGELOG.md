@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.5.7 (2016-09-23)
+
+  * **BC break:** Moving Kahlan to its own organization.
+
 ## 2.5.6 (2016-08-18)
 
   * **Bugfix:** Allow passing 'string' as Stub's implements option.
