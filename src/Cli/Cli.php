@@ -10,15 +10,23 @@ class Cli
      */
     protected static $_vt100 = [
         'colors' => [
-            'black'   => 30,
-            'red'     => 31,
-            'green'   => 32,
-            'yellow'  => 33,
-            'blue'    => 34,
-            'magenta' => 35,
-            'cyan'    => 36,
-            'white'   => 37,
-            'default' => 39
+            'black'         => 30,
+            'red'           => 31,
+            'green'         => 32,
+            'yellow'        => 33,
+            'blue'          => 34,
+            'magenta'       => 35,
+            'cyan'          => 36,
+            'light-grey'    => 37,
+            'dark-grey'     => 90,
+            'light-red'     => 91,
+            'light-green'   => 92,
+            'light-yellow'  => 93,
+            'light-blue'    => 94,
+            'light-magenta' => 95,
+            'light-cyan'    => 99,
+            'white'         => 97,
+            'default'       => 39
         ],
         'formats' => [
             'n' => 0,   //normal
@@ -99,16 +107,9 @@ class Cli
         if (is_numeric($name)) {
             return $name;
         }
-        $value = 0;
-        $items = explode(' ', $name);
-
-        if (($name = array_shift($items)) === 'light') {
-            $value += 100;
-            $name = array_shift($items);
-        }
 
         if (isset(static::$_vt100['colors'][$name])) {
-            $value += static::$_vt100['colors'][$name];
+            $value = static::$_vt100['colors'][$name];
         } else {
             $value = 39;
         }

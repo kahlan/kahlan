@@ -39,7 +39,6 @@ describe("Cli", function () {
             $this->check(Cli::color("String", "n;yellow;100"), "\e[0;33;110mSrting\e[0m");
             $this->check(Cli::color("String", "4;red;100"), "\e[0;31;110mSrting\e[0m");
             $this->check(Cli::color("String", "n;100;100"), "\e[0;100;100mSrting\e[0m");
-            $this->check(Cli::color("String", "n;light yellow;100"), "\e[0;133;110mSrting\e[0m");
 
         });
 

@@ -30,7 +30,7 @@ EOD;
         it("returns the baseline", function () {
 
             $actual = $this->terminal->kahlanBaseline();
-            expect($actual)->toBe("The PHP Test Framework for Freedom, Truth, and Justice.");
+            expect($actual)->toBe("The PHP Test Framework for Freedom, Truth and Justice.");
 
         });
 

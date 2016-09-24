@@ -12,6 +12,7 @@ class Verbose extends Terminal
     {
         parent::start($args);
         $this->write("\n");
+        $this->_indent++;
     }
 
     /**
@@ -22,8 +23,11 @@ class Verbose extends Terminal
     public function suiteStart($suite = null)
     {
         $messages = $suite->messages();
+        if (count($messages) === 2) {
+            $this->write("\n");
+        }
         $message = end($messages);
-        $this->write("{$message}\n", "b;");
+        $this->write("{$message}\n");
         $this->_indent++;
     }
 
@@ -54,6 +58,7 @@ class Verbose extends Terminal
      */
     public function end($summary)
     {
+        $this->_indent--;
         $this->write("\n");
 
         foreach ($summary->logs() as $log) {

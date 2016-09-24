@@ -59,10 +59,10 @@ class Dot extends Terminal
     {
         switch ($log->type()) {
             case 'passed':
-                $this->_write('.');
+                $this->_write($this->_symbols['dot']);
                 break;
             case 'skipped':
-                $this->_write('S', 'd');
+                $this->_write('S', 'light-grey');
                 break;
             case 'pending':
                 $this->_write('P', 'cyan');
