@@ -309,7 +309,7 @@ describe("Dir", function () {
 
             $temp = sys_get_temp_dir();
 
-            expect($dir)->toMatch('~^' . $temp . '/spec~');
+            expect($dir)->toMatch('~' . $temp . '/spec~');
 
             Dir::remove($dir);
 
