@@ -25,7 +25,7 @@ EOD;
 
     });
 
-    describe("->indent", function () {
+    describe("->indent()", function () {
 
         it("return indent", function () {
             $indent = '    ';
@@ -36,13 +36,31 @@ EOD;
 
     });
 
-    describe("->prefix", function () {
+    describe("->prefix()", function () {
 
         it("return prefix", function () {
             $prefix = 'prefix';
 
             $result = $this->terminal->prefix($prefix);
             expect($result)->toBe($prefix);
+        });
+
+    });
+
+    describe("->readableSize()", function () {
+
+        it("return 0 when value is < 1", function () {
+            $readableSize = '0';
+
+            $result = $this->terminal->readableSize(0, 2, 1024);
+            expect($result)->toBe($readableSize);
+        });
+
+        it("return round precision unit when value is >= 1", function () {
+            $readableSize = '10';
+
+            $result = $this->terminal->readableSize(10, 2, 1024);
+            expect($result)->toBe($readableSize);
         });
 
     });
