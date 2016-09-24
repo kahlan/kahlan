@@ -49,7 +49,7 @@ Setup and Teardown functions can be used at any `describe` or `context` level:
 
 ### Memoized Helper using `given()`
 
-Since `beforeEach()` is runned before each spec, all defined variables are reinitialised on each specs even when not needed. So in this case it's possible to use `given()` instead. Given's blocks are only executed when referenced (i.e. lazy loading), which mean that ordering of these blocks are irrelevant.
+Since `beforeEach()` is ran before each spec, all defined variables are reinitialised on each specs even when not needed. So in this case it's possible to use `given()` instead. Given's blocks are only executed when referenced (i.e. lazy loading), which mean that ordering of these blocks are irrelevant.
 
 ```php
 describe("Lazy loadable variables", function() {
