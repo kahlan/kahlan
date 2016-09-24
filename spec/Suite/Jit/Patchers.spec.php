@@ -172,7 +172,6 @@ describe("Patchers", function () {
 
     });
 
-
     describe("->findFile()", function () {
 
         beforeEach(function () {

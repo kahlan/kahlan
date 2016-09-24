@@ -22,7 +22,6 @@ describe("toBeAnInstanceOf", function () {
 
     });
 
-
     describe("::description()", function () {
 
         it("returns the description message", function () {

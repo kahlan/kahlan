@@ -16,6 +16,21 @@
         <exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
     </rule>
 
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
+      <properties>
+        <property name="ignoreBlankLines" value="false"/>
+      </properties>
+    </rule>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace.StartFile">
+        <severity>10</severity>
+    </rule>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace.EndFile">
+        <severity>10</severity>
+    </rule>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace.EmptyLines">
+        <severity>10</severity>
+    </rule>
+
     <file>src</file>
     <file>spec</file>
 

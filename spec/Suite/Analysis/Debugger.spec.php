@@ -72,7 +72,6 @@ describe("Debugger", function () {
                 });
             });
 
-
             it("returns `null` with non-existing files", function () {
 
                 $debugger = $this->debugger;

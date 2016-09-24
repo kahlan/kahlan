@@ -307,7 +307,6 @@ class ToReceive
         $expected = $report['message']->name();
         $with = $report['message']->args();
 
-
         $expectedTimes = $times ? ' the expected times' : '';
         $expectedParameters = $with ? ' with expected parameters' : '';
 

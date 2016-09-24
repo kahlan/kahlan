@@ -84,7 +84,6 @@ EOD;
 
     });
 
-
     describe("->patchable()", function () {
 
         it("return `true`", function () {
