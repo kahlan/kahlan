@@ -25,7 +25,7 @@ Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses 
 
 ## Documentation
 
-See the whole [documentation here](http://kahlan.readthedocs.org/en/latest)
+See the whole [documentation here](https://kahlan.github.io/docs)
 
 ## Requirements
 
