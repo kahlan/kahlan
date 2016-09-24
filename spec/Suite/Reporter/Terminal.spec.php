@@ -2,7 +2,6 @@
 namespace Kahlan\Spec\Suite\Reporter\Coverage;
 
 use Kahlan\Reporter\Terminal;
-use ReflectionProperty;
 
 describe("Terminal", function () {
     
