@@ -11,10 +11,10 @@
 The recommended way to install Kahlan is with [Composer](http://getcomposer.org/) as a *development* dependency of your project.
 
 ```bash
-composer require --dev crysalead/kahlan
+composer require --dev kahlan/kahlan
 ```
 
-Alternatively, you may manually add `"crysalead/kahlan": "~3.0"` to the `require-dev` dependencies within your `composer.json`.
+Alternatively, you may manually add `"kahlan/kahlan": "~3.0"` to the `require-dev` dependencies within your `composer.json`.
 
 
 <a name="running-kahlan"></a>
