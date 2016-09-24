@@ -369,7 +369,6 @@ describe("toReceive", function () {
 
                 });
 
-
                 it("throws an exception when required arguments are applied on a method not present in the chain", function () {
 
                     expect(function () {

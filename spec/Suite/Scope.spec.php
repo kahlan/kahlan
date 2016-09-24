@@ -107,7 +107,6 @@ describe("Scope", function () {
                 $this->expect;
             };
 
-
             expect($closure)->toThrow(new Exception("You can't use expect() inside of describe()"));
 
         });

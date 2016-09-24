@@ -224,7 +224,6 @@ describe("Allow", function () {
                 allow($foo)->toReceive('message')->with('Hello World!')->andReturn('Good Bye!');
                 expect($foo->message('Hello!'))->not->toBe('Good Bye!');
 
-
             });
 
         });
@@ -348,7 +347,6 @@ describe("Allow", function () {
                 expect($select->c(5))->not->toBe('something');
 
             });
-
 
             it("throws an exception when required arguments are applied on a method not present in the chain", function () {
 

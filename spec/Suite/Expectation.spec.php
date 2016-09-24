@@ -188,7 +188,6 @@ describe("Expectation", function () {
             expect($expectation->passed())->toBe(true);
             expect($expectation->logs())->toHaveLength(0);
 
-
         });
 
     });
