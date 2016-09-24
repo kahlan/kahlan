@@ -36,4 +36,15 @@ EOD;
 
     });
 
+    describe("->prefix", function () {
+
+        it("return prefix", function () {
+            $prefix = 'prefix';
+
+            $result = $this->terminal->prefix($prefix);
+            expect($result)->toBe($prefix);
+        });
+
+    });
+
 });
