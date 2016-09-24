@@ -27,7 +27,7 @@ EOD;
 
     describe("->indent", function () {
 
-        it("set indent", function () {
+        it("return indent", function () {
             $indent = '    ';
 
             $result = $this->terminal->indent($indent);
