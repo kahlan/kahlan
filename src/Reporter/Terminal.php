@@ -57,6 +57,17 @@ class Terminal extends Reporter
     protected $_output = null;
 
     /**
+     * Default symbol map.
+     *
+     * @var array
+     */
+    protected $_symbols = [
+        'ok'    => '✓',
+        'err'   => '✖',
+        'dot'   => '.'
+    ];
+
+    /**
      * The constructor.
      *
      * @param array $config The config array. Possible values are:
@@ -73,9 +84,36 @@ class Terminal extends Reporter
         ];
         $config += $defaults;
 
-        $this->_colors = $config['colors'];
         $this->_header = $config['header'];
         $this->_output = $config['output'];
+
+        $this->useColors($config['colors']);
+
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $this->_symbols['ok'] = '\u221A';
+            $this->_symbols['err'] = '\u00D7';
+            $this->_symbols['dot'] = '.';
+        }
+    }
+
+    /**
+     * Enable/disable color
+     *
+     * @param boolean $enable A boolean.
+     */
+    public function useColors($enable = true)
+    {
+        if (!$enable) {
+            $this->_colors = false;
+            return;
+        }
+
+        $term = getenv('TERM');
+        if (getenv('COLORTERM') || preg_match('~screen|^xterm|^vt100|color|ansi|cygwin|linux~i', $term)) {
+            $this->_colors = true;
+            return;
+        }
+        $this->_colors = false;
     }
 
     /**
@@ -90,7 +128,7 @@ class Terminal extends Reporter
             return;
         }
         $this->write($this->kahlan() . "\n\n");
-        $this->write($this->kahlanBaseline() . "\n", 'd');
+        $this->write($this->kahlanBaseline() . "\n", 'dark-grey');
         $this->write("\nWorking Directory: ", 'blue');
         $this->write(getcwd() . "\n");
     }
@@ -118,7 +156,7 @@ EOD;
      */
     public function kahlanBaseline()
     {
-        return "The PHP Test Framework for Freedom, Truth, and Justice.";
+        return "The PHP Test Framework for Freedom, Truth and Justice.";
     }
 
     /**
@@ -176,32 +214,32 @@ EOD;
 
         switch ($log->type()) {
             case 'passed':
-                $this->write('✔', 'green');
+                $this->write($this->_symbols['ok'], 'light-green');
                 $this->write(' ');
-                $this->write("{$message}\n", 'd');
+                $this->write("{$message}\n", 'dark-grey');
                 break;
             case 'skipped':
-                $this->write('✔', 'd');
+                $this->write($this->_symbols['ok'], 'light-grey');
                 $this->write(' ');
-                $this->write("{$message}\n", 'd');
+                $this->write("{$message}\n", 'light-grey');
                 break;
             case 'pending':
-                $this->write('✔', 'cyan');
+                $this->write($this->_symbols['ok'], 'cyan');
                 $this->write(' ');
                 $this->write("{$message}\n", 'cyan');
                 break;
             case 'excluded':
-                $this->write('✔', 'yellow');
+                $this->write($this->_symbols['ok'], 'yellow');
                 $this->write(' ');
                 $this->write("{$message}\n", 'yellow');
                 break;
             case 'failed':
-                $this->write('✘', 'red');
+                $this->write($this->_symbols['err'], 'red');
                 $this->write(' ');
                 $this->write("{$message}\n", 'red');
                 break;
             case 'errored':
-                $this->write('✘', 'red');
+                $this->write($this->_symbols['err'], 'red');
                 $this->write(' ');
                 $this->write("{$message}\n", 'red');
                 break;
@@ -438,7 +476,7 @@ EOD;
         $this->write(", ");
         $this->write("{$excluded} Excluded", 'yellow');
         $this->write(", ");
-        $this->write("{$skipped} Skipped", 'd');
+        $this->write("{$skipped} Skipped", 'light-grey');
         $this->write("\n\n");
         $this->write('Passed ' . ($passed), 'green');
         $this->write(" of {$total} ");
@@ -499,7 +537,7 @@ EOD;
         foreach ([
             'pending'  => 'cyan',
             'excluded' => 'yellow',
-            'skipped'  => '90'
+            'skipped'  => 'light-grey'
         ] as $type => $color) {
             if (!$logs = $summary->logs($type)) {
                 continue;
@@ -511,7 +549,7 @@ EOD;
             $this->write(ucfirst($type) . " specification" . ($count > 1 ? 's' : '') . ": {$count}\n");
 
             foreach ($logs as $log) {
-                $this->write("{$log->file()}, line {$log->line()}\n", 'd');
+                $this->write("{$log->file()}, line {$log->line()}\n", 'dark-grey');
             }
             $this->prefix('');
             $this->write("\n");

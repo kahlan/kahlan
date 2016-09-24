@@ -113,7 +113,7 @@ describe("Kahlan", function () {
 / __ \ (_| | | | | | (_| | | | |
 \/  \/\__,_|_| |_|_|\__,_|_| |_|
 
-\033[2;39;49mThe PHP Test Framework for Freedom, Truth, and Justice.\033[0m
+\033[0;90;49mThe PHP Test Framework for Freedom, Truth and Justice.\033[0m
 
 version \033[0;32;49m{$version}\033[0m
 
@@ -143,7 +143,7 @@ EOD;
 / __ \ (_| | | | | | (_| | | | |
 \/  \/\__,_|_| |_|_|\__,_|_| |_|
 
-\033[2;39;49mThe PHP Test Framework for Freedom, Truth, and Justice.\033[0m
+\033[0;90;49mThe PHP Test Framework for Freedom, Truth and Justice.\033[0m
 
 
 Usage: kahlan [options]
