@@ -63,6 +63,13 @@ EOD;
             expect($result)->toBe($readableSize);
         });
 
+        it("return round precision unit when value is >= 1 with value > base with loop value / base", function () {
+            $readableSize = '9.77K';
+
+            $result = $this->terminal->readableSize(10000, 2, 1024);
+            expect($result)->toBe($readableSize);
+        });
+
     });
 
 });
