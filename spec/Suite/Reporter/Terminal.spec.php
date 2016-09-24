@@ -2,6 +2,7 @@
 namespace Kahlan\Spec\Suite\Reporter\Coverage;
 
 use Kahlan\Reporter\Terminal;
+use ReflectionProperty;
 
 describe("Terminal", function () {
     
@@ -9,9 +10,9 @@ describe("Terminal", function () {
         $this->terminal = new Terminal([]);
     });
 
-    describe("::kahlan()", function () {
+    describe("->kahlan()", function () {
 
-        it("show kahlan logo", function () {
+        it("return kahlan motd", function () {
             $kahlan = <<<EOD
             _     _
   /\ /\__ _| |__ | | __ _ _ __
@@ -21,6 +22,17 @@ describe("Terminal", function () {
 EOD;
             $result = $this->terminal->kahlan();
             expect($result)->toBe($kahlan);
+        });
+
+    });
+
+    describe("->indent", function () {
+
+        it("set indent", function () {
+            $indent = '    ';
+
+            $result = $this->terminal->indent($indent);
+            expect($result)->toBe($indent);
         });
 
     });
