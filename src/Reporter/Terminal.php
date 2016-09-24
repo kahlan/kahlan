@@ -118,7 +118,7 @@ EOD;
      */
     public function kahlanBaseline()
     {
-        return "The Unit/BDD PHP Test Framework for Freedom, Truth, and Justice.";
+        return "The PHP Test Framework for Freedom, Truth, and Justice.";
     }
 
     /**

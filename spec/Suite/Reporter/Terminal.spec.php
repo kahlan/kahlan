@@ -4,14 +4,14 @@ namespace Kahlan\Spec\Suite\Reporter\Coverage;
 use Kahlan\Reporter\Terminal;
 
 describe("Terminal", function () {
-    
+
     beforeEach(function () {
         $this->terminal = new Terminal([]);
     });
 
     describe("->kahlan()", function () {
 
-        it("return kahlan motd", function () {
+        it("returns the kahlan ascii logo", function () {
             $kahlan = <<<EOD
             _     _
   /\ /\__ _| |__ | | __ _ _ __
@@ -19,55 +19,84 @@ describe("Terminal", function () {
 / __ \ (_| | | | | | (_| | | | |
 \/  \/\__,_|_| |_|_|\__,_|_| |_|
 EOD;
-            $result = $this->terminal->kahlan();
-            expect($result)->toBe($kahlan);
+            $actual = $this->terminal->kahlan();
+            expect($actual)->toBe($kahlan);
+        });
+
+    });
+
+    describe("->kahlanBaseline()", function () {
+
+        it("returns the baseline", function () {
+
+            $actual = $this->terminal->kahlanBaseline();
+            expect($actual)->toBe("The PHP Test Framework for Freedom, Truth, and Justice.");
+
         });
 
     });
 
     describe("->indent()", function () {
 
-        it("return indent", function () {
-            $indent = '    ';
+        it("returns no indentation by default", function () {
 
-            $result = $this->terminal->indent($indent);
-            expect($result)->toBe($indent);
+            $actual = $this->terminal->indent();
+            expect($actual)->toBe(0);
+
+        });
+
+        it("returns indent", function () {
+
+            $indent = 2;
+            $actual = $this->terminal->indent($indent);
+            expect($actual)->toBe($indent);
+
         });
 
     });
 
     describe("->prefix()", function () {
 
-        it("return prefix", function () {
-            $prefix = 'prefix';
+        it("returns an empty prefix by default", function () {
 
-            $result = $this->terminal->prefix($prefix);
-            expect($result)->toBe($prefix);
+            $actual = $this->terminal->prefix();
+            expect($actual)->toBe('');
+
+        });
+
+        it("sets the prefix string", function () {
+
+            $prefix = 'prefix';
+            $actual = $this->terminal->prefix($prefix);
+            expect($actual)->toBe($prefix);
         });
 
     });
 
     describe("->readableSize()", function () {
 
-        it("return 0 when value is < 1", function () {
+        it("returns `'0'` when size is < `1`", function () {
+
             $readableSize = '0';
+            $actual = $this->terminal->readableSize(0, 2, 1024);
+            expect($actual)->toBe($readableSize);
 
-            $result = $this->terminal->readableSize(0, 2, 1024);
-            expect($result)->toBe($readableSize);
         });
 
-        it("return round precision unit when value is >= 1", function () {
+        it("doesn't add any unit for small size number", function () {
+
             $readableSize = '10';
+            $actual = $this->terminal->readableSize(10, 2, 1024);
+            expect($actual)->toBe($readableSize);
 
-            $result = $this->terminal->readableSize(10, 2, 1024);
-            expect($result)->toBe($readableSize);
         });
 
-        it("return round precision unit when value is >= 1 with value > base with loop value / base", function () {
-            $readableSize = '9.77K';
+        it("formats big size number using appropriate unit", function () {
 
-            $result = $this->terminal->readableSize(10000, 2, 1024);
-            expect($result)->toBe($readableSize);
+            $readableSize = '9.77K';
+            $actual = $this->terminal->readableSize(10000, 2, 1024);
+            expect($actual)->toBe($readableSize);
+
         });
 
     });
