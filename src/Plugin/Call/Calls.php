@@ -66,7 +66,7 @@ class Calls
      * Get all logs or all logs related to an instance or a fully-namespaced class name.
      *
      * @param  object|string $reference An instance or a fully-namespaced class name.
-     * @param  interger      $index     Start index.
+     * @param  integer      $index      Start index.
      * @return array                    The founded log calls.
      */
     public static function logs($reference = null, $index = 0)
@@ -103,7 +103,7 @@ class Calls
      * Finds a logged call.
      *
      * @param  object        $message   The message method name.
-     * @param  interger      $index     Start index.
+     * @param  integer       $index     Start index.
      * @return array|false              Return founded log call.
      */
     public static function find($message, $index = 0, $times = 0)
