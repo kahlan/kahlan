@@ -8,15 +8,21 @@
   * **Add:** Add `toBeCalled()` matcher.
   * **Add:** `toReceive` now support a chain of messages as definition if correctly stubbed.
   * **Add:** Allow to monkey patch a class using a specific instance for all `new` on that class.
+  * **Add:** It's now possible to mark specs as pending by adding no expectation inside or mak them as excluded when using the `xit`, `xcontext`, `xdescribe` syntax.
+  * **Add:** It's possible to apply arguments requirements on a chain using `where()`.
   * **Change:** Refactor the reporting to provide more meaningful messages on failure.
+  * **Change:** Method chaining make use of variadic arguments instead of '->'
   * **Bugfix:** Fixes an issue with `toReceive()/toBeCalled` and stubs where past called methods were taken into account.
   * **BC break:** Cached files are no more compatible, cached files needs to be purged.
   * **BC break:** Rename `'params'` option to `'args'` in `Double::instance()`.
   * **BC break:** `Stub::on()` is now deprecated use `allow()` instead.
+  * **BC break:** `Monkey::patch()` has been deprecated in flavor of `allow()`. 
   * **BC break:** Rename `Stub::create()` to `Double::instance()`.
   * **BC break:** Rename `Stub::classname()` to `Double::classname()`.
   * **BC break:** Rename `before()` and `after()` to `beforeAll()` and `afterAll()`.
   * **BC break:** Remove `toReceiveNext` matchers in flavor of `->ordered` attribute to be more close to rspec way.
+  * **BC break:** `Args` has been renamed to `CommandLine` (i.e. `$this->args()` become `$this->commandLine()` in `kahlan-config.php`)
+  * **BC break:** `toReceivedNext` has been removed in flavor of `->ordered` attribute to be more close to Rspec way.
 
 ## 2.5.8 (2016-09-29)
 
