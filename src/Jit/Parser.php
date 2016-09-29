@@ -152,7 +152,7 @@ class Parser
                     break;
                 case T_DECLARE:
                     $this->_declareNode();
-                break;
+                    break;
                 case T_NAMESPACE:
                     $this->_namespaceNode();
                     break;

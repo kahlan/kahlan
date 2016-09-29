@@ -22,7 +22,7 @@ describe("Parser", function () {
     describe("->parse()", function () {
 
         it("parses consistently", function () {
-            
+
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Sample.php');
             $parsed = Parser::parse($sample);
             expect(Parser::unparse($parsed))->toBe($sample);
@@ -341,7 +341,7 @@ describe("Parser", function () {
             expect($check)->toBe(5);
         });
 
-        it("parses declare", function() {
+        it("parses declare", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/Declare';
             $content = file_get_contents($filename . '.php');
@@ -351,10 +351,9 @@ describe("Parser", function () {
 
             $parsed = Parser::parse($content);
             expect(Parser::unparse($parsed))->toBe($content);
-
         });
 
-        it("parses declare as block", function() {
+        it("parses declare as block", function () {
 
             $filename = 'spec/Fixture/Jit/Parser/DeclareAsBlock';
             $content = file_get_contents($filename . '.php');
@@ -364,7 +363,6 @@ describe("Parser", function () {
 
             $parsed = Parser::parse($content);
             expect(Parser::unparse($parsed))->toBe($content);
-
         });
 
     });
