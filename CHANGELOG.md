@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 2.5.8 (2016-09-29)
+
+  * **Bugfix:** Ignore `declare()` statement from coverable statements.
+
 ## 2.5.7 (2016-09-23)
 
   * **BC break:** Moving Kahlan to its own organization.
