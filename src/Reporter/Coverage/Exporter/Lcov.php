@@ -80,7 +80,7 @@ class Lcov
             foreach ($content['nodes'] as $node) {
                 if ($node->type === 'function' && $node->lines['start'] === $num) {
                     if ($node->isMethod || !$node->isClosure) {
-                        $result[] = 'FN:' . $num + 1 . ',' . $node->name;
+                        $result[] = 'FN:' . ($num + 1) . ',' . $node->name;
                         $fnda[$node->name] = 0;
                         $fnf++;
                         $fnCurr = $node;
