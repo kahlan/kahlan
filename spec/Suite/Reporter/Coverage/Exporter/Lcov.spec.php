@@ -44,9 +44,8 @@ describe("Lcov", function () {
             $ds = DS;
 
             $expected = <<<EOD
-TN:
-SF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
-1,shallNotPass
+TN:\nSF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
+FN:6,shallNotPass
 FNDA:1,shallNotPass
 FNF:1
 FNH:1
@@ -88,7 +87,7 @@ EOD;
             $expected = <<<EOD
 TN:
 SF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/ExtraEmptyLine.php
-1,shallNotPass
+FN:6,shallNotPass
 FNDA:1,shallNotPass
 FNF:1
 FNH:1
@@ -100,7 +99,6 @@ LF:4
 LH:2
 end_of_record
 EOD;
-
             expect($txt)->toBe($expected);
 
         });
@@ -140,7 +138,7 @@ EOD;
                 'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
 
-            expect($success)->toBe(175);
+            expect($success)->toBe(178);
 
             $txt = file_get_contents($this->output);
             $ds = DS;
@@ -148,7 +146,7 @@ EOD;
             $expected = <<<EOD
 TN:
 SF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
-1,shallNotPass
+FN:6,shallNotPass
 FNDA:1,shallNotPass
 FNF:1
 FNH:1
