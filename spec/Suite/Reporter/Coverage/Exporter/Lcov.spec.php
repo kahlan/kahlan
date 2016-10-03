@@ -44,7 +44,8 @@ describe("Lcov", function () {
             $ds = DS;
 
             $expected = <<<EOD
-TN:\nSF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
+TN:
+SF:/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php
 FN:6,shallNotPass
 FNDA:1,shallNotPass
 FNF:1
