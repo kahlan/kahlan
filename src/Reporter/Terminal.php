@@ -90,8 +90,8 @@ class Terminal extends Reporter
         $this->useColors($config['colors']);
 
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $this->_symbols['ok'] = '\u221A';
-            $this->_symbols['err'] = '\u00D7';
+            $this->_symbols['ok'] = 'V';
+            $this->_symbols['err'] = 'X';
             $this->_symbols['dot'] = '.';
         }
     }
