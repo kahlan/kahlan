@@ -88,12 +88,6 @@ class Terminal extends Reporter
         $this->_output = $config['output'];
 
         $this->useColors($config['colors']);
-
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $this->_symbols['ok'] = 'V';
-            $this->_symbols['err'] = 'X';
-            $this->_symbols['dot'] = '.';
-        }
     }
 
     /**
