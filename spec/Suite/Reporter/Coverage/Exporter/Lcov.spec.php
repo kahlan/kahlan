@@ -59,7 +59,7 @@ LH:2
 end_of_record
 EOD;
 
-            expect($txt)->toBe($expected);
+            expect(str_replace(DS, '/', $txt))->toBe($expected);
         });
 
         it("exports the coverage of a file with an extra line at the end", function () {
@@ -100,7 +100,7 @@ LF:4
 LH:2
 end_of_record
 EOD;
-            expect($txt)->toBe($expected);
+            expect(str_replace(DS, '/', $txt))->toBe($expected);
 
         });
 
@@ -160,7 +160,7 @@ LH:2
 end_of_record
 EOD;
 
-            expect($txt)->toBe($expected);
+            expect(str_replace(DS, '/', $txt))->toBe($expected);
 
         });
 

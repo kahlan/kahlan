@@ -232,7 +232,7 @@ class Dir extends \FilterIterator
         $paths = static::scan($path, $options);
 
         foreach ($paths as $path) {
-            $target = preg_replace('~^' . $root . '~', '', $path);
+            $target = preg_replace('~^' . preg_quote(rtrim($root, $ds)) . '~', '', $path);
             if (is_dir($path)) {
                 mkdir($dest . $ds . ltrim($target, $ds), $options['mode'], true);
             } else {

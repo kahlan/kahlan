@@ -479,11 +479,10 @@ class Interceptor
      */
     public function cached($file)
     {
-        if (!$cache = $this->cachePath()) {
+        if (!$cachePath = $this->cachePath()) {
             return false;
         }
-
-        $path = $cache . DS . ltrim($file, DS);
+        $path = $cachePath . DS . ltrim(preg_replace('~:~', '', $file), DS);
 
         if (!@file_exists($path)) {
             return false;

@@ -8,7 +8,7 @@ describe("Dir", function () {
 
     $this->normalize = function ($path) {
         if (!is_array($path)) {
-            return str_replace('/', DIRECTORY_SEPARATOR, $path);
+            return str_replace(DS, '/', $path);
         }
         $result = [];
         foreach ($path as $p) {
@@ -34,7 +34,7 @@ describe("Dir", function () {
                 'type' => 'file',
                 'recursive' => false
             ]);
-            expect($files)->toBe($this->normalize(['spec/Fixture/Dir/file1.txt']));
+            expect($this->normalize($files))->toBe(['spec/Fixture/Dir/file1.txt']);
 
         });
 
@@ -45,91 +45,95 @@ describe("Dir", function () {
                 'recursive' => false
             ]);
 
-            expect($sort($files))->toBe($sort($this->normalize([
+            expect($this->normalize($sort($files)))->toBe($sort([
                 'spec/Fixture/Dir/.',
                 'spec/Fixture/Dir/..',
                 'spec/Fixture/Dir/file1.txt',
                 'spec/Fixture/Dir/Nested',
                 'spec/Fixture/Dir/Extensions'
-            ])));
+            ]));
 
         });
 
         it("scans and follow symlinks", function () use ($sort) {
 
-            $files = Dir::scan($this->path . DIRECTORY_SEPARATOR . 'Extensions', [
+            $files = Dir::scan($this->path . DS . 'Extensions', [
                 'followSymlinks' => false,
                 'recursive' => false
             ]);
 
-            expect($sort($files))->toBe($this->normalize([
+            expect($this->normalize($sort($files)))->toBe([
                 'spec/Fixture/Dir/Extensions/Childs',
                 'spec/Fixture/Dir/Extensions/file.xml',
                 'spec/Fixture/Dir/Extensions/index.html',
                 'spec/Fixture/Dir/Extensions/index.php'
-            ]));
+            ]);
 
         });
 
         it("scans files recursively", function () use ($sort) {
 
-            $files = Dir::scan($this->path . DIRECTORY_SEPARATOR . 'Nested', [
+            $files = Dir::scan($this->path . DS . 'Nested', [
                 'type' => 'file'
             ]);
 
-            expect($sort($files))->toBe($this->normalize([
+            expect($this->normalize($sort($files)))->toBe([
                 'spec/Fixture/Dir/Nested/Childs/child1.txt',
                 'spec/Fixture/Dir/Nested/nested_file1.txt',
                 'spec/Fixture/Dir/Nested/nested_file2.txt'
-            ]));
+            ]);
 
         });
 
         it("scans files & directores recursively", function () use ($sort) {
 
-            $files = Dir::scan($this->path . DIRECTORY_SEPARATOR . 'Nested');
+            $files = Dir::scan($this->path . DS . 'Nested');
 
-            expect($sort($files))->toBe($this->normalize([
+            expect($this->normalize($sort($files)))->toBe([
                 'spec/Fixture/Dir/Nested/Childs',
                 'spec/Fixture/Dir/Nested/Childs/child1.txt',
                 'spec/Fixture/Dir/Nested/nested_file1.txt',
                 'spec/Fixture/Dir/Nested/nested_file2.txt'
-            ]));
+            ]);
 
         });
 
         it("scans only leaves recursively", function () use ($sort) {
 
-            $files = Dir::scan($this->path. DIRECTORY_SEPARATOR . 'Nested', [
+            $files = Dir::scan($this->path. DS . 'Nested', [
                 'leavesOnly' => true
             ]);
 
-            expect($sort($files))->toBe($this->normalize([
+            expect($this->normalize($sort($files)))->toBe([
                 'spec/Fixture/Dir/Nested/Childs/child1.txt',
                 'spec/Fixture/Dir/Nested/nested_file1.txt',
                 'spec/Fixture/Dir/Nested/nested_file2.txt'
-            ]));
+            ]);
 
         });
 
         it("scans txt files recursively", function () use ($sort) {
+
+            skipIf(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 
             $files = Dir::scan($this->path, [
                 'include' => '*.txt',
                 'type' => 'file'
             ]);
 
-            expect($sort($files))->toBe($this->normalize([
+            expect($this->normalize($sort($files)))->toBe([
                 'spec/Fixture/Dir/Extensions/Childs/child1.txt',
                 'spec/Fixture/Dir/Nested/Childs/child1.txt',
                 'spec/Fixture/Dir/Nested/nested_file1.txt',
                 'spec/Fixture/Dir/Nested/nested_file2.txt',
                 'spec/Fixture/Dir/file1.txt'
-            ]));
+            ]);
 
         });
 
         it("scans non nested txt files recursively", function () use ($sort) {
+
+            skipIf(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 
             $files = Dir::scan($this->path, [
                 'include' => '*.txt',
@@ -137,10 +141,10 @@ describe("Dir", function () {
                 'type' => 'file'
             ]);
 
-            expect($sort($files))->toBe($this->normalize([
+            expect($this->normalize($sort($files)))->toBe([
                 'spec/Fixture/Dir/Extensions/Childs/child1.txt',
                 'spec/Fixture/Dir/file1.txt'
-            ]));
+            ]);
 
         });
 
@@ -163,7 +167,7 @@ describe("Dir", function () {
                 'exclude' => '*nested*',
                 'type' => 'file'
             ]);
-            expect($files)->toBe($this->normalize(['spec/Fixture/Dir/file1.txt']));
+            expect($this->normalize($files))->toBe(['spec/Fixture/Dir/file1.txt']);
 
         });
 
@@ -200,7 +204,7 @@ describe("Dir", function () {
 
             foreach ($paths as $path) {
                 $target = preg_replace('~^spec/Fixture~', '', $path);
-                if ($target === $this->normalize('/Dir/Extensions/Childs/child1.txt')) {
+                if ($this->normalize($target) === '/Dir/Extensions/Childs/child1.txt') {
                     expect(file_exists($this->tmpDir . $target))->toBe(false);
                 } else {
                     expect(file_exists($this->tmpDir . $target))->toBe(true);
@@ -258,6 +262,8 @@ describe("Dir", function () {
 
         it("creates a nested directory", function () {
 
+            skipIf(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+
             $path = $this->tmpDir . '/My/Nested/Directory';
             $actual = Dir::make($path);
             expect($actual)->toBe(true);
@@ -309,7 +315,7 @@ describe("Dir", function () {
 
             $temp = sys_get_temp_dir();
 
-            expect($dir)->toMatch('~' . $temp . '/spec~');
+            expect($this->normalize($dir))->toMatch('~' . $this->normalize($temp) . '/spe~');
 
             Dir::remove($dir);
 

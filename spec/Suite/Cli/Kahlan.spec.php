@@ -33,6 +33,7 @@ describe("Kahlan", function () {
                 'matcher' => new Matcher()
             ])
         ]);
+        $this->console = $this->specs->terminal();
     });
 
     describe("->loadConfig()", function () {
@@ -104,6 +105,8 @@ describe("Kahlan", function () {
 
         it("echoes version if --version if provided", function () {
 
+            skipIf(!$this->console->colors());
+
             $version = Kahlan::VERSION;
 
             $expected = <<<EOD
@@ -135,6 +138,8 @@ EOD;
         });
 
         it("echoes the help if --help is provided", function () {
+
+            skipIf(!$this->console->colors());
 
             $help = <<<EOD
             _     _
@@ -213,6 +218,8 @@ EOD;
 
         it("doesn't display header with --no-header", function () {
 
+            skipIf(!$this->console->colors());
+
             $version = Kahlan::VERSION;
 
             $message = <<<EOD
@@ -236,6 +243,8 @@ EOD;
         });
 
         it("isolates `kahlan-config.php` execution in a dedicated scope", function () {
+
+            skipIf(!$this->console->colors());
 
             $version = Kahlan::VERSION;
 
