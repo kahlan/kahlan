@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.0.1 (2016-10-07)
+
+  * **Bugfix:** Fixe a couple of Windows issues.
+
 ## 3.0.0 (2016-09-01)
 
   * **Add:** Add `allow()` DSL.
