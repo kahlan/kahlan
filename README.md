@@ -16,7 +16,7 @@ Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses 
 ## Videos
 
 * <a href="http://vimeo.com/116949820" target="_blank">Warren Seymour presentation at Unified Diff (2015)</a>
-* <a href="https://www.grafikart.fr/tutoriels/php/tdd-kahlan-805" target="_blank">Grafikart presentation in French (2016)</a>
+* <a href="https://www.grafikart.fr/tutoriels/php/tdd-kahlan-805" target="_blank">Grafikart presentation in French (2016, Kahlan 2.X)</a>
 
 ## IRC
 
