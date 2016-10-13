@@ -233,9 +233,12 @@ class Dir extends \FilterIterator
 
         foreach ($paths as $path) {
             $target = preg_replace('~^' . preg_quote(rtrim($root, $ds)) . '~', '', $path);
-            if (is_dir($path)) {
-                mkdir($dest . $ds . ltrim($target, $ds), $options['mode'], true);
-            } else {
+            $isDir = is_dir($path);
+            $dirname = $dest . $ds . ltrim($isDir ? $target : dirname($target), $ds);
+            if (!file_exists($dirname)) {
+                mkdir($dirname, $options['mode'], true);
+            }
+            if (!$isDir) {
                 copy($path, $dest . $ds . ltrim($target, $ds));
             }
         }
