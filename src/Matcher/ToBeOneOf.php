@@ -12,7 +12,7 @@ class ToBeOneOf
      */
     public static function match($actual, $expected)
     {
-        return in_array($actual, $expected);
+        return ToContain::match($expected, $actual);
     }
 
     /**
