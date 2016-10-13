@@ -119,3 +119,4 @@ composer install
 bin/kahlan              # to run specs or,
 bin/kahlan --coverage=4 # to run specs with coverage info for namespaces, classes & methods (require xdebug)
 ```
+test
