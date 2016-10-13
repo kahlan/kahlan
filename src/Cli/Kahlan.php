@@ -332,6 +332,7 @@ EOD;
         Matcher::register('toBeCalled',       'Kahlan\Matcher\ToBeCalled');
         Matcher::register('toThrow',          'Kahlan\Matcher\ToThrow');
         Matcher::register('toMatchEcho',      'Kahlan\Matcher\ToMatchEcho');
+        Matcher::register('toBeOneOf',        'Kahlan\Matcher\ToBeOneOf');
     }
 
     /**
