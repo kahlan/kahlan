@@ -282,6 +282,12 @@ describe("Metrics", function () {
 
             expect($metrics->get('Kahlan\Spec\Fixture\Reporter\Coverage\ImplementsCoverageInterface'))->toBe(null);
 
+            expect($collector->export())->toBe([
+                str_replace('/', DS, 'spec/Fixture/Reporter/Coverage/ImplementsCoverage.php') => [
+                    7 => 1
+                ]
+            ]);
+
         });
 
         describe("->children()", function () {
