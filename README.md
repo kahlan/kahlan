@@ -60,10 +60,9 @@ describe("Example", function() {
 
     it("expects methods to be called", function() {
 
-        expect($user)->toReceive('save')->with(['validates' => false]);
-
         $user = new User();
-        $user->validates(['validates' => false]);
+        expect($user)->toReceive('save')->with(['validates' => false]);
+        $user->save(['validates' => false]);
 
     });
 
