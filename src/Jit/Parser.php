@@ -460,7 +460,14 @@ class Parser
         $args = $this->_parseArgs();
         $node->args = $args['args'];
         $body .= $args['body'] . $this->_stream->next([';', '{']);
-        $isMethod = $parent && $parent->hasMethods;
+        if ($parent) {
+            $isMethod = $parent->hasMethods;
+            if ($parent->type === 'interface') {
+                $node->type = 'signature';
+            }
+        } else {
+            $isMethod = false;
+        }
         $node->isMethod = $isMethod;
         $node->isClosure = !$node->name;
         if ($isMethod) {
@@ -750,6 +757,7 @@ class Parser
             'interface' => 'interface',
             'trait'     => 'trait',
             'function'  => 'function',
+            'signature' => 'signature',
             'attribute' => 'a',
             'code'      => 'c',
             'comment'   => 'd',
