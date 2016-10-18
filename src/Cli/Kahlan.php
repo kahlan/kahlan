@@ -102,7 +102,7 @@ class Kahlan
         $commandLine->option('src',       ['array'   => true, 'default' => ['src']]);
         $commandLine->option('spec',      ['array'   => true, 'default' => ['spec']]);
         $commandLine->option('reporter',  ['array'   => true, 'default' => ['dot']]);
-        $commandLine->option('pattern',   ['default' => ['*Spec.php', '*.spec.php']]);
+        $commandLine->option('grep',      ['default' => ['*Spec.php', '*.spec.php']]);
         $commandLine->option('coverage',  ['type'    => 'string']);
         $commandLine->option('config',    ['default' => 'kahlan-config.php']);
         $commandLine->option('ff',        ['type'    => 'numeric', 'default' => 0]);
@@ -256,7 +256,7 @@ Configuration Options:
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
   --spec=<path>                       Paths of specification directories (default: `['spec']`).
-  --pattern=<pattern>                 A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
+  --grep=<pattern>                    A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
 
 Reporter Options:
 
@@ -386,7 +386,7 @@ EOD;
     protected function _bootstrap()
     {
         return Filter::on($this, 'bootstrap', [], function ($chain) {
-            $this->suite()->backtraceFocus($this->commandLine()->get('pattern'));
+            $this->suite()->backtraceFocus($this->commandLine()->get('grep'));
             if (!$this->commandLine()->exists('coverage')) {
                 if ($this->commandLine()->exists('clover') || $this->commandLine()->exists('istanbul') || $this->commandLine()->exists('lcov')) {
                     $this->commandLine()->set('coverage', 1);
@@ -459,7 +459,7 @@ EOD;
                 }
             }
             $files = Dir::scan($specDirs, [
-                'include' => $this->commandLine()->get('pattern'),
+                'include' => $this->commandLine()->get('grep'),
                 'exclude' => '*/.*',
                 'type' => 'file'
             ]);

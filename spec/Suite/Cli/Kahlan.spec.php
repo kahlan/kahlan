@@ -158,7 +158,7 @@ Configuration Options:
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
   --spec=<path>                       Paths of specification directories (default: `['spec']`).
-  --pattern=<pattern>                 A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
+  --grep=<pattern>                    A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
 
 Reporter Options:
 
