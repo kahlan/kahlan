@@ -461,8 +461,6 @@ EOD;
      */
     public function _reportSummary($summary)
     {
-        $this->_summarizeSkipped($summary);
-
         $passed = $summary->passed();
         $skipped = $summary->skipped();
         $pending = $summary->pending();
@@ -508,7 +506,7 @@ EOD;
         $this->write(" in {$time} seconds (using {$memory}o)");
         $this->write("\n\n");
 
-        $this->_summarizeFocused($summary);
+        $this->_reportFocused($summary);
     }
 
     /**
@@ -516,7 +514,7 @@ EOD;
      *
      * @param object $summary The execution summary instance.
      */
-    protected function _summarizeFocused($summary)
+    protected function _reportFocused($summary)
     {
         if (!$focused = $summary->get('focused')) {
             return;
@@ -536,7 +534,7 @@ EOD;
      *
      * @param object $summary The execution summary instance.
      */
-    protected function _summarizeSkipped($summary)
+    protected function _reportSkipped($summary)
     {
         foreach ([
             'pending'  => 'cyan',

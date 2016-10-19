@@ -135,12 +135,14 @@ class Bar extends Terminal
     public function end($summary)
     {
         $this->write("\n\n");
+        $this->_reportSkipped($summary);
+
         foreach ($summary->logs() as $log) {
             if (!$log->passed()) {
                 $this->_report($log);
             }
         }
-        $this->write("\n\n");
+        $this->write("\n");
         $this->_reportSummary($summary);
     }
 }
