@@ -3,7 +3,7 @@ namespace Kahlan\Spec\Suite;
 
 use Exception;
 use Kahlan\Log;
-use Kahlan\Scope;
+use Kahlan\Block\Specification;
 
 describe("Log", function () {
 
@@ -12,7 +12,7 @@ describe("Log", function () {
         it("correctly sets default values", function () {
 
             $log = new Log();
-            expect($log->scope())->toBe(null);
+            expect($log->block())->toBe(null);
             expect($log->type())->toBe('passed');
             expect($log->not())->toBe(false);
             expect($log->description())->toBe(null);
@@ -32,12 +32,12 @@ describe("Log", function () {
     describe("->add()", function () {
 
         beforeEach(function () {
-            $this->scope = new Scope();
-            $this->pattern = '*Suite.php';
+            $this->block = new Specification();
+            $this->pattern = '*Specification.php';
             $this->regExp = strtr(preg_quote($this->pattern, '~'), ['\*' => '.*', '\?' => '.']);
-            $this->scope->backtraceFocus($this->pattern);
+            $this->block->suite()->backtraceFocus($this->pattern);
             $this->reports = new Log([
-                "scope" => $this->scope
+                'block' => $this->block
             ]);
         });
 

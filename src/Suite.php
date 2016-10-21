@@ -6,10 +6,24 @@ use Throwable;
 use Exception;
 use InvalidArgumentException;
 use Kahlan\Analysis\Debugger;
+use Kahlan\Block;
+use Kahlan\Block\Group;
 
-class Suite extends Scope
+class Suite
 {
+    /**
+     * The PHP constraint to respect
+     *
+     * @var string
+     */
     public static $PHP = PHP_MAJOR_VERSION;
+
+    /**
+     * Blocks stack.
+     *
+     * @var Block[]
+     */
+    protected static $_blocks = [];
 
     /**
      * Store all hashed references.
@@ -23,14 +37,14 @@ class Suite extends Scope
      *
      * @var integer
      */
-    protected $_status = null;
+    protected $_status = 0;
 
     /**
-     * The children array.
+     * The root group block of the test suite.
      *
-     * @var Suite[]|Specification[]
+     * @var Group
      */
-    protected $_children = [];
+    protected $_root = null;
 
     /**
      * Suite statistics.
@@ -40,16 +54,11 @@ class Suite extends Scope
     protected $_stats = null;
 
     /**
-     * The each callbacks.
+     * The reporters container.
      *
-     * @var array
+     * @var Reporters
      */
-    protected $_callbacks = [
-        'beforeAll'  => [],
-        'afterAll'   => [],
-        'beforeEach' => [],
-        'afterEach'  => [],
-    ];
+    protected $_reporters = null;
 
     /**
      * Array of fully-namespaced class name to clear on each `it()`.
@@ -67,6 +76,29 @@ class Suite extends Scope
     protected $_ff = 0;
 
     /**
+     * Count the number of failure or exception.
+     *
+     * @see ::failfast()
+     * @var integer
+     */
+    protected $_failures = 0;
+
+    /**
+     * The execution summary instance.
+     *
+     * @var object
+     */
+    protected $_summary = null;
+
+    /**
+     * A regexp pattern used to removes useless traces to focus on the one
+     * related to a spec file.
+     *
+     * @var string
+     */
+    protected $_backtraceFocus = null;
+
+    /**
      * The Constructor.
      *
      * @param array $config The Suite config array. Options are:
@@ -75,287 +107,26 @@ class Suite extends Scope
      */
     public function __construct($config = [])
     {
-        $defaults = [
-            'closure' => null,
-            'name'    => 'describe'
-        ];
-        $config += $defaults;
-        parent::__construct($config);
-
-        if ($this->_root === $this) {
-            return;
-        }
-        $closure = $this->_bind($config['closure'], $config['name']);
-        $this->_closure = $closure;
-        if ($this->_type === 'focus') {
-            $this->_emitFocus();
-        }
+        $this->_summary = new Summary();
+        $this->_root = new Group(['suite' => $this]);
     }
 
     /**
-     * Adds a group/class related spec.
+     * Gets children.
      *
-     * @param  string  $message Description message.
-     * @param  Closure $closure A test case closure.
-     *
-     * @return Suite
+     * @return array The array of children instances.
      */
-    public function describe($message, $closure, $timeout = null, $type = 'normal')
+    public function root()
     {
-        $parent = $this;
-        $name = 'describe';
-        $timeout = $timeout !== null ? $timeout : $this->timeout();
-        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'timeout', 'type'));
-
-        return $this->_children[] = $suite;
+        return $this->_root;
     }
 
     /**
-     * Adds a context related spec.
-     *
-     * @param  string  $message Description message.
-     * @param  Closure $closure A test case closure.
-     * @param  null    $timeout
-     * @param  string  $type
-     *
-     * @return Suite
+     * Increment the number of failures.
      */
-    public function context($message, $closure, $timeout = null, $type = 'normal')
+    public function failure()
     {
-        $parent = $this;
-        $name = 'context';
-        $timeout = $timeout !== null ? $timeout : $this->timeout();
-        $suite = new Suite(compact('message', 'closure', 'parent', 'name', 'timeout', 'type'));
-
-        return $this->_children[] = $suite;
-    }
-
-    /**
-     * Adds a spec.
-     *
-     * @param  string|Closure $message Description message or a test closure.
-     * @param  Closure        $closure A test case closure.
-     * @param  string         $type   The type.
-     *
-     * @return Specification
-     */
-    public function it($message, $closure = null, $timeout = null, $type = 'normal')
-    {
-        static $inc = 1;
-        if ($message instanceof Closure) {
-            $type = $timeout;
-            $timeout = $closure;
-            $closure = $message;
-            $message = "spec #" . $inc++;
-        }
-        $parent = $this;
-        $root = $this->_root;
-        $timeout = $timeout !== null ? $timeout : $this->timeout();
-        $spec = new Specification(compact('message', 'closure', 'parent', 'root', 'timeout', 'type'));
-        $this->_children[] = $spec;
-
-        return $this;
-    }
-
-    /**
-     * Comments out a group/class related spec.
-     *
-     * @param  string  $message Description message.
-     * @param  Closure $closure A test case closure.
-     *
-     * @return
-     */
-    public function xdescribe($message, $closure, $timeout = null)
-    {
-        return $this->describe($message, $closure, $timeout, 'exclude');
-    }
-
-    /**
-     * Comments out a context related spec.
-     *
-     * @param  string  $message Description message.
-     * @param  Closure $closure A test case closure.
-     *
-     * @return
-     */
-    public function xcontext($message, $closure, $timeout = null)
-    {
-        return $this->context($message, $closure, $timeout, 'exclude');
-    }
-
-    /**
-     * Comments out a spec.
-     *
-     * @param  string|Closure $message Description message or a test closure.
-     * @param  Closure|null   $closure A test case closure or `null`.
-     *
-     * @return
-     */
-    public function xit($message, $closure = null, $timeout = null)
-    {
-        return $this->it($message, $closure, $timeout, 'exclude');
-    }
-
-    /**
-     * Adds an focused group/class related spec.
-     *
-     * @param  string  $message Description message.
-     * @param  Closure $closure A test case closure.
-     *
-     * @return Suite
-     */
-    public function fdescribe($message, $closure, $timeout = null)
-    {
-        return $this->describe($message, $closure, $timeout, 'focus');
-    }
-
-    /**
-     * Adds an focused context related spec.
-     *
-     * @param  string  $message Description message.
-     * @param  Closure $closure A test case closure.
-     *
-     * @return Suite
-     */
-    public function fcontext($message, $closure, $timeout = null)
-    {
-        return $this->context($message, $closure, $timeout, 'focus');
-    }
-
-    /**
-     * Adds an focused spec.
-     *
-     * @param  string|Closure $message Description message or a test closure.
-     * @param  Closure|null   $closure A test case closure or `null`.
-     *
-     * @return Specification
-     */
-    public function fit($message, $closure = null, $timeout = null)
-    {
-        return $this->it($message, $closure, $timeout, 'focus');
-    }
-
-    /**
-     * Executed before tests.
-     *
-     * @param  Closure $closure A closure
-     *
-     * @return self
-     */
-    public function beforeAll($closure)
-    {
-        $this->_bind($closure, 'beforeAll');
-        $this->_callbacks['beforeAll'][] = $closure;
-
-        return $this;
-    }
-
-    /**
-     * Executed after tests.
-     *
-     * @param  Closure $closure A closure
-     *
-     * @return self
-     */
-    public function afterAll($closure)
-    {
-        $this->_bind($closure, 'afterAll');
-        $this->_callbacks['afterAll'][] = $closure;
-
-        return $this;
-    }
-
-    /**
-     * Executed before each tests.
-     *
-     * @param  Closure $closure A closure
-     *
-     * @return self
-     */
-    public function beforeEach($closure)
-    {
-        $this->_bind($closure, 'beforeEach');
-        $this->_callbacks['beforeEach'][] = $closure;
-
-        return $this;
-    }
-
-    /**
-     * Executed after each tests.
-     *
-     * @param  Closure $closure A closure
-     *
-     * @return self
-     */
-    public function afterEach($closure)
-    {
-        $this->_bind($closure, 'afterEach');
-        $this->_callbacks['afterEach'][] = $closure;
-
-        return $this;
-    }
-
-    /**
-     * Suite processing.
-     *
-     * @param array $options Process options.
-     */
-    protected function _process($options = [])
-    {
-        static::$_instances[] = $this;
-        $this->_errorHandler(true, $options);
-
-        $suite = function () {
-            $this->_suiteStart();
-            foreach ($this->_children as $child) {
-                if ($this->failfast()) {
-                    break;
-                }
-                $this->_passed = $child->passed() && $this->_passed;
-            }
-            $this->_suiteEnd();
-        };
-
-        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
-            try {
-                $suite();
-            } catch (Throwable $exception) {
-                $this->_exception($exception);
-                $this->_suiteEnd();
-            }
-        } else {
-            try {
-                $suite();
-            } catch (Exception $exception) {
-                $this->_exception($exception);
-                $this->_suiteEnd();
-            }
-        }
-
-        $this->_errorHandler(false);
-        array_pop(static::$_instances);
-    }
-
-    /**
-     * Suite start helper.
-     */
-    protected function _suiteStart()
-    {
-        if ($this->message()) {
-            $this->report('suiteStart', $this);
-        }
-        $this->runCallbacks('beforeAll', false);
-    }
-
-    /**
-     * Suite end helper.
-     */
-    protected function _suiteEnd()
-    {
-        $this->runCallbacks('afterAll', false);
-        if ($this->message()) {
-            $this->report('suiteEnd', $this);
-        }
+        $this->_failures++;
     }
 
     /**
@@ -365,22 +136,7 @@ class Suite extends Scope
      */
     public function failfast()
     {
-        return $this->_root->_ff && $this->_root->_failures >= $this->_root->_ff;
-    }
-
-    /**
-     * Runs a callback.
-     *
-     * @param string $name The name of the callback (i.e `'beforeEach'` or `'afterEach'`).
-     */
-    public function runCallbacks($name, $recursive = true)
-    {
-        $instances = $recursive ? $this->_parents(true) : [$this];
-        foreach ($instances as $instance) {
-            foreach ($instance->_callbacks[$name] as $closure) {
-                $closure($this);
-            }
-        }
+        return $this->_ff && $this->_failures >= $this->_ff;
     }
 
     /**
@@ -412,6 +168,26 @@ class Suite extends Scope
     }
 
     /**
+     * Gets/sets the regexp pattern used to removes useless traces to focus on the one
+     * related to a spec file.
+     *
+     * @param  string $pattern A wildcard pattern (i.e. `fnmatch()` style).
+     * @return string          The focus regexp.
+     */
+    public function backtraceFocus($pattern = null)
+    {
+        if ($pattern === null) {
+            return $this->_backtraceFocus;
+        }
+        $patterns = is_array($pattern) ? $pattern : [$pattern];
+        foreach ($patterns as $key => $value) {
+            $patterns[$key] = preg_quote($value, '~');
+        }
+        $pattern = join('|', $patterns);
+        return $this->_backtraceFocus = strtr($pattern, ['\*' => '.*', '\?' => '.']);
+    }
+
+    /**
      * Runs all specs.
      *
      * @param  array     $options Run options.
@@ -428,73 +204,33 @@ class Suite extends Scope
         ];
         $options += $defaults;
 
-        if ($this->_locked) {
-            throw new Exception('Method not allowed in this context.');
-        }
-
-        $this->_locked = true;
         $this->_reporters = $options['reporters'];
-        $this->_autoclear = (array)$options['autoclear'];
+        $this->_autoclear = (array) $options['autoclear'];
         $this->_ff = $options['ff'];
 
-        $this->report('start', ['total' => $this->enabled()], true);
+        $this->report('start', ['total' => $this->active()]);
 
-        $success = $this->passed();
+        $this->_errorHandler(true, $options);
+
+        $passed = $this->root()->process();
+
+        $this->_errorHandler(false);
+
         $this->summary()->memoryUsage(memory_get_peak_usage());
 
-        $this->report('end', $this->summary(), true);
-
-        $this->_locked = false;
-
-        return $success;
+        $this->report('end', $this->summary());
+        $this->_status = $passed ? 0 : -1;
+        return $passed;
     }
 
     /**
-     * Checks if all test passed.
+     * Gets specs excecution results.
      *
-     * @return boolean Returns `true` if no error occurred, `false` otherwise.
+     * @return array
      */
-    public function passed()
+    public function summary()
     {
-        if (!$this->_runned) {
-            $this->_process();
-        }
-        $this->_runned = true;
-        return $this->_passed;
-    }
-
-    /**
-     * Gets number of total specs.
-     *
-     * @return integer
-     */
-    public function total()
-    {
-        if ($this->_stats === null) {
-            $this->stats();
-        }
-        return $this->_stats['normal'] + $this->_stats['focused'] + $this->_stats['excluded'];
-    }
-
-    /**
-     * Gets number of enabled specs.
-     *
-     * @return integer
-     */
-    public function enabled()
-    {
-        if ($this->_stats === null) {
-            $this->stats();
-        }
-        return $this->focused() ? $this->_stats['focused'] : $this->_stats['normal'];
-    }
-
-    /**
-     * Triggers the `stop` event.
-     */
-    public function stop()
-    {
-        $this->report('stop', $this->summary(), true);
+        return $this->_summary;
     }
 
     /**
@@ -502,15 +238,16 @@ class Suite extends Scope
      *
      * @return array The suite stats.
      */
-    protected function stats()
+    public function stats($block = null)
     {
-        static::$_instances[] = $this;
-        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
+        $block = $block ?: $this->root();
+        static::push($block);
+        if (Suite::$PHP >= 7) {
             try {
-                $this->_stats = $this->_stats();
+                $this->_stats = $this->_stats($block);
             } catch (Throwable $exception) {
-                $this->_exception($exception);
-                $this->summary()->log($this->log());
+                $block->log()->type('errored');
+                $block->log()->exception($exception);
 
                 $this->_stats = [
                     'normal' => 0,
@@ -519,15 +256,9 @@ class Suite extends Scope
                 ];
             }
         } else {
-            try {
-                $this->_stats = $this->_stats();
-            } catch (Exception $exception) {
-                $this->_passed = false;
-                array_pop(static::$_instances);
-                throw $exception;
-            }
+            $this->_stats = $this->_stats($block);
         }
-        array_pop(static::$_instances);
+        static::pop();
         return $this->_stats;
     }
 
@@ -536,25 +267,25 @@ class Suite extends Scope
      *
      * @return array The suite stats.
      */
-    protected function _stats()
+    protected function _stats($block)
     {
-        if ($closure = $this->_closure) {
-            $closure($this);
+        if ($closure = $block->closure()) {
+            $closure($block);
         }
 
         $normal = 0;
         $focused = 0;
         $excluded = 0;
-        foreach ($this->children() as $child) {
-            if ($this->excluded()) {
+        foreach ($block->children() as $child) {
+            if ($block->excluded()) {
                 $child->type('exclude');
             }
-            if ($child instanceof Suite) {
-                $result = $child->stats();
+            if ($child instanceof Group) {
+                $result = $this->stats($child);
                 if ($child->focused() && !$result['focused']) {
                     $focused += $result['normal'];
                     $excluded += $result['excluded'];
-                    $child->_broadcastFocus();
+                    $child->broadcastFocus();
                 } else {
                     $normal += $result['normal'];
                     $focused += $result['focused'];
@@ -578,50 +309,68 @@ class Suite extends Scope
     }
 
     /**
+     * Gets number of total specs.
+     *
+     * @return integer
+     */
+    public function total()
+    {
+        if ($this->_stats === null) {
+            $this->stats();
+        }
+        return $this->_stats['normal'] + $this->_stats['focused'] + $this->_stats['excluded'];
+    }
+
+    /**
+     * Gets number of active specs.
+     *
+     * @return integer
+     */
+    public function active()
+    {
+        if ($this->_stats === null) {
+            $this->stats();
+        }
+        return $this->root()->focused() ? $this->_stats['focused'] : $this->_stats['normal'];
+    }
+
+    /**
      * Gets exit status code according passed results.
      *
      * @param  integer $status If set force a specific status to be retruned.
      *
      * @return boolean         Returns `0` if no error occurred, `-1` otherwise.
      */
-    public function status($status = null)
+    public function status()
     {
-        if (func_num_args()) {
-            $this->_status = $status;
-            return $this;
-        }
-
-        if ($this->focused()) {
+        if ($this->root()->focused()) {
             return -1;
         }
+        return $this->_status;
+    }
 
-        if ($this->_status !== null) {
-            return $this->_status;
+    /**
+     * Send some data to reporters.
+     *
+     * @param string $type The message type.
+     * @param mixed  $data The message data.
+     */
+    public function report($type, $data)
+    {
+        if (!$reporters = $this->reporters()) {
+            return;
         }
-
-        return $this->passed() ? 0 : -1;
+        $reporters->dispatch($type, $data);
     }
 
     /**
-     * Gets children.
+     * Gets the reporters container.
      *
-     * @return array The array of children instances.
+     * @return object
      */
-    public function children()
+    public function reporters()
     {
-        return $this->_children;
-    }
-
-    /**
-     * Gets callbacks.
-     *
-     * @param  string $type The type of callbacks to get.
-     *
-     * @return array        The array callbacks instances.
-     */
-    public function callbacks($type)
-    {
-        return isset($this->_callbacks[$type]) ? $this->_callbacks[$type] : [];
+        return $this->_reporters;
     }
 
     /**
@@ -629,7 +378,7 @@ class Suite extends Scope
      */
     public function autoclear()
     {
-        foreach ($this->_root->_autoclear as $plugin) {
+        foreach ($this->_autoclear as $plugin) {
             if (is_object($plugin)) {
                 if (method_exists($plugin, 'clear')) {
                     $plugin->clear();
@@ -641,16 +390,11 @@ class Suite extends Scope
     }
 
     /**
-     * Applies focus downward to the leaf.
+     * Triggers the `stop` event.
      */
-    protected function _broadcastFocus()
+    public function stop()
     {
-        foreach ($this->_children as $child) {
-            $child->type('focus');
-            if ($child instanceof Suite) {
-                $child->_broadcastFocus();
-            }
-        }
+        $this->report('stop', $this->summary(), true);
     }
 
     /**
@@ -704,5 +448,35 @@ class Suite extends Scope
     public static function reset()
     {
         static::$_registered = [];
+    }
+
+    /**
+     * Push a block in the stack.
+     *
+     * @param Block A block instance to push instance.
+     */
+    public static function push($block)
+    {
+        static::$_blocks[] = $block;
+    }
+
+    /**
+     * Get the active scope instance.
+     *
+     * @return Scope The object instance or `null` if there's no active instance.
+     */
+    public static function current()
+    {
+        return end(static::$_blocks);
+    }
+
+    /**
+     * Pop a block from the stack.
+     *
+     * @return Block The popped block instance .
+     */
+    public static function pop()
+    {
+        return array_pop(static::$_blocks);
     }
 }

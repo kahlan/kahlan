@@ -642,7 +642,7 @@ EOD;
      */
     protected function _quit()
     {
-        return Filter::on($this, 'quit', [$this->suite()->passed()], function ($chain, $success) {
+        return Filter::on($this, 'quit', [$this->suite()->status()], function ($chain, $success) {
         });
     }
 }

@@ -1,7 +1,7 @@
 <?php
-$suite = $this->suite();
+$root = $this->suite()->root();
 
-$suite->describe("Pass", function() {
+$root->describe("Pass", function() {
 
 	$this->it("pass", function() {
 
