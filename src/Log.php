@@ -6,11 +6,11 @@ use Kahlan\Analysis\Debugger;
 class Log
 {
     /**
-     * The scope context instance.
+     * The block context instance.
      *
      * @var object
      */
-    protected $_scope = null;
+    protected $_block = null;
 
     /**
      * The type of the report.
@@ -93,12 +93,12 @@ class Log
      * The Constructor.
      *
      * @param array $config The Suite config array. Options are:
-     *                      -`'scope'` _object_: the scope context instance.
+     *                      -`'block'` _object_: the block instance.
      */
     public function __construct($config = [])
     {
         $defaults = [
-            'scope'       => null,
+            'block'       => null,
             'type'        => 'passed',
             'not'         => false,
             'description' => null,
@@ -110,7 +110,7 @@ class Log
         ];
         $config += $defaults;
 
-        $this->_scope       = $config['scope'];
+        $this->_block       = $config['block'];
         $this->_type        = $config['type'];
         $this->_not         = $config['not'];
         $this->_description = $config['description'];
@@ -118,21 +118,22 @@ class Log
         $this->_matcherName = $config['matcherName'];
         $this->_data        = $config['data'];
         $this->exception($config['exception']);
+
         if ($config['backtrace']) {
             $this->backtrace($config['backtrace']);
-        } elseif ($this->scope()) {
-            $this->backtrace($this->scope()->backtrace());
+        } elseif ($this->block()) {
+            $this->backtrace($this->block()->backtrace());
         }
     }
 
     /**
-     * Gets the scope context of the report.
+     * Gets the block context of the report.
      *
      * @return object
      */
-    public function scope()
+    public function block()
     {
-        return $this->_scope;
+        return $this->_block;
     }
 
     /**
@@ -262,13 +263,13 @@ class Log
     }
 
     /**
-     * Gets the scope related messages.
+     * Gets the block related messages.
      *
      * @return array
      */
     public function messages()
     {
-        return $this->scope()->messages();
+        return $this->block()->messages();
     }
 
     /**
@@ -295,9 +296,9 @@ class Log
         if (!isset($data['backtrace'])) {
             $data['backtrace'] = [];
         } else {
-            $data['backtrace'] = Debugger::focus($this->scope()->backtraceFocus(), $data['backtrace'], 1);
+            $data['backtrace'] = Debugger::focus($this->block()->suite()->backtraceFocus(), $data['backtrace'], 1);
         }
-        $child = new static($data + ['scope' => $this->_scope]);
+        $child = new static($data + ['block' => $this->_block]);
         $this->_children[] = $child;
         return $child;
     }

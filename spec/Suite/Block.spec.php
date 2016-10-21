@@ -3,16 +3,20 @@ namespace Kahlan\Spec\Suite;
 
 use Exception;
 use Kahlan\SkipException;
-use Kahlan\Scope;
+use Kahlan\Suite;
 use Kahlan\Summary;
 use Kahlan\Log;
+use Kahlan\Plugin\Double;
 
-describe("Scope", function () {
+describe("Block", function () {
 
     beforeEach(function () {
+        $this->block = $block = Double::classname(['extends' => 'Kahlan\Block']);
 
-        $this->scope = new Scope(['message' => 'it runs a spec']);
-
+        $this->createScope= function ($options = []) use ($block) {
+            return new $block($options);
+        };
+        $this->scope = $this->createScope(['message' => 'it runs a spec']);
     });
 
     describe("->__construct()", function () {
@@ -20,23 +24,21 @@ describe("Scope", function () {
         it("sets passed options", function () {
 
             $log = new Log();
-            $summary = new Summary();
 
-            $scope = new Scope([
+            $scope = $this->createScope([
                 'type'    => 'focus',
                 'message' => 'test',
                 'parent'  => null,
                 'root'    => null,
                 'log'     => $log,
-                'timeout' => 10,
-                'summary' => $summary
+                'timeout' => 10
             ]);
 
             expect($scope->type())->toBe('focus');
             expect($scope->message())->toBe('test');
             expect($scope->parent())->toBe(null);
             expect($scope->log())->toBe($log);
-            expect($scope->summary())->toBe($summary);
+            expect($scope->suite()->summary())->toBe($scope->summary());
 
         });
 
@@ -46,8 +48,8 @@ describe("Scope", function () {
 
         it("returns the parent node", function () {
 
-            $parent = new Scope();
-            $this->scope = new Scope(['parent' => $parent]);
+            $parent = $this->createScope();
+            $this->scope = $this->createScope(['parent' => $parent]);
             expect($this->scope->parent())->toBe($parent);
 
         });
@@ -58,8 +60,8 @@ describe("Scope", function () {
 
         it("returns the backtrace", function () {
 
-            $this->scope = new Scope();
-            expect(basename($this->scope->backtrace()[1]['file']))->toBe('Scope.spec.php');
+            $this->scope = $this->createScope();
+            expect(basename($this->scope->backtrace()[1]['file']))->toBe('Block.spec.php');
 
         });
 
@@ -82,7 +84,29 @@ describe("Scope", function () {
 
         it("throw an new exception for reserved keywords", function () {
 
-            foreach (Scope::$blacklist as $keyword => $bool) {
+            foreach ([
+                '__construct' => true,
+                '__call'      => true,
+                '__get'       => true,
+                '__set'       => true,
+                'given'       => true,
+                'afterAll'    => true,
+                'afterEach'   => true,
+                'beforeAll'   => true,
+                'beforeEach'  => true,
+                'context'     => true,
+                'describe'    => true,
+                'expect'      => true,
+                'given'       => true,
+                'it'          => true,
+                'fdescribe'   => true,
+                'fcontext'    => true,
+                'fit'         => true,
+                'skipIf'      => true,
+                'xdescribe'   => true,
+                'xcontext'    => true,
+                'xit'         => true
+            ] as $keyword => $bool) {
                 $closure = function () use ($keyword) {
                     $this->{$keyword} = 'some value';
                 };
@@ -98,16 +122,6 @@ describe("Scope", function () {
             };
 
             expect($closure)->toThrow(new Exception('Undefined variable `unexisting`.'));
-
-        });
-
-        it("throws properly message on expect() usage inside of describe()", function () {
-
-            $closure = function () {
-                $this->expect;
-            };
-
-            expect($closure)->toThrow(new Exception("You can't use expect() inside of describe()"));
 
         });
 

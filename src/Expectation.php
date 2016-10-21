@@ -6,6 +6,8 @@ use Kahlan\Analysis\Debugger;
 use Kahlan\Analysis\Inspector;
 use Kahlan\Code\Code;
 use Kahlan\Code\TimeoutException;
+use Kahlan\Block\Specification;
+
 use Closure;
 
 /**
@@ -38,6 +40,13 @@ use Closure;
  */
 class Expectation
 {
+    /**
+     * Indicates whether the block has been processed or not.
+     *
+     * @var boolean
+     */
+    protected $_processed = false;
+
     /**
      * Deferred expectation.
      *
@@ -161,7 +170,7 @@ class Expectation
         $closure = function () use ($spec, $matcherName, $args, &$actual, &$result) {
             if ($spec instanceof Specification) {
                 $actual = null;
-                if (!$spec->passed($actual)) {
+                if (!$spec->process($actual)) {
                     return false;
                 }
             } else {
@@ -243,21 +252,19 @@ class Expectation
      *
      * @return mixed
      */
-    protected function _run()
+    protected function _process()
     {
-        if ($this->_passed !== null) {
-            return $this;
-        }
         $spec = $this->_actual;
+
         if (!$spec instanceof Specification) {
-            $this->_passed = false;
+            $this->_passed = !!$this->_passed;
             return $this;
         }
 
         $closure = function () use ($spec) {
             $success = true;
             try {
-                $success = $spec->passed();
+                $success = $spec->process();
             } catch (Exception $e) {
             }
             return $success;
@@ -268,8 +275,8 @@ class Expectation
         } catch (TimeoutException $e) {
         }
         $this->_logs = $spec->logs();
-        $this->_passed = $spec->passed() && $this->_passed;
 
+        $this->_passed = $spec->passed() && ($this->_passed === null ? true : $this->_passed);
         return $this;
     }
 
@@ -353,14 +360,17 @@ class Expectation
     }
 
     /**
-     * Checks if all test passed.
+     * Run the expectation.
      *
-     * @return boolean Returns `true` if no error occurred, `false` otherwise.
+     * @return boolean Returns `true` if passed, `false` otherwise.
      */
-    public function passed()
+    public function process()
     {
-        $this->_run();
-        $this->_resolve();
+        if (!$this->_processed) {
+            $this->_process();
+            $this->_resolve();
+        }
+        $this->_processed = true;
         return $this->_passed;
     }
 
@@ -370,7 +380,8 @@ class Expectation
     public function clear()
     {
         $this->_actual = null;
-        $this->_passed = true;
+        $this->_passed = null;
+        $this->_processed = null;
         $this->_not = false;
         $this->_timeout = -1;
         $this->_logs = [];

@@ -17,21 +17,8 @@ describe("Suite", function () {
 
     beforeEach(function () {
         $this->suite = new Suite(['matcher' => new Matcher()]);
+        $this->root = $this->suite->root();
         $this->reporters = new Reporters();
-    });
-
-    describe("->__construct()", function () {
-
-        it("throws an exception with invalid closure", function () {
-            $closure = function () {
-                $this->suite = new Suite([
-                    'closure' => null,
-                    'parent'  => new Suite()
-                ]);
-            };
-            expect($closure)->toThrow(new Exception('Error, invalid closure.'));
-        });
-
     });
 
     context("when inspecting flow", function () {
@@ -156,13 +143,13 @@ describe("Suite", function () {
 
         it("creates a sub suite of specs inside the root suite", function () {
 
-            $suite = $this->suite->describe("->method()", function () {});
+            $describe = $this->root->describe("->method()", function () {});
 
-            expect($suite->message())->toBe('->method()');
-            expect($suite->parent())->toBe($this->suite);
+            expect($describe->message())->toBe('->method()');
+            expect($describe->parent())->toBe($this->root);
 
-            $suites = $this->suite->children();
-            expect($suite)->toBe(end($suites));
+            $blocks = $this->root->children();
+            expect($describe)->toBe(end($blocks));
 
         });
 
@@ -172,13 +159,13 @@ describe("Suite", function () {
 
         it("creates a contextualized suite of specs inside the root suite", function () {
 
-            $suite = $this->suite->context("->method()", function () {});
+            $context = $this->root->context("->method()", function () {});
 
-            expect($suite->message())->toBe('->method()');
-            expect($suite->parent())->toBe($this->suite);
+            expect($context->message())->toBe('->method()');
+            expect($context->parent())->toBe($this->root);
 
-            $suites = $this->suite->children();
-            expect($suite)->toBe(end($suites));
+            $blocks = $this->root->children();
+            expect($context)->toBe(end($blocks));
 
         });
 
@@ -188,24 +175,13 @@ describe("Suite", function () {
 
         it("creates a spec", function () {
 
-            $this->suite->it("does some things", function () {});
+            $this->root->it("does some things", function () {});
 
-            $specs = $this->suite->children();
+            $specs = $this->root->children();
             $it = end($specs);
 
             expect($it->message())->toBe('it does some things');
-            expect($it->parent())->toBe($this->suite);
-
-        });
-
-        it("creates a spec with a random message if not set", function () {
-
-            $this->suite->it(function () {});
-
-            $specs = $this->suite->children();
-            $it = end($specs);
-
-            expect($it->message())->toMatch('~^it spec #[0-9]+$~');
+            expect($it->parent())->toBe($this->root);
 
         });
 
@@ -215,18 +191,18 @@ describe("Suite", function () {
 
         it("creates a before callback", function () {
 
-            $callbacks = $this->suite->callbacks('beforeAll');
+            $callbacks = $this->root->callbacks('beforeAll');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->beforeAll(function () {});
-            $callbacks = $this->suite->callbacks('beforeAll');
+            $this->root->beforeAll(function () {});
+            $callbacks = $this->root->callbacks('beforeAll');
             expect($callbacks)->toHaveLength(1);
 
         });
 
         it("captures errors", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->beforeAll(function () {
                     $undefined++;
@@ -252,10 +228,9 @@ describe("Suite", function () {
             expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
             expect($this->suite->total())->toBe(1);
 
-            expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->focused())->toBe(false);
+            expect($this->suite->active())->toBe(1);
+            expect($this->root->focused())->toBe(false);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(false);
 
         });
 
@@ -265,18 +240,18 @@ describe("Suite", function () {
 
         it("creates a before callback", function () {
 
-            $callbacks = $this->suite->callbacks('afterAll');
+            $callbacks = $this->root->callbacks('afterAll');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->afterAll(function () {});
-            $callbacks = $this->suite->callbacks('afterAll');
+            $this->root->afterAll(function () {});
+            $callbacks = $this->root->callbacks('afterAll');
             expect($callbacks)->toHaveLength(1);
 
         });
 
         it("captures errors", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->afterAll(function () {
                     $undefined++;
@@ -302,10 +277,9 @@ describe("Suite", function () {
             expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
             expect($this->suite->total())->toBe(1);
 
-            expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->focused())->toBe(false);
+            expect($this->suite->active())->toBe(1);
+            expect($this->root->focused())->toBe(false);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(false);
 
         });
 
@@ -315,11 +289,11 @@ describe("Suite", function () {
 
         it("creates a beforeEach callback", function () {
 
-            $callbacks = $this->suite->callbacks('beforeEach');
+            $callbacks = $this->root->callbacks('beforeEach');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->beforeEach(function () {});
-            $callbacks = $this->suite->callbacks('beforeEach');
+            $this->root->beforeEach(function () {});
+            $callbacks = $this->root->callbacks('beforeEach');
             expect($callbacks)->toHaveLength(1);
 
         });
@@ -330,22 +304,22 @@ describe("Suite", function () {
 
         it("creates a before callback", function () {
 
-            $callbacks = $this->suite->callbacks('afterEach');
+            $callbacks = $this->root->callbacks('afterEach');
             expect($callbacks)->toHaveLength(0);
 
-            $this->suite->afterEach(function () {});
-            $callbacks = $this->suite->callbacks('afterEach');
+            $this->root->afterEach(function () {});
+            $callbacks = $this->root->callbacks('afterEach');
             expect($callbacks)->toHaveLength(1);
 
         });
 
     });
 
-    describe("->total()/->enabled()", function () {
+    describe("->total()/->active()", function () {
 
         it("return the total/enabled number of specs", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -372,7 +346,7 @@ describe("Suite", function () {
             });
 
             expect($this->suite->total())->toBe(3);
-            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->active())->toBe(1);
 
         });
 
@@ -382,7 +356,7 @@ describe("Suite", function () {
 
         it("executes only the `it` in focused mode", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -410,18 +384,17 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(3);
-            expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(1);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
         it("executes all `it` in focused mode if no one is focused", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -441,18 +414,17 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
-            expect($this->suite->enabled())->toBe(2);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(2);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
         it("executes all `it` in focused mode if no one is focused in a nested way", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -484,12 +456,11 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
-            expect($this->suite->enabled())->toBe(4);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(4);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -499,7 +470,7 @@ describe("Suite", function () {
 
         it("executes only the `it` in focused mode", function () {
 
-            $context = $this->suite->context("", function () {
+            $context = $this->root->context("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -519,18 +490,17 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($context->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
-            expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(1);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
         it("executes all `it` in focused mode if no one is focused", function () {
 
-            $context = $this->suite->context("", function () {
+            $context = $this->root->context("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -550,18 +520,17 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($context->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
-            expect($this->suite->enabled())->toBe(2);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(2);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
         it("executes all `it` in focused mode if no one is focused in a nested way", function () {
 
-            $context = $this->suite->context("", function () {
+            $context = $this->root->context("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -593,12 +562,11 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($context->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
+            expect($context->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
-            expect($this->suite->enabled())->toBe(4);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(4);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -608,7 +576,7 @@ describe("Suite", function () {
 
         it("executes only the focused `it`", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -632,18 +600,17 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
-            expect($this->suite->enabled())->toBe(2);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(2);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
         it("propagates the exclusivity up to parents", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -667,18 +634,17 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
-            expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(1);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
         it("propagates the exclusivity up to parents", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -706,12 +672,11 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(3);
-            expect($this->suite->enabled())->toBe(1);
-            expect($this->suite->focused())->toBe(true);
+            expect($this->suite->active())->toBe(1);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -721,7 +686,7 @@ describe("Suite", function () {
 
         it("returns the references of runned focused specs", function () {
 
-            $describe = $this->suite->describe("focused suite", function () {
+            $describe = $this->root->describe("focused suite", function () {
 
                 $this->exectuted = ['it' => 0, 'fit' => 0];
 
@@ -755,7 +720,7 @@ describe("Suite", function () {
 
         it("propagates the exclusion down to children", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0];
 
@@ -779,11 +744,10 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 1]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 1]);
             expect($this->suite->total())->toBe(3);
-            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->active())->toBe(1);
             expect($this->suite->status())->toBe(0);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -793,7 +757,7 @@ describe("Suite", function () {
 
         it("propagates the exclusion down to children", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0];
 
@@ -817,11 +781,10 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 1]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 1]);
             expect($this->suite->total())->toBe(3);
-            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->active())->toBe(1);
             expect($this->suite->status())->toBe(0);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -831,7 +794,7 @@ describe("Suite", function () {
 
         it("skips excluded `it`", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->exectuted = ['it' => 0];
 
@@ -851,12 +814,11 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->exectuted)->toEqual(['it' => 2]);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 2]);
             expect($this->suite->total())->toBe(3);
-            expect($this->suite->enabled())->toBe(2);
+            expect($this->suite->active())->toBe(2);
             expect($describe->children()[1]->excluded())->toBe(true);
             expect($this->suite->status())->toBe(0);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -866,7 +828,7 @@ describe("Suite", function () {
 
         it("skips specs in a before", function () {
 
-            $describe = $this->suite->describe("skip suite", function () {
+            $describe = $this->root->describe("skip suite", function () {
 
                 $this->exectuted = ['it' => 0];
 
@@ -888,25 +850,24 @@ describe("Suite", function () {
 
             expect($reporters)->toReceive('dispatch')->with('start', ['total' => 2])->ordered;
             expect($reporters)->toReceive('dispatch')->with('suiteStart', $describe)->ordered;
-            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Specification'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Block\Specification'))->ordered;
             expect($reporters)->toReceive('dispatch')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Log'))->ordered;
-            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Specification'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Block\Specification'))->ordered;
             expect($reporters)->toReceive('dispatch')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Log'))->ordered;
             expect($reporters)->toReceive('dispatch')->with('suiteEnd', $describe)->ordered;
             expect($reporters)->toReceive('dispatch')->with('end', Arg::toBeAnInstanceOf('Kahlan\Summary'))->ordered;
 
             $this->suite->run(['reporters' => $reporters]);
 
-            expect($describe->exectuted)->toEqual(['it' => 0]);
-            expect($this->suite->focused())->toBe(false);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 0]);
+            expect($this->root->focused())->toBe(false);
             expect($this->suite->status())->toBe(0);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
         it("skips specs in a beforeEach", function () {
 
-            $describe = $this->suite->describe("skip suite", function () {
+            $describe = $this->root->describe("skip suite", function () {
 
                 $this->exectuted = ['it' => 0];
 
@@ -928,18 +889,17 @@ describe("Suite", function () {
 
             expect($reporters)->toReceive('dispatch')->with('start', ['total' => 2])->ordered;
             expect($reporters)->toReceive('dispatch')->with('suiteStart', $describe)->ordered;
-            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Specification'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Block\Specification'))->ordered;
             expect($reporters)->toReceive('dispatch')->with('specEnd', Arg::toBeAnInstanceOf('Kahlan\Log'))->ordered;
-            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Specification'))->ordered;
+            expect($reporters)->toReceive('dispatch')->with('specStart', Arg::toBeAnInstanceOf('Kahlan\Block\Specification'))->ordered;
             expect($reporters)->toReceive('dispatch')->with('suiteEnd', $describe)->ordered;
             expect($reporters)->toReceive('dispatch')->with('end', Arg::toBeAnInstanceOf('Kahlan\Summary'))->ordered;
 
             $this->suite->run(['reporters' => $reporters]);
 
-            expect($describe->exectuted)->toEqual(['it' => 0]);
-            expect($this->suite->focused())->toBe(false);
+            expect($describe->scope()->exectuted)->toEqual(['it' => 0]);
+            expect($this->root->focused())->toBe(false);
             expect($this->suite->status())->toBe(0);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
@@ -1032,7 +992,7 @@ describe("Suite", function () {
 
         it("returns `0` if a specs suite passes", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
                 $this->it("passes", function () {
                     $this->expect(true)->toBe(true);
                 });
@@ -1045,7 +1005,7 @@ describe("Suite", function () {
 
         it("returns `-1` if a specs suite fails", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
                 $this->it("fails", function () {
                     $this->expect(true)->toBe(false);
                 });
@@ -1056,29 +1016,13 @@ describe("Suite", function () {
 
         });
 
-        it("forces a specified return status", function () {
-
-            $describe = $this->suite->describe("", function () {
-                $this->it("passes", function () {
-                    $this->expect(true)->toBe(true);
-                });
-            });
-
-            $this->suite->run();
-            expect($this->suite->status())->toBe(0);
-
-            $this->suite->status(-1);
-            expect($this->suite->status())->toBe(-1);
-
-        });
-
     });
 
     describe("->run()", function () {
 
         it("run the suite", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->it("runs a spec", function () {
                     $this->expect(true)->toBe(true);
@@ -1088,13 +1032,12 @@ describe("Suite", function () {
 
             $this->suite->run();
             expect($this->suite->status())->toBe(0);
-            expect($this->suite->passed())->toBe(true);
 
         });
 
         it("calls `afterEach` callbacks if an exception occurs during callbacks", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->inAfterEach = 0;
 
@@ -1113,7 +1056,7 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->inAfterEach)->toBe(1);
+            expect($describe->scope()->inAfterEach)->toBe(1);
 
             $results = $this->suite->summary()->logs('errored');
             expect($results)->toHaveLength(1);
@@ -1123,13 +1066,12 @@ describe("Suite", function () {
             expect($actual)->toBe('Breaking the flow should execute afterEach anyway.');
 
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(false);
 
         });
 
         it("logs error if an exception is occuring during an `afterEach` callbacks", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->it("does nothing", function () {
                 });
@@ -1151,7 +1093,6 @@ describe("Suite", function () {
             expect($actual)->toBe('Errors occured in afterEach should be logged anyway.');
 
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(false);
 
         });
 
@@ -1159,7 +1100,7 @@ describe("Suite", function () {
 
             $missing = new MissingImplementationException();
 
-            $describe = $this->suite->describe("", function () use ($missing) {
+            $describe = $this->root->describe("", function () use ($missing) {
 
                 $this->it("throws an `MissingImplementationException`", function () use ($missing) {
                     throw $missing;
@@ -1178,36 +1119,11 @@ describe("Suite", function () {
             expect($report->messages())->toBe(['', '', 'it throws an `MissingImplementationException`']);
 
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(false);
-
-        });
-
-        it("throws and exception if attempts to call the `run()` function inside a scope", function () {
-
-            skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
-
-            $describe = $this->suite->describe("", function () {
-                $this->run();
-            });
-
-            $this->suite->run();
-
-            $results = $this->suite->summary()->logs('errored');
-            expect($results)->toHaveLength(1);
-
-            $report = reset($results);
-            expect($report->exception()->getMessage())->toBe('Method not allowed in this context.');
-            expect($report->type())->toBe('errored');
-            expect($report->messages())->toBe(['', '']);
-
-            expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(false);
-
         });
 
         it("fails fast", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->it("fails1", function () {
                     $this->expect(true)->toBe(false);
@@ -1228,15 +1144,14 @@ describe("Suite", function () {
             $failed = $this->suite->summary()->logs('failed');
 
             expect($failed)->toHaveLength(1);
-            expect($this->suite->focused())->toBe(false);
+            expect($this->root->focused())->toBe(false);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(false);
 
         });
 
         it("fails after two failures", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->it("fails1", function () {
                     $this->expect(true)->toBe(false);
@@ -1257,9 +1172,8 @@ describe("Suite", function () {
             $failed = $this->suite->summary()->logs('failed');
 
             expect($failed)->toHaveLength(2);
-            expect($this->suite->focused())->toBe(false);
+            expect($this->root->focused())->toBe(false);
             expect($this->suite->status())->toBe(-1);
-            expect($this->suite->passed())->toBe(false);
 
         });
 
@@ -1287,7 +1201,7 @@ describe("Suite", function () {
 
         it("uses default error reporting settings", function () {
 
-            $describe = $this->suite->describe("", function () {
+            $describe = $this->root->describe("", function () {
 
                 $this->describe("->_errorHandler()", function () {
 
@@ -1306,7 +1220,7 @@ describe("Suite", function () {
             $this->suite->run();
             error_reporting(E_ALL);
 
-            expect($this->suite->passed())->toBe(true);
+            expect($this->suite->status())->toBe(0);
 
         });
 
@@ -1316,7 +1230,7 @@ describe("Suite", function () {
 
         it("returns the reporters", function () {
 
-            $describe = $this->suite->describe("", function () {});
+            $describe = $this->root->describe("", function () {});
 
             $reporters = Double::instance();
             $this->suite->run(['reporters' => $reporters]);
@@ -1331,7 +1245,7 @@ describe("Suite", function () {
 
         it("sends the stop event", function () {
 
-            $describe = $this->suite->describe("", function () {});
+            $describe = $this->root->describe("", function () {});
 
             $reporters = Double::instance();
 
