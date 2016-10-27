@@ -11,7 +11,7 @@
 
 Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses a `describe-it` syntax and moves testing in PHP one step forward.
 
-**Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.**
+**Kahlan lets you stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.**
 
 ## Videos
 
