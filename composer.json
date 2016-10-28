@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4"
+        "php": ">=5.4",
+        "composer/composer": "^1.2"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.7"
