@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Spec\Suite\Matcher;
 
+use Error;
 use Exception;
 use RuntimeException;
 use Kahlan\Matcher\ToThrow;
@@ -105,6 +106,17 @@ describe("toThrow", function () {
                 throw new RuntimeException('exception stuff message');
             };
             expect($closure)->not->toThrow('@exception (.*?) message#');
+
+        });
+
+        it("catches any kind of error", function () {
+
+            skipIf(PHP_MAJOR_VERSION < 7);
+
+            $closure = function () {
+                throw new Error();
+            };
+            expect($closure)->toThrow();
 
         });
 
