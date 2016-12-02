@@ -507,6 +507,6 @@ abstract class Block
         if (!is_callable($closure)) {
             return;
         }
-        return $closure->bindTo($this->_scope);
+        return @$closure->bindTo($this->_scope);
     }
 }
