@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.0.3 (2016-12-02)
+
+  * **Add:** Support HHVM lambda through ==> syntax.
+
 ## 3.0.2 (2016-10-16)
 
   * **Change:** Parser identify interface's signatures as signatures and not function.
