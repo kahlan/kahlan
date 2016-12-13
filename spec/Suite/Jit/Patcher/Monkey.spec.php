@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Spec\Suite\Jit\Patcher;
 
+use Kahlan\Suite;
 use Kahlan\Jit\Parser;
 use Kahlan\Jit\Patcher\Monkey;
 
@@ -9,6 +10,14 @@ describe("Monkey", function () {
     beforeEach(function () {
         $this->path = 'spec/Fixture/Jit/Patcher/Monkey';
         $this->patcher = new Monkey();
+    });
+
+    beforeAll(function () {
+        Suite::$PHP = 7;
+    });
+
+    afterAll(function () {
+        Suite::$PHP = PHP_MAJOR_VERSION;
     });
 
     describe("->process()", function () {
