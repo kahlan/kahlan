@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.0 (2016-12-13)
+
+  * **BC break:** Remove the substitution feature (i.e allow(<something>)->toBe(<an instance>)) for PHP<7. It may generates some syntax errors since the uniform variable syntax is only supported by PHP>=7.
+
 ## 3.0.3 (2016-12-02)
 
   * **Add:** Support HHVM lambda through ==> syntax.
