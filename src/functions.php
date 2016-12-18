@@ -104,7 +104,7 @@ function expect($actual)
 /**
  * @param $actual
  *
- * @return Stubber
+ * @return Allow
  */
 function allow($actual)
 {

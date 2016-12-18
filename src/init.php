@@ -139,7 +139,7 @@ if ($kahlanFuctions &&
     /**
      * @param $actual
      *
-     * @return Stubber
+     * @return Allow
      */
     function allow($actual)
     {
