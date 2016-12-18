@@ -3,6 +3,32 @@ namespace Kahlan;
 
 use Exception;
 
+/**
+ * Class Arg
+ *
+ * @method Arg toBe(mixed $expected) passes if actual === expected
+ * @method Arg toEqual(mixed $expected) passes if actual == expected
+ * @method Arg toBeTruthy() passes if actual is truthy
+ * @method Arg toBeFalsy() passes if actual is falsy
+ * @method Arg toBeEmpty() passes if actual is falsy
+ * @method Arg toBeNull() passes if actual is null
+ * @method Arg toBeA(string $expected) passes if actual is of the expected type
+ * @method Arg toBeAn(string $expected) passes if actual is of the expected type (toBeA alias)
+ * @method Arg toBeAnInstanceOf(string $expected) passes if actual is an instance of expected
+ * @method Arg toHaveLength(int $expected) passes if actual has the expected length
+ * @method Arg toContain(mixed $expected) passes if actual contain the expected value
+ * @method Arg toContainKey(mixed $expected) passes if actual contain the expected key
+ * @method Arg toContainKeys(mixed $expected) passes if actual contain the expected keys (toContainKey alias)
+ * @method Arg toBeCloseTo(float $expected, int $precision) passes if actual is close to expected in some precision
+ * @method Arg toBeGreaterThan(mixed $expected) passes if actual if greater than expected
+ * @method Arg toBeLessThan(mixed $expected) passes if actual is less than expected
+ * @method Arg toThrow(mixed $expected = null) passes if actual throws the expected exception
+ * @method Arg toMatch(string $expected) passes if actual matches the expected regexp
+ * @method Arg toEcho(string $expected) passes if actual echoes the expected string
+ * @method Arg toMatchEcho(string $expected) passes if actual echoes matches the expected string
+ * @method Arg toReceive(string $expected) passes if the expected method as been called on actual
+ * @method Arg toReceiveNext(string $expected) passes if the expected method as been called on actual after some other method
+ */
 class Arg
 {
     /**
@@ -87,8 +113,8 @@ class Arg
     /**
      * Check if `$actual` matches the matcher.
      *
-     * @param  string  $name The actual value.
-     * @return boolean       Returns `true` on success and `false` otherwise.
+     * @param  string  $actual The actual value.
+     * @return boolean         Returns `true` on success and `false` otherwise.
      */
     public function match($actual)
     {
