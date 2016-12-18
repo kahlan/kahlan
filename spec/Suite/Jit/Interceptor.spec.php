@@ -336,7 +336,7 @@ describe("Interceptor", function () {
                 expect($this->interceptor->loadFile($sourcePath))->toBe(true);
                 expect(class_exists('loadFileNamespace\ClassB', false))->toBe(true);
 
-                $cacheTimestamp = filemtime($this->interceptor->cachePath() . $sourcePath);
+                $cacheTimestamp = filemtime($this->interceptor->cachePath() . DS . ltrim(preg_replace('~:~', '', $sourcePath), DS));
                 expect($sourceTimestamp)->toBe($cacheTimestamp - 1);
 
             });
@@ -370,7 +370,7 @@ describe("Interceptor", function () {
                 expect($this->interceptor->loadFile($this->loadFileNamespacePath . DS . 'ClassC.php'))->toBe(true);
                 expect(class_exists('loadFileNamespace\ClassC', false))->toBe(true);
 
-                $cacheTimestamp = filemtime($this->interceptor->cachePath() . $this->loadFileNamespacePath . DS . 'ClassC.php');
+                $cacheTimestamp = filemtime($this->interceptor->cachePath() . DS . ltrim(preg_replace('~:~', '', $this->loadFileNamespacePath), DS) . DS . 'ClassC.php');
                 expect($this->watched1Timestamp)->toBe($cacheTimestamp - 1);
 
             });
@@ -597,7 +597,7 @@ describe("Interceptor", function () {
 
                 $path = $this->temp . DS . 'ClassToCache.php';
                 $cached = $this->interceptor->cache($path, '');
-                expect($cached)->toBe($this->interceptor->cachePath() . $path);
+                expect($cached)->toBe($this->interceptor->cachePath() . DS . ltrim(preg_replace('~:~', '', $path), DS));
 
             });
 

@@ -25,7 +25,7 @@ class Kahlan
 {
     use Filterable;
 
-    const VERSION = '3.0.0';
+    const VERSION = '3.1.0';
 
     /**
      * Starting time.
@@ -207,7 +207,7 @@ class Kahlan
      *
      * @return object The default terminal console.
      */
-    protected function _terminal()
+    public function terminal()
     {
         return new Terminal([
             'colors' => !$this->commandLine()->get('no-colors'),
@@ -220,7 +220,7 @@ class Kahlan
      */
     protected function _version()
     {
-        $terminal = $this->_terminal();
+        $terminal = $this->terminal();
         if (!$this->commandLine()->get('no-header')) {
             $terminal->write($terminal->kahlan() ."\n\n");
             $terminal->write($terminal->kahlanBaseline(), 'dark-grey');
@@ -241,7 +241,7 @@ class Kahlan
      */
     protected function _help()
     {
-        $terminal = $this->_terminal();
+        $terminal = $this->terminal();
         if (!$this->commandLine()->get('no-header')) {
             $terminal->write($terminal->kahlan() ."\n\n");
             $terminal->write($terminal->kahlanBaseline(), 'dark-grey');

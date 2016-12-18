@@ -57,9 +57,10 @@ DA:13,0
 LF:4
 LH:2
 end_of_record
+
 EOD;
 
-            expect($txt)->toBe($expected);
+            expect(str_replace(DS, '/', $txt))->toBe($expected);
         });
 
         it("exports the coverage of a file with an extra line at the end", function () {
@@ -99,8 +100,9 @@ DA:13,0
 LF:4
 LH:2
 end_of_record
+
 EOD;
-            expect($txt)->toBe($expected);
+            expect(str_replace(DS, '/', $txt))->toBe($expected);
 
         });
 
@@ -139,7 +141,7 @@ EOD;
                 'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
 
-            expect($success)->toBe(178);
+            expect($success)->toBe(179);
 
             $txt = file_get_contents($this->output);
             $ds = DS;
@@ -158,9 +160,10 @@ DA:13,0
 LF:4
 LH:2
 end_of_record
+
 EOD;
 
-            expect($txt)->toBe($expected);
+            expect(str_replace(DS, '/', $txt))->toBe($expected);
 
         });
 

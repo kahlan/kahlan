@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Matcher;
 
+use Throwable;
 use Exception;
 
 class ToThrow
@@ -42,7 +43,9 @@ class ToThrow
     {
         try {
             $actual();
-        } catch (Exception $e) {
+        } catch (Exception $e) { // PHP<7 compat
+            return $e;
+        } catch (Throwable $e) {
             return $e;
         }
     }

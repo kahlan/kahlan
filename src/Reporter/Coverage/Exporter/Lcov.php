@@ -113,6 +113,6 @@ class Lcov
         $result[] = 'LF:' . count($coverage);
         $result[] = 'LH:' . count(array_filter($coverage));
         $result[] = 'end_of_record';
-        return join("\n", $result);
+        return join("\n", $result) . "\n";
     }
 }

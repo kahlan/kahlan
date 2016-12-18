@@ -87,11 +87,11 @@ class Terminal extends Reporter
         $this->_header = $config['header'];
         $this->_output = $config['output'];
 
-        $this->useColors($config['colors']);
+        $this->colors($config['colors']);
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $this->_symbols['ok'] = '\u221A';
-            $this->_symbols['err'] = '\u00D7';
+        if (!$this->colors() && getenv('ComSpec')) {
+            $this->_symbols['ok'] = "\xFB";
+            $this->_symbols['err'] = "\x78";
             $this->_symbols['dot'] = '.';
         }
     }
@@ -101,19 +101,23 @@ class Terminal extends Reporter
      *
      * @param boolean $enable A boolean.
      */
-    public function useColors($enable = true)
+    public function colors($enable = true)
     {
+        if (!func_num_args()) {
+            return $this->_colors;
+        }
         if (!$enable) {
             $this->_colors = false;
-            return;
+            return $this;
         }
 
         $term = getenv('TERM');
         if (getenv('COLORTERM') || preg_match('~screen|^xterm|^vt100|color|ansi|cygwin|linux~i', $term)) {
             $this->_colors = true;
-            return;
+            return $this;
         }
         $this->_colors = false;
+        return $this;
     }
 
     /**

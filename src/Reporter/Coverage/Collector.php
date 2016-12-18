@@ -302,8 +302,10 @@ class Collector
         }
         $result = [];
         $base = preg_quote($this->base(), '~');
-        foreach ($this->_coverage as $file => $coverage) {
-            $result[preg_replace("~^{$base}~", '', $file)] = $this->_coverage($file, $coverage);
+        foreach ($this->_coverage as $file => $rawCoverage) {
+            if ($coverage = $this->_coverage($file, $rawCoverage)) {
+                $result[preg_replace("~^{$base}~", '', $file)] = $coverage;
+            }
         }
         return $result;
     }
@@ -316,7 +318,7 @@ class Collector
     public function metrics()
     {
         $this->_metrics = new Metrics();
-        foreach ($this->_coverage as $file => $xdebug) {
+        foreach ($this->_coverage as $file => $rawCoverage) {
             $root = $this->parse($file);
             $coverage = $this->export($file);
             $this->_processed = [

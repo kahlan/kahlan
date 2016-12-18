@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Jit\Patcher;
 
+use Kahlan\Suite;
 use Kahlan\Jit\Node\NodeDef;
 use Kahlan\Jit\Node\FunctionDef;
 
@@ -273,12 +274,12 @@ class Monkey
                 if (!$isInstance) {
                     $replace = $match[2][0] . $variable . $match[4][0];
                 } else {
-                    $added = $this->_addClosingParenthesis($pos + $len, $index, $parent);
-                    if ($added) {
-                        $replace = '(' . $substitute . '?' . $substitute . ':' . $match[1][0] . $match[2][0] . $variable . $match[4][0];
+                    if (Suite::$PHP >= 7 && $this->_addClosingParenthesis($pos + $len, $index, $parent)) {
+                        $replace = Suite::$PHP >= 7 ? '(' . $substitute . '?' . $substitute . ':' : '(';
                     } else {
-                        $replace = $match[1][0] . $match[2][0] . $variable . $match[4][0];
+                        $replace = '';
                     }
+                    $replace .= $match[1][0] . $match[2][0] . $variable . $match[4][0];
                 }
                 $node->body = substr_replace($node->body, $replace, $pos, $len);
                 $offset = $pos + strlen($replace);

@@ -454,7 +454,7 @@ class Scope
         if (!is_callable($closure)) {
             throw new Exception("Error, invalid closure.");
         }
-        return $closure->bindTo($this);
+        return @$closure->bindTo($this);
     }
 
     /**

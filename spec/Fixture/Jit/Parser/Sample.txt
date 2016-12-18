@@ -146,8 +146,8 @@
 #146    [                   ] #146 > #146     |
 #147    [     interface     ] #147 > #151     |interface Template1
 #148    [     interface     ] #148 > #151     |{
-#149    [    a,function     ] #149 > #149     |    public function setVariable($name, $var);
-#150    [    a,function     ] #150 > #150     |    public function getHtml($template);
+#149    [    a,signature    ] #149 > #149     |    public function setVariable($name, $var);
+#150    [    a,signature    ] #150 > #150     |    public function getHtml($template);
 #151    [                   ] #151 > #151     |}
 #152    [                   ] #152 > #152     |
 #153    [       trait       ] #153 > #160     |trait Template2 {

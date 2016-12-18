@@ -11,12 +11,12 @@
 
 Kahlan is a full-featured Unit & BDD test framework a la RSpec/JSpec which uses a `describe-it` syntax and moves testing in PHP one step forward.
 
-**Kahlan allows to stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.**
+**Kahlan lets you stub or monkey patch your code directly like in Ruby or JavaScript without any required PECL-extentions.**
 
 ## Videos
 
 * <a href="http://vimeo.com/116949820" target="_blank">Warren Seymour presentation at Unified Diff (2015)</a>
-* <a href="https://www.grafikart.fr/tutoriels/php/tdd-kahlan-805" target="_blank">Grafikart presentation in French (2016)</a>
+* <a href="https://www.grafikart.fr/tutoriels/php/tdd-kahlan-805" target="_blank">Grafikart presentation in French (2016, Kahlan 2.X)</a>
 
 ## IRC
 
@@ -60,10 +60,9 @@ describe("Example", function() {
 
     it("expects methods to be called", function() {
 
-        expect($user)->toReceive('save')->with(['validates' => false]);
-
         $user = new User();
-        $user->validates(['validates' => false]);
+        expect($user)->toReceive('save')->with(['validates' => false]);
+        $user->save(['validates' => false]);
 
     });
 

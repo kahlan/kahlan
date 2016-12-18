@@ -232,10 +232,13 @@ class Dir extends \FilterIterator
         $paths = static::scan($path, $options);
 
         foreach ($paths as $path) {
-            $target = preg_replace('~^' . $root . '~', '', $path);
-            if (is_dir($path)) {
-                mkdir($dest . $ds . ltrim($target, $ds), $options['mode'], true);
-            } else {
+            $target = preg_replace('~^' . preg_quote(rtrim($root, $ds)) . '~', '', $path);
+            $isDir = is_dir($path);
+            $dirname = $dest . $ds . ltrim($isDir ? $target : dirname($target), $ds);
+            if (!file_exists($dirname)) {
+                mkdir($dirname, $options['mode'], true);
+            }
+            if (!$isDir) {
                 copy($path, $dest . $ds . ltrim($target, $ds));
             }
         }
