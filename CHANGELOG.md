@@ -2,6 +2,14 @@
 
 ## Last changes
 
+## 3.1.0 (2016-12-13)
+
+  * **BC break:** Remove the substitution feature (i.e allow(<something>)->toBe(<an instance>)) for PHP<7. It may generates some syntax errors since the uniform variable syntax is only supported by PHP>=7.
+
+## 3.0.3 (2016-12-02)
+
+  * **Add:** Support HHVM lambda through ==> syntax.
+
 ## 3.0.2 (2016-10-16)
 
   * **Change:** Parser identify interface's signatures as signatures and not function.

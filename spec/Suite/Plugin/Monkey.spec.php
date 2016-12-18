@@ -72,6 +72,8 @@ describe("Monkey", function () {
 
         it("patches a core class using substitutes", function () {
 
+            skipIf(PHP_MAJOR_VERSION < 7);
+
             $mon = new Mon();
             $patch = Monkey::patch('DateTime');
             $patch->toBe(new DateTime('@123'), new DateTime('@456'));

@@ -364,7 +364,8 @@ class Coverage extends Terminal
         $metrics = is_numeric($this->_verbosity) ? $this->metrics() : $this->metrics()->get($verbosity);
 
         if (!$metrics) {
-            $this->write("\nUnexisting namespace: `{$this->_verbosity}`, coverage can't be generated.\n\n", "n;yellow");
+            $this->write("\nUnexisting namespace/reference: `{$this->_verbosity}`, coverage can't be generated.\n\n", "n;yellow");
+            return;
         }
 
         $this->_renderMetrics($metrics, $verbosity);

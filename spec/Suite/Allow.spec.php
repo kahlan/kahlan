@@ -43,6 +43,8 @@ describe("Allow", function () {
 
     it("monkey patches a class", function () {
 
+        skipIf(PHP_MAJOR_VERSION < 7);
+
         $bar = Double::instance();
         allow($bar)->toReceive('send')->andReturn('EOF');
         allow('Kahlan\Spec\Fixture\Plugin\Pointcut\Bar')->toBe($bar);
