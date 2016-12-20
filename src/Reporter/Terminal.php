@@ -275,7 +275,7 @@ EOD;
             case "errored":
                 $backtrace = Debugger::backtrace(['trace' => $log->exception()]);
                 $trace = reset($backtrace);
-                $file = preg_replace('~' . preg_quote(getcwd(), '~') . '/~', '', $trace['file']);
+                $file = $trace['file'];
                 $line = $trace['line'];
 
                 $this->write("an uncaught exception has been thrown in ", 'magenta');
