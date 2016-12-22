@@ -72,6 +72,7 @@ class ToReceive
      */
     public static function match($actual, $expected = null)
     {
+        $class = get_called_class();
         $args = func_get_args();
         $actual = array_shift($args);
         return new static($actual, $args);
