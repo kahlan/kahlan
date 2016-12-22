@@ -24,7 +24,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @var integer
      */
-    private $count = 0;
+    private $_count = 0;
 
     /**
      * Constructor
