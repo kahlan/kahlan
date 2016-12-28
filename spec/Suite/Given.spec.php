@@ -106,6 +106,36 @@ describe("Given", function () {
             });
         });
 
+        context("when loading a given variable during a nested beforeEach", function () {
+
+            $count = 0;
+            given('count', function () use (&$count) {
+                return ++$count;
+            });
+
+            context('beforeEach nested to given', function () {
+                beforeEach(function () {
+                    $this->count;
+                });
+
+                it("caches lazy loaded variables", function () {
+
+                    expect($this->count)->toBe(1);
+                    expect($this->count)->toBe(1);
+                    expect($this->count)->toBe(1);
+
+                });
+
+                it("doesn't cache across specifications",  function () {
+
+                    expect($this->count)->toBe(2);
+                    expect($this->count)->toBe(2);
+                    expect($this->count)->toBe(2);
+
+                });
+            });
+        });
+
         context('using a nested context', function () {
 
             it("gets a lazy loadable variable defined in a parent context", function () {
