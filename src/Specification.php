@@ -177,10 +177,6 @@ class Specification extends Scope
         if ($this->_parent) {
             $this->_parent->runCallbacks('beforeEach');
         }
-        $scope = static::current();
-        foreach ($scope->_given as $name => $value) {
-            unset($scope->_data[$name]);
-        }
     }
 
     /**
@@ -217,6 +213,11 @@ class Specification extends Scope
 
         if ($this->_parent) {
             $this->_parent->autoclear();
+        }
+
+        $scope = static::current();
+        foreach ($scope->_given as $name => $value) {
+            unset($scope->_data[$name]);
         }
     }
 

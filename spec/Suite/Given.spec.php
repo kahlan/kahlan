@@ -91,17 +91,17 @@ describe("Given", function () {
 
             it("caches lazy loaded variables", function () {
 
-                expect($this->count)->toBe(2);
-                expect($this->count)->toBe(2);
-                expect($this->count)->toBe(2);
+                expect($this->count)->toBe(1);
+                expect($this->count)->toBe(1);
+                expect($this->count)->toBe(1);
 
             });
 
             it("doesn't cache across specifications",  function () {
 
-                expect($this->count)->toBe(4);
-                expect($this->count)->toBe(4);
-                expect($this->count)->toBe(4);
+                expect($this->count)->toBe(2);
+                expect($this->count)->toBe(2);
+                expect($this->count)->toBe(2);
 
             });
         });
