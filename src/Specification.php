@@ -215,9 +215,11 @@ class Specification extends Scope
             $this->_parent->autoclear();
         }
 
-        $scope = static::current();
-        foreach ($scope->_given as $name => $value) {
-            unset($scope->_data[$name]);
+        $currentScope = static::current();
+        foreach ($currentScope->_parents(true) as $scope) {
+            foreach ($scope->_given as $name => $value) {
+                unset($currentScope->_data[$name]);
+            }
         }
     }
 
