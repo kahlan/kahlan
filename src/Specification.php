@@ -96,7 +96,7 @@ class Specification extends Scope
 
         $result = null;
 
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $this->_specStart();
                 try {
@@ -147,7 +147,7 @@ class Specification extends Scope
             return $result;
         };
 
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $result = $spec();
             } catch (Throwable $e) {

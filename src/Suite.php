@@ -316,7 +316,7 @@ class Suite extends Scope
             $this->_suiteEnd();
         };
 
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $suite();
             } catch (Throwable $exception) {
@@ -505,7 +505,7 @@ class Suite extends Scope
     protected function stats()
     {
         static::$_instances[] = $this;
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $this->_stats = $this->_stats();
             } catch (Throwable $exception) {

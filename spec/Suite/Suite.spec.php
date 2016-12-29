@@ -1114,7 +1114,7 @@ describe("Suite", function () {
 
         it("throws and exception if attempts to call the `run()` function inside a scope", function () {
 
-            skipIf(PHP_MAJOR_VERSION < 7);
+            skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
 
             $describe = $this->suite->describe("", function () {
                 $this->run();
