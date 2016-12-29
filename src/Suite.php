@@ -242,7 +242,7 @@ class Suite
     {
         $block = $block ?: $this->root();
         static::push($block);
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $this->_stats = $this->_stats($block);
             } catch (Throwable $exception) {

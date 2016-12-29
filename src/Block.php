@@ -375,7 +375,7 @@ abstract class Block
 
         $suite::push($this);
 
-        if ($suite::$PHP >= 7) {
+        if ($suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $this->_blockStart();
                 try {
