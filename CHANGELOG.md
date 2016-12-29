@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.2 (2016-12-29)
+
+  * **Bugfix:** Fix some HHVM issues.
+
 ## 3.1.1 (2016-12-29)
 
   * **Bugfix:** Fix an issue with `given()` beeing regenerated when not expected.
