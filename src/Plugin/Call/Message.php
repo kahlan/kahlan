@@ -61,7 +61,7 @@ class Message
         $defaults = [
             'parent' => null,
             'reference' => null,
-            'name' => null,
+            'name' => '',
             'args' => null,
             'static' => false
         ];
