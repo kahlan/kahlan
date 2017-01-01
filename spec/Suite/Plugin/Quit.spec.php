@@ -75,4 +75,17 @@ describe("Quit", function () {
 
     });
 
+    describe("::reset()", function () {
+
+        it("reset _enabled property to true", function () {
+
+            Quit::disable();
+            expect(Quit::enabled())->toBe(false);
+            Quit::reset();
+            expect(Quit::enabled())->toBe(true);
+
+        });
+
+    });
+
 });
