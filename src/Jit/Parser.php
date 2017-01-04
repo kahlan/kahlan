@@ -105,8 +105,8 @@ class Parser
                     $this->_stringNode('');
                     break;
                 case T_START_HEREDOC:
-                    $name = substr($token[1], 3, -1);
-                    $this->_stringNode("\n" . $name . ';');
+                    $name = str_replace(['\'', '"'], '', substr($token[1], 3, -1));
+                    $this->_stringNode("\n" . $name, true);
                     break;
                 case '"':
                     $this->_stringNode('"');
@@ -576,7 +576,7 @@ class Parser
     /**
      * Build a string node.
      */
-    protected function _stringNode($delimiter = '')
+    protected function _stringNode($delimiter = '', $heredoc = false)
     {
         $this->_codeNode();
         $token = $this->_stream->current(true);
@@ -586,6 +586,9 @@ class Parser
             $this->_states['body'] = $token[1] . $this->_stream->next('"');
         } else {
             $this->_states['body'] = $token[1] . $this->_stream->nextSequence($delimiter);
+        }
+        if ($heredoc) {
+            $this->_states['body'] .= $this->_stream->next([';']);
         }
 
         $node = new NodeDef($this->_states['body'], 'string');
