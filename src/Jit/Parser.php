@@ -105,7 +105,7 @@ class Parser
                     $this->_stringNode('');
                     break;
                 case T_START_HEREDOC:
-                    $name = str_replace(['\'', '"'], '', substr($token[1], 3, -1));
+                    $name = trim(substr($token[1], 3, -1), "'");
                     $this->_stringNode("\n" . $name, true);
                     break;
                 case '"':
