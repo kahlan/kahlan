@@ -193,6 +193,14 @@ class Parser
                     $this->_states['visibility'] = [];
                     $this->_states['body'] .= $token[1];
                     break;
+                case T_ENDIF:
+                case T_ENDFOREACH:
+                case T_ENDSWITCH:
+                case T_ENDWHILE:
+                    $this->_codeNode();
+                    $this->_states['body'] .= $token[1] . $this->_stream->next([';']);
+                    $this->_codeNode(null, false);
+                    break;
                 default:
                     $this->_states['body'] .= $token[1];
                     break;

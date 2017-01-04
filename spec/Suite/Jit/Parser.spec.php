@@ -377,6 +377,18 @@ describe("Parser", function () {
             expect(Parser::unparse($parsed))->toBe($content);
         });
 
+        it("parses alternative control structures as dead code", function () {
+
+            $filename = 'spec/Fixture/Jit/Parser/AlternativeControlStructures';
+            $content = file_get_contents($filename . '.php');
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+
+            $parsed = Parser::parse($content);
+            expect(Parser::unparse($parsed))->toBe($content);
+        });
+
     });
 
 });
