@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 3.1.3 (2017-01-06)
+
+  * **Bugfix:** Parse Nowdoc syntax correctly.
+  * **Bugfix:** Parses alternative control structures as dead code for code coverage.
+
 ## 3.1.2 (2016-12-29)
 
   * **Bugfix:** Fix some HHVM issues.
