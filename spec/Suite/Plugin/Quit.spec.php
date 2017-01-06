@@ -77,7 +77,7 @@ describe("Quit", function () {
 
     describe("::reset()", function () {
 
-        it("reset _enabled property to true", function () {
+        it("enables `exit()` call catching on reset", function () {
 
             Quit::disable();
             expect(Quit::enabled())->toBe(false);
