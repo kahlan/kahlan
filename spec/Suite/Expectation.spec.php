@@ -5,7 +5,7 @@ use Exception;
 use RuntimeException;
 use stdClass;
 use DateTime;
-use Kahlan\Specification;
+use Kahlan\Block\Specification;
 use Kahlan\Matcher;
 use Kahlan\Expectation;
 use Kahlan\Plugin\Double;
@@ -97,11 +97,11 @@ describe("Expectation", function () {
 
     });
 
-    describe("->passed()", function () {
+    describe("->process()", function () {
 
         it("verifies the expectation", function () {
 
-            $actual = expectation(true)->toBe(true)->passed();
+            $actual = expectation(true)->toBe(true)->process();
             expect($actual)->toBe(true);
 
         });
@@ -111,7 +111,7 @@ describe("Expectation", function () {
             $spec = new Specification(['closure' => function () {
                 return true;
             }]);
-            $actual = expectation($spec)->toBe(true)->passed();
+            $actual = expectation($spec)->toBe(true)->process();
             expect($actual)->toBe(true);
 
         });
@@ -122,7 +122,7 @@ describe("Expectation", function () {
             $spec = new Specification(['closure' => function () {
                 expect(true)->toBe(false);
             }]);
-            $actual = expectation($spec, 0.1)->passed();
+            $actual = expectation($spec, 0.1)->process();
             expect($actual)->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
@@ -176,7 +176,7 @@ describe("Expectation", function () {
             ]);
             expect($expectation->timeout())->toBe(10);
             expect($expectation->not())->toBe(true);
-            expect($expectation->passed())->toBe(true);
+            expect($expectation->process())->toBe(true);
             expect($expectation->logs())->toHaveLength(1);
 
             $expectation->clear();
@@ -185,7 +185,7 @@ describe("Expectation", function () {
             expect($expectation->deferred())->toBe(null);
             expect($expectation->timeout())->toBe(-1);
             expect($expectation->not())->toBe(false);
-            expect($expectation->passed())->toBe(true);
+            expect($expectation->process())->toBe(false);
             expect($expectation->logs())->toHaveLength(0);
 
         });

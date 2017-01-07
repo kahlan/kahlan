@@ -1,7 +1,6 @@
 <?php
 use Kahlan\Expectation;
 use Kahlan\Suite;
-use Kahlan\Specification;
 use Kahlan\Allow;
 use Kahlan\Box\BoxException;
 use Kahlan\Box\Box;
@@ -65,7 +64,7 @@ if ($kahlanFuctions &&
     {
         if (!Suite::current()) {
             $suite = box('kahlan')->get('suite.global');
-            return $suite->describe($message, $closure, $timeout, $type);
+            return $suite->root()->describe($message, $closure, $timeout, $type);
         }
         return Suite::current()->describe($message, $closure, $timeout, $type);
     }
@@ -117,12 +116,12 @@ if ($kahlanFuctions &&
 
     function waitsFor($actual, $timeout = null)
     {
-        return Specification::current()->waitsFor($actual, $timeout);
+        return Suite::current()->waitsFor($actual, $timeout);
     }
 
     function skipIf($condition)
     {
-        $current = Specification::current() ?: Suite::current();
+        $current = Suite::current();
         return $current->skipIf($condition);
     }
 
@@ -133,7 +132,7 @@ if ($kahlanFuctions &&
      */
     function expect($actual)
     {
-        return Specification::current()->expect($actual);
+        return Suite::current()->expect($actual);
     }
 
     /**

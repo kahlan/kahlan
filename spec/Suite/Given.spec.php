@@ -2,7 +2,6 @@
 namespace Kahlan\Spec\Suite;
 
 use Exception;
-use Kahlan\Scope;
 use Kahlan\Given;
 
 describe("Given", function () {
@@ -179,19 +178,6 @@ describe("Given", function () {
                 given('some_name',  'some value');
             };
             expect($closure)->toThrow(new Exception("A closure is required by `Given` constructor."));
-
-        });
-
-        it("throw an exception for reserved keywords", function () {
-
-            foreach (Scope::$blacklist as $keyword => $bool) {
-                $closure = function () use ($keyword) {
-                    given($keyword,  function () {
-                        return 'some value';
-                    });
-                };
-                expect($closure)->toThrow(new Exception("Sorry `{$keyword}` is a reserved keyword, it can't be used as a scope variable."));
-            }
 
         });
 
