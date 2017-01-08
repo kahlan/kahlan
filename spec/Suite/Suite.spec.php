@@ -224,6 +224,36 @@ describe("Suite", function () {
 
         });
 
+        it("captures errors", function () {
+
+            $describe = $this->suite->describe("", function () {
+
+                $this->beforeAll(function () {
+                    $undefined++;
+                });
+
+                $this->it("it", function () {
+                    $this->expect(true)->toBe(true);
+                });
+
+            });
+
+            $this->suite->run(['reporters' => $this->reporters]);
+            $logs = $this->suite->summary()->logs('errored');
+
+            expect($logs)->toHaveLength(1);
+            $log = reset($logs);
+
+            expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            expect($this->suite->total())->toBe(1);
+
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->focused())->toBe(false);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
+
+        });
+
     });
 
     describe("->afterAll()", function () {
@@ -236,6 +266,36 @@ describe("Suite", function () {
             $this->suite->afterAll(function () {});
             $callbacks = $this->suite->callbacks('afterAll');
             expect($callbacks)->toHaveLength(1);
+
+        });
+
+        it("captures errors", function () {
+
+            $describe = $this->suite->describe("", function () {
+
+                $this->afterAll(function () {
+                    $undefined++;
+                });
+
+                $this->it("it", function () {
+                    $this->expect(true)->toBe(true);
+                });
+
+            });
+
+            $this->suite->run(['reporters' => $this->reporters]);
+            $logs = $this->suite->summary()->logs('errored');
+
+            expect($logs)->toHaveLength(1);
+            $log = reset($logs);
+
+            expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            expect($this->suite->total())->toBe(1);
+
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->focused())->toBe(false);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
 
         });
 
@@ -1119,6 +1179,7 @@ describe("Suite", function () {
             $describe = $this->suite->describe("", function () {
                 $this->run();
             });
+
             $this->suite->run();
 
             $results = $this->suite->summary()->logs('errored');
