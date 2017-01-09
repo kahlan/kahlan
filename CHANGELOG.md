@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.4 (2017-01-09)
+
+  * **Bugfix:** Fixes error catching in beforeAll()/afterAll().
+
 ## 3.1.3 (2017-01-06)
 
   * **Bugfix:** Parse Nowdoc syntax correctly.
