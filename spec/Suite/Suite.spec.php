@@ -137,6 +137,29 @@ describe("Suite", function () {
 
         });
 
+        it("reports errors occuring in describes", function () {
+
+            skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
+
+            $describe = $this->root->describe("", function () {
+                $undefined++;
+            });
+
+            $this->suite->run();
+
+            $results = $this->suite->summary()->logs('errored');
+            expect($results)->toHaveLength(1);
+
+            $report = reset($results);
+
+            expect($report->exception()->getMessage())->toBe('`E_NOTICE` Undefined variable: undefined');
+            expect($report->type())->toBe('errored');
+            expect($report->messages())->toBe(['', '']);
+
+            expect($this->suite->status())->toBe(-1);
+
+        });
+
     });
 
     describe("->describe()", function () {
@@ -215,6 +238,7 @@ describe("Suite", function () {
             });
 
             $this->suite->run(['reporters' => $this->reporters]);
+
             $summary = $this->suite->summary();
 
             expect($summary->passed())->toBe(0);
@@ -264,6 +288,7 @@ describe("Suite", function () {
             });
 
             $this->suite->run(['reporters' => $this->reporters]);
+
             $summary = $this->suite->summary();
 
             expect($summary->passed())->toBe(1);

@@ -116,6 +116,7 @@ class Specification extends \Kahlan\Block
         $type = $this->log()->type();
 
         if ($type === 'failed' || $type === 'errored') {
+            $this->_passed = false;
             $this->suite()->failure();
         }
 

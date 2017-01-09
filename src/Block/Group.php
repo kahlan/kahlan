@@ -183,24 +183,27 @@ class Group extends \Kahlan\Block
     /**
      * Suite end helper.
      */
-    protected function _blockEnd()
+    protected function _blockEnd($runAfterAll = true)
     {
-        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
-            try {
-                $this->runCallbacks('afterAll', false);
-            } catch (Throwable $exception) {
-                $this->_exception($exception);
-            }
-        } else {
-            try {
-                $this->runCallbacks('afterAll', false);
-            } catch (Exception $exception) {
-                $this->_exception($exception);
+        if ($runAfterAll) {
+            if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
+                try {
+                    $this->runCallbacks('afterAll', false);
+                } catch (Throwable $exception) {
+                    $this->_exception($exception);
+                }
+            } else {
+                try {
+                    $this->runCallbacks('afterAll', false);
+                } catch (Exception $exception) {
+                    $this->_exception($exception);
+                }
             }
         }
 
         $type = $this->log()->type();
         if ($type === 'failed' || $type === 'errored') {
+            $this->_passed = false;
             $this->suite()->failure();
             $this->summary()->log($this->log());
         }
