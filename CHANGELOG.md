@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.5 (2017-01-09)
+
+  * **Bugfix:** Fix wrong reported logs introduced in 3.1.4.
+
 ## 3.1.4 (2017-01-09)
 
   * **Bugfix:** Fixes error catching in beforeAll()/afterAll().
