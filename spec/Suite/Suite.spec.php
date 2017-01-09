@@ -239,10 +239,15 @@ describe("Suite", function () {
             });
 
             $this->suite->run(['reporters' => $this->reporters]);
-            $logs = $this->suite->summary()->logs('errored');
+            $summary = $this->suite->summary();
 
-            expect($logs)->toHaveLength(1);
-            $log = reset($logs);
+            expect($summary->passed())->toBe(0);
+            expect($summary->errored())->toBe(1);
+
+            $errors = $summary->logs('errored');
+
+            expect($errors)->toHaveLength(1);
+            $log = reset($errors);
 
             expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
             expect($this->suite->total())->toBe(1);
@@ -284,10 +289,15 @@ describe("Suite", function () {
             });
 
             $this->suite->run(['reporters' => $this->reporters]);
-            $logs = $this->suite->summary()->logs('errored');
+            $summary = $this->suite->summary();
 
-            expect($logs)->toHaveLength(1);
-            $log = reset($logs);
+            expect($summary->passed())->toBe(1);
+            expect($summary->errored())->toBe(1);
+
+            $errors = $summary->logs('errored');
+
+            expect($errors)->toHaveLength(1);
+            $log = reset($errors);
 
             expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
             expect($this->suite->total())->toBe(1);

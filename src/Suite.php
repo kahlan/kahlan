@@ -369,9 +369,8 @@ class Suite extends Scope
         $type = $this->log()->type();
         if ($type === 'failed' || $type === 'errored') {
             $this->_root->_failures++;
+            $this->summary()->log($this->log());
         }
-
-        $this->summary()->log($this->log());
 
         if ($this->message()) {
             $this->report('suiteEnd', $this);
