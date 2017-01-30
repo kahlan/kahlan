@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.6 (2017-01-30)
+
+  * **Bugfix:** Fix wrongly group use declarations reported as coverable code (PHP>=7).
+
 ## 3.1.5 (2017-01-09)
 
   * **Bugfix:** Fix wrong reported logs introduced in 3.1.4.
