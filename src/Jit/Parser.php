@@ -275,7 +275,7 @@ class Parser
                 case '{':
                     $prefix = $use;
                     $use = '';
-                    $stop = '}';
+                    $stop = $current->type === 'class' ? '}' : ';';
                     break;
             }
         }

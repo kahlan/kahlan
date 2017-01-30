@@ -231,14 +231,21 @@ describe("Parser", function () {
                 'B' => 'Kahlan\B',
                 'C' => 'Kahlan\C',
                 'F' => 'Kahlan\E',
+                'G' => 'Kahlan\E',
                 'StandardClass' => 'stdClass',
                 'ClassA' => 'Foo\Bar\Baz\ClassA',
                 'ClassB' => 'Foo\Bar\Baz\ClassB',
-                'ClassD' => 'Foo\Bar\Baz\Fuz\ClassC'
+                'ClassD' => 'Foo\Bar\Baz\Fuz\ClassC',
+                'functionName1' => 'My\Name\Space\functionName1',
+                'func'          => 'My\Name\Space\functionName2',
+                'CONSTANT'      => 'My\\Name\\Space\\CONSTANT'
             ]);
 
             $parsed = Parser::parse($content);
             expect(Parser::unparse($parsed))->toBe($content);
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
 
         });
 

@@ -58,6 +58,15 @@ describe("Monkey", function () {
 
         });
 
+        it("patches use statements", function () {
+
+            $nodes = Parser::parse(file_get_contents($this->path . '/Use.php'));
+            $expected = file_get_contents($this->path . '/UseProcessed.php');
+            $actual = Parser::unparse($this->patcher->process($nodes));
+            expect($actual)->toBe($expected);
+
+        });
+
     });
 
     describe("->patchable()", function () {
