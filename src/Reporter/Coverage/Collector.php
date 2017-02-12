@@ -44,6 +44,13 @@ class Collector
     protected $_prefix = '';
 
     /**
+     * Indicate if the filesystem has volumes or not.
+     *
+     * @var boolean
+     */
+    protected $_hasVolume = false;
+
+    /**
      * The files presents in `Collector::_paths`.
      *
      * @var array
@@ -99,7 +106,8 @@ class Collector
             'leavesOnly'     => false,
             'followSymlinks' => true,
             'recursive'      => true,
-            'base'           => getcwd()
+            'base'           => getcwd(),
+            'hasVolume'      => strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'
         ];
         $config += $defaults;
 
@@ -113,6 +121,7 @@ class Collector
         $this->_paths  = (array) $config['path'];
         $this->_base   = $config['base'];
         $this->_prefix = $config['prefix'];
+        $this->_hasVolume = $config['hasVolume'];
 
         $files = Dir::scan($this->_paths, $config);
         foreach ($files as $file) {
@@ -287,7 +296,19 @@ class Collector
     public function realpath($file)
     {
         $prefix = preg_quote($this->_prefix, '~');
-        return preg_replace("~^{$prefix}~", '', $file);
+        $file = preg_replace("~^{$prefix}~", '', $file);
+        if (!$this->_hasVolume) {
+            return $file;
+        }
+        if (preg_match('~^[A-Z]+:~', $file)) {
+            return $file;
+        }
+        $file = ltrim($file, DS);
+        $pos = strpos($file, DS);
+        if ($pos !== false) {
+            $file = substr_replace($file, ':' . DS, $pos, 1);
+        }
+        return $file;
     }
 
     /**
