@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.7 (2017-02-12)
+
+  * **Bugfix:** Fix a coverage issue on windows.
+
 ## 3.1.6 (2017-01-30)
 
   * **Bugfix:** Fix wrongly group use declarations reported as coverable code (PHP>=7).
