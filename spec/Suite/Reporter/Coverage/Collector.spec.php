@@ -197,7 +197,7 @@ describe("Coverage", function () {
         it("supports windows volumes", function () {
 
             $normalize = function ($path) {
-                return str_replace('\\', '/', $path);
+                return str_replace('\\', DS, $path);
             };
 
             $collector = new Collector([

@@ -141,7 +141,7 @@ describe("CodeClimate", function () {
     describe("::write()", function () {
 
         beforeEach(function () {
-            $this->output = tempnam("/tmp", "KAHLAN");
+            $this->output = tempnam(sys_get_temp_dir(), "KAHLAN");
         });
 
         afterEach(function () {
