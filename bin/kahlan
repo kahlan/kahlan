@@ -30,7 +30,6 @@ if (!$autoloaders) {
 
 use Kahlan\Box\Box;
 use Kahlan\Suite;
-use Kahlan\Matcher;
 use Kahlan\Cli\Kahlan;
 
 $box = box('kahlan', new Box());
