@@ -100,12 +100,8 @@ class Suite
 
     /**
      * The Constructor.
-     *
-     * @param array $config The Suite config array. Options are:
-     *                      -`'closure'` _Closure_: the closure of the test.
-     *                      -`'name'`    _string_ : the type of the suite.
      */
-    public function __construct($config = [])
+    public function __construct()
     {
         $this->_summary = new Summary();
         $this->_root = new Group(['suite' => $this]);
@@ -394,7 +390,7 @@ class Suite
      */
     public function stop()
     {
-        $this->report('stop', $this->summary(), true);
+        $this->report('stop', $this->summary());
     }
 
     /**

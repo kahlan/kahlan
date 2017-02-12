@@ -4,15 +4,16 @@ namespace Kahlan\Scope;
 use Closure;
 use Throwable;
 use Exception;
+use Kahlan\Expectation;
 
 class Specification extends \Kahlan\Scope
 {
     /**
      * The expect statement.
      *
-     * @param  Expectation   $actual The expression to check
+     * @param  mixed $actual The expression to check
      *
-     * @return Expectation[]
+     * @return Expectation;
      */
     public function expect($actual, $timeout = -1)
     {
@@ -22,7 +23,7 @@ class Specification extends \Kahlan\Scope
     /**
      * The waitsFor statement.
      *
-     * @param  Expectation $actual The expression to check
+     * @param  mixed $actual The expression to check
      *
      * @return mixed
      */

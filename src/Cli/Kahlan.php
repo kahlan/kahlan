@@ -68,7 +68,7 @@ class Kahlan
      * when the version of Kahlan is updated.
      * It will have no effect if the cache location is changed the default config file (i.e. `'kahlan-config.php'`).
      */
-    public static function composerPostUpdate(Event $event)
+    public static function composerPostUpdate($event)
     {
         if (!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);

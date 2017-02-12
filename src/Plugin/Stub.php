@@ -20,6 +20,13 @@ class Stub
     protected static $_registered = [];
 
     /**
+     * The stub reference.
+     *
+     * @var mixed
+     */
+    protected $_reference = null;
+
+    /**
      * Method chain.
      *
      * @var Method[]

@@ -2,6 +2,7 @@
 namespace Kahlan\Reporter;
 
 use Kahlan\Reporter\Coverage\Collector;
+use Kahlan\Reporter\Coverage\Metrics;
 
 class Coverage extends Terminal
 {
@@ -155,14 +156,14 @@ class Coverage extends Terminal
     /**
      * Outputs some metrics info where the metric is not the total coverage.
      *
-     * @param Metrics $metrics A metrics instance.
-     * @param array   $options The options for the reporter, the options are:
-     *                         - `'verbosity`' _integer|string_: The verbosity level:
-     *                           - 1      : overall coverage value for the whole code.
-     *                           - 2      : overall coverage by namespaces.
-     *                           - 3      : overall coverage by classes.
-     *                           - 4      : overall coverage by methods and functions.
-     *                           - string : coverage for a fully namespaced (class/method/namespace) string.
+     * @param Metrics $metrics   A metrics instance.
+     * @param array   $verbosity The options for the reporter, the options are:
+     *                             - `'verbosity`' _integer|string_: The verbosity level:
+     *                             - 1      : overall coverage value for the whole code.
+     *                             - 2      : overall coverage by namespaces.
+     *                             - 3      : overall coverage by classes.
+     *                             - 4      : overall coverage by methods and functions.
+     *                             - string : coverage for a fully namespaced (class/method/namespace) string.
      */
     protected function _renderMetrics($metrics, $verbosity)
     {

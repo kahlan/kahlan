@@ -31,21 +31,21 @@ class NodeDef
     /**
      * The node's namespace.
      *
-     * @var instance|null
+     * @var object|null
      */
     public $namespace = null;
 
     /**
      * The node's parent.
      *
-     * @var instance|null
+     * @var object|null
      */
     public $parent = null;
 
     /**
      * The node's parent function.
      *
-     * @var instance|null
+     * @var object|null
      */
     public $function = null;
 

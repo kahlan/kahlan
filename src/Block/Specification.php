@@ -41,9 +41,9 @@ class Specification extends \Kahlan\Block
     /**
      * The expect statement.
      *
-     * @param  Expectation   $actual The expression to check
+     * @param  mixed       $actual The expression to check
      *
-     * @return Expectation[]
+     * @return Expectation
      */
     public function expect($actual, $timeout = -1)
     {
@@ -53,7 +53,7 @@ class Specification extends \Kahlan\Block
     /**
      * The waitsFor statement.
      *
-     * @param  Expectation $actual The expression to check
+     * @param  mixed $actual The expression to check
      *
      * @return mixed
      */
@@ -69,7 +69,7 @@ class Specification extends \Kahlan\Block
     }
 
     /**
-     * Processes the spec.
+     * Spec execution helper.
      */
     protected function _execute()
     {
@@ -89,7 +89,7 @@ class Specification extends \Kahlan\Block
     }
 
     /**
-     * Spec start helper.
+     * Start spec execution helper.
      */
     protected function _blockStart()
     {
@@ -100,7 +100,7 @@ class Specification extends \Kahlan\Block
     }
 
     /**
-     * Spec end helper.
+     * End spec execution helper.
      */
     protected function _blockEnd($runAfterEach = true)
     {

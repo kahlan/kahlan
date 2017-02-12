@@ -53,7 +53,7 @@ abstract class Block
     /**
      * The block scope.
      *
-     * @var Kahlan\Scope\Scope
+     * @var Scope
      */
     protected $_scope = null;
 
@@ -509,4 +509,19 @@ abstract class Block
         }
         return @$closure->bindTo($this->_scope);
     }
+
+    /**
+     * Block execution helper.
+     */
+    abstract protected function _execute();
+
+    /**
+     * Start block execution helper.
+     */
+    abstract protected function _blockStart();
+
+    /**
+     * End block execution helper.
+     */
+    abstract protected function _blockEnd($runAfterAll = true);
 }

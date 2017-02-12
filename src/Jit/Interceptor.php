@@ -287,7 +287,7 @@ class Interceptor
     /**
      * Returns watched files
      *
-     * @return The array of wateched file paths.
+     * @return array The array of wateched file paths.
      */
     public function watched()
     {

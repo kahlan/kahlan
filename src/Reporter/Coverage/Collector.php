@@ -37,6 +37,13 @@ class Collector
     protected $_paths = [];
 
     /**
+     * The base path.
+     *
+     * @var string
+     */
+    protected $_base = '';
+
+    /**
      * Some prefix to remove to get the real file path.
      *
      * @var string

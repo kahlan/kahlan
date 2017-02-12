@@ -9,8 +9,8 @@ class ToContainKey
     /**
      * Expect that `$actual` array contain the `$expected` key.
      *
-     * @param  collection $actual The actual array.
-     * @param  mixed      $expected The expected key.
+     * @param  array|Traversable $actual The actual array.
+     * @param  mixed             $expected The expected key.
      * @return boolean
      */
     public static function match($actual, $expected)

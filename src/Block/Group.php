@@ -157,7 +157,7 @@ class Group extends \Kahlan\Block
     }
 
     /**
-     * Process the group specs.
+     * Group execution helper.
      */
     protected function _execute()
     {
@@ -170,7 +170,7 @@ class Group extends \Kahlan\Block
     }
 
     /**
-     * Suite start helper.
+     * Start group execution helper.
      */
     protected function _blockStart()
     {
@@ -181,7 +181,7 @@ class Group extends \Kahlan\Block
     }
 
     /**
-     * Suite end helper.
+     * End group block execution helper.
      */
     protected function _blockEnd($runAfterAll = true)
     {

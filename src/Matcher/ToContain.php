@@ -8,8 +8,8 @@ class ToContain
     /**
      * Expect that `$actual` contain the `$expected` value.
      *
-     * @param  collection $actual The actual value.
-     * @param  mixed      $expected The expected value.
+     * @param  array|Traversable $actual The actual value.
+     * @param  mixed             $expected The expected value.
      * @return boolean
      */
     public static function match($actual, $expected)

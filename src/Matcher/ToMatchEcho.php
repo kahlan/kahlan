@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan\Matcher;
 
+use Closure;
+
 class ToMatchEcho extends ToEcho
 {
     /**

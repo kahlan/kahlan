@@ -52,7 +52,7 @@ class Terminal extends Reporter
     /**
      * The console to output stream on (e.g STDOUT).
      *
-     * @var stream
+     * @var resource
      */
     protected $_output = null;
 

@@ -385,8 +385,8 @@ EOT;
     /**
      * Extract the return type of a method.
      *
-     * @param  objedct $method A instance of `ReflectionMethod`.
-     * @return string          The return type.
+     * @param  object $method A instance of `ReflectionMethod`.
+     * @return string         The return type.
      */
     protected static function _generateReturnType($method)
     {

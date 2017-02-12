@@ -118,6 +118,7 @@ class Arg
      */
     public function match($actual)
     {
+        $target = null;
         $matcher = null;
         foreach ($this->_matchers as $target => $value) {
             if (!$target) {

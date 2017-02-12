@@ -4,6 +4,8 @@ namespace Kahlan;
 use Kahlan\Expectation;
 use Kahlan\Suite;
 use Kahlan\Allow;
+use Kahlan\Box\BoxException;
+use Kahlan\Box\Box;
 
 function beforeAll($closure)
 {
