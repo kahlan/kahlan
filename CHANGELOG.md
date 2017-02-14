@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.8 (2017-02-14)
+
+  * **Change:** Report specs with incomplete expectations as pending.
+
 ## 3.1.7 (2017-02-12)
 
   * **Bugfix:** Fix a coverage issue on windows.

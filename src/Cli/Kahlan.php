@@ -25,7 +25,7 @@ class Kahlan
 {
     use Filterable;
 
-    const VERSION = '3.1.7';
+    const VERSION = '3.1.8';
 
     /**
      * Starting time.
