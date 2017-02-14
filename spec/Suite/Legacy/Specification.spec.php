@@ -40,7 +40,7 @@ describe("Specification", function () {
 
             });
 
-            it("fails when an expectation is not verified", function () {
+            it("marks the spec as pending when an expectation is not verified", function () {
 
                 $this->spec = new Specification([
                 'closure' => function () {
@@ -49,7 +49,8 @@ describe("Specification", function () {
                 }
                 ]);
 
-                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->passed())->toBe(true);
+                expect($this->spec->log()->type())->toBe('pending');
 
             });
 

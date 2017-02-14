@@ -185,6 +185,9 @@ class Specification extends Scope
     protected function _specEnd($runAfterEach = true)
     {
         foreach ($this->_expectations as $expectation) {
+            if (!$expectation->logs()) {
+                $this->log()->type('pending');
+            }
             foreach ($expectation->logs() as $log) {
                 $this->log($log['type'], $log);
             }

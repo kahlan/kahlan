@@ -250,7 +250,6 @@ class Expectation
         }
         $spec = $this->_actual;
         if (!$spec instanceof Specification) {
-            $this->_passed = false;
             return $this;
         }
 
@@ -361,7 +360,7 @@ class Expectation
     {
         $this->_run();
         $this->_resolve();
-        return $this->_passed;
+        return $this->_passed !== false;
     }
 
     /**
@@ -370,7 +369,7 @@ class Expectation
     public function clear()
     {
         $this->_actual = null;
-        $this->_passed = true;
+        $this->_passed = null;
         $this->_not = false;
         $this->_timeout = -1;
         $this->_logs = [];
