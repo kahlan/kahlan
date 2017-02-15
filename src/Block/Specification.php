@@ -105,7 +105,10 @@ class Specification extends \Kahlan\Block
     protected function _blockEnd($runAfterEach = true)
     {
         foreach ($this->_expectations as $expectation) {
-            foreach ($expectation->logs() as $log) {
+            if (!$logs = $expectation->logs()) {
+                $this->log()->type('pending');
+            }
+            foreach ($logs as $log) {
                 $this->log($log['type'], $log);
             }
         }

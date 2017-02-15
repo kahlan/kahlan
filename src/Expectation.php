@@ -257,7 +257,6 @@ class Expectation
         $spec = $this->_actual;
 
         if (!$spec instanceof Specification) {
-            $this->_passed = !!$this->_passed;
             return $this;
         }
 
@@ -371,7 +370,7 @@ class Expectation
             $this->_resolve();
         }
         $this->_processed = true;
-        return $this->_passed;
+        return $this->_passed !== false;
     }
 
     /**

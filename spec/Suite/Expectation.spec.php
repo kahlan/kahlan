@@ -185,7 +185,7 @@ describe("Expectation", function () {
             expect($expectation->deferred())->toBe(null);
             expect($expectation->timeout())->toBe(-1);
             expect($expectation->not())->toBe(false);
-            expect($expectation->process())->toBe(false);
+            expect($expectation->process())->toBe(true);
             expect($expectation->logs())->toHaveLength(0);
 
         });
