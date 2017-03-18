@@ -13,7 +13,7 @@ describe("Quit", function () {
 
     describe("->process()", function () {
 
-        it("patches class's methods", function () {
+        it("patches exit/die statements", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/File.php'));
             $expected = file_get_contents($this->path . '/FileProcessed.php');

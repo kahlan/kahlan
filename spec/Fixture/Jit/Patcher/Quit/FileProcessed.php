@@ -8,7 +8,17 @@ class Example
         \Kahlan\Plugin\Quit::quit(-1);
     }
 
+    public function exitStatementShortSyntax()
+    {
+        \Kahlan\Plugin\Quit::quit();
+    }
+
     public function dieStatement()
+    {
+        \Kahlan\Plugin\Quit::quit();
+    }
+
+    public function dieStatementShortSyntax()
     {
         \Kahlan\Plugin\Quit::quit();
     }
@@ -17,6 +27,6 @@ class Example
     {
         fooexit();
         $instance->exit();
-        $options = (array) $options;
+        $exit = 'exit();';
     }
 }
