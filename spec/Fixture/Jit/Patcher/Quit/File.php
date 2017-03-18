@@ -8,7 +8,17 @@ class Example
         exit(-1);
     }
 
+    public function exitStatementShortSyntax()
+    {
+        exit;
+    }
+
     public function dieStatement()
+    {
+        die();
+    }
+
+    public function dieStatementShortSyntax()
     {
         die();
     }
@@ -17,6 +27,6 @@ class Example
     {
         fooexit();
         $instance->exit();
-        $options = (array) $options;
+        $exit = 'exit();';
     }
 }

@@ -49,11 +49,13 @@ class Quit
     protected function _processTree($parent)
     {
         $alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
-        $regex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)((?:exit|die)\s*\()/m";
+        $regex = "/(?<!\:|\\\$|\>|{$alphanum})(\s*)((?:exit|die)\s*)([\(|;])/m";
 
         foreach ($parent->tree as $node) {
             if ($node->processable && $node->type === 'code') {
-                $node->body = preg_replace($regex, '\1\Kahlan\Plugin\Quit::quit(', $node->body);
+                $node->body = preg_replace_callback($regex, function ($matches) {
+                    return $matches[1] . '\Kahlan\Plugin\Quit::quit' . ($matches[3] === '(' ? '(' : '();');
+                }, $node->body);
             }
             if (count($node->tree)) {
                 $this->_processTree($node);
