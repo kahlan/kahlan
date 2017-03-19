@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan;
 
+use Kahlan\Box\BoxException;
 use Kahlan\Expectation;
 use Kahlan\Suite;
 use Kahlan\Specification;
