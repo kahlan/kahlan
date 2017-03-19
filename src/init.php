@@ -64,7 +64,7 @@ if ($kahlanFuctions &&
     function describe($message, $closure, $timeout = null, $type = 'normal')
     {
         if (!Suite::current()) {
-            $suite = box('kahlan')->get('suite.global');
+            $suite = \Kahlan\box('kahlan')->get('suite.global');
             return $suite->describe($message, $closure, $timeout, $type);
         }
         return Suite::current()->describe($message, $closure, $timeout, $type);
@@ -144,49 +144,5 @@ if ($kahlanFuctions &&
     function allow($actual)
     {
         return new Allow($actual);
-    }
-}
-
-$boxFuctions = true;
-
-if (getenv('BOX_DISABLE_FUNCTIONS') || (defined('BOX_DISABLE_FUNCTIONS') && BOX_DISABLE_FUNCTIONS)) {
-    $boxFuctions = false;
-}
-
-if (defined('BOX_FUNCTIONS_EXIST') && BOX_FUNCTIONS_EXIST) {
-    $boxFuctions = false;
-}
-
-if ($boxFuctions && !function_exists('box')) {
-    define('BOX_FUNCTIONS_EXIST', true);
-
-    function box($name = '', $box = null)
-    {
-        static $boxes = [];
-
-        if (func_num_args() === 1) {
-            if ($name === false) {
-                $boxes = [];
-                return;
-            }
-            if (is_object($name)) {
-                return $boxes[''] = $name;
-            }
-            if (isset($boxes[$name])) {
-                return $boxes[$name];
-            }
-            throw new BoxException("Unexisting box `'{$name}'`.");
-        }
-        if (func_num_args() === 2) {
-            if ($box === false) {
-                unset($boxes[$name]);
-                return;
-            }
-            return $boxes[$name] = $box;
-        }
-        if (!isset($boxes[''])) {
-            $boxes[''] = new Box();
-        }
-        return $boxes[''];
     }
 }

@@ -32,7 +32,7 @@ use Kahlan\Box\Box;
 use Kahlan\Suite;
 use Kahlan\Cli\Kahlan;
 
-$box = box('kahlan', new Box());
+$box = \Kahlan\box('kahlan', new Box());
 
 $box->service('suite.global', function() {
     return new Suite();
