@@ -47,8 +47,8 @@ class Quit
         if (static::enabled()) {
             exit($status);
         }
-        if(!is_numeric($status)){
-            throw new QuitException('Exit statement occurred with message: '. $status, 0);
+        if (!is_numeric($status)) {
+            throw new QuitException('Exit statement occurred with message: ' . $status, 0);
         }
         throw new QuitException('Exit statement occurred', $status);
     }
