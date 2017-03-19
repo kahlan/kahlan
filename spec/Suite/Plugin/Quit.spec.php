@@ -75,6 +75,40 @@ describe("Quit", function () {
 
     });
 
+    describe("::disable()", function () {
+
+        it("throws an exception when a die statement occurs with string message", function () {
+
+            Quit::disable();
+
+            $closure = function () {
+                $foo = new Foo();
+                $foo->dieStatement('error message');
+            };
+
+            expect($closure)->toThrow(new QuitException('Exit statement occurred with message: error message', 0));
+
+        });
+
+    });
+
+    describe("::disable()", function () {
+
+        it("throws an exception when a die statement occurs with integer code", function () {
+
+            Quit::disable();
+
+            $closure = function () {
+                $foo = new Foo();
+                $foo->dieStatement(-1);
+            };
+
+            expect($closure)->toThrow(new QuitException('Exit statement occurred', -1));
+
+        });
+
+    });
+
     describe("::reset()", function () {
 
         it("enables `exit()` call catching on reset", function () {
