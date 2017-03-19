@@ -28,6 +28,7 @@ use Exception;
  * @method Matcher toMatchEcho(string $expected) passes if actual echoes matches the expected string
  * @method Matcher toReceive(string $expected) passes if the expected method as been called on actual
  * @method Matcher toReceiveNext(string $expected) passes if the expected method as been called on actual after some other method
+ * @method Matcher toBeOneOf(mixed $expected) passes if the actual is part of expected values
  */
 class Matcher
 {
