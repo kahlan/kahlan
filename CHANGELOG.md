@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.9 (2017-03-19)
+
+  * **Bugfix:** Fix exit/die short syntax patching.
+
 ## 3.1.8 (2017-02-14)
 
   * **Change:** Report specs with incomplete expectations as pending.
