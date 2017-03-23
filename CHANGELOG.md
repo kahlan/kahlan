@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.10 (2017-03-23)
+
+  * **Add:** Enhance interoperability between frameworks.
+
 ## 3.1.9 (2017-03-19)
 
   * **Bugfix:** Fix exit/die short syntax patching.
