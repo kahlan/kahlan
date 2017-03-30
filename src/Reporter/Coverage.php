@@ -275,8 +275,13 @@ class Coverage extends Terminal
             }
 
             $name = $child->name();
-            $pos = strrpos($name, '\\', $type === 'namespace' ? - 2 : 0);
-            $basename = substr($name, $pos !== false ? $pos + 1 : 0);
+
+            if ($name !== '\\') {
+                $pos = strrpos($name, '\\', $type === 'namespace' ? - 2 : 0);
+                $basename = substr($name, $pos !== false ? $pos + 1 : 0);
+            } else {
+                $basename = '\\';
+            }
 
             $len = strlen($basename) + ($depth + 1) * $tab;
             if ($len > $maxWidth) {
