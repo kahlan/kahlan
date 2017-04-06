@@ -149,6 +149,7 @@ $__KMONKEY__14();
         array();
         true and(true);
         try{} catch (\Exception $e) {};
+        clone();
         compact();
         declare(ticks=1);
         die();

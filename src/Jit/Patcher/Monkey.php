@@ -18,6 +18,7 @@ class Monkey
         'array'           => true,
         'catch'           => true,
         'case'            => true,
+        'clone'           => true,
         'compact'         => true,
         'declare'         => true,
         'die'             => true,

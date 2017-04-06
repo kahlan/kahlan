@@ -149,6 +149,7 @@ rand();
         array();
         true and(true);
         try{} catch (\Exception $e) {};
+        clone();
         compact();
         declare(ticks=1);
         die();
