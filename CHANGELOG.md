@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 3.1.11 (2017-04-06)
+
+  * **Bugfix:** Add `clone()` to JIT ignored statements.
+  * **Bugfix:** Fix a coverage reporting issue with global namespace definitions.
+
 ## 3.1.10 (2017-03-23)
 
   * **Add:** Enhance interoperability between frameworks.
