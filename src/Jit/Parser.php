@@ -230,6 +230,8 @@ class Parser
                 $current->close .= $this->_stream->next([')', ';', ',', ']']);
                 $this->_states['num'] += substr_count($current->close, "\n");
             }
+        } elseif ($current->type === 'namespace') {
+            $this->_flushUses();
         }
 
         $this->_states['current'] = $current->parent;
@@ -285,7 +287,7 @@ class Parser
     }
 
     /**
-     * Build a namespace node.
+     * Build a declare node.
      */
     protected function _declareNode()
     {
