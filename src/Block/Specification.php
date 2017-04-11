@@ -104,8 +104,9 @@ class Specification extends \Kahlan\Block
      */
     protected function _blockEnd($runAfterEach = true)
     {
+        $type = $this->log()->type();
         foreach ($this->_expectations as $expectation) {
-            if (!$logs = $expectation->logs()) {
+            if (!($logs = $expectation->logs()) && $type !== 'errored') {
                 $this->log()->type('pending');
             }
             foreach ($logs as $log) {
@@ -113,7 +114,7 @@ class Specification extends \Kahlan\Block
             }
         }
 
-        if ($this->log()->type() === 'passed' && !count($this->_expectations)) {
+        if ($type === 'passed' && !count($this->_expectations)) {
             $this->log()->type('pending');
         }
         $type = $this->log()->type();
