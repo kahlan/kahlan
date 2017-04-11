@@ -39,13 +39,16 @@ class Quit
     /**
      * Run a controlled quit statement.
      *
-     * @param  integer              $status Use 0 for a successful exit.
+     * @param  integer|string       $status Use 0 for a successful exit.
      * @throws Kahlan\QuitException         Only if disableed is `true`.
      */
     public static function quit($status = 0)
     {
         if (static::enabled()) {
             exit($status);
+        }
+        if (!is_numeric($status)) {
+            throw new QuitException('Exit statement occurred with message: ' . $status, 0);
         }
         throw new QuitException('Exit statement occurred', $status);
     }
