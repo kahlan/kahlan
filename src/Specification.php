@@ -184,8 +184,9 @@ class Specification extends Scope
      */
     protected function _specEnd($runAfterEach = true)
     {
+        $type = $this->log()->type();
         foreach ($this->_expectations as $expectation) {
-            if (!($logs = $expectation->logs())) {
+            if (!($logs = $expectation->logs()) && $type !== 'errored') {
                 $this->log()->type('pending');
             }
             foreach ($logs as $log) {
@@ -193,7 +194,7 @@ class Specification extends Scope
             }
         }
 
-        if ($this->log()->type() === 'passed' && !count($this->_expectations)) {
+        if ($type === 'passed' && !count($this->_expectations)) {
             $this->log()->type('pending');
         }
         $type = $this->log()->type();

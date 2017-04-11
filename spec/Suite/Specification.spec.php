@@ -410,6 +410,26 @@ describe("Specification", function () {
 
         });
 
+        describe('when a spec errored', function () {
+
+            it('logs the error', function () {
+                $this->spec = new Specification([
+                    'closure' => function () {
+                        $foo = Double::instance(['magicMethods' => false]);
+                        expect($foo)->toReceive('somethingdefined');
+                        expect($foo->thisisnotdefined)->toBe('test');
+                    }
+                ]);
+
+                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->log()->type())->toBe('errored');
+
+                $errored = $this->spec->summary()->logs('errored');
+                expect($errored)->toHaveLength(1);
+            });
+
+        });
+
     });
 
 });
