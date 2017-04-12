@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.14 (2017-04-12)
+
+  * **Bugfix:** Fix inaccurate actually called times number in report error description messages.
+
 ## 3.1.13 (2017-04-12)
 
   * **Bugfix:** Fix a reporting issue which report errored specs as pending in some circumstances.
