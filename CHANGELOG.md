@@ -2,6 +2,14 @@
 
 ## Last changes
 
+## 3.1.13 (2017-04-12)
+
+  * **Bugfix:** Fix a reporting issue which report errored specs as pending in some circumstances.
+
+## 3.1.12 (2017-04-07)
+
+  * **Bugfix:** Fix a monkey patching issue with curly braces namespace definitions.
+
 ## 3.1.11 (2017-04-06)
 
   * **Bugfix:** Add `clone()` to JIT ignored statements.
