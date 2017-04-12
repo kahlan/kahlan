@@ -1,5 +1,5 @@
 sudo: required
-dist: xenial
+dist: trusty
 group: edge
 language: php
 
@@ -9,7 +9,7 @@ php:
   - 5.6
   - 7.0
   - 7.1
-  - hhvm-3.6
+  - hhvm-3.18
 
 matrix:
   fast_finish: true
