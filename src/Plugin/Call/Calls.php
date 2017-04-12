@@ -102,11 +102,12 @@ class Calls
     /**
      * Finds a logged call.
      *
-     * @param  object        $message   The message method name.
-     * @param  integer       $index     Start index.
-     * @return array|false              Return founded log call.
+     * @param  object      $message   The message method name.
+     * @param  integer     $index     Start index.
+     * @param  array       $args      Populated by the list of passed arguments.
+     * @return array|false            Return founded log call.
      */
-    public static function find($message, $index = 0, $times = 0)
+    public static function find($message, $index = 0, $times = 0, &$args = [])
     {
         $success = false;
         $messages = !is_array($message) ? [$message] : $message;
@@ -116,7 +117,6 @@ class Calls
         $reference = $message->isStatic() && is_object($reference) ? get_class($reference) : $reference;
 
         $lastFound = null;
-        $args = [];
 
         $count = count(static::$_logs);
 
@@ -137,7 +137,6 @@ class Calls
 
             if ($message = next($messages)) {
                 $lastFound = $message;
-                $args = [];
                 if (!$reference = $message->reference() && $log['method']) {
                     $reference = $log['method']->actualReturn();
                 }
@@ -151,13 +150,13 @@ class Calls
 
             $times -= 1;
             if ($times < 0) {
-                static::$_index = $i + 1;
                 $success = true;
+                $next = static::find($messages, $i + 1, 0, $args);
+                static::$_index = $i + 1;
                 break;
             } elseif ($times === 0) {
-                $next = static::find($messages, $i + 1);
+                $next = static::find($messages, $i + 1, 0, $args);
                 if ($next['success']) {
-                    $args = array_merge($args, $next['args']);
                     $success = false;
                 } else {
                     $success = true;
@@ -165,7 +164,7 @@ class Calls
                 }
                 break;
             }
-            return static::find($messages, $i + 1, $times);
+            return static::find($messages, $i + 1, $times, $args);
         }
         $index = static::$_index;
         $message = $lastFound ?: reset($messages);
