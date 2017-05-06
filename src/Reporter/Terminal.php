@@ -67,6 +67,21 @@ class Terminal extends Reporter
         'dot'   => '.'
     ];
 
+
+    /**
+     * src directory to be tested.
+     *
+     * @var string
+     */
+    protected $_srcDir = 'src';
+
+    /**
+     * spec directory.
+     *
+     * @var string
+     */
+    protected $_specDir = 'spec';
+
     /**
      * The constructor.
      *
@@ -93,6 +108,14 @@ class Terminal extends Reporter
             $this->_symbols['ok'] = "\xFB";
             $this->_symbols['err'] = "\x78";
             $this->_symbols['dot'] = '.';
+        }
+
+        if (isset($config['src'])) {
+            $this->_srcDir  = $config['src'];
+        }
+
+        if (isset($config['spec'])) {
+            $this->_specDir = $config['spec'];
         }
     }
 
@@ -135,6 +158,10 @@ class Terminal extends Reporter
         $this->write($this->kahlanBaseline() . "\n", 'dark-grey');
         $this->write("\nWorking Directory: ", 'blue');
         $this->write(getcwd() . "\n");
+        $this->write("src Directory: ", 'blue');
+        $this->write(realpath($this->_srcDir) . "\n");
+        $this->write("spec Directory: ", 'blue');
+        $this->write(realpath($this->_specDir) . "\n");
     }
 
     /**

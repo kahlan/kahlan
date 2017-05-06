@@ -508,7 +508,9 @@ EOD;
                     $params = $args + [
                         'start'  => $this->_start,
                         'colors' => !$this->commandLine()->get('no-colors'),
-                        'header' => !$this->commandLine()->get('no-header')
+                        'header' => !$this->commandLine()->get('no-header'),
+                        'src'    => $this->commandLine()->get('src')[0],
+                        'spec'   => $this->commandLine()->get('spec')[0],
                     ];
 
                     if (isset($output) && strlen($output) > 0) {
