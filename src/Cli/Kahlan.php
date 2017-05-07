@@ -509,8 +509,8 @@ EOD;
                         'start'  => $this->_start,
                         'colors' => !$this->commandLine()->get('no-colors'),
                         'header' => !$this->commandLine()->get('no-header'),
-                        'src'    => $this->commandLine()->get('src')[0],
-                        'spec'   => $this->commandLine()->get('spec')[0],
+                        'src'    => $this->commandLine()->get('src'),
+                        'spec'   => $this->commandLine()->get('spec'),
                     ];
 
                     if (isset($output) && strlen($output) > 0) {
