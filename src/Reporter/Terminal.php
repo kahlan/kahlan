@@ -161,7 +161,7 @@ class Terminal extends Reporter
         $this->write("src Directory     : ", 'blue');
         $this->write(join(', ', array_map('realpath', $this->_srcDir)) . "\n");
         $this->write("spec Directory    : ", 'blue');
-        $this->write(join(', ', array_map('realpath', $this->_srcDir)) . "\n");
+        $this->write(join(', ', array_map('realpath', $this->_specDir)) . "\n");
     }
 
     /**
