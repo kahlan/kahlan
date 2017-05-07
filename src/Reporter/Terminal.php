@@ -71,16 +71,16 @@ class Terminal extends Reporter
     /**
      * src directory to be tested.
      *
-     * @var string
+     * @var array
      */
-    protected $_srcDir = 'src';
+    protected $_srcDir = ['src'];
 
     /**
      * spec directory.
      *
-     * @var string
+     * @var array
      */
-    protected $_specDir = 'spec';
+    protected $_specDir = ['spec'];
 
     /**
      * The constructor.
