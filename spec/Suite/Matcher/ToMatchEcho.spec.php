@@ -2,6 +2,7 @@
 namespace Kahlan\Spec\Suite\Matcher;
 
 use Kahlan\Matcher\ToMatchEcho;
+use InvalidArgumentException;
 
 describe("toMatchEcho", function () {
 
@@ -34,6 +35,15 @@ describe("toMatchEcho", function () {
                     echo 'Hello'; })->not->toMatchEcho(function ($actual) {
                                return $actual === 'Hello World!';
                     });
+
+        });
+
+        it("not passes if actual is not callable", function () {
+
+            $closure = function () {
+                ToMatchEcho::match('Hello World', "/Bye/");
+            };
+            expect($closure)->toThrow(new InvalidArgumentException('actual must be callable'));
 
         });
 
