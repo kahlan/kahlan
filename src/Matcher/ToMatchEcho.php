@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan\Matcher;
 
+use InvalidArgumentException;
+
 class ToMatchEcho extends ToEcho
 {
     /**
@@ -13,9 +15,7 @@ class ToMatchEcho extends ToEcho
     public static function match($actual, $expected = null)
     {
         if (! is_callable($actual)) {
-            $actual = function () use ($actual) {
-                echo $actual;
-            };
+            throw new InvalidArgumentException('actual must be callable');
         }
 
         $a = static::actual($actual);
