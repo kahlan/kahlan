@@ -12,6 +12,12 @@ class ToMatchEcho extends ToEcho
      */
     public static function match($actual, $expected = null)
     {
+        if (! is_callable($actual)) {
+            $actual = function () use ($actual) {
+                echo $actual;
+            };
+        }
+
         $a = static::actual($actual);
         static::_buildDescription($a, $expected);
 

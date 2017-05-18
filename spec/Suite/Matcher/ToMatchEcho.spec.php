@@ -37,6 +37,14 @@ describe("toMatchEcho", function () {
 
         });
 
+        it("passes if actual match the closure", function () {
+
+            expect('Hello World!')->toMatchEcho(function($actual) {
+                return $actual === 'Hello World!';
+            });
+
+        });
+
     });
 
     describe("::description()", function () {
