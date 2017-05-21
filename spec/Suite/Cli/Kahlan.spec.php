@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Spec\Suite\Cli;
 
+use stdClass;
 use Exception;
 use Kahlan\Jit\Interceptor;
 use Kahlan\Filter\Filter;
@@ -34,6 +35,18 @@ describe("Kahlan", function () {
             ])
         ]);
         $this->console = $this->specs->terminal();
+    });
+
+    describe("->autoload()", function () {
+
+        it("gets/sets autoloader", function () {
+
+            $autoloader = new stdClass();
+            expect($this->specs->autoloader($autoloader))->toBe($this->specs);
+            expect($this->specs->autoloader())->toBe($autoloader);
+
+        });
+
     });
 
     describe("->loadConfig()", function () {
@@ -333,6 +346,7 @@ EOD;
                 '--reporter=none'
             ]);
 
+            $autoloader = new stdClass();
             $order = [];
 
             Filter::register('spec.bootstrap', function ($chain) use (&$order) {
@@ -347,7 +361,8 @@ EOD;
             });
             Filter::apply($this->specs, 'interceptor', 'spec.interceptor');
 
-            Filter::register('spec.namespaces', function ($chain) use (&$order) {
+            Filter::register('spec.namespaces', function ($chain) use (&$order, &$autoloader) {
+                $this->autoloader($autoloader);
                 $order[] = 'namespaces';
             });
             Filter::apply($this->specs, 'namespaces', 'spec.namespaces');
@@ -407,6 +422,8 @@ EOD;
                 'stop',
                 'quit'
             ]);
+
+            expect($this->specs->autoloader())->toBe($autoloader);
 
             Interceptor::unpatch();
 
