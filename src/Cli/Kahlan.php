@@ -133,13 +133,17 @@ namespace Kahlan\Cli {
         }
 
         /**
-         * Returns the attached autoloader instance.
+         * Get/set the attached autoloader instance.
          *
          * @return object
          */
-        public function autoloader()
+        public function autoloader($autoloader = null)
         {
-            return $this->_autoloader;
+            if (!func_num_args()) {
+                return $this->_autoloader;
+            }
+            $this->_autoloader = $autoloader;
+            return $this;
         }
 
         /**
@@ -401,14 +405,14 @@ EOD;
         protected function _interceptor()
         {
             return Filter::on($this, 'interceptor', [], function ($chain) {
-                Interceptor::patch([
+                $this->autoloader(Interceptor::patch([
                     'loader'     => [$this->autoloader(), 'loadClass'],
                     'include'    => $this->commandLine()->get('include'),
                     'exclude'    => array_merge($this->commandLine()->get('exclude'), ['Kahlan\\']),
                     'persistent' => $this->commandLine()->get('persistent'),
                     'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan',
                     'clearCache' => $this->commandLine()->get('cc')
-                ]);
+                ]));
             });
         }
 
