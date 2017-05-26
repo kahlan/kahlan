@@ -16,8 +16,10 @@ matrix:
 
 before_script:
   - if [[ $TRAVIS_SECURE_ENV_VARS = "true" ]]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
+  - phpenv config-rm xdebug.ini; true
   - composer self-update
   - composer install --no-interaction
+  - phpenv config-add xdebug.ini; true
   - if [[ $TRAVIS_PHP_VERSION =~ ^hhvm ]]; then echo 'hhvm.php7.all = 1' >> /etc/hhvm/php.ini; fi
 
 script:
