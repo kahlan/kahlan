@@ -156,11 +156,9 @@ class Terminal extends Reporter
         }
         $this->write($this->kahlan() . "\n\n");
         $this->write($this->kahlanBaseline() . "\n", 'dark-grey');
-        $this->write("\nWorking Directory : ", 'blue');
-        $this->write(getcwd() . "\n");
-        $this->write("src Directory     : ", 'blue');
+        $this->write("src directory  : ", 'blue');
         $this->write(join(', ', array_map('realpath', $this->_srcDir)) . "\n");
-        $this->write("spec Directory    : ", 'blue');
+        $this->write("spec directory : ", 'blue');
         $this->write(join(', ', array_map('realpath', $this->_specDir)) . "\n");
     }
 
