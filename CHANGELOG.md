@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.16 (2017-06-22)
+
+  * **Bugfix:** Support 7.1 `void` return type.
+
 ## 3.1.15 (2017-05-26)
 
   * **Bugfix:** Update Kahlan's autoloader reference when patched.
