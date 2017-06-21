@@ -52,4 +52,8 @@ class Simple extends \Kahlan\Fixture\Parent
     {
         yield rand(2, 5);
     }
+
+    public function voidMethod(): void
+    {
+    }
 }
