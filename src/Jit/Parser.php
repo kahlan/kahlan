@@ -469,7 +469,8 @@ class Parser
         $node->name = trim($name);
         $args = $this->_parseArgs();
         $node->args = $args['args'];
-        $body .= $args['body'] . $this->_stream->next([';', '{']);
+        $suffix = $this->_stream->next([';', '{']);
+        $body .= $args['body'] . $suffix;
         if ($parent) {
             $isMethod = $parent->hasMethods;
             if ($parent->type === 'interface') {
@@ -478,6 +479,7 @@ class Parser
         } else {
             $isMethod = false;
         }
+        $node->isVoid = preg_match('~\Wvoid\W~', $suffix);
         $node->isMethod = $isMethod;
         $node->isClosure = !$node->name;
         if ($isMethod) {
