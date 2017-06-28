@@ -18,7 +18,7 @@ class Interceptor
     protected $_cachePath = false;
 
     /**
-     * Additionnal watched files.
+     * Additional watched files.
      *
      * @var integer
      */

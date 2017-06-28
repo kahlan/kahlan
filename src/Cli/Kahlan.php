@@ -301,7 +301,7 @@ Miscellaneous Options:
   --version              Prints Kahlan version
 
 Note: The `[]` notation in default values mean that the related option can accepts an array of values.
-To add additionnal values, just repeat the same option many times in the command line.
+To add additional values, just repeat the same option many times in the command line.
 
 
 EOD;

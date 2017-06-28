@@ -398,7 +398,7 @@ class Coverage extends Terminal
         // Output the time to collect coverage
         $time = number_format($this->_time, 3);
         $memory = $this->readableSize(memory_get_peak_usage() - $summary->memoryUsage());
-        $this->write("\nCoverage collected in {$time} seconds (using an additionnal {$memory}o)\n\n\n");
+        $this->write("\nCoverage collected in {$time} seconds (using an additional {$memory}o)\n\n\n");
     }
 
     /**
