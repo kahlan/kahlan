@@ -662,8 +662,6 @@ namespace {
     use Kahlan\Suite;
     use Kahlan\Specification;
     use Kahlan\Allow;
-    use Kahlan\Box\BoxException;
-    use Kahlan\Box\Box;
 
     /**
      * Create global functions

@@ -2,7 +2,6 @@
 namespace Kahlan\Plugin\Call;
 
 use Kahlan\Suite;
-use Kahlan\Plugin\Call\Message;
 
 class Calls
 {

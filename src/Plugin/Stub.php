@@ -2,11 +2,7 @@
 namespace Kahlan\Plugin;
 
 use InvalidArgumentException;
-use Reflection;
-use ReflectionMethod;
-use ReflectionClass;
 use Kahlan\Suite;
-use Kahlan\MissingImplementationException;
 use Kahlan\Analysis\Inspector;
 use Kahlan\Plugin\Stub\Method;
 
