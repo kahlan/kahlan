@@ -2,8 +2,6 @@
 namespace Kahlan\Dir;
 
 use Exception;
-use DirectoryIterator;
-use SplFileObject;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use FilesystemIterator;

@@ -1,7 +1,6 @@
 <?php
 namespace Kahlan\Jit;
 
-use BadMethodCallException;
 
 /**
  * Patcher manager

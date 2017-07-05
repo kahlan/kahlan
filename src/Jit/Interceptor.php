@@ -1,8 +1,6 @@
 <?php
 namespace Kahlan\Jit;
 
-use Exception;
-use FilesystemIterator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Composer\Autoload\ClassLoader;

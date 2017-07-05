@@ -1,7 +1,6 @@
 <?php
 namespace Kahlan\Filter\Behavior;
 
-use Exception;
 use Kahlan\Filter\MethodFilters;
 
 trait Filterable
