@@ -4,7 +4,6 @@ namespace Kahlan\Matcher;
 use Exception;
 use Kahlan\Suite;
 use Kahlan\Analysis\Debugger;
-use Kahlan\Plugin\Monkey;
 use Kahlan\Plugin\Call\Message;
 use Kahlan\Plugin\Call\Calls;
 

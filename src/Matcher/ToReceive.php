@@ -4,7 +4,6 @@ namespace Kahlan\Matcher;
 use Exception;
 use InvalidArgumentException;
 use Kahlan\Suite;
-use Kahlan\Stubber;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Analysis\Inspector;
 use Kahlan\Plugin\Call\Message;
