@@ -3,12 +3,16 @@ namespace Kahlan\Block;
 
 use Closure;
 use Exception;
-use Throwable;
-use Kahlan\Suite;
+use Kahlan\Filter\Behavior\Filterable;
+use Kahlan\Filter\Filter;
 use Kahlan\Scope\Group as Scope;
+use Kahlan\Suite;
+use Throwable;
 
 class Group extends \Kahlan\Block
 {
+    use Filterable;
+
     /**
      * The each callbacks.
      *
@@ -214,6 +218,20 @@ class Group extends \Kahlan\Block
     }
 
     /**
+     * Executes a closure.
+     *
+     * @param Closure $closure The closure to execute.
+     *
+     * @return mixed           The result of execution.
+     */
+    protected function _executeClosure(Closure $closure)
+    {
+        return Filter::on($this, 'executeClosure', [$closure], function () use ($closure) {
+            return $closure();
+        });
+    }
+
+    /**
      * Runs a callback.
      *
      * @param string $name The name of the callback (i.e `'beforeEach'` or `'afterEach'`).
@@ -223,7 +241,7 @@ class Group extends \Kahlan\Block
         $instances = $recursive ? $this->parents(true) : [$this];
         foreach ($instances as $instance) {
             foreach ($instance->_callbacks[$name] as $closure) {
-                $closure($this);
+                $this->_executeClosure($closure);
             }
         }
     }
