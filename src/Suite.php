@@ -2,15 +2,19 @@
 namespace Kahlan;
 
 use Closure;
-use Throwable;
 use Exception;
 use InvalidArgumentException;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Block;
 use Kahlan\Block\Group;
+use Kahlan\Filter\Behavior\Filterable;
+use Kahlan\Filter\Filter;
+use Throwable;
 
 class Suite
 {
+    use Filterable;
+
     /**
      * The PHP constraint to respect
      *
@@ -259,6 +263,20 @@ class Suite
     }
 
     /**
+     * Executes a closure.
+     *
+     * @param Closure $closure The closure to execute.
+     *
+     * @return mixed           The result of execution.
+     */
+    protected function _executeClosure(Closure $closure)
+    {
+        return Filter::on($this, 'executeClosure', [$closure], function () use ($closure) {
+            return $closure();
+        });
+    }
+
+    /**
      * Builds the suite.
      *
      * @return array The suite stats.
@@ -266,7 +284,7 @@ class Suite
     protected function _stats($block)
     {
         if ($closure = $block->closure()) {
-            $closure($block);
+            $this->_executeClosure($closure);
         }
 
         $normal = 0;

@@ -47,7 +47,7 @@ describe("Debugger", function () {
 
         });
 
-        it("returns a trace from eval'd code", function () {
+        xit("returns a trace from eval'd code", function () {
 
             $trace = debug_backtrace();
             $trace[1]['file']  = "eval()'d code";
