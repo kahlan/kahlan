@@ -2,11 +2,12 @@
 namespace Kahlan\Block;
 
 use Closure;
-use Throwable;
 use Exception;
 use Kahlan\Expectation;
-use Kahlan\Suite;
+use Kahlan\ExternalExpectation;
 use Kahlan\Scope\Specification as Scope;
+use Kahlan\Suite;
+use Throwable;
 
 class Specification extends \Kahlan\Block
 {
@@ -48,6 +49,20 @@ class Specification extends \Kahlan\Block
     public function expect($actual, $timeout = -1)
     {
         return $this->_expectations[] = new Expectation(compact('actual', 'timeout'));
+    }
+
+    /**
+     * The expectExternal statement.
+     *
+     * @param array $config The config array. Options are:
+     *                       -`'callback'` _callable_ : the callback to execute.
+     *                       -`'type'`     _string_   : the supported exception type.
+     *
+     * @return Expectation
+     */
+    public function expectExternal($config = [])
+    {
+        return $this->_expectations[] = new ExternalExpectation($config);
     }
 
     /**

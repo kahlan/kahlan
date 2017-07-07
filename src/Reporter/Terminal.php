@@ -265,11 +265,26 @@ EOD;
                     if ($expectation->type() !== 'failed') {
                         continue;
                     }
-                    $this->write("expect->{$expectation->matcherName()}() failed in ", 'red');
+
+                    $data = $expectation->data();
+                    $isExternal = isset($data['external']) && $data['external'];
+
+                    if ($isExternal) {
+                        $this->write("expectation failed in ", 'red');
+                    } else {
+                        $this->write("expect->{$expectation->matcherName()}() failed in ", 'red');
+                    }
+
                     $this->write("`{$expectation->file()}` ");
                     $this->write("line {$expectation->line()}", 'red');
                     $this->write("\n\n");
-                    $this->_reportDiff($expectation);
+
+                    if ($isExternal) {
+                        $this->write($data['description']);
+                        $this->write("\n\n");
+                    } else {
+                        $this->_reportDiff($expectation);
+                    }
                 }
                 break;
             case "errored":
