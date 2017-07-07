@@ -9,6 +9,18 @@ use Kahlan\Expectation;
 class Specification extends \Kahlan\Scope
 {
     /**
+     * The assert statement.
+     *
+     * @param  array $config The expectation config
+     *
+     * @return Expectation;
+     */
+    public function assert($config = [])
+    {
+        return $this->_block->assert($config);
+    }
+
+    /**
      * The expect statement.
      *
      * @param  mixed $actual The expression to check

@@ -362,4 +362,32 @@ describe("Specification", function () {
 
     });
 
+    describe("->assert()", function () {
+
+        it("processes normal expectations", function () {
+
+            $this->spec = new Specification([
+                'message' => 'runs a spec',
+                'closure' => function () {
+                    $this->assert(['actual' => true])->toBe(true);
+                }
+            ]);
+
+            expect($this->spec->process())->toBe(true);
+
+        });
+
+        it("processes delegated expectations", function () {
+
+            $this->spec = new Specification([
+                'closure' => function () {
+                    $this->assert(['handler' => function () {}]);
+                }
+            ]);
+            expect($this->spec->process())->toBe(true);
+
+        });
+
+    });
+
 });

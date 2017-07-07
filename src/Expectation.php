@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan;
 
+use Throwable;
 use Exception;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Analysis\Inspector;
@@ -90,21 +91,44 @@ class Expectation
     protected $_timeout = -1;
 
     /**
+     * The delegated handler.
+     *
+     * @var callable
+     */
+    protected $_handler = null;
+
+    /**
+     * The supported exception type.
+     *
+     * @var string
+     */
+    protected $_type;
+
+    /**
      * Constructor.
      *
      * @param array $config The config array. Options are:
      *                       -`'actual'`  _mixed_   : the actual value.
      *                       -`'timeout'` _integer_ : the timeout value.
+     *                       Or:
+     *                       -`'handler'` _Closure_ : a delegated handler to execute.
+     *                       -`'type'`    _string_  : delegated handler supported exception type.
+     *
+     * @return Expectation
      */
     public function __construct($config = [])
     {
         $defaults = [
             'actual'  => null,
+            'handler' => null,
+            'type'    => 'Exception',
             'timeout' => -1
         ];
         $config += $defaults;
 
         $this->_actual = $config['actual'];
+        $this->_handler = $config['handler'];
+        $this->_type = $config['type'];
         $this->_timeout = $config['timeout'];
     }
 
@@ -247,13 +271,13 @@ class Expectation
     /**
      * Processes the expectation.
      *
-     * @param  string $matcher The matcher class name.
-     * @param  array  $args    The parameters to pass to the matcher.
-     *
      * @return mixed
      */
     protected function _process()
     {
+        if (is_callable($this->_handler)) {
+            return $this->_processDelegated();
+        }
         $spec = $this->_actual;
 
         if (!$spec instanceof Specification) {
@@ -276,6 +300,46 @@ class Expectation
         $this->_logs = $spec->logs();
 
         $this->_passed = $spec->passed() && ($this->_passed === null ? true : $this->_passed);
+        return $this;
+    }
+
+    /**
+     * Processes the expectation.
+     *
+     * @return mixed
+     */
+    protected function _processDelegated()
+    {
+        $exception = null;
+
+        try {
+            call_user_func($this->_handler);
+        } catch (Throwable $e) {
+            $exception = $e;
+        } catch (Exception $e) {
+            $exception = $e;
+        }
+
+        if (!$exception) {
+            $this->_logs[] = ['type' => 'passed'];
+            $this->_passed = true;
+            return $this;
+        }
+
+        $this->_passed = false;
+
+        if (!$exception instanceof $this->_type) {
+            throw $exception;
+        }
+
+        $this->_logs[] = [
+            'type' => 'failed',
+            'data' => [
+                'external' => true,
+                'description' => $exception->getMessage()
+            ],
+            'backtrace' => Debugger::normalize($exception->getTrace())
+        ];
         return $this;
     }
 

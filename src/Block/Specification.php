@@ -40,7 +40,24 @@ class Specification extends \Kahlan\Block
     }
 
     /**
-     * The expect statement.
+     * The assert statement.
+     *
+     * @param array $config The config array. Options are:
+     *                       -`'actual'`  _mixed_   : the actual value.
+     *                       -`'timeout'` _integer_ : the timeout value.
+     *                       Or:
+     *                       -`'handler'` _Closure_ : a delegated handler to execute.
+     *                       -`'type'`    _string_  : delegated handler supported exception type.
+     *
+     * @return Expectation
+     */
+    public function assert($config = [])
+    {
+        return $this->_expectations[] = new Expectation($config);
+    }
+
+    /**
+     * The expect statement (assert shortcut).
      *
      * @param  mixed       $actual The expression to check
      *
@@ -49,20 +66,6 @@ class Specification extends \Kahlan\Block
     public function expect($actual, $timeout = -1)
     {
         return $this->_expectations[] = new Expectation(compact('actual', 'timeout'));
-    }
-
-    /**
-     * The expectExternal statement.
-     *
-     * @param array $config The config array. Options are:
-     *                       -`'callback'` _callable_ : the callback to execute.
-     *                       -`'type'`     _string_   : the supported exception type.
-     *
-     * @return Expectation
-     */
-    public function expectExternal($config = [])
-    {
-        return $this->_expectations[] = new ExternalExpectation($config);
     }
 
     /**
