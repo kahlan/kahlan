@@ -86,4 +86,43 @@ describe("Arg", function () {
 
     });
 
+    describe("->__toString()", function () {
+
+        it("describes the argument matcher", function () {
+
+            $arg = Arg::toBe(true);
+            expect(strval($arg))->toBe('toBe(true)');
+
+        });
+
+        it("describes argument matchers with multiple arguments", function () {
+
+            $arg = Arg::toBeCloseTo(1, 2);
+            expect(strval($arg))->toBe('toBeCloseTo(1, 2)');
+
+        });
+
+        it("describes argument matchers with no arguments", function () {
+
+            $arg = Arg::toBeTruthy();
+            expect(strval($arg))->toBe('toBeTruthy()');
+
+        });
+
+        it("describes argument matchers with array arguments", function () {
+
+            $arg = Arg::toBe([1, 2]);
+            expect(strval($arg))->toBe('toBe(array[2])');
+
+        });
+
+        it("describes argument matchers with object arguments", function () {
+
+            $arg = Arg::toBe((object) [1, 2]);
+            expect(strval($arg))->toBe('toBe(object[stdClass])');
+
+        });
+
+    });
+
 });
