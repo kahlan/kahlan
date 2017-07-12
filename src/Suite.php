@@ -366,6 +366,8 @@ class Suite extends Scope
             }
         }
 
+        $this->autoclear();
+
         $type = $this->log()->type();
         if ($type === 'failed' || $type === 'errored') {
             $this->_root->_failures++;
