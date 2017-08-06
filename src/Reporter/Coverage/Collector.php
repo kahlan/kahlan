@@ -365,7 +365,6 @@ class Collector
      * Helper for `Collector::metrics()`.
      *
      * @param  string  $file     The processed file.
-     * @param  object  $root     The root node of the processed file.
      * @param  object  $nodes    The nodes to collect metrics on.
      * @param  array   $coverage The coverage data.
      * @param  string  $path     The naming of the processed node.
@@ -381,7 +380,6 @@ class Collector
      * Helper for `Collector::metrics()`.
      *
      * @param  string  $file     The processed file.
-     * @param  object  $root     The root node of the processed file.
      * @param  object  $node     The node to collect metrics on.
      * @param  array   $coverage The coverage data.
      * @param  string  $path     The naming of the processed node.

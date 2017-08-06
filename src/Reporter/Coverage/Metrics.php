@@ -218,7 +218,6 @@ class Metrics
      * Gets meta info of a metrics from a name reference..
      *
      * @param  string $name The name reference of the metrics.
-     * @param  string $type The type to use by default if not auto detected.
      * @return array        The parsed name.
      */
     protected function _parseName($name)

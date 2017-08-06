@@ -6,7 +6,8 @@ class ToBeTruthy extends ToEqual
     /**
      * Expect that `$actual` is truthy.
      *
-     * @param  mixed   $actual The actual value.
+     * @param  mixed $actual   The actual value.
+     * @param  mixed $expected The expected value.
      * @return boolean
      */
     public static function match($actual, $expected = true)

@@ -233,7 +233,8 @@ class Debugger
      * @param  array $pattern    The regexp to match on.
      * @param  array $backtrace  The backtrace.
      * @param  array $depth      Number of traces to keep.
-     * @param  array $maxLookup  The maximum lookup window.
+     * @param  int   $maxLookup  The maximum lookup window.
+     *
      * @return array             A cleaned backtrace.
      *
      */

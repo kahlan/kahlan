@@ -42,7 +42,9 @@ class Calls
      * Helper for the `log()` method.
      *
      * @param object|string $reference An instance or a fully-namespaced class name.
-     * @param string $call             The method name.
+     * @param array $call The method name.
+     *
+     * @return array
      */
     public static function _call($reference, $call)
     {
@@ -103,6 +105,7 @@ class Calls
      *
      * @param  object      $message   The message method name.
      * @param  integer     $index     Start index.
+     * @param  integer     $times
      * @param  array       $args      Populated by the list of passed arguments.
      * @return array|false            Return founded log call.
      */

@@ -198,11 +198,9 @@ namespace Kahlan\Cli {
             $this->_commandLine->parse($argv, false);
 
             if ($commandLine->get('help')) {
-                return $this->_help();
-            }
-
-            if ($commandLine->get('version')) {
-                return $this->_version();
+                $this->_help();
+            } elseif ($commandLine->get('version')) {
+                $this->_version();
             }
         }
 
@@ -808,7 +806,7 @@ namespace {
             function skipIf($condition)
             {
                 $current = Suite::current();
-                return $current->skipIf($condition);
+                $current->skipIf($condition);
             }
         } else {
             $exit('skipIf');

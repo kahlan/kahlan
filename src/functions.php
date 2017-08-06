@@ -87,7 +87,7 @@ function waitsFor($actual, $timeout = null)
 function skipIf($condition)
 {
     $current = Suite::current();
-    return $current->skipIf($condition);
+    $current->skipIf($condition);
 }
 
 /**

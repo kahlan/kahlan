@@ -157,13 +157,13 @@ class Coverage extends Terminal
      * Outputs some metrics info where the metric is not the total coverage.
      *
      * @param Metrics $metrics   A metrics instance.
-     * @param array   $verbosity The options for the reporter, the options are:
-     *                             - `'verbosity`' _integer|string_: The verbosity level:
-     *                             - 1      : overall coverage value for the whole code.
-     *                             - 2      : overall coverage by namespaces.
-     *                             - 3      : overall coverage by classes.
-     *                             - 4      : overall coverage by methods and functions.
-     *                             - string : coverage for a fully namespaced (class/method/namespace) string.
+     * @param mixed   $verbosity The options for the reporter, the options are:
+     *                            - `'verbosity`' _integer|string_: The verbosity level:
+     *                            - 1      : overall coverage value for the whole code.
+     *                            - 2      : overall coverage by namespaces.
+     *                            - 3      : overall coverage by classes.
+     *                            - 4      : overall coverage by methods and functions.
+     *                            - string : coverage for a fully namespaced (class/method/namespace) string.
      */
     protected function _renderMetrics($metrics, $verbosity)
     {
@@ -202,7 +202,7 @@ class Coverage extends Terminal
      * @param array $metricsReport An array of nested metrics reports extracted according some verbosity.
      * @param array $labelWidth    The width column of the label column used for padding.
      * @param array $lineWidth     The width column of the covered lines data used for padding.
-     * @param array $depth         The actual depth in the reporting to build tree prefix.
+     * @param int   $depth         The actual depth in the reporting to build tree prefix.
      */
     protected function _renderMetricsReport($metricsReport, $labelWidth, $lineWidth, $depth)
     {
@@ -250,17 +250,19 @@ class Coverage extends Terminal
     /**
      * Extract some metrics reports to display according to a verbosity parameter.
      *
-     * @param Metrics[] $children A array of metrics.
-     * @param array     $options  The options for the reporter, the options are:
-     *                            - `'verbosity`' _integer|string_: The verbosity level:
-     *                              - 1      : overall coverage value for the whole code.
-     *                              - 2      : overall coverage by namespaces.
-     *                              - 3      : overall coverage by classes.
-     *                              - 4      : overall coverage by methods and functions.
-     *                              - string : coverage for a fully namespaced (class/method/namespace) string.
-     * @param array     $depth     The actual depth in the reporting.
-     * @param array     $tab       The size of the tab used for lablels.
-     * @param array     $maxWidth  Will contain the maximum width obtained for labels.
+     * @param array  $children  A array of metrics.
+     * @param mixed  $verbosity The options for the reporter, the options are:
+     *                           - `'verbosity`' _integer|string_: The verbosity level:
+     *                           - 1      : overall coverage value for the whole code.
+     *                           - 2      : overall coverage by namespaces.
+     *                           - 3      : overall coverage by classes.
+     *                           - 4      : overall coverage by methods and functions.
+     *                           - string : coverage for a fully namespaced (class/method/namespace) string.
+     * @param integer $depth    The actual depth in the reporting.
+     * @param integer $tab      The size of the tab used for lablels.
+     * @param integer $maxWidth Will contain the maximum width obtained for labels.
+     *
+     * @return array
      */
     protected function _getMetricsReport($children, $verbosity, $depth = 0, $tab = 3, &$maxWidth = null)
     {

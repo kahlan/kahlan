@@ -69,8 +69,8 @@ class ToThrow
     /**
      * Compares if two exception are similar.
      *
-     * @param  object $actual   The actual instance.
-     * @param  object $expected The expected instance.
+     * @param  object $actual        The actual instance.
+     * @param  \Exception $exception The exception instance.
      * @return boolean
      */
     public static function _matchException($actual, $exception)

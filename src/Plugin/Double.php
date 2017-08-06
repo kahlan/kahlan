@@ -244,7 +244,7 @@ EOT;
      *
      * @param  array   $methods  An array of method definitions.
      * @param  boolean $defaults If `true`, Magic Methods will be appended.
-     * @return string            The generated method definitions.
+     * @return array             The generated method definitions.
      */
     protected static function _generateMethodStubs($methods, $defaults = true)
     {
@@ -282,11 +282,10 @@ EOT;
      *
      * @param  string  $class A class name.
      * @param  boolean $layer If `true`, all public methods are "overriden".
-     * @return string         The generated methods.
+     * @return array          The generated methods.
      */
     protected static function _generateClassMethods($class, $layer = null)
     {
-        $result = [];
         if (!class_exists($class)) {
             throw new MissingImplementationException("Unexisting class `{$class}`");
         }
@@ -315,7 +314,7 @@ EOT;
      *
      * @param  string  $class A class name.
      * @param  integer $mask  The method mask to filter.
-     * @return string         The generated methods.
+     * @return array          The generated methods.
      */
     protected static function _generateAbstractMethods($class)
     {
@@ -336,7 +335,7 @@ EOT;
      *
      * @param  array   $interfaces A array on interfaces.
      * @param  integer $mask       The method mask to filter.
-     * @return string              The generated methods.
+     * @return array               The generated methods.
      */
     protected static function _generateInterfaceMethods($interfaces, $mask = 255)
     {

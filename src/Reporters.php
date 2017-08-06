@@ -66,8 +66,6 @@ class Reporters
 
     /**
      * Removes all reporters.
-     *
-     * @param string $name The reporter name.
      */
     public function clear()
     {
