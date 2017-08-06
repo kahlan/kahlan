@@ -18,7 +18,11 @@ class Pointcut
     /**
      * Point cut called before method execution.
      *
-     * @return boolean If `true` is returned, the normal execution of the method is aborted.
+     * @param string   $method The method name
+     * @param Pointcut $self   The Pointcut instance
+     * @param array    $args   The arguments
+     *
+     * @return bool If `true` is returned, the normal execution of the method is aborted.
      */
     public static function before($method, $self, &$args)
     {

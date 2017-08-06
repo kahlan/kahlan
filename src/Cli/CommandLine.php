@@ -52,8 +52,8 @@ class CommandLine
     /**
      * Gets/Sets/Overrides an option's attributes.
      *
-     * @param  string $name   The name of the option.
-     * @param  array  $config The option attributes to set.
+     * @param  string       $name   The name of the option.
+     * @param  array|string $config The option attributes to set.
      * @return array
      */
     public function option($name = null, $config = [], $value = null)

@@ -9,7 +9,7 @@ use Kahlan\Plugin\Call\Message;
 class Scope
 {
     /**
-     * Indicates whether the scope has been runned or not.
+     * Indicates whether the scope has been run or not.
      *
      * @var boolean
      */
@@ -526,7 +526,7 @@ class Scope
     }
 
     /**
-     * Gets specs excecution results.
+     * Gets specs execution results.
      *
      * @return array
      */

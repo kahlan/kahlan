@@ -238,9 +238,6 @@ class Expectation
     /**
      * Processes the expectation.
      *
-     * @param  string $matcher The matcher class name.
-     * @param  array  $args    The parameters to pass to the matcher.
-     *
      * @return mixed
      */
     protected function _run()

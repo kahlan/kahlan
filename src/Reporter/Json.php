@@ -49,18 +49,18 @@ class Json extends Terminal
             }
             switch ($log->type()) {
                 case 'failed':
-                    foreach ($log->children() as $log) {
-                        if ($log->passed()) {
+                    foreach ($log->children() as $child) {
+                        if ($child->passed()) {
                             continue;
                         }
                         $data = [];
-                        foreach ($log->data() as $key => $value) {
+                        foreach ($child->data() as $key => $value) {
                             $data[$key] = Text::toString($value, ['object' => ['method' => $toString]]);
                         }
 
                         $this->_json['errors'][] = [
-                            'spec'  => trim(implode(' ', $log->messages())),
-                            'suite' => $log->file(),
+                            'spec'  => trim(implode(' ', $child->messages())),
+                            'suite' => $child->file(),
                             'data'  => $data
                         ];
                     }

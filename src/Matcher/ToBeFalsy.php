@@ -6,8 +6,10 @@ class ToBeFalsy extends ToEqual
     /**
      * Expect that `$actual` is falsy.
      *
-     * @param  mixed   $actual The actual value.
-     * @return boolean
+     * @param  mixed $actual   The actual value.
+     * @param  mixed $expected The expected value.
+     *
+     * @return bool
      */
     public static function match($actual, $expected = false)
     {

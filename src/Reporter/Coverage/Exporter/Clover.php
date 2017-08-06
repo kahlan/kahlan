@@ -69,9 +69,7 @@ class Clover
     /**
      * Export the coverage of a file.
      *
-     * @param  array   $options The option array where the possible values are:
-     *                          -`'coverage'` The coverage instance.
-     * @return object           The XML file node.
+     * @return object The XML file node.
      */
     protected static function _exportFile($xmlDocument, $file, $data)
     {

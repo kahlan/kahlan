@@ -216,8 +216,7 @@ EOD;
     /**
      * Print an array of description messages to STDOUT
      *
-     * @param  array   $messages An array of description message.
-     * @return integer           The final message indentation.
+     * @param \Kahlan\Log $log The Log instance
      */
     protected function _reportSuiteMessages($log)
     {
@@ -458,9 +457,9 @@ EOD;
     /**
      * Humanizes values using an appropriate unit.
      *
-     * @return integer $value     The value.
-     * @return integer $precision The required precision.
-     * @return integer $base      The unit base.
+     * @param  integer $value     The value.
+     * @param  integer $precision The required precision.
+     * @param  integer $base      The unit base.
      * @return string             The Humanized string value.
      */
     public function readableSize($value, $precision = 0, $base = 1024)
