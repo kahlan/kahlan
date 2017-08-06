@@ -19,7 +19,6 @@
             "Kahlan\\": "src/"
         },
         "files": [
-            "src/init.php",
             "src/functions.php"
         ]
     },

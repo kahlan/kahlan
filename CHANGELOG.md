@@ -2,6 +2,68 @@
 
 ## Last changes
 
+## 3.1.15 (2017-05-26)
+
+  * **Bugfix:** Update Kahlan's autoloader reference when patched.
+
+## 3.1.14 (2017-04-12)
+
+  * **Bugfix:** Fix inaccurate actually called times number in report error description messages.
+
+## 3.1.13 (2017-04-12)
+
+  * **Bugfix:** Fix a reporting issue which report errored specs as pending in some circumstances.
+
+## 3.1.12 (2017-04-07)
+
+  * **Bugfix:** Fix a monkey patching issue with curly braces namespace definitions.
+
+## 3.1.11 (2017-04-06)
+
+  * **Bugfix:** Add `clone()` to JIT ignored statements.
+  * **Bugfix:** Fix a coverage reporting issue with global namespace definitions.
+
+## 3.1.10 (2017-03-23)
+
+  * **Add:** Enhance interoperability between frameworks.
+
+## 3.1.9 (2017-03-19)
+
+  * **Bugfix:** Fix exit/die short syntax patching.
+
+## 3.1.8 (2017-02-14)
+
+  * **Change:** Report specs with incomplete expectations as pending.
+
+## 3.1.7 (2017-02-12)
+
+  * **Bugfix:** Fix a coverage issue on windows.
+
+## 3.1.6 (2017-01-30)
+
+  * **Bugfix:** Fix wrongly group use declarations reported as coverable code (PHP>=7).
+
+## 3.1.5 (2017-01-09)
+
+  * **Bugfix:** Fix wrong reported logs introduced in 3.1.4.
+
+## 3.1.4 (2017-01-09)
+
+  * **Bugfix:** Fixes error catching in beforeAll()/afterAll().
+
+## 3.1.3 (2017-01-06)
+
+  * **Bugfix:** Parse Nowdoc syntax correctly.
+  * **Bugfix:** Parses alternative control structures as dead code for code coverage.
+
+## 3.1.2 (2016-12-29)
+
+  * **Bugfix:** Fix some HHVM issues.
+
+## 3.1.1 (2016-12-29)
+
+  * **Bugfix:** Fix an issue with `given()` beeing regenerated when not expected.
+
 ## 3.1.0 (2016-12-13)
 
   * **BC break:** Remove the substitution feature (i.e allow(<something>)->toBe(<an instance>)) for PHP<7. It may generates some syntax errors since the uniform variable syntax is only supported by PHP>=7.

@@ -1,5 +1,10 @@
 #!/usr/bin/env php
 <?php
+if (!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}
+error_reporting(E_ALL);
+
 $autoloaders = [];
 
 $vendorDir = 'vendor';
@@ -30,10 +35,9 @@ if (!$autoloaders) {
 
 use Kahlan\Box\Box;
 use Kahlan\Suite;
-use Kahlan\Matcher;
 use Kahlan\Cli\Kahlan;
 
-$box = box('kahlan', new Box());
+$box = \Kahlan\box('kahlan', new Box());
 
 $box->service('suite.global', function() {
     return new Suite();
@@ -44,5 +48,6 @@ $specs = new Kahlan([
     'suite'      => $box->get('suite.global')
 ]);
 $specs->loadConfig($argv);
+initKahlanGlobalFunctions();
 $specs->run();
 exit($specs->status());

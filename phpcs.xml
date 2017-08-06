@@ -14,6 +14,7 @@
         <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
         <exclude name="PSR2.Methods.FunctionClosingBrace.SpacingBeforeClose"/>
         <exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
+        <exclude name="PSR2.Namespaces.UseDeclaration.UseAfterNamespace"/>
     </rule>
 
     <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">

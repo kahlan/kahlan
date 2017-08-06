@@ -111,7 +111,7 @@ describe("toThrow", function () {
 
         it("catches any kind of error", function () {
 
-            skipIf(PHP_MAJOR_VERSION < 7);
+            skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
 
             $closure = function () {
                 throw new Error();

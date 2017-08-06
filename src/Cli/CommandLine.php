@@ -106,7 +106,7 @@ class CommandLine
             if ($arg[0] === '-') {
                 list($name, $value) = $this->_parse(ltrim($arg, '-'));
                 if ($override || !isset($exists[$name])) {
-                    $this->add($name, $value, $override);
+                    $this->add($name, $value);
                 }
             }
         }

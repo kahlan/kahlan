@@ -12,28 +12,28 @@ use Kahlan\Spec\Fixture\Plugin\Monkey\Mon;
 
 describe("ToBeCalled", function () {
 
+    /**
+     * Save current & reinitialize the Interceptor class.
+     */
+    beforeAll(function () {
+        $this->previous = Interceptor::instance();
+        Interceptor::unpatch();
+
+        $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
+        $include = ['Kahlan\Spec\\'];
+        $interceptor = Interceptor::patch(compact('include', 'cachePath'));
+        $interceptor->patchers()->add('pointcut', new PointcutPatcher());
+        $interceptor->patchers()->add('monkey', new MonkeyPatcher());
+    });
+
+    /**
+     * Restore Interceptor class.
+     */
+    afterAll(function () {
+        Interceptor::load($this->previous);
+    });
+
     describe("::match()", function () {
-
-        /**
-         * Save current & reinitialize the Interceptor class.
-         */
-        beforeAll(function () {
-            $this->previous = Interceptor::instance();
-            Interceptor::unpatch();
-
-            $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
-            $include = ['Kahlan\Spec\\'];
-            $interceptor = Interceptor::patch(compact('include', 'cachePath'));
-            $interceptor->patchers()->add('pointcut', new PointcutPatcher());
-            $interceptor->patchers()->add('monkey', new MonkeyPatcher());
-        });
-
-        /**
-         * Restore Interceptor class.
-         */
-        afterAll(function () {
-            Interceptor::load($this->previous);
-        });
 
         it("expects uncalled function to be uncalled", function () {
 
@@ -198,6 +198,64 @@ describe("ToBeCalled", function () {
             expect($actual['data'])->toBe([
                 'actual' => 'time()',
                 'actual called times' => 0,
+                'expected to be called' => 'time()',
+                'expected called times' => 2
+            ]);
+
+        });
+
+        it("returns the correct number of actually called times", function () {
+
+            $mon = new Mon();
+            $matcher = new ToBeCalled('time');
+
+            $mon->time();
+            $mon->time();
+            $mon->time();
+
+            $matcher->resolve([
+                'instance' => $matcher,
+                'data'     => [
+                    'actual' => 'time',
+                    'logs'   => []
+                ]
+            ]);
+
+            $actual = $matcher->description();
+
+            expect($actual['description'])->toBe('be called.');
+            expect($actual['data'])->toBe([
+                'actual' => 'time()',
+                'actual called times' => 3,
+                'expected to be called' => 'time()'
+            ]);
+
+        });
+
+        it("returns the correct number of actually called times when a limit is defined", function () {
+
+            $mon = new Mon();
+            $matcher = new ToBeCalled('time');
+            $matcher->times(2);
+
+            $mon->time();
+            $mon->time();
+            $mon->time();
+
+            $matcher->resolve([
+                'instance' => $matcher,
+                'data'     => [
+                    'actual' => 'time',
+                    'logs'   => []
+                ]
+            ]);
+
+            $actual = $matcher->description();
+
+            expect($actual['description'])->toBe('be called the expected times.');
+            expect($actual['data'])->toBe([
+                'actual' => 'time()',
+                'actual called times' => 3,
                 'expected to be called' => 'time()',
                 'expected called times' => 2
             ]);

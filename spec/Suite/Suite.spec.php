@@ -224,6 +224,41 @@ describe("Suite", function () {
 
         });
 
+        it("captures errors", function () {
+
+            $describe = $this->suite->describe("", function () {
+
+                $this->beforeAll(function () {
+                    $undefined++;
+                });
+
+                $this->it("it", function () {
+                    $this->expect(true)->toBe(true);
+                });
+
+            });
+
+            $this->suite->run(['reporters' => $this->reporters]);
+            $summary = $this->suite->summary();
+
+            expect($summary->passed())->toBe(0);
+            expect($summary->errored())->toBe(1);
+
+            $errors = $summary->logs('errored');
+
+            expect($errors)->toHaveLength(1);
+            $log = reset($errors);
+
+            expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            expect($this->suite->total())->toBe(1);
+
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->focused())->toBe(false);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
+
+        });
+
     });
 
     describe("->afterAll()", function () {
@@ -236,6 +271,41 @@ describe("Suite", function () {
             $this->suite->afterAll(function () {});
             $callbacks = $this->suite->callbacks('afterAll');
             expect($callbacks)->toHaveLength(1);
+
+        });
+
+        it("captures errors", function () {
+
+            $describe = $this->suite->describe("", function () {
+
+                $this->afterAll(function () {
+                    $undefined++;
+                });
+
+                $this->it("it", function () {
+                    $this->expect(true)->toBe(true);
+                });
+
+            });
+
+            $this->suite->run(['reporters' => $this->reporters]);
+            $summary = $this->suite->summary();
+
+            expect($summary->passed())->toBe(1);
+            expect($summary->errored())->toBe(1);
+
+            $errors = $summary->logs('errored');
+
+            expect($errors)->toHaveLength(1);
+            $log = reset($errors);
+
+            expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            expect($this->suite->total())->toBe(1);
+
+            expect($this->suite->enabled())->toBe(1);
+            expect($this->suite->focused())->toBe(false);
+            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->passed())->toBe(false);
 
         });
 
@@ -1114,11 +1184,12 @@ describe("Suite", function () {
 
         it("throws and exception if attempts to call the `run()` function inside a scope", function () {
 
-            skipIf(PHP_MAJOR_VERSION < 7);
+            skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
 
             $describe = $this->suite->describe("", function () {
                 $this->run();
             });
+
             $this->suite->run();
 
             $results = $this->suite->summary()->logs('errored');

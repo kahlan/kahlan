@@ -29,7 +29,7 @@ See the whole [documentation here](https://kahlan.github.io/docs)
 
 ## Requirements
 
- * PHP 5.5+
+ * PHP 5.4+
  * Composer
  * [phpdbg](http://php.net/manual/en/debugger-about.php) or [Xdebug](http://xdebug.org/) (required for code coverage analysis only)
 
@@ -107,7 +107,7 @@ $ composer require --dev kahlan/kahlan
 ```
 
 Note:
-Kahlan uses the [ferver](https://github.com/jonathanong/ferver) versioning so a `"~x.y"` version constraint shouldn't ever BC-break.
+Kahlan uses the [Semantic Versioning](http://semver.org/) and maintains a `CHANGELOG` to help you easily understand what's happening.
 
 ### via Git clone
 

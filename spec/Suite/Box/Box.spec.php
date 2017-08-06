@@ -290,13 +290,13 @@ describe("Box", function () {
 describe("box()", function () {
 
     beforeEach(function () {
-        box(false);
+        \Kahlan\box(false);
     });
 
     it("adds a box", function () {
 
         $box = new Box();
-        $actual = box('box.spec', $box);
+        $actual = \Kahlan\box('box.spec', $box);
 
         expect($actual)->toBe($box);
     });
@@ -304,8 +304,8 @@ describe("box()", function () {
     it("gets a box", function () {
 
         $box = new Box();
-        box('box.spec', $box);
-        $actual = box('box.spec');
+        \Kahlan\box('box.spec', $box);
+        $actual = \Kahlan\box('box.spec');
 
         expect($actual)->toBe($box);
     });
@@ -314,27 +314,27 @@ describe("box()", function () {
 
         $box = new Box();
 
-        expect(box($box))->toBe($box);
-        expect(box())->toBe($box);
+        expect(\Kahlan\box($box))->toBe($box);
+        expect(\Kahlan\box())->toBe($box);
 
     });
 
     it("gets a default box", function () {
 
-        $box = box();
+        $box = \Kahlan\box();
         expect($box)->toBeAnInstanceOf('Kahlan\Box\Box');
-        expect(box())->toBe($box);
+        expect(\Kahlan\box())->toBe($box);
 
     });
 
     it("removes a box", function () {
 
         $box = new Box();
-        box('box.spec', $box);
-        box('box.spec', false);
+        \Kahlan\box('box.spec', $box);
+        \Kahlan\box('box.spec', false);
 
         $closure = function () {
-            box('box.spec');
+            \Kahlan\box('box.spec');
         };
         expect($closure)->toThrow(new BoxException("Unexisting box `'box.spec'`."));
     });
@@ -342,24 +342,24 @@ describe("box()", function () {
     it("removes all boxes", function () {
 
         $box = new Box();
-        box('box.spec1', $box);
-        box('box.spec2', $box);
-        box(false);
+        \Kahlan\box('box.spec1', $box);
+        \Kahlan\box('box.spec2', $box);
+        \Kahlan\box(false);
 
         $closure = function () {
-            box('box.spec1');
+            \Kahlan\box('box.spec1');
         };
         expect($closure)->toThrow(new BoxException("Unexisting box `'box.spec1'`."));
 
         $closure = function () {
-            box('box.spec2');
+            \Kahlan\box('box.spec2');
         };
         expect($closure)->toThrow(new BoxException("Unexisting box `'box.spec2'`."));
     });
 
     it("throws an exception when trying to get an unexisting box", function () {
         $closure = function () {
-            box('box.spec');
+            \Kahlan\box('box.spec');
         };
         expect($closure)->toThrow(new BoxException("Unexisting box `'box.spec'`."));
     });

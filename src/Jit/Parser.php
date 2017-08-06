@@ -105,8 +105,8 @@ class Parser
                     $this->_stringNode('');
                     break;
                 case T_START_HEREDOC:
-                    $name = substr($token[1], 3, -1);
-                    $this->_stringNode("\n" . $name . ';');
+                    $name = trim(substr($token[1], 3, -1), "'");
+                    $this->_stringNode("\n" . $name, true);
                     break;
                 case '"':
                     $this->_stringNode('"');
@@ -193,6 +193,14 @@ class Parser
                     $this->_states['visibility'] = [];
                     $this->_states['body'] .= $token[1];
                     break;
+                case T_ENDIF:
+                case T_ENDFOREACH:
+                case T_ENDSWITCH:
+                case T_ENDWHILE:
+                    $this->_codeNode();
+                    $this->_states['body'] .= $token[1] . $this->_stream->next([';']);
+                    $this->_codeNode(null, false);
+                    break;
                 default:
                     $this->_states['body'] .= $token[1];
                     break;
@@ -222,6 +230,8 @@ class Parser
                 $current->close .= $this->_stream->next([')', ';', ',', ']']);
                 $this->_states['num'] += substr_count($current->close, "\n");
             }
+        } elseif ($current->type === 'namespace') {
+            $this->_flushUses();
         }
 
         $this->_states['current'] = $current->parent;
@@ -267,7 +277,7 @@ class Parser
                 case '{':
                     $prefix = $use;
                     $use = '';
-                    $stop = '}';
+                    $stop = $current->type === 'class' ? '}' : ';';
                     break;
             }
         }
@@ -277,7 +287,7 @@ class Parser
     }
 
     /**
-     * Build a namespace node.
+     * Build a declare node.
      */
     protected function _declareNode()
     {
@@ -568,7 +578,7 @@ class Parser
     /**
      * Build a string node.
      */
-    protected function _stringNode($delimiter = '')
+    protected function _stringNode($delimiter = '', $heredoc = false)
     {
         $this->_codeNode();
         $token = $this->_stream->current(true);
@@ -578,6 +588,9 @@ class Parser
             $this->_states['body'] = $token[1] . $this->_stream->next('"');
         } else {
             $this->_states['body'] = $token[1] . $this->_stream->nextSequence($delimiter);
+        }
+        if ($heredoc) {
+            $this->_states['body'] .= $this->_stream->next([';']);
         }
 
         $node = new NodeDef($this->_states['body'], 'string');

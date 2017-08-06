@@ -67,6 +67,21 @@ class Terminal extends Reporter
         'dot'   => '.'
     ];
 
+
+    /**
+     * src directory to be tested.
+     *
+     * @var array
+     */
+    protected $_srcDir = ['src'];
+
+    /**
+     * spec directory.
+     *
+     * @var array
+     */
+    protected $_specDir = ['spec'];
+
     /**
      * The constructor.
      *
@@ -93,6 +108,14 @@ class Terminal extends Reporter
             $this->_symbols['ok'] = "\xFB";
             $this->_symbols['err'] = "\x78";
             $this->_symbols['dot'] = '.';
+        }
+
+        if (isset($config['src'])) {
+            $this->_srcDir  = $config['src'];
+        }
+
+        if (isset($config['spec'])) {
+            $this->_specDir = $config['spec'];
         }
     }
 
@@ -133,8 +156,10 @@ class Terminal extends Reporter
         }
         $this->write($this->kahlan() . "\n\n");
         $this->write($this->kahlanBaseline() . "\n", 'dark-grey');
-        $this->write("\nWorking Directory: ", 'blue');
-        $this->write(getcwd() . "\n");
+        $this->write("src directory  : ", 'blue');
+        $this->write(join(', ', array_map('realpath', $this->_srcDir)) . "\n");
+        $this->write("spec directory : ", 'blue');
+        $this->write(join(', ', array_map('realpath', $this->_specDir)) . "\n");
     }
 
     /**
@@ -275,7 +300,7 @@ EOD;
             case "errored":
                 $backtrace = Debugger::backtrace(['trace' => $log->exception()]);
                 $trace = reset($backtrace);
-                $file = preg_replace('~' . preg_quote(getcwd(), '~') . '/~', '', $trace['file']);
+                $file = $trace['file'];
                 $line = $trace['line'];
 
                 $this->write("an uncaught exception has been thrown in ", 'magenta');

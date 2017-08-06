@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan;
 
+use Kahlan\Box\Box;
+use Kahlan\Box\BoxException;
 use Kahlan\Expectation;
 use Kahlan\Suite;
 use Kahlan\Specification;
@@ -104,7 +106,7 @@ function expect($actual)
 /**
  * @param $actual
  *
- * @return Stubber
+ * @return Allow
  */
 function allow($actual)
 {

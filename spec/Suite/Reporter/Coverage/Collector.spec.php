@@ -194,6 +194,23 @@ describe("Coverage", function () {
 
         });
 
+        it("supports windows volumes", function () {
+
+            $normalize = function ($path) {
+                return str_replace('\\', DS, $path);
+            };
+
+            $collector = new Collector([
+                'driver'    => $this->driver,
+                'path'      => $this->path,
+                'prefix'    => $normalize('C:\cygwin\tmp\kahlan'),
+                'hasVolume' => true
+            ]);
+
+            expect($collector->realpath($normalize('C:\cygwin\tmp\kahlan\C\project\src\filename.php')))->toBe($normalize('C:\project\src\filename.php'));
+
+        });
+
     });
 
 });

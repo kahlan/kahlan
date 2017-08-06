@@ -316,7 +316,7 @@ class Suite extends Scope
             $this->_suiteEnd();
         };
 
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $suite();
             } catch (Throwable $exception) {
@@ -352,7 +352,26 @@ class Suite extends Scope
      */
     protected function _suiteEnd()
     {
-        $this->runCallbacks('afterAll', false);
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
+            try {
+                $this->runCallbacks('afterAll', false);
+            } catch (Throwable $exception) {
+                $this->_exception($exception);
+            }
+        } else {
+            try {
+                $this->runCallbacks('afterAll', false);
+            } catch (Exception $exception) {
+                $this->_exception($exception);
+            }
+        }
+
+        $type = $this->log()->type();
+        if ($type === 'failed' || $type === 'errored') {
+            $this->_root->_failures++;
+            $this->summary()->log($this->log());
+        }
+
         if ($this->message()) {
             $this->report('suiteEnd', $this);
         }
@@ -428,11 +447,11 @@ class Suite extends Scope
         ];
         $options += $defaults;
 
-        if ($this->_locked) {
+        if ($this->_root->_locked) {
             throw new Exception('Method not allowed in this context.');
         }
 
-        $this->_locked = true;
+        $this->_root->_locked = true;
         $this->_reporters = $options['reporters'];
         $this->_autoclear = (array)$options['autoclear'];
         $this->_ff = $options['ff'];
@@ -444,7 +463,7 @@ class Suite extends Scope
 
         $this->report('end', $this->summary(), true);
 
-        $this->_locked = false;
+        $this->_root->_locked = false;
 
         return $success;
     }
@@ -505,12 +524,11 @@ class Suite extends Scope
     protected function stats()
     {
         static::$_instances[] = $this;
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $this->_stats = $this->_stats();
             } catch (Throwable $exception) {
                 $this->_exception($exception);
-                $this->summary()->log($this->log());
 
                 $this->_stats = [
                     'normal' => 0,

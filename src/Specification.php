@@ -96,7 +96,7 @@ class Specification extends Scope
 
         $result = null;
 
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $this->_specStart();
                 try {
@@ -147,7 +147,7 @@ class Specification extends Scope
             return $result;
         };
 
-        if (Suite::$PHP >= 7) {
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
             try {
                 $result = $spec();
             } catch (Throwable $e) {
@@ -184,13 +184,17 @@ class Specification extends Scope
      */
     protected function _specEnd($runAfterEach = true)
     {
+        $type = $this->log()->type();
         foreach ($this->_expectations as $expectation) {
-            foreach ($expectation->logs() as $log) {
+            if (!($logs = $expectation->logs()) && $type !== 'errored') {
+                $this->log()->type('pending');
+            }
+            foreach ($logs as $log) {
                 $this->log($log['type'], $log);
             }
         }
 
-        if ($this->log()->type() === 'passed' && !count($this->_expectations)) {
+        if ($type === 'passed' && !count($this->_expectations)) {
             $this->log()->type('pending');
         }
         $type = $this->log()->type();
@@ -213,6 +217,13 @@ class Specification extends Scope
 
         if ($this->_parent) {
             $this->_parent->autoclear();
+        }
+
+        $currentScope = static::current();
+        foreach ($currentScope->_parents(true) as $scope) {
+            foreach ($scope->_given as $name => $value) {
+                unset($currentScope->_data[$name]);
+            }
         }
     }
 
