@@ -4,7 +4,6 @@ namespace Kahlan\Matcher;
 use Exception;
 use InvalidArgumentException;
 use Kahlan\Suite;
-use Kahlan\Stubber;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Analysis\Inspector;
 use Kahlan\Plugin\Call\Message;
@@ -178,9 +177,9 @@ class ToReceive
     /**
      * Watch a message.
      *
-     * @param string|object $actual A fully-namespaced class name or an object instance.
-     * @param string        $method The expected method method name to be called.
-     * @param object                A message instance.
+     * @param Message $message The message instance
+     *
+     * @return Message
      */
     protected function _watch($message)
     {

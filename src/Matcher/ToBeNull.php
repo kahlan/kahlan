@@ -6,8 +6,10 @@ class ToBeNull extends ToBe
     /**
      * Expect that `$actual` is `null`.
      *
-     * @param  mixed   $actual The actual value.
-     * @return boolean
+     * @param  mixed $actual The actual value.
+     * @param null $expected The expected vale
+     *
+     * @return bool
      */
     public static function match($actual, $expected = null)
     {

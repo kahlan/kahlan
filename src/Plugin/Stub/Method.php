@@ -114,8 +114,6 @@ class Method extends \Kahlan\Plugin\Call\Message
 
     /**
      * Set the stub logic.
-     *
-     * @param Closure $closure The logic.
      */
     public function andRun()
     {

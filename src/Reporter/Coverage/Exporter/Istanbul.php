@@ -58,7 +58,6 @@ class Istanbul
     /**
      * Exports source file coverage
      *
-     * @param  object $collector The collector instance.
      * @return array
      */
     protected static function _export($path, $tree, $coverage)

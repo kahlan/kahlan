@@ -14,7 +14,7 @@ class AnyException extends \Exception
      * The exception message.
      *
      * @param string $message  The exception message.
-     * @param string $code     The exception code.
+     * @param int    $code     The exception code.
      * @param string $previous The previous exception.
      */
     public function __construct($message = null, $code = 0, $previous = null)

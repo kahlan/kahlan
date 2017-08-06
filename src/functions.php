@@ -90,7 +90,7 @@ function waitsFor($actual, $timeout = null)
 function skipIf($condition)
 {
     $current = Specification::current() ?: Suite::current();
-    return $current->skipIf($condition);
+    $current->skipIf($condition);
 }
 
 /**

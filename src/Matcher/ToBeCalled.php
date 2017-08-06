@@ -63,8 +63,7 @@ class ToBeCalled
      * Checks that `$actual` will be called.
      *
      * @param  mixed   $actual   The actual value.
-     * @param  mixed   $expected Unused.
-     * @return boolean
+     * @return ToBeCalled
      */
     public static function match($actual)
     {
@@ -74,8 +73,7 @@ class ToBeCalled
     /**
      * Constructor
      *
-     * @param string|object $actual   A fully-namespaced class name or an object instance.
-     * @param string        $expected The expected method method name to be called.
+     * @param string|object $actual A fully-namespaced class name or an object instance.
      */
     public function __construct($actual)
     {
