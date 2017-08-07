@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.17 (2017-08-07)
+
+  * **Bugfix:** Fix `void` return type stubbing.
+
 ## 3.1.16 (2017-06-22)
 
   * **Bugfix:** Support 7.1 `void` return type.

@@ -25,7 +25,7 @@ namespace Kahlan\Cli {
     {
         use Filterable;
 
-        const VERSION = '3.1.16';
+        const VERSION = '3.1.17';
 
         /**
          * Starting time.
