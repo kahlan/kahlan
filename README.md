@@ -1,7 +1,7 @@
 ![Kahlan](docs/assets/logo.png "Kahlan")
 <hr/>
 
-![Build Status](https://img.shields.io/badge/branch-master-blue.svg) [![Build Status](https://travis-ci.org/kahlan/kahlan.svg?branch=master)](https://travis-ci.org/kahlan/kahlan) [![HHVM Status](http://hhvm.h4cc.de/badge/kahlan/kahlan.svg?style=flat)](http://hhvm.h4cc.de/package/kahlan/kahlan) [![License](https://poser.pugx.org/kahlan/kahlan/license.svg)](https://packagist.org/packages/kahlan/kahlan)
+![Build Status](https://img.shields.io/badge/branch-master-blue.svg) [![Build Status](https://travis-ci.org/kahlan/kahlan.svg?branch=master)](https://travis-ci.org/kahlan/kahlan) [![License](https://poser.pugx.org/kahlan/kahlan/license.svg)](https://packagist.org/packages/kahlan/kahlan)
 
 [![Latest Stable Version](https://poser.pugx.org/kahlan/kahlan/v/stable.svg)](https://packagist.org/packages/kahlan/kahlan)
 [![Total Downloads](https://poser.pugx.org/kahlan/kahlan/downloads.svg)](https://packagist.org/packages/kahlan/kahlan)
