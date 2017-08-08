@@ -242,7 +242,6 @@ class Stub
     {
         $references = (array) $references;
         $stub = null;
-        $refs = [];
         foreach ($references as $reference) {
             $hash = Suite::hash($reference);
             if (!isset(static::$_registered[$hash])) {

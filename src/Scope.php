@@ -4,7 +4,6 @@ namespace Kahlan;
 use Closure;
 use Exception;
 use Kahlan\Analysis\Debugger;
-use Kahlan\Plugin\Call\Message;
 
 class Scope
 {
@@ -449,7 +448,7 @@ class Scope
      * @return Closure
      * @throws Exception Throw an Exception if the passed parameter is not a closure
      */
-    protected function _bind($closure, $name)
+    protected function _bind($closure)
     {
         if (!is_callable($closure)) {
             throw new Exception("Error, invalid closure.");

@@ -82,7 +82,6 @@ class Parser
         $blockStartLine = [];
 
         while ($token = $this->_stream->current(true)) {
-            $current = $this->_states['current'];
             switch ($token[0]) {
                 case T_OPEN_TAG:
                 case T_OPEN_TAG_WITH_ECHO:
@@ -179,7 +178,6 @@ class Parser
                     break;
                 case T_FUNCTION:
                     $this->_functionNode();
-                    $buffered = '';
                     break;
                 case $T_YIELD: // use T_YIELD directly when PHP 5.4 support will be removed.
                     $parent = $this->_states['current'];
@@ -506,9 +504,8 @@ class Parser
      */
     protected function _parseArgs()
     {
-        $inString = false;
         $cpt = 0;
-        $last = $char = $value = $name = '';
+        $value = $name = '';
         $args = [];
         $body = '';
         while ($token = $this->_stream->current(true)) {

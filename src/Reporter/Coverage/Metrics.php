@@ -190,7 +190,7 @@ class Metrics
 
         $child = $this;
         foreach ($parts as $part) {
-            list($name, $type) = $part;
+            list($name) = $part;
             if (!isset($child->_children[$name])) {
                 return;
             }
