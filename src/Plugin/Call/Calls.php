@@ -153,7 +153,7 @@ class Calls
             $times -= 1;
             if ($times < 0) {
                 $success = true;
-                $next = static::find($messages, $i + 1, 0, $args);
+                static::find($messages, $i + 1, 0, $args);
                 static::$_index = $i + 1;
                 break;
             } elseif ($times === 0) {

@@ -229,7 +229,6 @@ class Monkey
         if (!preg_match_all($this->_regex, $node->body, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
             return;
         }
-        $offset = 0;
         foreach (array_reverse($matches) as $match) {
             $len = strlen($match[0][0]);
             $pos = $match[0][1];
@@ -283,9 +282,6 @@ class Monkey
                     $replace .= $match[1][0] . $match[2][0] . $variable . $match[4][0];
                 }
                 $node->body = substr_replace($node->body, $replace, $pos, $len);
-                $offset = $pos + strlen($replace);
-            } else {
-                $offset = $pos + $len;
             }
         }
     }

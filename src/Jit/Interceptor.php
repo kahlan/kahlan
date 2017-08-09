@@ -435,7 +435,6 @@ class Interceptor
     {
         $files = (array) $files;
 
-        $success = true;
         foreach ($files as $file) {
             $this->loadFile($file);
         }
@@ -586,8 +585,6 @@ class Interceptor
      */
     public function findPath($namespace, $forceDir = false)
     {
-        $loader = static::originalInstance();
-
         $paths = static::getPrefixes();
         $logicalPath = trim(strtr($namespace, '\\', DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 

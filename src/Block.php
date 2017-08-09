@@ -11,7 +11,6 @@ use Kahlan\Summary;
 use Kahlan\Block\Specification;
 use Kahlan\Block\Group;
 use Kahlan\Analysis\Debugger;
-use Kahlan\Plugin\Call\Message;
 
 abstract class Block
 {

@@ -179,7 +179,6 @@ class Collector
     public function stop($mergeToParent = true)
     {
         $collector = end(static::$_collectors);
-        $collected = [];
         if ($collector !== $this) {
             return false;
         }

@@ -24,7 +24,7 @@ class HHVM
         $defaults = [
             'cleanup' => true
         ];
-        $this->_config = $config;
+        $this->_config = $config + $defaults;
 
         if (!defined('HHVM_VERSION')) {
             throw new RuntimeException('HHVM is not loaded.');
