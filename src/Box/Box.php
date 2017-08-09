@@ -32,7 +32,7 @@ class Box
             'wrapper' => 'Kahlan\Box\Wrapper'
         ];
         $config += $defaults;
-        $this->_classes['wrapper'] = $defaults['wrapper'];
+        $this->_classes['wrapper'] = $config['wrapper'];
     }
 
     /**

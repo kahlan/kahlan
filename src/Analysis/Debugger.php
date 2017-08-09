@@ -1,8 +1,6 @@
 <?php
 namespace Kahlan\Analysis;
 
-use Exception;
-
 /**
  * The `Debugger` class provides basic facilities for generating and rendering meta-data about the
  * state of an application in its current context.

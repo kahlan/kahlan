@@ -59,7 +59,6 @@ class Code
 
         $closure = function () use ($callable, $timeout, $delay) {
             $timeout = (float) $timeout;
-            $result = false;
             $start = microtime(true);
 
             do {

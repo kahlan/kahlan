@@ -387,8 +387,6 @@ class Coverage extends Terminal
         $percent = number_format($stats['percent'], 2);
         $this->write(str_repeat('  ', substr_count($name, '\\')));
 
-        $pos = strrpos($name, '\\');
-        $basename = substr($name, $pos !== false ? $pos + 1 : 0);
         $this->write('Total: ');
         $this->write("{$percent}% ", $this->_style($percent));
         $this->write("({$stats['cloc']}/{$stats['lloc']})");
