@@ -57,7 +57,7 @@ class Quit
                     return $matches[1] . '\Kahlan\Plugin\Quit::quit' . ($matches[3] === '(' ? '(' : '();');
                 }, $node->body);
             }
-            if (count($node->tree)) {
+            if (!empty($node->tree)) {
                 $this->_processTree($node);
             }
         }
