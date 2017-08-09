@@ -151,7 +151,7 @@ class Text
      */
     protected static function _arrayToString($datas, $options)
     {
-        if (!count($datas)) {
+        if (empty($datas)) {
             return '[]';
         }
 

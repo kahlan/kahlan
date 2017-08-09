@@ -132,7 +132,7 @@ class Layer
                 $parser = $this->_classes['parser'];
                 $root = $parser::parse($code, ['php' => true]);
                 $node->close .= str_replace("\n", '', $parser::unparse($this->_pointcut->process($root)));
-            } elseif (count($node->tree)) {
+            } elseif (!empty($node->tree)) {
                 $this->_processTree($node);
             }
         }

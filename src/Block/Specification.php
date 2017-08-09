@@ -132,7 +132,7 @@ class Specification extends \Kahlan\Block
             }
         }
 
-        if ($type === 'passed' && !count($this->_expectations)) {
+        if ($type === 'passed' && empty($this->_expectations)) {
             $this->log()->type('pending');
         }
         $type = $this->log()->type();

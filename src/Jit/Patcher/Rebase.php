@@ -62,7 +62,7 @@ class Rebase
                 $node->body = preg_replace($dirRegex, $dir, $node->body);
                 $node->body = preg_replace($fileRegex, $file, $node->body);
             }
-            if (count($node->tree)) {
+            if (!empty($node->tree)) {
                 $this->_processTree($node, $path);
             }
         }
