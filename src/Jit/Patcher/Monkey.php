@@ -171,7 +171,7 @@ class Monkey
             $this->_variables[++$this->_depth] = [];
         }
         foreach ($parent->tree as $index => $node) {
-            if (count($node->tree)) {
+            if (!empty($node->tree)) {
                 $this->_processTree($node);
             }
             if ($node->processable && $node->type === 'code') {

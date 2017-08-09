@@ -85,7 +85,7 @@ class Pointcut
         foreach ($parent->tree as $node) {
             if ($node->hasMethods && $node->type !== 'interface') {
                 $this->_processMethods($node);
-            } elseif (count($node->tree)) {
+            } elseif (!empty($node->tree)) {
                 $this->_processTree($node);
             }
         }
