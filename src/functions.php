@@ -4,7 +4,6 @@ namespace Kahlan;
 use Kahlan\Box\Box;
 use Kahlan\Box\BoxException;
 
-
 function beforeAll($closure)
 {
     return Suite::current()->beforeAll($closure);
