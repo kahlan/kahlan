@@ -201,6 +201,8 @@ class Group extends \Kahlan\Block
             }
         }
 
+        $this->suite()->autoclear();
+
         $type = $this->log()->type();
         if ($type === 'failed' || $type === 'errored') {
             $this->_passed = false;

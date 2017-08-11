@@ -258,6 +258,45 @@ describe("Suite", function () {
 
         });
 
+        it("autoclears plugins", function () {
+
+            $describe = $this->root->describe("", function () {
+
+                $double = Double::instance();
+
+                $this->describe("first", function () use ($double) {
+
+                    $this->beforeAll(function () use ($double) {
+                        allow($double)->toReceive('hello')->andReturn('world');
+                    });
+
+                });
+
+                $this->describe("second", function () use ($double) {
+
+                    $this->it("it", function () use ($double) {
+                        $this->expect($double->hello())->not->toBe('world');
+                    });
+
+                });
+
+            });
+
+            $this->suite->run([
+                'reporters' => $this->reporters,
+                'autoclear' => [
+                    'Kahlan\Plugin\Monkey',
+                    'Kahlan\Plugin\Stub',
+                    'Kahlan\Plugin\Quit',
+                    'Kahlan\Plugin\Call\Calls'
+                ]
+            ]);
+            $summary = $this->suite->summary();
+
+            expect($summary->passed())->toBe(1);
+
+        });
+
     });
 
     describe("->afterAll()", function () {
