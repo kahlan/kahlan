@@ -53,13 +53,6 @@ describe("Log", function () {
 
         });
 
-        it("doesn't rebase backtrace on an exception report", function () {
-
-            $this->reports->exception(new Exception());
-            expect($this->reports->backtrace()[0]['file'])->not->toMatch("~^{$this->regExp}$~");
-
-        });
-
     });
 
     describe("->passed()", function () {

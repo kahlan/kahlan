@@ -235,9 +235,13 @@ class Log
             return $this->_backtrace;
         }
         if ($this->_backtrace = $backtrace) {
-            $trace = reset($this->_backtrace);
-            $this->_file = preg_replace('~' . preg_quote(getcwd(), '~') . '~', '', '.' . $trace['file']);
-            $this->_line = $trace['line'];
+            foreach ($this->_backtrace as $trace) {
+                if (isset($trace['file'])) {
+                    $this->_file = preg_replace('~' . preg_quote(getcwd(), '~') . '~', '', '.' . $trace['file']);
+                    $this->_line = $trace['line'];
+                    break;
+                }
+            }
         }
         return $this;
     }
