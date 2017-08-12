@@ -7,7 +7,6 @@ namespace Kahlan\Cli {
     use Kahlan\Matcher;
     use Kahlan\Jit\Patcher\Pointcut;
     use Kahlan\Jit\Patcher\Monkey;
-    use Kahlan\Jit\Patcher\Rebase;
     use Kahlan\Jit\Patcher\Quit;
     use Kahlan\Plugin\Quit as QuitStatement;
     use Kahlan\Reporters;
@@ -440,7 +439,6 @@ EOD;
                 $patchers = $interceptor->patchers();
                 $patchers->add('pointcut', new Pointcut());
                 $patchers->add('monkey',   new Monkey());
-                $patchers->add('rebase',   new Rebase());
                 $patchers->add('quit',     new Quit());
             });
         }

@@ -1,8 +1,10 @@
 <?php
-namespace Kahlan\Spec\Fixture\Jit\Patcher\Reabase;
+namespace Kahlan\Spec\Fixture\Jit\Parser;
 
 class Example
 {
+    public $path = '/the/original/path' . '/file.json';
+
     public function load()
     {
         require '/the/original/path/Rebase.php';
