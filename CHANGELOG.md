@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 3.1.18 (2017-08-12)
+
+  * **Bugfix:** Fix `__DIR__` & `__FILE__` magic constants rebase.
+
 ## 3.1.17 (2017-08-07)
 
   * **Bugfix:** Fix `void` return type stubbing.
