@@ -3,8 +3,7 @@ namespace Kahlan\Cli {
 
     use Kahlan\Dir\Dir;
     use Kahlan\Jit\Interceptor;
-    use Kahlan\Filter\Filter;
-    use Kahlan\Filter\Behavior\Filterable;
+    use Kahlan\Filter\Filters;
     use Kahlan\Matcher;
     use Kahlan\Jit\Patcher\Pointcut;
     use Kahlan\Jit\Patcher\Monkey;
@@ -23,7 +22,6 @@ namespace Kahlan\Cli {
 
     class Kahlan
     {
-        use Filterable;
 
         const VERSION = '3.1.7';
 
@@ -347,7 +345,7 @@ EOD;
             }
 
             $this->_start = microtime(true);
-            return Filter::on($this, 'workflow', [], function ($chain) {
+            return Filters::run($this, 'workflow', [], function ($chain) {
                 $this->_bootstrap();
 
                 $this->_interceptor();
@@ -387,7 +385,7 @@ EOD;
          */
         protected function _bootstrap()
         {
-            return Filter::on($this, 'bootstrap', [], function ($chain) {
+            return Filters::run($this, 'bootstrap', [], function ($chain) {
                 $this->suite()->backtraceFocus($this->commandLine()->get('grep'));
                 if (!$this->commandLine()->exists('coverage')) {
                     if ($this->commandLine()->exists('clover') || $this->commandLine()->exists('istanbul') || $this->commandLine()->exists('lcov')) {
@@ -402,7 +400,7 @@ EOD;
          */
         protected function _interceptor()
         {
-            return Filter::on($this, 'interceptor', [], function ($chain) {
+            return Filters::run($this, 'interceptor', [], function ($chain) {
                 $this->autoloader(Interceptor::patch([
                     'loader'     => [$this->autoloader(), 'loadClass'],
                     'include'    => $this->commandLine()->get('include'),
@@ -419,7 +417,7 @@ EOD;
          */
         protected function _namespaces()
         {
-            return Filter::on($this, 'namespaces', [], function ($chain) {
+            return Filters::run($this, 'namespaces', [], function ($chain) {
                 $paths = $this->commandLine()->get('spec');
                 foreach ($paths as $path) {
                     $path = realpath($path);
@@ -437,7 +435,7 @@ EOD;
             if (!$interceptor = Interceptor::instance()) {
                 return;
             }
-            return Filter::on($this, 'patchers', [], function ($chain) {
+            return Filters::run($this, 'patchers', [], function ($chain) {
                 $interceptor = Interceptor::instance();
                 $patchers = $interceptor->patchers();
                 $patchers->add('pointcut', new Pointcut());
@@ -452,7 +450,7 @@ EOD;
          */
         protected function _load()
         {
-            return Filter::on($this, 'load', [], function ($chain) {
+            return Filters::run($this, 'load', [], function ($chain) {
                 $specDirs = $this->commandLine()->get('spec');
                 foreach ($specDirs as $dir) {
                     if (!file_exists($dir)) {
@@ -476,7 +474,7 @@ EOD;
          */
         protected function _reporters()
         {
-            return Filter::on($this, 'reporters', [], function ($chain) {
+            return Filters::run($this, 'reporters', [], function ($chain) {
                 $this->_console();
                 $this->_coverage();
             });
@@ -487,7 +485,7 @@ EOD;
          */
         protected function _console()
         {
-            return Filter::on($this, 'console', [], function ($chain) {
+            return Filters::run($this, 'console', [], function ($chain) {
                 $collection = $this->reporters();
 
                 $reporters = $this->commandLine()->get('reporter');
@@ -543,7 +541,7 @@ EOD;
          */
         protected function _coverage()
         {
-            return Filter::on($this, 'coverage', [], function ($chain) {
+            return Filters::run($this, 'coverage', [], function ($chain) {
                 if (!$this->commandLine()->exists('coverage')) {
                     return;
                 }
@@ -580,7 +578,7 @@ EOD;
          */
         protected function _matchers()
         {
-            return Filter::on($this, 'matchers', [], function ($chain) {
+            return Filters::run($this, 'matchers', [], function ($chain) {
                 static::registerMatchers();
             });
         }
@@ -590,7 +588,7 @@ EOD;
          */
         protected function _run()
         {
-            return Filter::on($this, 'run', [], function ($chain) {
+            return Filters::run($this, 'run', [], function ($chain) {
                 $this->suite()->run([
                     'reporters' => $this->reporters(),
                     'autoclear' => $this->commandLine()->get('autoclear'),
@@ -604,7 +602,7 @@ EOD;
          */
         protected function _reporting()
         {
-            return Filter::on($this, 'reporting', [], function ($chain) {
+            return Filters::run($this, 'reporting', [], function ($chain) {
                 $reporter = $this->reporters()->get('coverage');
                 if (!$reporter) {
                     return;
@@ -635,7 +633,7 @@ EOD;
          */
         protected function _stop()
         {
-            return Filter::on($this, 'stop', [], function ($chain) {
+            return Filters::run($this, 'stop', [], function ($chain) {
                 $this->suite()->stop();
             });
         }
@@ -646,7 +644,7 @@ EOD;
          */
         protected function _quit()
         {
-            return Filter::on($this, 'quit', [$this->suite()->status()], function ($chain, $success) {
+            return Filters::run($this, 'quit', [$this->suite()->status()], function ($chain, $success) {
             });
         }
     }

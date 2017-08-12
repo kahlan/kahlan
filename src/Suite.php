@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Block;
 use Kahlan\Block\Group;
+use Kahlan\Filter\Filters;
 
 class Suite
 {

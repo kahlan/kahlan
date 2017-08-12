@@ -4,7 +4,7 @@ namespace Kahlan\Spec\Suite\Cli;
 use stdClass;
 use Exception;
 use Kahlan\Jit\Interceptor;
-use Kahlan\Filter\Filter;
+use Kahlan\Filter\Filters;
 use Kahlan\Suite;
 use Kahlan\Matcher;
 use Kahlan\Cli\Kahlan;
@@ -349,63 +349,53 @@ EOD;
             $autoloader = new stdClass();
             $order = [];
 
-            Filter::register('spec.bootstrap', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'bootstrap', function ($next) use (&$order) {
                 $order[] = 'bootstrap';
             });
-            Filter::apply($this->specs, 'bootstrap', 'spec.bootstrap');
 
             $previous = $this->previous;
-            Filter::register('spec.interceptor', function ($chain) use (&$order, $previous) {
+
+            Filters::apply($this->specs, 'interceptor', function ($next) use (&$order, $previous) {
                 Interceptor::load($previous);
                 $order[] = 'interceptor';
             });
-            Filter::apply($this->specs, 'interceptor', 'spec.interceptor');
 
-            Filter::register('spec.namespaces', function ($chain) use (&$order, &$autoloader) {
+            Filters::apply($this->specs, 'namespaces', function ($next) use (&$order, &$autoloader) {
                 $this->autoloader($autoloader);
                 $order[] = 'namespaces';
             });
-            Filter::apply($this->specs, 'namespaces', 'spec.namespaces');
 
-            Filter::register('spec.patchers', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'patchers', function ($next) use (&$order) {
                 $order[] = 'patchers';
             });
-            Filter::apply($this->specs, 'patchers', 'spec.patchers');
 
-            Filter::register('spec.load', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'load', function ($next) use (&$order) {
                 $order[] = 'load';
             });
-            Filter::apply($this->specs, 'load', 'spec.load');
 
-            Filter::register('spec.reporters', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'reporters', function ($next) use (&$order) {
                 $order[] = 'reporters';
             });
-            Filter::apply($this->specs, 'reporters', 'spec.reporters');
 
-            Filter::register('spec.matchers', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'matchers', function ($next) use (&$order) {
                 $order[] = 'matchers';
             });
-            Filter::apply($this->specs, 'matchers', 'spec.matchers');
 
-            Filter::register('spec.run', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'run', function ($next) use (&$order) {
                 $order[] = 'run';
             });
-            Filter::apply($this->specs, 'run', 'spec.run');
 
-            Filter::register('spec.reporting', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'reporting', function ($next) use (&$order) {
                 $order[] = 'reporting';
             });
-            Filter::apply($this->specs, 'reporting', 'spec.reporting');
 
-            Filter::register('spec.stop', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'stop', function ($next) use (&$order) {
                 $order[] = 'stop';
             });
-            Filter::apply($this->specs, 'stop', 'spec.stop');
 
-            Filter::register('spec.quit', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'quit', function ($next) use (&$order) {
                 $order[] = 'quit';
             });
-            Filter::apply($this->specs, 'quit', 'spec.quit');
 
             $this->specs->run();
 

@@ -11,12 +11,9 @@ use Kahlan\Summary;
 use Kahlan\Block\Specification;
 use Kahlan\Block\Group;
 use Kahlan\Analysis\Debugger;
-use Kahlan\Filter\Filter;
-use Kahlan\Filter\Behavior\Filterable;
 
 abstract class Block
 {
-    use Filterable;
 
     /**
      * The block type.
@@ -510,21 +507,6 @@ abstract class Block
             return;
         }
         return @$closure->bindTo($this->_scope);
-    }
-
-    /**
-     * Get arguments of a block's closure.
-     *
-     * @param  Block   $block   The block instance.
-     * @param  Closure $closure The closure.
-     * @param  string  $type    The closure type.
-     * @return mixed
-     */
-    public static function run($block, $closure, $type)
-    {
-        return Filter::on(static::class, 'run', [$block, $closure, $type], function($chain, $block, $closure, $type) {
-            return call_user_func_array($closure, []);
-        });
     }
 
     /**
