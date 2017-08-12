@@ -166,7 +166,6 @@ abstract class Block
         return $this->_parent;
     }
 
-
     /**
      * Return the spec's message.
      *
@@ -224,7 +223,7 @@ abstract class Block
     /**
      * Set/get the block type.
      *
-     * @param  string  The type mode.
+     * @param  string $type The type mode.
      * @return mixed
      */
     public function type($type = null)
