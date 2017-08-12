@@ -95,7 +95,7 @@ class Specification extends \Kahlan\Block
         $spec = function () {
             $this->_expectations = [];
             $closure = $this->_closure;
-            $result = $closure($this);
+            $result = $this->_suite->runBlock($this, $closure, 'specification');
             foreach ($this->_expectations as $expectation) {
                 $this->_passed = $expectation->process() && $this->_passed;
             }

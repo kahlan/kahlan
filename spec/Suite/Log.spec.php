@@ -33,7 +33,7 @@ describe("Log", function () {
 
         beforeEach(function () {
             $this->block = new Specification();
-            $this->pattern = '*Specification.php';
+            $this->pattern = '*Block.php';
             $this->regExp = strtr(preg_quote($this->pattern, '~'), ['\*' => '.*', '\?' => '.']);
             $this->block->suite()->backtraceFocus($this->pattern);
             $this->reports = new Log([

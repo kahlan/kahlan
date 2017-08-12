@@ -220,6 +220,21 @@ class Suite
     }
 
     /**
+     * Run a block's closure.
+     *
+     * @param  Block   $block   The block instance.
+     * @param  Closure $closure The closure.
+     * @param  string  $type    The closure type.
+     * @return mixed
+     */
+    public function runBlock($block, $closure, $type)
+    {
+        return Filters::run($this, 'runBlock', [$block, $closure, $type], function ($next, $block, $closure, $type) {
+            return call_user_func_array($closure, []);
+        });
+    }
+
+    /**
      * Gets specs excecution results.
      *
      * @return array
@@ -265,9 +280,7 @@ class Suite
      */
     protected function _stats($block)
     {
-        if ($closure = $block->closure()) {
-            $closure($block);
-        }
+        $block->load();
 
         $normal = 0;
         $focused = 0;

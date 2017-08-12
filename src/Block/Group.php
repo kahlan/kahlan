@@ -157,6 +157,17 @@ class Group extends \Kahlan\Block
     }
 
     /**
+     * Load the group.
+     */
+    public function load()
+    {
+        if (!$closure = $this->closure()) {
+            return;
+        }
+        return $this->_suite->runBlock($this, $closure, 'group');
+    }
+
+    /**
      * Group execution helper.
      */
     protected function _execute()
@@ -225,7 +236,7 @@ class Group extends \Kahlan\Block
         $instances = $recursive ? $this->parents(true) : [$this];
         foreach ($instances as $instance) {
             foreach ($instance->_callbacks[$name] as $closure) {
-                $closure($this);
+                $this->_suite->runBlock($this, $closure, $name);
             }
         }
     }

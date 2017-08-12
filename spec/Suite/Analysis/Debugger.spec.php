@@ -56,7 +56,7 @@ describe("Debugger", function () {
             expect($backtrace)->toBeA('string');
 
             $trace = current(explode("\n", $backtrace));
-            expect($trace)->toMatch('~src[/|\\\]Block.php~');
+            expect($trace)->toMatch('~src[/|\\\]Suite.php~');
 
         });
 
