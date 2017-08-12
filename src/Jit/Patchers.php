@@ -113,7 +113,7 @@ class Patchers
         if (!$code) {
             return '';
         }
-        $nodes = Parser::parse($code);
+        $nodes = Parser::parse($code, ['path' => $path]);
         foreach ($this->_patchers as $patcher) {
             $patcher->process($nodes, $path);
         }
