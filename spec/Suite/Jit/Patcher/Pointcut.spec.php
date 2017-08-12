@@ -16,11 +16,8 @@ describe("Pointcut", function () {
         it("adds an entry point to methods and wrap function call for classes", function () {
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Simple.php'));
-            if (version_compare(phpversion(), '5.5', '<')) {
-                $expected = file_get_contents($this->path . '/SimpleProcessed_5.4.php');
-            } else {
-                $expected = file_get_contents($this->path . '/SimpleProcessed.php');
-            }
+            $expected = file_get_contents($this->path . '/SimpleProcessed.php');
+
             $actual = Parser::unparse($this->patcher->process($nodes));
             expect($actual)->toBe($expected);
 
