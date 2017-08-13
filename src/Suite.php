@@ -3,7 +3,7 @@ namespace Kahlan;
 
 use Closure;
 use Throwable;
-use Exception;
+use RuntimeException;
 use InvalidArgumentException;
 use Kahlan\Analysis\Debugger;
 use Kahlan\Block;
@@ -100,6 +100,13 @@ class Suite
     protected $_backtraceFocus = null;
 
     /**
+     * List of specifications UUID.
+     *
+     * @var array
+     */
+    protected $_uuids = [];
+
+    /**
      * The Constructor.
      */
     public function __construct()
@@ -109,9 +116,9 @@ class Suite
     }
 
     /**
-     * Gets children.
+     * Get root block instance.
      *
-     * @return array The array of children instances.
+     * @return object
      */
     public function root()
     {
@@ -190,7 +197,6 @@ class Suite
      * @param  array     $options Run options.
      *
      * @return boolean            The result array.
-     * @throws Exception
      */
     public function run($options = [])
     {
@@ -313,9 +319,23 @@ class Suite
                         $normal++;
                         break;
                 }
+                $this->_dispatch($child);
             }
         }
         return compact('normal', 'focused', 'excluded');
+    }
+
+    protected function _dispatch($spec)
+    {
+        $messages = $spec->messages();
+        array_shift($messages);
+        $message = trim(join(', ', $messages));
+        $uuid = md5($message);
+        if (isset($this->_uuids[$uuid])) {
+            $spec->log()->type('errored');
+            $spec->log()->exception(new RuntimeException("Error specifications must have a unique description message, duplicates of `'{$message}'` found."));
+        }
+        $this->_uuids[$uuid] = $spec;
     }
 
     /**
