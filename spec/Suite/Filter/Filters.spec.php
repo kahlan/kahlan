@@ -108,15 +108,6 @@ describe("Filters", function () {
             it("throws an Exception when trying to detach an unexisting filter id", function () {
 
                 $closure = function () {
-                    Filters::detach('foo\Bar#0000000046feb0630000000176a1b630::baz|3');
-                };
-                expect($closure)->toThrow(new Exception("Unexisting `'foo\\Bar#0000000046feb0630000000176a1b630::baz|3'` filter id."));
-
-            });
-
-            it("throws an Exception when trying to detach an unexisting filter id", function () {
-
-                $closure = function () {
                     Filters::detach('foo\Bar#0000000046feb0630000000176a1b630::baz');
                 };
                 expect($closure)->toThrow(new Exception("Unexisting `'foo\\Bar#0000000046feb0630000000176a1b630::baz'` filter reference id."));

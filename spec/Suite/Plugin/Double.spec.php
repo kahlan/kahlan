@@ -468,7 +468,7 @@ EOD;
 
         });
 
-        it("generates interface methods", function () {
+        it("doesn't generate interface methods", function () {
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',

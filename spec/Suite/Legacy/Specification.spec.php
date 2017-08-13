@@ -8,383 +8,387 @@ use Kahlan\Block\Specification;
 use Kahlan\Matcher;
 use Kahlan\Plugin\Double;
 
-describe("Specification", function () {
+describe("Legacy", function () {
 
-    beforeAll(function () {
-        Suite::$PHP = 5;
-    });
+    describe("Specification", function () {
 
-    afterAll(function () {
-        Suite::$PHP = PHP_MAJOR_VERSION;
-    });
-
-    beforeEach(function () {
-        $this->spec = new Specification();
-    });
-
-    describe("->process()", function () {
-
-        it("returns the closure return value", function () {
-
-            $this->spec = new Specification([
-                'closure' => function () {
-                    return 'hello world';
-                }
-            ]);
-
-            $return = null;
-            $this->spec->process($return);
-            expect($return)->toBe('hello world');
-
+        beforeAll(function () {
+            Suite::$PHP = 5;
         });
 
-        it("marks the spec as pending when an expectation is not verified", function () {
-
-            $this->spec = new Specification([
-                'closure' => function () {
-                    $this->expect(true)->toBe(true);
-                    $this->expect(true);
-                }
-            ]);
-
-            expect($this->spec->process())->toBe(true);
-            expect($this->spec->log()->type())->toBe('pending');
-
+        afterAll(function () {
+            Suite::$PHP = PHP_MAJOR_VERSION;
         });
 
-        context("when the specs passed", function () {
+        beforeEach(function () {
+            $this->spec = new Specification();
+        });
 
-            it("logs a pass", function () {
+        describe("->process()", function () {
+
+            it("returns the closure return value", function () {
 
                 $this->spec = new Specification([
-                    'message' => 'runs a spec',
+                    'closure' => function () {
+                        return 'hello world';
+                    }
+                ]);
+
+                $return = null;
+                $this->spec->process($return);
+                expect($return)->toBe('hello world');
+
+            });
+
+            it("marks the spec as pending when an expectation is not verified", function () {
+
+                $this->spec = new Specification([
                     'closure' => function () {
                         $this->expect(true)->toBe(true);
+                        $this->expect(true);
                     }
                 ]);
 
                 expect($this->spec->process())->toBe(true);
-
-                $passed = $this->spec->summary()->logs('passed');
-                expect($passed)->toHaveLength(1);
-
-                $pass = reset($passed);
-                $expectation = $pass->children()[0];
-
-                expect($expectation->matcher())->toBe('Kahlan\Matcher\ToBe');
-                expect($expectation->matcherName())->toBe('toBe');
-                expect($expectation->not())->toBe(false);
-                expect($expectation->type())->toBe('passed');
-                expect($expectation->data())->toBe([
-                    'actual'   => true,
-                    'expected' => true
-                ]);
-                expect($expectation->messages())->toBe(['it runs a spec']);
+                expect($this->spec->log()->type())->toBe('pending');
 
             });
 
-            it("logs a pass with a deferred matcher", function () {
+            context("when the specs passed", function () {
 
-                $this->spec = new Specification([
-                    'message' => 'runs a spec',
-                    'closure' => function () {
-                        $stub = Double::instance();
-                        $this->expect($stub)->toReceive('methodName');
-                        $stub->methodName();
-                    }
-                ]);
+                it("logs a pass", function () {
 
-                expect($this->spec->process())->toBe(true);
+                    $this->spec = new Specification([
+                        'message' => 'runs a spec',
+                        'closure' => function () {
+                            $this->expect(true)->toBe(true);
+                        }
+                    ]);
 
-                $passes = $this->spec->summary()->logs('passed');
-                expect($passes)->toHaveLength(1);
+                    expect($this->spec->process())->toBe(true);
 
-                $pass = reset($passes);
-                $expectation = $pass->children()[0];
+                    $passed = $this->spec->summary()->logs('passed');
+                    expect($passed)->toHaveLength(1);
 
-                expect($expectation->matcher())->toBe('Kahlan\Matcher\ToReceive');
-                expect($expectation->matcherName())->toBe('toReceive');
-                expect($expectation->not())->toBe(false);
-                expect($expectation->type())->toBe('passed');
-                expect($expectation->data())->toBe([
-                    'actual received'       => 'methodName',
-                    "actual received times" => 1,
-                    'expected to receive'   => 'methodName'
-                ]);
-                expect($expectation->description())->toBe('receive the expected method.');
-                expect($expectation->messages())->toBe(['it runs a spec']);
+                    $pass = reset($passed);
+                    $expectation = $pass->children()[0];
 
-            });
+                    expect($expectation->matcher())->toBe('Kahlan\Matcher\ToBe');
+                    expect($expectation->matcherName())->toBe('toBe');
+                    expect($expectation->not())->toBe(false);
+                    expect($expectation->type())->toBe('passed');
+                    expect($expectation->data())->toBe([
+                        'actual'   => true,
+                        'expected' => true
+                    ]);
+                    expect($expectation->messages())->toBe(['it runs a spec']);
 
-            it("logs the not attribute", function () {
+                });
 
-                $this->spec = new Specification([
-                    'closure' => function () {
-                        $this->expect(true)->not->toBe(false);
-                    }
-                ]);
+                it("logs a pass with a deferred matcher", function () {
 
-                expect($this->spec->process())->toBe(true);
+                    $this->spec = new Specification([
+                        'message' => 'runs a spec',
+                        'closure' => function () {
+                            $stub = Double::instance();
+                            $this->expect($stub)->toReceive('methodName');
+                            $stub->methodName();
+                        }
+                    ]);
 
-                $passes = $this->spec->summary()->logs('passed');
-                expect($passes)->toHaveLength(1);
+                    expect($this->spec->process())->toBe(true);
 
-                $pass = reset($passes);
-                $expectation = $pass->children()[0];
+                    $passes = $this->spec->summary()->logs('passed');
+                    expect($passes)->toHaveLength(1);
 
-                expect($expectation->not())->toBe(true);
+                    $pass = reset($passes);
+                    $expectation = $pass->children()[0];
 
-            });
+                    expect($expectation->matcher())->toBe('Kahlan\Matcher\ToReceive');
+                    expect($expectation->matcherName())->toBe('toReceive');
+                    expect($expectation->not())->toBe(false);
+                    expect($expectation->type())->toBe('passed');
+                    expect($expectation->data())->toBe([
+                        'actual received'       => 'methodName',
+                        "actual received times" => 1,
+                        'expected to receive'   => 'methodName'
+                    ]);
+                    expect($expectation->description())->toBe('receive the expected method.');
+                    expect($expectation->messages())->toBe(['it runs a spec']);
 
-            it("logs deferred matcher backtrace", function () {
+                });
 
-                $this->spec = new Specification([
-                    'closure' => function () {
-                        $this->expect(Double::instance())->not->toReceive('helloWorld');
-                    }
-                ]);
+                it("logs the not attribute", function () {
 
-                expect($this->spec->process())->toBe(true);
+                    $this->spec = new Specification([
+                        'closure' => function () {
+                            $this->expect(true)->not->toBe(false);
+                        }
+                    ]);
 
-                $passes = $this->spec->summary()->logs('passed');
-                expect($passes)->toHaveLength(1);
+                    expect($this->spec->process())->toBe(true);
 
-                $pass = reset($passes);
-                $expectation = $pass->children()[0];
+                    $passes = $this->spec->summary()->logs('passed');
+                    expect($passes)->toHaveLength(1);
 
-                $backtrace = $expectation->backtrace();
-                expect($backtrace[0]['file'])->toMatch('~ToReceive.php$~');
+                    $pass = reset($passes);
+                    $expectation = $pass->children()[0];
 
-            });
+                    expect($expectation->not())->toBe(true);
 
-            it("logs the not attribute with a deferred matcher", function () {
+                });
 
-                $this->spec = new Specification([
-                    'closure' => function () {
-                        $stub = Double::instance();
-                        $this->expect($stub)->not->toReceive('methodName');
-                    }
-                ]);
+                it("logs deferred matcher backtrace", function () {
 
-                expect($this->spec->process())->toBe(true);
+                    $this->spec = new Specification([
+                        'closure' => function () {
+                            $this->expect(Double::instance())->not->toReceive('helloWorld');
+                        }
+                    ]);
 
-                $passes = $this->spec->summary()->logs('passed');
-                expect($passes)->toHaveLength(1);
+                    expect($this->spec->process())->toBe(true);
 
-                $pass = reset($passes);
-                $expectation = $pass->children()[0];
+                    $passes = $this->spec->summary()->logs('passed');
+                    expect($passes)->toHaveLength(1);
 
-                expect($expectation->not())->toBe(true);
+                    $pass = reset($passes);
+                    $expectation = $pass->children()[0];
 
-            });
+                    $backtrace = $expectation->backtrace();
+                    expect($backtrace[0]['file'])->toMatch('~ToReceive.php$~');
 
-            it("resets `not` to `false ` after any matcher call", function () {
+                });
 
-                expect([])
-                    ->not->toBeNull()
-                    ->toBeA('array')
-                    ->toBeEmpty();
+                it("logs the not attribute with a deferred matcher", function () {
 
-            });
+                    $this->spec = new Specification([
+                        'closure' => function () {
+                            $stub = Double::instance();
+                            $this->expect($stub)->not->toReceive('methodName');
+                        }
+                    ]);
 
-        });
+                    expect($this->spec->process())->toBe(true);
 
-        context("when the specs failed", function () {
+                    $passes = $this->spec->summary()->logs('passed');
+                    expect($passes)->toHaveLength(1);
 
-            it("logs a fail", function () {
+                    $pass = reset($passes);
+                    $expectation = $pass->children()[0];
 
-                $this->spec = new Specification([
-                    'message' => 'runs a spec',
-                    'closure' => function () {
-                        $this->expect(true)->toBe(false);
-                    }
-                ]);
+                    expect($expectation->not())->toBe(true);
 
-                expect($this->spec->process())->toBe(false);
+                });
 
-                $failed = $this->spec->summary()->logs('failed');
-                expect($failed)->toHaveLength(1);
-                $failure = reset($failed);
+                it("resets `not` to `false ` after any matcher call", function () {
 
-                $expectation = $failure->children()[0];
-                expect($expectation->matcher())->toBe('Kahlan\Matcher\ToBe');
-                expect($expectation->matcherName())->toBe('toBe');
-                expect($expectation->not())->toBe(false);
-                expect($expectation->type())->toBe('failed');
-                expect($expectation->data())->toBe([
-                    'actual'   => true,
-                    'expected' => false
-                ]);
-                expect($expectation->messages())->toBe(['it runs a spec']);
-                expect($expectation->backtrace())->toBeAn('array');
-            });
+                    expect([])
+                        ->not->toBeNull()
+                        ->toBeA('array')
+                        ->toBeEmpty();
 
-            it("logs a fail with a deferred matcher", function () {
-
-                $this->spec = new Specification([
-                    'message' => 'runs a spec',
-                    'closure' => function () {
-                        $stub = Double::instance();
-                        $this->expect($stub)->toReceive('methodName');
-                    }
-                ]);
-
-                expect($this->spec->process())->toBe(false);
-
-                $failed = $this->spec->summary()->logs('failed');
-                expect($failed)->toHaveLength(1);
-
-                $failure = reset($failed);
-
-                $expectation = $failure->children()[0];
-                expect($expectation->matcher())->toBe('Kahlan\Matcher\ToReceive');
-                expect($expectation->matcherName())->toBe('toReceive');
-                expect($expectation->not())->toBe(false);
-                expect($expectation->type())->toBe('failed');
-                expect($expectation->data())->toBe([
-                    'actual received calls' => [],
-                    'expected to receive'   => 'methodName'
-                ]);
-                expect($expectation->description())->toBe('receive the expected method.');
-                expect($expectation->messages())->toBe(['it runs a spec']);
-                expect($expectation->backtrace())->toBeAn('array');
+                });
 
             });
 
-            it("logs the not attribute", function () {
+            context("when the specs failed", function () {
 
-                $this->spec = new Specification([
-                    'closure' => function () {
-                        $this->expect(true)->not->toBe(true);
-                    }
-                ]);
+                it("logs a fail", function () {
 
-                expect($this->spec->process())->toBe(false);
-
-                $failures = $this->spec->summary()->logs('failed');
-                expect($failures)->toHaveLength(1);
-
-                $failure = reset($failures);
-                $expectation = $failure->children()[0];
-
-                expect($expectation->not())->toBe(true);
-
-            });
-
-            it("logs the not attribute with a deferred matcher", function () {
-
-                $this->spec = new Specification([
-                    'closure' => function () {
-                        $stub = Double::instance();
-                        $this->expect($stub)->not->toReceive('methodName');
-                        $stub->methodName();
-                    }
-                ]);
-
-                expect($this->spec->process())->toBe(false);
-
-                $failures = $this->spec->summary()->logs('failed');
-                expect($failures)->toHaveLength(1);
-
-                $failure = reset($failures);
-                $expectation = $failure->children()[0];
-
-                expect($expectation->not())->toBe(true);
-                expect($expectation->not())->toBe(true);
-
-            });
-
-            it("logs sub spec fails", function () {
-
-                $this->spec = new Specification([
-                    'message' => 'runs a spec',
-                    'closure' => function () {
-                        $this->waitsFor(function () {
+                    $this->spec = new Specification([
+                        'message' => 'runs a spec',
+                        'closure' => function () {
                             $this->expect(true)->toBe(false);
-                        });
-                    }
-                ]);
+                        }
+                    ]);
 
-                expect($this->spec->process())->toBe(false);
+                    expect($this->spec->process())->toBe(false);
 
-                $failured = $this->spec->summary()->logs('failed');
-                expect($failured)->toHaveLength(1);
+                    $failed = $this->spec->summary()->logs('failed');
+                    expect($failed)->toHaveLength(1);
+                    $failure = reset($failed);
 
-                $failure = reset($failured);
-                $expectation = $failure->children()[0];
+                    $expectation = $failure->children()[0];
+                    expect($expectation->matcher())->toBe('Kahlan\Matcher\ToBe');
+                    expect($expectation->matcherName())->toBe('toBe');
+                    expect($expectation->not())->toBe(false);
+                    expect($expectation->type())->toBe('failed');
+                    expect($expectation->data())->toBe([
+                        'actual'   => true,
+                        'expected' => false
+                    ]);
+                    expect($expectation->messages())->toBe(['it runs a spec']);
+                    expect($expectation->backtrace())->toBeAn('array');
+                });
 
-                expect($expectation->matcher())->toBe('Kahlan\Matcher\ToBe');
-                expect($expectation->matcherName())->toBe('toBe');
-                expect($expectation->not())->toBe(false);
-                expect($expectation->type())->toBe('failed');
-                expect($expectation->data())->toBe([
-                    'actual'   => true,
-                    'expected' => false
-                ]);
-                expect($expectation->messages())->toBe(['it runs a spec']);
-                expect($expectation->backtrace())->toBeAn('array');
+                it("logs a fail with a deferred matcher", function () {
+
+                    $this->spec = new Specification([
+                        'message' => 'runs a spec',
+                        'closure' => function () {
+                            $stub = Double::instance();
+                            $this->expect($stub)->toReceive('methodName');
+                        }
+                    ]);
+
+                    expect($this->spec->process())->toBe(false);
+
+                    $failed = $this->spec->summary()->logs('failed');
+                    expect($failed)->toHaveLength(1);
+
+                    $failure = reset($failed);
+
+                    $expectation = $failure->children()[0];
+                    expect($expectation->matcher())->toBe('Kahlan\Matcher\ToReceive');
+                    expect($expectation->matcherName())->toBe('toReceive');
+                    expect($expectation->not())->toBe(false);
+                    expect($expectation->type())->toBe('failed');
+                    expect($expectation->data())->toBe([
+                        'actual received calls' => [],
+                        'expected to receive'   => 'methodName'
+                    ]);
+                    expect($expectation->description())->toBe('receive the expected method.');
+                    expect($expectation->messages())->toBe(['it runs a spec']);
+                    expect($expectation->backtrace())->toBeAn('array');
+
+                });
+
+                it("logs the not attribute", function () {
+
+                    $this->spec = new Specification([
+                        'closure' => function () {
+                            $this->expect(true)->not->toBe(true);
+                        }
+                    ]);
+
+                    expect($this->spec->process())->toBe(false);
+
+                    $failures = $this->spec->summary()->logs('failed');
+                    expect($failures)->toHaveLength(1);
+
+                    $failure = reset($failures);
+                    $expectation = $failure->children()[0];
+
+                    expect($expectation->not())->toBe(true);
+
+                });
+
+                it("logs the not attribute with a deferred matcher", function () {
+
+                    $this->spec = new Specification([
+                        'closure' => function () {
+                            $stub = Double::instance();
+                            $this->expect($stub)->not->toReceive('methodName');
+                            $stub->methodName();
+                        }
+                    ]);
+
+                    expect($this->spec->process())->toBe(false);
+
+                    $failures = $this->spec->summary()->logs('failed');
+                    expect($failures)->toHaveLength(1);
+
+                    $failure = reset($failures);
+                    $expectation = $failure->children()[0];
+
+                    expect($expectation->not())->toBe(true);
+                    expect($expectation->not())->toBe(true);
+
+                });
+
+                it("logs sub spec fails", function () {
+
+                    $this->spec = new Specification([
+                        'message' => 'runs a spec',
+                        'closure' => function () {
+                            $this->waitsFor(function () {
+                                $this->expect(true)->toBe(false);
+                            });
+                        }
+                    ]);
+
+                    expect($this->spec->process())->toBe(false);
+
+                    $failured = $this->spec->summary()->logs('failed');
+                    expect($failured)->toHaveLength(1);
+
+                    $failure = reset($failured);
+                    $expectation = $failure->children()[0];
+
+                    expect($expectation->matcher())->toBe('Kahlan\Matcher\ToBe');
+                    expect($expectation->matcherName())->toBe('toBe');
+                    expect($expectation->not())->toBe(false);
+                    expect($expectation->type())->toBe('failed');
+                    expect($expectation->data())->toBe([
+                        'actual'   => true,
+                        'expected' => false
+                    ]);
+                    expect($expectation->messages())->toBe(['it runs a spec']);
+                    expect($expectation->backtrace())->toBeAn('array');
+
+                });
+
+                it("logs the first failing spec only", function () {
+
+                    $this->spec = new Specification([
+                        'message' => 'runs a spec',
+                        'closure' => function () {
+                            $this->waitsFor(function () {
+                                $this->expect(true)->toBe(false);
+                                return true;
+                            })->toBe(false);
+                        }
+                    ]);
+
+                    expect($this->spec->process())->toBe(false);
+
+                    $failured = $this->spec->summary()->logs('failed');
+                    expect($failured)->toHaveLength(1);
+
+                    $failure = reset($failured);
+                    $expectation = $failure->children()[0];
+
+                    expect($expectation->matcher())->toBe('Kahlan\Matcher\ToBe');
+                    expect($expectation->matcherName())->toBe('toBe');
+                    expect($expectation->not())->toBe(false);
+                    expect($expectation->type())->toBe('failed');
+                    expect($expectation->data())->toBe([
+                        'actual'   => true,
+                        'expected' => false
+                    ]);
+                    expect($expectation->messages())->toBe(['it runs a spec']);
+                    expect($expectation->backtrace())->toBeAn('array');
+                });
 
             });
 
-            it("logs the first failing spec only", function () {
+        });
+
+        describe("->assert()", function () {
+
+            it("processes normal expectations", function () {
 
                 $this->spec = new Specification([
                     'message' => 'runs a spec',
                     'closure' => function () {
-                        $this->waitsFor(function () {
-                            $this->expect(true)->toBe(false);
-                            return true;
-                        })->toBe(false);
+                        $this->assert(['actual' => true])->toBe(true);
                     }
                 ]);
 
-                expect($this->spec->process())->toBe(false);
+                expect($this->spec->process())->toBe(true);
 
-                $failured = $this->spec->summary()->logs('failed');
-                expect($failured)->toHaveLength(1);
-
-                $failure = reset($failured);
-                $expectation = $failure->children()[0];
-
-                expect($expectation->matcher())->toBe('Kahlan\Matcher\ToBe');
-                expect($expectation->matcherName())->toBe('toBe');
-                expect($expectation->not())->toBe(false);
-                expect($expectation->type())->toBe('failed');
-                expect($expectation->data())->toBe([
-                    'actual'   => true,
-                    'expected' => false
-                ]);
-                expect($expectation->messages())->toBe(['it runs a spec']);
-                expect($expectation->backtrace())->toBeAn('array');
             });
 
-        });
+            it("processes delegated expectations", function () {
 
-    });
+                $this->spec = new Specification([
+                    'closure' => function () {
+                        $this->assert(['handler' => function () {}]);
+                    }
+                ]);
+                expect($this->spec->process())->toBe(true);
 
-    describe("->assert()", function () {
-
-        it("processes normal expectations", function () {
-
-            $this->spec = new Specification([
-                'message' => 'runs a spec',
-                'closure' => function () {
-                    $this->assert(['actual' => true])->toBe(true);
-                }
-            ]);
-
-            expect($this->spec->process())->toBe(true);
-
-        });
-
-        it("processes delegated expectations", function () {
-
-            $this->spec = new Specification([
-                'closure' => function () {
-                    $this->assert(['handler' => function () {}]);
-                }
-            ]);
-            expect($this->spec->process())->toBe(true);
+            });
 
         });
 

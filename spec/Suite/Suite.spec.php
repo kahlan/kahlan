@@ -706,7 +706,7 @@ describe("Suite", function () {
 
         });
 
-        it("propagates the exclusivity up to parents", function () {
+        it("propagates the exclusivity up to parents bis", function () {
 
             $describe = $this->root->describe("", function () {
 
@@ -762,11 +762,11 @@ describe("Suite", function () {
                     $this->exectuted['fit']++;
                 });
 
-                $this->it("an it", function () {
+                $this->it("another it", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->fit("an fit", function () {
+                $this->fit("another fit", function () {
                     $this->exectuted['fit']++;
                 });
 
@@ -870,7 +870,7 @@ describe("Suite", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->it("an it", function () {
+                $this->it("another it", function () {
                     $this->exectuted['it']++;
                 });
 
@@ -904,7 +904,7 @@ describe("Suite", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->it("an it", function () {
+                $this->it("another it", function () {
                     $this->exectuted['it']++;
                 });
 
@@ -943,7 +943,7 @@ describe("Suite", function () {
                     $this->exectuted['it']++;
                 });
 
-                $this->it("an it", function () {
+                $this->it("another it", function () {
                     $this->exectuted['it']++;
                 });
 

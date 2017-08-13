@@ -590,10 +590,6 @@ describe("Allow", function () {
             allow('time')->andReturn(123);
         })->toThrow(new Exception("You must to call `toReceive()/toBeCalled()` before defining a return value."));
 
-    });
-
-    it("throws an exception when trying to call `andReturn()` right away", function () {
-
         expect(function () {
             allow('time')->andRun(function (){});
         })->toThrow(new Exception("You must to call `toReceive()/toBeCalled()` before defining a return value."));

@@ -237,13 +237,6 @@ describe("toReceive", function () {
 
                 });
 
-                it("expects uncalled method to be uncalled", function () {
-
-                    $foo = new Foo();
-                    expect('Kahlan\Spec\Fixture\Plugin\Pointcut\Foo')->not->toReceive('message');
-
-                });
-
                 it("expects not overrided method to also be called on method's __CLASS__", function () {
 
                     $bar = new SubBar();

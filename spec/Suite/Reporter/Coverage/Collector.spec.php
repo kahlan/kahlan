@@ -6,7 +6,7 @@ use Kahlan\Reporter\Coverage\Driver\Xdebug;
 use Kahlan\Reporter\Coverage\Driver\Phpdbg;
 use Kahlan\Spec\Fixture\Reporter\Coverage\CodeCoverage;
 
-describe("Coverage", function () {
+describe("Collector", function () {
 
     beforeEach(function () {
         if (!extension_loaded('xdebug') && PHP_SAPI !== 'phpdbg') {
@@ -149,7 +149,7 @@ describe("Coverage", function () {
 
         });
 
-        it("does nothing if not the collector has not been started", function () {
+        it("does nothing if not the children has not been stopped", function () {
 
             $this->parent->start();
             $this->child->start();
@@ -157,8 +157,8 @@ describe("Coverage", function () {
             expect($this->parent->stop())->toBe(false);
 
             // Required to leave Kahlan in stable state when runned with some coverage reporting.
-            $this->child->stop();
-            $this->parent->stop();
+            expect($this->child->stop())->toBe(true);
+            expect($this->parent->stop())->toBe(true);
 
         });
 

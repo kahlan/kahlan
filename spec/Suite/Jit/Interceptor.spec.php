@@ -56,7 +56,7 @@ describe("Interceptor", function () {
 
         });
 
-        it("throws an exception if the autoloader has already been patched", function () {
+        it("throws an exception if there's no patchable autoloader", function () {
 
             spl_autoload_unregister([$this->autoloader, 'loadClass']);
 
@@ -83,7 +83,7 @@ describe("Interceptor", function () {
 
         });
 
-        it("throws an exception if the autoloader has already been patched", function () {
+        it("delegates calls up to autoloader", function () {
 
             $interceptor = Interceptor::patch([
                 'cachePath'       => $this->cachePath,
