@@ -3,7 +3,7 @@ namespace Kahlan\Spec\Suite\Cli;
 
 use stdClass;
 use Exception;
-use Kahlan\Jit\Interceptor;
+use Kahlan\Jit\ClassLoader;
 use Kahlan\Filter\Filters;
 use Kahlan\Suite;
 use Kahlan\Matcher;
@@ -12,24 +12,9 @@ use Kahlan\Plugin\Quit;
 
 describe("Kahlan", function () {
 
-    /**
-     * Save current & reinitialize the Interceptor class.
-     */
-    beforeAll(function () {
-        $this->previous = Interceptor::instance();
-        Interceptor::unpatch();
-    });
-
-    /**
-     * Restore Interceptor class.
-     */
-    afterAll(function () {
-        Interceptor::load($this->previous);
-    });
-
     beforeEach(function () {
         $this->specs = new Kahlan([
-            'autoloader' => Interceptor::composer()[0],
+            'autoloader' => new ClassLoader(),
             'suite' => new Suite([
                 'matcher' => new Matcher()
             ])
@@ -111,8 +96,6 @@ describe("Kahlan", function () {
             $this->specs->run();
 
             expect($this->specs->suite()->loaded)->toBe(true);
-
-            Interceptor::unpatch();
 
         });
 
@@ -319,8 +302,6 @@ EOD;
             expect($this->specs->suite()->total())->toBe(1);
             expect($this->specs->status())->toBe(0);
 
-            Interceptor::unpatch();
-
         });
 
         it("runs a spec which fail", function () {
@@ -333,8 +314,6 @@ EOD;
             $this->specs->run();
             expect($this->specs->suite()->total())->toBe(1);
             expect($this->specs->status())->toBe(-1);
-
-            Interceptor::unpatch();
 
         });
 
@@ -353,20 +332,9 @@ EOD;
                 $order[] = 'bootstrap';
             });
 
-            $previous = $this->previous;
-
-            Filters::apply($this->specs, 'interceptor', function ($next) use (&$order, $previous) {
-                Interceptor::load($previous);
-                $order[] = 'interceptor';
-            });
-
             Filters::apply($this->specs, 'namespaces', function ($next) use (&$order, &$autoloader) {
                 $this->autoloader($autoloader);
                 $order[] = 'namespaces';
-            });
-
-            Filters::apply($this->specs, 'patchers', function ($next) use (&$order) {
-                $order[] = 'patchers';
             });
 
             Filters::apply($this->specs, 'load', function ($next) use (&$order) {
@@ -401,9 +369,7 @@ EOD;
 
             expect($order)->toBe([
                 'bootstrap',
-                'interceptor',
                 'namespaces',
-                'patchers',
                 'load',
                 'reporters',
                 'matchers',
@@ -414,8 +380,6 @@ EOD;
             ]);
 
             expect($this->specs->autoloader())->toBe($autoloader);
-
-            Interceptor::unpatch();
 
         });
 

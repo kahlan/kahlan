@@ -3,7 +3,7 @@ namespace Kahlan\Spec\Suite\Plugin;
 
 use Exception;
 use DateTime;
-use Kahlan\Jit\Interceptor;
+use Kahlan\Jit\ClassLoader;
 use Kahlan\Plugin\Monkey;
 use Kahlan\Jit\Patcher\Monkey as MonkeyPatcher;
 
@@ -21,25 +21,19 @@ function myrand($min, $max)
 
 describe("Monkey", function () {
 
-    /**
-     * Save current & reinitialize the Interceptor class.
-     */
     beforeAll(function () {
-        $this->previous = Interceptor::instance();
-        Interceptor::unpatch();
-
         $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
         $include = ['Kahlan\Spec\\'];
-        $interceptor = Interceptor::patch(compact('include', 'cachePath'));
-        $interceptor->patchers()->add('monkey', new MonkeyPatcher());
-
+        $this->loader = new ClassLoader();
+        $this->loader->patch(compact('include', 'cachePath'));
+        $this->loader->patchers()->add('monkey', new MonkeyPatcher());
+        $this->loader->addPsr4('Kahlan\\', 'src');
+        $this->loader->addPsr4('Kahlan\Spec\\', 'spec');
+        $this->loader->register(true);
     });
 
-    /**
-     * Restore Interceptor class.
-     */
     afterAll(function () {
-        Interceptor::load($this->previous);
+        $this->loader->unregister();
     });
 
     it("patches a core function", function () {

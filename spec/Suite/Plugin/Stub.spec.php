@@ -6,7 +6,7 @@ use ReflectionMethod;
 use InvalidArgumentException;
 use DateTime;
 
-use Kahlan\Jit\Interceptor;
+use Kahlan\Jit\ClassLoader;
 use Kahlan\Jit\Patchers;
 use Kahlan\Arg;
 use Kahlan\Jit\Patcher\Pointcut as PointcutPatcher;
@@ -19,25 +19,20 @@ use Kahlan\Spec\Fixture\Plugin\Pointcut\SubBar;
 
 describe("Stub", function () {
 
-    /**
-     * Save current & reinitialize the Interceptor class.
-     */
     beforeAll(function () {
-        $this->previous = Interceptor::instance();
-        Interceptor::unpatch();
-
         $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
         $include = ['Kahlan\Spec\\'];
-        $interceptor = Interceptor::patch(compact('include', 'cachePath'));
-        $interceptor->patchers()->add('pointcut', new PointcutPatcher());
-        $interceptor->patchers()->add('monkey', new MonkeyPatcher());
+        $this->loader = new ClassLoader();
+        $this->loader->patch(compact('include', 'cachePath'));
+        $this->loader->patchers()->add('pointcut', new PointcutPatcher());
+        $this->loader->patchers()->add('monkey', new MonkeyPatcher());
+        $this->loader->addPsr4('Kahlan\\', 'src');
+        $this->loader->addPsr4('Kahlan\Spec\\', 'spec');
+        $this->loader->register(true);
     });
 
-    /**
-     * Restore Interceptor class.
-     */
     afterAll(function () {
-        Interceptor::load($this->previous);
+        $this->loader->unregister();
     });
 
     describe("__construct()", function () {

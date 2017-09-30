@@ -12,7 +12,7 @@ class Coverage extends Terminal
      * @var array
      */
     protected static $_classes = [
-        'interceptor' => 'Kahlan\Jit\Interceptor'
+        'classloader' => 'Kahlan\Jit\ClassLoader'
     ];
 
     /**
@@ -72,8 +72,8 @@ class Coverage extends Terminal
 
         if (is_string($this->_verbosity)) {
             $class = preg_replace('/(::)?\w+\(\)$/', '', $this->_verbosity);
-            $interceptor = static::$_classes['interceptor'];
-            $loader = $interceptor::instance();
+            $classloader = static::$_classes['classloader'];
+            $loader = $classloader::instance();
 
             if ($loader && $path = $loader->findPath($class)) {
                 $config['path'] = $path;

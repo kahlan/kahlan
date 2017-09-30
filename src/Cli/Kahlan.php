@@ -1,8 +1,10 @@
 <?php
 namespace Kahlan\Cli {
 
+    use RecursiveDirectoryIterator;
+    use RecursiveIteratorIterator;
     use Kahlan\Dir\Dir;
-    use Kahlan\Jit\Interceptor;
+    use Kahlan\Jit\ClassLoader;
     use Kahlan\Filter\Filters;
     use Kahlan\Matcher;
     use Kahlan\Jit\Patcher\Pointcut;
@@ -67,15 +69,19 @@ namespace Kahlan\Cli {
          */
         public static function composerPostUpdate($event)
         {
-            if (!defined('DS')) {
-                define('DS', DIRECTORY_SEPARATOR);
+            $cachePath = rtrim(realpath(sys_get_temp_dir()), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'kahlan';
+            if (!file_exists($cachePath)) {
+                return;
             }
-            $kahlan = new static(['autoloader' => $event->getComposer()]);
-            $kahlan->loadConfig();
-            $kahlan->_interceptor();
-            if ($interceptor = Interceptor::instance()) {
-                $interceptor->clearCache();
+
+            $dir = new RecursiveDirectoryIterator($cachePath, RecursiveDirectoryIterator::SKIP_DOTS);
+            $files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
+
+            foreach ($files as $file) {
+                $path = $file->getRealPath();
+                $file->isDir() ? rmdir($path) : unlink($path);
             }
+            rmdir($cachePath);
         }
 
         /**
@@ -199,6 +205,22 @@ namespace Kahlan\Cli {
             } elseif ($commandLine->get('version')) {
                 $this->_version();
             }
+        }
+
+        /**
+         * Init patchers
+         */
+        public function initPatchers()
+        {
+            return Filters::run($this, 'patchers', [], function ($chain) {
+                if (!$loader = ClassLoader::instance()) {
+                    return;
+                }
+                $patchers = $loader->patchers();
+                $patchers->add('pointcut', new Pointcut());
+                $patchers->add('monkey',   new Monkey());
+                $patchers->add('quit',     new Quit());
+            });
         }
 
         /**
@@ -347,11 +369,7 @@ EOD;
             return Filters::run($this, 'workflow', [], function ($chain) {
                 $this->_bootstrap();
 
-                $this->_interceptor();
-
                 $this->_namespaces();
-
-                $this->_patchers();
 
                 $this->_load();
 
@@ -395,23 +413,6 @@ EOD;
         }
 
         /**
-         * The default `'interceptor'` filter.
-         */
-        protected function _interceptor()
-        {
-            return Filters::run($this, 'interceptor', [], function ($chain) {
-                $this->autoloader(Interceptor::patch([
-                    'loader'     => [$this->autoloader(), 'loadClass'],
-                    'include'    => $this->commandLine()->get('include'),
-                    'exclude'    => array_merge($this->commandLine()->get('exclude'), ['Kahlan\\']),
-                    'persistent' => $this->commandLine()->get('persistent'),
-                    'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan',
-                    'clearCache' => $this->commandLine()->get('cc')
-                ]));
-            });
-        }
-
-        /**
          * The default `'namespace'` filter.
          */
         protected function _namespaces()
@@ -423,23 +424,6 @@ EOD;
                     $namespace = basename($path) . '\\';
                     $this->autoloader()->add($namespace, dirname($path));
                 }
-            });
-        }
-
-        /**
-         * The default `'patcher'` filter.
-         */
-        protected function _patchers()
-        {
-            if (!$interceptor = Interceptor::instance()) {
-                return;
-            }
-            return Filters::run($this, 'patchers', [], function ($chain) {
-                $interceptor = Interceptor::instance();
-                $patchers = $interceptor->patchers();
-                $patchers->add('pointcut', new Pointcut());
-                $patchers->add('monkey',   new Monkey());
-                $patchers->add('quit',     new Quit());
             });
         }
 
