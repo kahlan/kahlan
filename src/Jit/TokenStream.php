@@ -277,7 +277,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * Skips whitespaces and comments next to the current position.
      *
      * @param  boolean $skipComment Skip docblocks as well.
-     * @return                      The skipped string.
+     * @return string               The skipped string.
      */
     public function skipWhitespaces($skipComment = false)
     {
@@ -294,8 +294,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
     /**
      * Skips elements until an element doesn't match the elements in the passed array.
      *
-     * @param  array $skips The elements array to skip.
-     * @return              The skipped string.
+     * @param  array  $skips The elements array to skip.
+     * @return string        The skipped string.
      */
     public function skipWhile($skips = [])
     {
@@ -306,8 +306,8 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
     /**
      * Skips elements until an element doesn't match the elements in the passed array.
      *
-     * @param  array $skips The elements array to skip.
-     * @return              The skipped string.
+     * @param  array  $skips The elements array to skip.
+     * @return string        The skipped string.
      */
     protected function _skip($skips)
     {

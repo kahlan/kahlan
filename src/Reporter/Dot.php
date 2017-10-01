@@ -90,7 +90,8 @@ class Dot extends Terminal
             $this->_write(' ');
         } while ($this->_counter % $this->_dotWidth !== 0);
 
-        $this->write("\n");
+        $this->write("\n\n");
+        $this->_reportSkipped($summary);
 
         foreach ($summary->logs() as $log) {
             if (!$log->passed()) {
@@ -98,7 +99,7 @@ class Dot extends Terminal
             }
         }
 
-        $this->write("\n\n");
+        $this->write("\n");
         $this->_reportSummary($summary);
     }
 

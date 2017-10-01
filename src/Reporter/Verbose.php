@@ -59,7 +59,9 @@ class Verbose extends Terminal
     public function end($summary)
     {
         $this->_indent--;
-        $this->write("\n");
+
+        $this->write("\n\n");
+        $this->_reportSkipped($summary);
 
         foreach ($summary->logs() as $log) {
             if (!$log->passed()) {
@@ -67,7 +69,7 @@ class Verbose extends Terminal
             }
         }
 
-        $this->write("\n\n");
+        $this->write("\n");
         $this->_reportSummary($summary);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace dir\spec\suite;
+namespace Kahlan\Spec\Suite\Dir;
 
 use Kahlan\Dir\Dir;
 use Exception;

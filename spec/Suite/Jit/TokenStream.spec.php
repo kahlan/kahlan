@@ -294,17 +294,6 @@ EOD;
 
     });
 
-    describe("->offsetSet()", function () {
-
-        it("throws an exception", function () {
-
-            expect(isset($this->stream[0]))->toBe(true);
-            expect(isset($this->stream[$this->len - 1]))->toBe(true);
-
-        });
-
-    });
-
     describe("->offsetUnset()", function () {
 
         it("throws an exception", function () {

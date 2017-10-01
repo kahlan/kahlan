@@ -39,7 +39,7 @@ class Quit
     /**
      * Run a controlled quit statement.
      *
-     * @param  integer|string              $status Use 0 for a successful exit.
+     * @param  integer|string       $status Use 0 for a successful exit.
      * @throws Kahlan\QuitException         Only if disableed is `true`.
      */
     public static function quit($status = 0)

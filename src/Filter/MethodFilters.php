@@ -19,7 +19,7 @@ class MethodFilters
      *                               of method names.
      * @param  string       $name    The filter name to apply.
      * @param  Closure      $closure The filter.
-     * @return                       The name reference of the created filter.
+     * @return string                The name reference of the created filter.
      */
     public function apply($methods, $name, $closure)
     {

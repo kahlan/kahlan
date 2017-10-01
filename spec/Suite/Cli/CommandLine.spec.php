@@ -181,7 +181,7 @@ describe("CommandLine", function () {
 
         });
 
-        it("provides an array when some multiple occurences of a same option are present", function () {
+        it("provides an array when some multiple occurences of nested options are present", function () {
 
             $commandLine = new CommandLine([
                 'option1:sub1' => ['array' => true],

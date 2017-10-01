@@ -1,10 +1,10 @@
 <?php
-namespace Kahlan\Spec\Suite;
+namespace Kahlan\Spec\Suite\Block;
 
 use stdClass;
 use Exception;
 use Kahlan\Suite;
-use Kahlan\Specification;
+use Kahlan\Block\Specification;
 use Kahlan\Matcher;
 use Kahlan\Plugin\Double;
 
@@ -12,7 +12,7 @@ describe("Specification", function () {
 
     beforeEach(function () {
 
-        $this->spec = new Specification(['closure' => function () {}]);
+        $this->spec = new Specification();
 
     });
 
@@ -22,7 +22,7 @@ describe("Specification", function () {
 
             $this->spec = new Specification(['closure' => null]);
 
-            expect($this->spec->passed())->toBe(true);
+            expect($this->spec->process())->toBe(true);
 
             $pending = $this->spec->summary()->pending();
             expect($pending)->toBe(1);
@@ -53,7 +53,7 @@ describe("Specification", function () {
                 }
             ]);
 
-            expect($this->spec->passed())->toBe(true);
+            expect($this->spec->process())->toBe(true);
 
         });
 
@@ -71,7 +71,7 @@ describe("Specification", function () {
 
     });
 
-    describe("->passed()", function () {
+    describe("->process()", function () {
 
         it("returns the closure return value", function () {
 
@@ -82,7 +82,7 @@ describe("Specification", function () {
             ]);
 
             $return = null;
-            $this->spec->passed($return);
+            $this->spec->process($return);
             expect($return)->toBe('hello world');
 
         });
@@ -96,7 +96,7 @@ describe("Specification", function () {
                 }
             ]);
 
-            expect($this->spec->passed())->toBe(true);
+            expect($this->spec->process())->toBe(true);
             expect($this->spec->log()->type())->toBe('pending');
 
         });
@@ -112,7 +112,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(true);
+                expect($this->spec->process())->toBe(true);
 
                 $passed = $this->spec->summary()->logs('passed');
                 expect($passed)->toHaveLength(1);
@@ -143,7 +143,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(true);
+                expect($this->spec->process())->toBe(true);
 
                 $passes = $this->spec->summary()->logs('passed');
                 expect($passes)->toHaveLength(1);
@@ -173,7 +173,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(true);
+                expect($this->spec->process())->toBe(true);
 
                 $passes = $this->spec->summary()->logs('passed');
                 expect($passes)->toHaveLength(1);
@@ -187,16 +187,16 @@ describe("Specification", function () {
 
             it("logs deferred matcher backtrace", function () {
 
-                $root = new Suite();
-                $root->backtraceFocus(['*Spec.php', '*.spec.php']);
+                $suite = new Suite();
+                $suite->backtraceFocus(['*Spec.php', '*.spec.php']);
                 $this->spec = new Specification([
-                    'parent'  => $root,
+                    'suite'  => $suite,
                     'closure' => function () {
                         $this->expect(Double::instance())->not->toReceive('helloWorld');
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(true);
+                expect($this->spec->process())->toBe(true);
 
                 $passes = $this->spec->summary()->logs('passed');
                 expect($passes)->toHaveLength(1);
@@ -218,7 +218,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(true);
+                expect($this->spec->process())->toBe(true);
 
                 $passes = $this->spec->summary()->logs('passed');
                 expect($passes)->toHaveLength(1);
@@ -252,7 +252,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->process())->toBe(false);
 
                 $failed = $this->spec->summary()->logs('failed');
                 expect($failed)->toHaveLength(1);
@@ -281,7 +281,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->process())->toBe(false);
 
                 $failed = $this->spec->summary()->logs('failed');
                 expect($failed)->toHaveLength(1);
@@ -310,7 +310,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->process())->toBe(false);
 
                 $failures = $this->spec->summary()->logs('failed');
                 expect($failures)->toHaveLength(1);
@@ -332,7 +332,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->process())->toBe(false);
 
                 $failures = $this->spec->summary()->logs('failed');
                 expect($failures)->toHaveLength(1);
@@ -356,7 +356,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->process())->toBe(false);
 
                 $failured = $this->spec->summary()->logs('failed');
                 expect($failured)->toHaveLength(1);
@@ -388,7 +388,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->process())->toBe(false);
 
                 $failured = $this->spec->summary()->logs('failed');
                 expect($failured)->toHaveLength(1);
@@ -421,7 +421,7 @@ describe("Specification", function () {
                     }
                 ]);
 
-                expect($this->spec->passed())->toBe(false);
+                expect($this->spec->process())->toBe(false);
                 expect($this->spec->log()->type())->toBe('errored');
 
                 $errored = $this->spec->summary()->logs('errored');

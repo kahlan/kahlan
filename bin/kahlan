@@ -3,39 +3,16 @@
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
 }
+
 error_reporting(E_ALL);
 
-$autoloaders = [];
-
-$vendorDir = 'vendor';
-
-if ($composerPath = realpath(getcwd() . '/composer.json')) {
-    $composerJson = json_decode(file_get_contents($composerPath), true);
-    $vendorDir = isset($composerJson['vendor-dir']) ? $composerJson['vendor-dir'] : $vendorDir;
-}
-
-if ($relative = realpath(getcwd() . "/{$vendorDir}/autoload.php")) {
-    $autoloaders[] = include $relative;
-}
-
-if (!$absolute = realpath(__DIR__ . '/../../../autoload.php')) {
-    $absolute = realpath(__DIR__ . '/../vendor/autoload.php');
-}
-
-if ($absolute && $relative !== $absolute) {
-    $autoloaders[] = include $absolute;
-}
-
-if (!$autoloaders) {
-    echo "\033[1;31mYou need to set up the project dependencies using the following commands: \033[0m" . PHP_EOL;
-    echo 'curl -s http://getcomposer.org/installer | php' . PHP_EOL;
-    echo 'php composer.phar install' . PHP_EOL;
-    exit(1);
-}
+$autoload = require __DIR__ . '/../autoload.php';
+$autoloader = $autoload();
 
 use Kahlan\Box\Box;
 use Kahlan\Suite;
 use Kahlan\Cli\Kahlan;
+use Kahlan\Jit\ClassLoader;
 
 $box = \Kahlan\box('kahlan', new Box());
 
@@ -44,10 +21,32 @@ $box->service('suite.global', function() {
 });
 
 $specs = new Kahlan([
-    'autoloader' => reset($autoloaders),
+    'autoloader' => $autoloader,
     'suite'      => $box->get('suite.global')
 ]);
 $specs->loadConfig($argv);
 initKahlanGlobalFunctions();
+
+if ($autoloader instanceof ClassLoader) {
+    $commandLine = $specs->commandLine();
+    $autoloader->patch([
+        'include'    => $commandLine->get('include'),
+        'exclude'    => array_merge($commandLine->get('exclude'), ['Kahlan\\']),
+        'persistent' => $commandLine->get('persistent'),
+        'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan',
+        'clearCache' => $commandLine->get('cc')
+    ]);
+
+    $specs->initPatchers();
+
+    foreach ($autoloader->files() as $fileIdentifier => $file) {
+        if (!empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
+            continue;
+        }
+        $autoloader->loadFile($file);
+        $GLOBALS['__composer_autoload_files'][$fileIdentifier] = true;
+    }
+}
+
 $specs->run();
 exit($specs->status());

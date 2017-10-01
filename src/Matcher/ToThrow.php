@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Matcher;
 
+use Closure;
 use Throwable;
 use Exception;
 

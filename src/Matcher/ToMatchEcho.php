@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Matcher;
 
+use Closure;
 use InvalidArgumentException;
 
 class ToMatchEcho extends ToEcho

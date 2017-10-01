@@ -3,9 +3,10 @@ namespace Kahlan\Spec\Suite;
 
 use Exception;
 use RuntimeException;
+use InvalidArgumentException;
 use stdClass;
 use DateTime;
-use Kahlan\Specification;
+use Kahlan\Block\Specification;
 use Kahlan\Matcher;
 use Kahlan\Expectation;
 use Kahlan\Plugin\Double;
@@ -13,6 +14,11 @@ use Kahlan\Plugin\Double;
 function expectation($actual, $timeout = -1)
 {
     return new Expectation(compact('actual', 'timeout'));
+}
+
+function delegatedExpectation($handler, $type = 'Exception')
+{
+    return new Expectation(compact('handler', 'type'));
 }
 
 describe("Expectation", function () {
@@ -97,11 +103,11 @@ describe("Expectation", function () {
 
     });
 
-    describe("->passed()", function () {
+    describe("->process()", function () {
 
         it("verifies the expectation", function () {
 
-            $actual = expectation(true)->toBe(true)->passed();
+            $actual = expectation(true)->toBe(true)->process();
             expect($actual)->toBe(true);
 
         });
@@ -111,7 +117,7 @@ describe("Expectation", function () {
             $spec = new Specification(['closure' => function () {
                 return true;
             }]);
-            $actual = expectation($spec)->toBe(true)->passed();
+            $actual = expectation($spec)->toBe(true)->process();
             expect($actual)->toBe(true);
 
         });
@@ -122,11 +128,52 @@ describe("Expectation", function () {
             $spec = new Specification(['closure' => function () {
                 expect(true)->toBe(false);
             }]);
-            $actual = expectation($spec, 0.1)->passed();
+            $actual = expectation($spec, 0.1)->process();
             expect($actual)->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
             expect($end - $start)->toBeLessThan(0.2);
+
+        });
+
+        it("processes delegated expectations", function () {
+
+            $actual = delegatedExpectation(function () {});
+            expect($actual->process())->toBe(true);
+
+            $logs = $actual->logs();
+            expect($logs)->toHaveLength(1);
+            expect($logs[0])->toBe(['type' => 'passed']);
+
+        });
+
+        it("handles delegated expectation failures", function () {
+
+            $expected = new RuntimeException('Failure description.');
+            $actual = delegatedExpectation(function () use ($expected) {
+                throw $expected;
+            });
+            expect($actual->process())->toBe(false);
+
+            $logs = $actual->logs();
+            expect($logs)->toHaveLength(1);
+            expect($logs[0]['type'])->toBe('failed');
+            expect($logs[0]['data'])->toBe(['external' => true, 'description' => $expected->getMessage()]);
+            expect($logs[0]['backtrace'])->toBe($expected->getTrace());
+
+        });
+
+        it("handles delegated expectation errors", function () {
+
+            $expected = new InvalidArgumentException();
+            $actual = delegatedExpectation(function () use ($expected) {
+                throw $expected;
+            }, 'RuntimeException');
+            $callback = function () use ($actual) {
+                $actual->process();
+            };
+            expect($callback)->toThrow($expected);
+            expect($actual->logs())->toHaveLength(0);
 
         });
 
@@ -176,7 +223,7 @@ describe("Expectation", function () {
             ]);
             expect($expectation->timeout())->toBe(10);
             expect($expectation->not())->toBe(true);
-            expect($expectation->passed())->toBe(true);
+            expect($expectation->process())->toBe(true);
             expect($expectation->logs())->toHaveLength(1);
 
             $expectation->clear();
@@ -185,7 +232,7 @@ describe("Expectation", function () {
             expect($expectation->deferred())->toBe(null);
             expect($expectation->timeout())->toBe(-1);
             expect($expectation->not())->toBe(false);
-            expect($expectation->passed())->toBe(true);
+            expect($expectation->process())->toBe(true);
             expect($expectation->logs())->toHaveLength(0);
 
         });

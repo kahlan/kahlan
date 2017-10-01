@@ -2,6 +2,20 @@
 
 ## Last changes
 
+## 4.0.0 (2017-01-10)
+
+  * **Add:** Embbed a compatible Composer Autoloader to support files autoloading.
+  * **Add:** Allow to inject dependencies at a spec level.
+  * **BC Break:** Remove PHP 5.4 support
+  * **BC Break:** The patchers entry point is now the first entry point.
+  * **BC Break:** The interceptor entry point has been removed.
+  * **BC Break:** Every specification must have a message.
+  * **BC Break:** Every Specification must have a unique message path
+  * **BC Break:** Rename `--pattern` option to a more meaningful name, it's now `--grep`
+  * **BC Break:** The filter API has been changed
+  * **BC Break:** Internal classes refactoring
+  * **BC Break:** The Interceptor class has been removed
+
 ## 3.1.18 (2017-08-12)
 
   * **Bugfix:** Fix `__DIR__` & `__FILE__` magic constants rebase.

@@ -3,8 +3,8 @@ namespace Kahlan\Spec\Suite\Cli;
 
 use stdClass;
 use Exception;
-use Kahlan\Jit\Interceptor;
-use Kahlan\Filter\Filter;
+use Kahlan\Jit\ClassLoader;
+use Kahlan\Filter\Filters;
 use Kahlan\Suite;
 use Kahlan\Matcher;
 use Kahlan\Cli\Kahlan;
@@ -12,24 +12,9 @@ use Kahlan\Plugin\Quit;
 
 describe("Kahlan", function () {
 
-    /**
-     * Save current & reinitialize the Interceptor class.
-     */
-    beforeAll(function () {
-        $this->previous = Interceptor::instance();
-        Interceptor::unpatch();
-    });
-
-    /**
-     * Restore Interceptor class.
-     */
-    afterAll(function () {
-        Interceptor::load($this->previous);
-    });
-
     beforeEach(function () {
         $this->specs = new Kahlan([
-            'autoloader' => Interceptor::composer()[0],
+            'autoloader' => new ClassLoader(),
             'suite' => new Suite([
                 'matcher' => new Matcher()
             ])
@@ -112,8 +97,6 @@ describe("Kahlan", function () {
 
             expect($this->specs->suite()->loaded)->toBe(true);
 
-            Interceptor::unpatch();
-
         });
 
         it("echoes version if --version if provided", function () {
@@ -171,14 +154,14 @@ Configuration Options:
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
   --spec=<path>                       Paths of specification directories (default: `['spec']`).
-  --pattern=<pattern>                 A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
+  --grep=<pattern>                    A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
 
 Reporter Options:
 
-  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the buit-in text reporters
+  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the built-in text reporters
                                       are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
                                       You can optionally redirect the reporter output to a file by using the
-                                      colon syntax (muliple --reporter options are also supported).
+                                      colon syntax (multiple --reporter options are also supported).
 
 Code Coverage Options:
 
@@ -193,12 +176,12 @@ Code Coverage Options:
 Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
-  --no-colors                         To turn off colors. (default: `false`).
-  --no-header                         To turn off header. (default: `false`).
+  --no-colors=<boolean>               To turn off colors. (default: `false`).
+  --no-header=<boolean>               To turn off header. (default: `false`).
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --cc                                Clear cache before spec run. (default: `false`).
+  --cc=<boolean>                      Clear cache before spec run. (default: `false`).
   --autoclear                         Classes to autoclear after each spec (default: [
                                           `'Kahlan\Plugin\Monkey'`,
                                           `'Kahlan\Plugin\Call'`,
@@ -319,8 +302,6 @@ EOD;
             expect($this->specs->suite()->total())->toBe(1);
             expect($this->specs->status())->toBe(0);
 
-            Interceptor::unpatch();
-
         });
 
         it("runs a spec which fail", function () {
@@ -333,8 +314,6 @@ EOD;
             $this->specs->run();
             expect($this->specs->suite()->total())->toBe(1);
             expect($this->specs->status())->toBe(-1);
-
-            Interceptor::unpatch();
 
         });
 
@@ -349,71 +328,48 @@ EOD;
             $autoloader = new stdClass();
             $order = [];
 
-            Filter::register('spec.bootstrap', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'bootstrap', function ($next) use (&$order) {
                 $order[] = 'bootstrap';
             });
-            Filter::apply($this->specs, 'bootstrap', 'spec.bootstrap');
 
-            $previous = $this->previous;
-            Filter::register('spec.interceptor', function ($chain) use (&$order, $previous) {
-                Interceptor::load($previous);
-                $order[] = 'interceptor';
-            });
-            Filter::apply($this->specs, 'interceptor', 'spec.interceptor');
-
-            Filter::register('spec.namespaces', function ($chain) use (&$order, &$autoloader) {
+            Filters::apply($this->specs, 'namespaces', function ($next) use (&$order, &$autoloader) {
                 $this->autoloader($autoloader);
                 $order[] = 'namespaces';
             });
-            Filter::apply($this->specs, 'namespaces', 'spec.namespaces');
 
-            Filter::register('spec.patchers', function ($chain) use (&$order) {
-                $order[] = 'patchers';
-            });
-            Filter::apply($this->specs, 'patchers', 'spec.patchers');
-
-            Filter::register('spec.load', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'load', function ($next) use (&$order) {
                 $order[] = 'load';
             });
-            Filter::apply($this->specs, 'load', 'spec.load');
 
-            Filter::register('spec.reporters', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'reporters', function ($next) use (&$order) {
                 $order[] = 'reporters';
             });
-            Filter::apply($this->specs, 'reporters', 'spec.reporters');
 
-            Filter::register('spec.matchers', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'matchers', function ($next) use (&$order) {
                 $order[] = 'matchers';
             });
-            Filter::apply($this->specs, 'matchers', 'spec.matchers');
 
-            Filter::register('spec.run', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'run', function ($next) use (&$order) {
                 $order[] = 'run';
             });
-            Filter::apply($this->specs, 'run', 'spec.run');
 
-            Filter::register('spec.reporting', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'reporting', function ($next) use (&$order) {
                 $order[] = 'reporting';
             });
-            Filter::apply($this->specs, 'reporting', 'spec.reporting');
 
-            Filter::register('spec.stop', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'stop', function ($next) use (&$order) {
                 $order[] = 'stop';
             });
-            Filter::apply($this->specs, 'stop', 'spec.stop');
 
-            Filter::register('spec.quit', function ($chain) use (&$order) {
+            Filters::apply($this->specs, 'quit', function ($next) use (&$order) {
                 $order[] = 'quit';
             });
-            Filter::apply($this->specs, 'quit', 'spec.quit');
 
             $this->specs->run();
 
             expect($order)->toBe([
                 'bootstrap',
-                'interceptor',
                 'namespaces',
-                'patchers',
                 'load',
                 'reporters',
                 'matchers',
@@ -424,8 +380,6 @@ EOD;
             ]);
 
             expect($this->specs->autoloader())->toBe($autoloader);
-
-            Interceptor::unpatch();
 
         });
 

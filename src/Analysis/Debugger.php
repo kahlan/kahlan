@@ -102,7 +102,9 @@ class Debugger
 
         foreach ($backtrace as $i => $trace) {
             $trace += $traceDefaults;
-            if (strpos($trace['function'], '{closure}') !== false || in_array($trace['function'], $ignoreFunctions)) {
+            if (substr($trace['function'], 0, 8) === 'Closure$' ||
+                strpos($trace['function'], '{closure}') !== false ||
+                in_array($trace['function'], $ignoreFunctions)) {
                 continue;
             }
             $back[] = $trace;
@@ -241,16 +243,20 @@ class Debugger
         }
 
         $i = 0;
+        $start = 0;
         $found = false;
 
         while ($i < $maxLookup && isset($backtrace[$i])) {
-            if (preg_match('~^' . $pattern . '$~', $backtrace[$i]['file'])) {
-                $found = true;
-                break;
+            if (isset($backtrace[$i]['file'])) {
+                $start = $start ?: $i;
+                if (preg_match('~^' . $pattern . '$~', $backtrace[$i]['file'])) {
+                    $found = true;
+                    break;
+                }
             }
             $i++;
         }
-        return array_slice($found ? array_slice($backtrace, $i) : $backtrace, 0, $depth);
+        return array_slice(array_slice($backtrace, $found ? $i : $start), 0, $depth);
     }
 
     /**

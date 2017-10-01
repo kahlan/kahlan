@@ -2,7 +2,7 @@
 namespace Kahlan\Reporter\Coverage;
 
 use Kahlan\Dir\Dir;
-use Kahlan\Jit\Interceptor;
+use Kahlan\Jit\ClassLoader;
 
 class Collector
 {
@@ -35,6 +35,13 @@ class Collector
      * @var array
      */
     protected $_paths = [];
+
+    /**
+     * The base path.
+     *
+     * @var string
+     */
+    protected $_base = '';
 
     /**
      * Some prefix to remove to get the real file path.
@@ -111,8 +118,8 @@ class Collector
         ];
         $config += $defaults;
 
-        if (Interceptor::instance()) {
-            $config += ['prefix' => rtrim(Interceptor::instance()->cachePath(), DS)];
+        if ($loader = ClassLoader::instance()) {
+            $config += ['prefix' => rtrim($loader->cachePath(), DS)];
         } else {
             $config += ['prefix' => ''];
         }

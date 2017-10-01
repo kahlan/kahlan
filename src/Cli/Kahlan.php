@@ -1,10 +1,11 @@
 <?php
 namespace Kahlan\Cli {
 
+    use RecursiveDirectoryIterator;
+    use RecursiveIteratorIterator;
     use Kahlan\Dir\Dir;
-    use Kahlan\Jit\Interceptor;
-    use Kahlan\Filter\Filter;
-    use Kahlan\Filter\Behavior\Filterable;
+    use Kahlan\Jit\ClassLoader;
+    use Kahlan\Filter\Filters;
     use Kahlan\Matcher;
     use Kahlan\Jit\Patcher\Pointcut;
     use Kahlan\Jit\Patcher\Monkey;
@@ -22,9 +23,7 @@ namespace Kahlan\Cli {
 
     class Kahlan
     {
-        use Filterable;
-
-        const VERSION = '3.1.18';
+        const VERSION = '4.0.0';
 
         /**
          * Starting time.
@@ -67,17 +66,21 @@ namespace Kahlan\Cli {
          * when the version of Kahlan is updated.
          * It will have no effect if the cache location is changed the default config file (i.e. `'kahlan-config.php'`).
          */
-        public static function composerPostUpdate(Event $event)
+        public static function composerPostUpdate($event)
         {
-            if (!defined('DS')) {
-                define('DS', DIRECTORY_SEPARATOR);
+            $cachePath = rtrim(realpath(sys_get_temp_dir()), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'kahlan';
+            if (!file_exists($cachePath)) {
+                return;
             }
-            $kahlan = new static(['autoloader' => $event->getComposer()]);
-            $kahlan->loadConfig();
-            $kahlan->_interceptor();
-            if ($interceptor = Interceptor::instance()) {
-                $interceptor->clearCache();
+
+            $dir = new RecursiveDirectoryIterator($cachePath, RecursiveDirectoryIterator::SKIP_DOTS);
+            $files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
+
+            foreach ($files as $file) {
+                $path = $file->getRealPath();
+                $file->isDir() ? rmdir($path) : unlink($path);
             }
+            rmdir($cachePath);
         }
 
         /**
@@ -101,7 +104,7 @@ namespace Kahlan\Cli {
             $commandLine->option('src',       ['array'   => true, 'default' => ['src']]);
             $commandLine->option('spec',      ['array'   => true, 'default' => ['spec']]);
             $commandLine->option('reporter',  ['array'   => true, 'default' => ['dot']]);
-            $commandLine->option('pattern',   ['default' => ['*Spec.php', '*.spec.php']]);
+            $commandLine->option('grep',      ['default' => ['*Spec.php', '*.spec.php']]);
             $commandLine->option('coverage',  ['type'    => 'string']);
             $commandLine->option('config',    ['default' => 'kahlan-config.php']);
             $commandLine->option('ff',        ['type'    => 'numeric', 'default' => 0]);
@@ -204,6 +207,22 @@ namespace Kahlan\Cli {
         }
 
         /**
+         * Init patchers
+         */
+        public function initPatchers()
+        {
+            return Filters::run($this, 'patchers', [], function ($chain) {
+                if (!$loader = ClassLoader::instance()) {
+                    return;
+                }
+                $patchers = $loader->patchers();
+                $patchers->add('pointcut', new Pointcut());
+                $patchers->add('monkey',   new Monkey());
+                $patchers->add('quit',     new Quit());
+            });
+        }
+
+        /**
          * Gets the default terminal console.
          *
          * @return object The default terminal console.
@@ -257,14 +276,14 @@ Configuration Options:
   --config=<file>                     The PHP configuration file to use (default: `'kahlan-config.php'`).
   --src=<path>                        Paths of source directories (default: `['src']`).
   --spec=<path>                       Paths of specification directories (default: `['spec']`).
-  --pattern=<pattern>                 A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
+  --grep=<pattern>                    A shell wildcard pattern (default: `['*Spec.php', '*.spec.php']`).
 
 Reporter Options:
 
-  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the buit-in text reporters
+  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the built-in text reporters
                                       are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
                                       You can optionally redirect the reporter output to a file by using the
-                                      colon syntax (muliple --reporter options are also supported).
+                                      colon syntax (multiple --reporter options are also supported).
 
 Code Coverage Options:
 
@@ -279,12 +298,12 @@ Code Coverage Options:
 Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
-  --no-colors                         To turn off colors. (default: `false`).
-  --no-header                         To turn off header. (default: `false`).
+  --no-colors=<boolean>               To turn off colors. (default: `false`).
+  --no-header=<boolean>               To turn off header. (default: `false`).
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --cc                                Clear cache before spec run. (default: `false`).
+  --cc=<boolean>                      Clear cache before spec run. (default: `false`).
   --autoclear                         Classes to autoclear after each spec (default: [
                                           `'Kahlan\Plugin\Monkey'`,
                                           `'Kahlan\Plugin\Call'`,
@@ -346,14 +365,10 @@ EOD;
             }
 
             $this->_start = microtime(true);
-            return Filter::on($this, 'workflow', [], function ($chain) {
+            return Filters::run($this, 'workflow', [], function ($chain) {
                 $this->_bootstrap();
 
-                $this->_interceptor();
-
                 $this->_namespaces();
-
-                $this->_patchers();
 
                 $this->_load();
 
@@ -386,8 +401,8 @@ EOD;
          */
         protected function _bootstrap()
         {
-            return Filter::on($this, 'bootstrap', [], function ($chain) {
-                $this->suite()->backtraceFocus($this->commandLine()->get('pattern'));
+            return Filters::run($this, 'bootstrap', [], function ($chain) {
+                $this->suite()->backtraceFocus($this->commandLine()->get('grep'));
                 if (!$this->commandLine()->exists('coverage')) {
                     if ($this->commandLine()->exists('clover') || $this->commandLine()->exists('istanbul') || $this->commandLine()->exists('lcov')) {
                         $this->commandLine()->set('coverage', 1);
@@ -397,28 +412,11 @@ EOD;
         }
 
         /**
-         * The default `'interceptor'` filter.
-         */
-        protected function _interceptor()
-        {
-            return Filter::on($this, 'interceptor', [], function ($chain) {
-                $this->autoloader(Interceptor::patch([
-                    'loader'     => [$this->autoloader(), 'loadClass'],
-                    'include'    => $this->commandLine()->get('include'),
-                    'exclude'    => array_merge($this->commandLine()->get('exclude'), ['Kahlan\\']),
-                    'persistent' => $this->commandLine()->get('persistent'),
-                    'cachePath'  => rtrim(realpath(sys_get_temp_dir()), DS) . DS . 'kahlan',
-                    'clearCache' => $this->commandLine()->get('cc')
-                ]));
-            });
-        }
-
-        /**
          * The default `'namespace'` filter.
          */
         protected function _namespaces()
         {
-            return Filter::on($this, 'namespaces', [], function ($chain) {
+            return Filters::run($this, 'namespaces', [], function ($chain) {
                 $paths = $this->commandLine()->get('spec');
                 foreach ($paths as $path) {
                     $path = realpath($path);
@@ -429,28 +427,11 @@ EOD;
         }
 
         /**
-         * The default `'patcher'` filter.
-         */
-        protected function _patchers()
-        {
-            if (!$interceptor = Interceptor::instance()) {
-                return;
-            }
-            return Filter::on($this, 'patchers', [], function ($chain) {
-                $interceptor = Interceptor::instance();
-                $patchers = $interceptor->patchers();
-                $patchers->add('pointcut', new Pointcut());
-                $patchers->add('monkey',   new Monkey());
-                $patchers->add('quit',     new Quit());
-            });
-        }
-
-        /**
          * The default `'load'` filter.
          */
         protected function _load()
         {
-            return Filter::on($this, 'load', [], function ($chain) {
+            return Filters::run($this, 'load', [], function ($chain) {
                 $specDirs = $this->commandLine()->get('spec');
                 foreach ($specDirs as $dir) {
                     if (!file_exists($dir)) {
@@ -459,7 +440,7 @@ EOD;
                     }
                 }
                 $files = Dir::scan($specDirs, [
-                    'include' => $this->commandLine()->get('pattern'),
+                    'include' => $this->commandLine()->get('grep'),
                     'exclude' => '*/.*',
                     'type' => 'file'
                 ]);
@@ -474,7 +455,7 @@ EOD;
          */
         protected function _reporters()
         {
-            return Filter::on($this, 'reporters', [], function ($chain) {
+            return Filters::run($this, 'reporters', [], function ($chain) {
                 $this->_console();
                 $this->_coverage();
             });
@@ -485,7 +466,7 @@ EOD;
          */
         protected function _console()
         {
-            return Filter::on($this, 'console', [], function ($chain) {
+            return Filters::run($this, 'console', [], function ($chain) {
                 $collection = $this->reporters();
 
                 $reporters = $this->commandLine()->get('reporter');
@@ -541,7 +522,7 @@ EOD;
          */
         protected function _coverage()
         {
-            return Filter::on($this, 'coverage', [], function ($chain) {
+            return Filters::run($this, 'coverage', [], function ($chain) {
                 if (!$this->commandLine()->exists('coverage')) {
                     return;
                 }
@@ -578,7 +559,7 @@ EOD;
          */
         protected function _matchers()
         {
-            return Filter::on($this, 'matchers', [], function ($chain) {
+            return Filters::run($this, 'matchers', [], function ($chain) {
                 static::registerMatchers();
             });
         }
@@ -588,7 +569,7 @@ EOD;
          */
         protected function _run()
         {
-            return Filter::on($this, 'run', [], function ($chain) {
+            return Filters::run($this, 'run', [], function ($chain) {
                 $this->suite()->run([
                     'reporters' => $this->reporters(),
                     'autoclear' => $this->commandLine()->get('autoclear'),
@@ -602,7 +583,7 @@ EOD;
          */
         protected function _reporting()
         {
-            return Filter::on($this, 'reporting', [], function ($chain) {
+            return Filters::run($this, 'reporting', [], function ($chain) {
                 $reporter = $this->reporters()->get('coverage');
                 if (!$reporter) {
                     return;
@@ -633,7 +614,7 @@ EOD;
          */
         protected function _stop()
         {
-            return Filter::on($this, 'stop', [], function ($chain) {
+            return Filters::run($this, 'stop', [], function ($chain) {
                 $this->suite()->stop();
             });
         }
@@ -644,13 +625,12 @@ EOD;
          */
         protected function _quit()
         {
-            return Filter::on($this, 'quit', [$this->suite()->passed()], function ($chain, $success) {
+            return Filters::run($this, 'quit', [$this->suite()->status()], function ($chain, $success) {
             });
         }
     }
 
     define('KAHLAN_VERSION', Kahlan::VERSION);
-
 }
 
 namespace {
@@ -668,20 +648,15 @@ namespace {
         if (getenv('KAHLAN_DISABLE_FUNCTIONS') || (defined('KAHLAN_DISABLE_FUNCTIONS') && KAHLAN_DISABLE_FUNCTIONS)) {
             return;
         }
-
         if (defined('KAHLAN_FUNCTIONS_EXIST') && KAHLAN_FUNCTIONS_EXIST) {
             return;
         }
-
         $error = false;
-
         $exit = function ($name) use (&$error) {
             fwrite(STDERR, "The Kahlan global function `{$name}()`s can't be created because of some naming collisions with another library.\n");
             $error = true;
         };
-
         define('KAHLAN_FUNCTIONS_EXIST', true);
-
         if (!function_exists('beforeAll')) {
             function beforeAll($closure)
             {
@@ -690,7 +665,6 @@ namespace {
         } else {
             $exit('beforeAll');
         }
-
         if (!function_exists('afterAll')) {
             function afterAll($closure)
             {
@@ -699,7 +673,6 @@ namespace {
         } else {
             $exit('afterAll');
         }
-
         if (!function_exists('beforeEach')) {
             function beforeEach($closure)
             {
@@ -708,7 +681,6 @@ namespace {
         } else {
             $exit('beforeEach');
         }
-
         if (!function_exists('afterEach')) {
             function afterEach($closure)
             {
@@ -717,20 +689,18 @@ namespace {
         } else {
             $exit('afterEach');
         }
-
         if (!function_exists('describe')) {
             function describe($message, $closure, $timeout = null, $type = 'normal')
             {
                 if (!Suite::current()) {
                     $suite = \Kahlan\box('kahlan')->get('suite.global');
-                    return $suite->describe($message, $closure, $timeout, $type);
+                    return $suite->root()->describe($message, $closure, $timeout, $type);
                 }
                 return Suite::current()->describe($message, $closure, $timeout, $type);
             }
         } else {
             $exit('describe');
         }
-
         if (!function_exists('context')) {
             function context($message, $closure, $timeout = null, $type = 'normal')
             {
@@ -739,7 +709,6 @@ namespace {
         } else {
             $exit('context');
         }
-
         if (!function_exists('given')) {
             function given($name, $value)
             {
@@ -748,7 +717,6 @@ namespace {
         } else {
             $exit('given');
         }
-
         if (!function_exists('it')) {
             function it($message, $closure = null, $timeout = null, $type = 'normal')
             {
@@ -757,7 +725,6 @@ namespace {
         } else {
             $exit('it');
         }
-
         if (!function_exists('fdescribe')) {
             function fdescribe($message, $closure, $timeout = null)
             {
@@ -766,7 +733,6 @@ namespace {
         } else {
             $exit('fdescribe');
         }
-
         if (!function_exists('fcontext')) {
             function fcontext($message, $closure, $timeout = null)
             {
@@ -775,7 +741,6 @@ namespace {
         } else {
             $exit('fcontext');
         }
-
         if (!function_exists('fit')) {
             function fit($message, $closure = null, $timeout = null)
             {
@@ -784,7 +749,6 @@ namespace {
         } else {
             $exit('fit');
         }
-
         if (!function_exists('xdescribe')) {
             function xdescribe($message, $closure, $timeout = null)
             {
@@ -793,7 +757,6 @@ namespace {
         } else {
             $exit('xdescribe');
         }
-
         if (!function_exists('xcontext')) {
             function xcontext($message, $closure, $timeout = null)
             {
@@ -802,7 +765,6 @@ namespace {
         } else {
             $exit('xcontext');
         }
-
         if (!function_exists('xit')) {
             function xit($message, $closure = null, $timeout = null)
             {
@@ -811,7 +773,6 @@ namespace {
         } else {
             $exit('xit');
         }
-
         if (!function_exists('waitsFor')) {
             function waitsFor($actual, $timeout = null)
             {
@@ -820,17 +781,15 @@ namespace {
         } else {
             $exit('waitsFor');
         }
-
         if (!function_exists('skipIf')) {
             function skipIf($condition)
             {
-                $current = Specification::current() ?: Suite::current();
+                $current = Suite::current();
                 $current->skipIf($condition);
             }
         } else {
             $exit('skipIf');
         }
-
         if (!function_exists('expect')) {
             /**
              * @param $actual
@@ -839,12 +798,11 @@ namespace {
              */
             function expect($actual)
             {
-                return Specification::current()->expect($actual);
+                return Suite::current()->expect($actual);
             }
         } else {
             $exit('expect');
         }
-
         if (!function_exists('allow')) {
             /**
              * @param $actual
@@ -858,7 +816,6 @@ namespace {
         } else {
             $exit('allow');
         }
-
         if ($error) {
             exit(-1);
         }

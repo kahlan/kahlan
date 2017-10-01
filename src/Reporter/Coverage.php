@@ -2,6 +2,7 @@
 namespace Kahlan\Reporter;
 
 use Kahlan\Reporter\Coverage\Collector;
+use Kahlan\Reporter\Coverage\Metrics;
 
 class Coverage extends Terminal
 {
@@ -11,7 +12,7 @@ class Coverage extends Terminal
      * @var array
      */
     protected static $_classes = [
-        'interceptor' => 'Kahlan\Jit\Interceptor'
+        'classloader' => 'Kahlan\Jit\ClassLoader'
     ];
 
     /**
@@ -71,8 +72,8 @@ class Coverage extends Terminal
 
         if (is_string($this->_verbosity)) {
             $class = preg_replace('/(::)?\w+\(\)$/', '', $this->_verbosity);
-            $interceptor = static::$_classes['interceptor'];
-            $loader = $interceptor::instance();
+            $classloader = static::$_classes['classloader'];
+            $loader = $classloader::instance();
 
             if ($loader && $path = $loader->findPath($class)) {
                 $config['path'] = $path;
@@ -155,13 +156,14 @@ class Coverage extends Terminal
     /**
      * Outputs some metrics info where the metric is not the total coverage.
      *
-     * @param \Kahlan\Reporter\Coverage\Metrics $metrics A metrics instance.
-     * @param int $verbosity The verbosity level:
-     *     - 1      : overall coverage value for the whole code.
-     *     - 2      : overall coverage by namespaces.
-     *     - 3      : overall coverage by classes.
-     *     - 4      : overall coverage by methods and functions.
-     *     - string : coverage for a fully namespaced (class/method/namespace) string.
+     * @param Metrics $metrics   A metrics instance.
+     * @param mixed   $verbosity The options for the reporter, the options are:
+     *                            - `'verbosity`' _integer|string_: The verbosity level:
+     *                            - 1      : overall coverage value for the whole code.
+     *                            - 2      : overall coverage by namespaces.
+     *                            - 3      : overall coverage by classes.
+     *                            - 4      : overall coverage by methods and functions.
+     *                            - string : coverage for a fully namespaced (class/method/namespace) string.
      */
     protected function _renderMetrics($metrics, $verbosity)
     {
@@ -248,16 +250,17 @@ class Coverage extends Terminal
     /**
      * Extract some metrics reports to display according to a verbosity parameter.
      *
-     * @param \Kahlan\Reporter\Coverage\Metrics[] $children A array of metrics.
-     * @param array $verbosity The verbosity level:
-     *     - 1      : overall coverage value for the whole code.
-     *     - 2      : overall coverage by namespaces.
-     *     - 3      : overall coverage by classes.
-     *     - 4      : overall coverage by methods and functions.
-     *     - string : coverage for a fully namespaced (class/method/namespace) string.
-     * @param int $depth The actual depth in the reporting.
-     * @param int $tab The size of the tab used for lablels.
-     * @param int $maxWidth Will contain the maximum width obtained for labels.
+     * @param array  $children  A array of metrics.
+     * @param mixed  $verbosity The options for the reporter, the options are:
+     *                           - `'verbosity`' _integer|string_: The verbosity level:
+     *                           - 1      : overall coverage value for the whole code.
+     *                           - 2      : overall coverage by namespaces.
+     *                           - 3      : overall coverage by classes.
+     *                           - 4      : overall coverage by methods and functions.
+     *                           - string : coverage for a fully namespaced (class/method/namespace) string.
+     * @param integer $depth    The actual depth in the reporting.
+     * @param integer $tab      The size of the tab used for lablels.
+     * @param integer $maxWidth Will contain the maximum width obtained for labels.
      *
      * @return array
      */

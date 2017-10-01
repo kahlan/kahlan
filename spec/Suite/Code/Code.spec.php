@@ -1,5 +1,5 @@
 <?php
-namespace code\spec\suite;
+namespace Kahlan\Spec\Suite\Code;
 
 use Exception;
 use InvalidArgumentException;

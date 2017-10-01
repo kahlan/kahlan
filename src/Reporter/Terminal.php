@@ -52,7 +52,7 @@ class Terminal extends Reporter
     /**
      * The console to output stream on (e.g STDOUT).
      *
-     * @var stream
+     * @var resource
      */
     protected $_output = null;
 
@@ -289,11 +289,26 @@ EOD;
                     if ($expectation->type() !== 'failed') {
                         continue;
                     }
-                    $this->write("expect->{$expectation->matcherName()}() failed in ", 'red');
+
+                    $data = $expectation->data();
+                    $isExternal = isset($data['external']) && $data['external'];
+
+                    if ($isExternal) {
+                        $this->write("expectation failed in ", 'red');
+                    } else {
+                        $this->write("expect->{$expectation->matcherName()}() failed in ", 'red');
+                    }
+
                     $this->write("`{$expectation->file()}` ");
                     $this->write("line {$expectation->line()}", 'red');
                     $this->write("\n\n");
-                    $this->_reportDiff($expectation);
+
+                    if ($isExternal) {
+                        $this->write($data['description']);
+                        $this->write("\n\n");
+                    } else {
+                        $this->_reportDiff($expectation);
+                    }
                 }
                 break;
             case "errored":
@@ -485,8 +500,6 @@ EOD;
      */
     public function _reportSummary($summary)
     {
-        $this->_summarizeSkipped($summary);
-
         $passed = $summary->passed();
         $skipped = $summary->skipped();
         $pending = $summary->pending();
@@ -532,7 +545,7 @@ EOD;
         $this->write(" in {$time} seconds (using {$memory}o)");
         $this->write("\n\n");
 
-        $this->_summarizeFocused($summary);
+        $this->_reportFocused($summary);
     }
 
     /**
@@ -540,7 +553,7 @@ EOD;
      *
      * @param object $summary The execution summary instance.
      */
-    protected function _summarizeFocused($summary)
+    protected function _reportFocused($summary)
     {
         if (!$focused = $summary->get('focused')) {
             return;
@@ -560,7 +573,7 @@ EOD;
      *
      * @param object $summary The execution summary instance.
      */
-    protected function _summarizeSkipped($summary)
+    protected function _reportSkipped($summary)
     {
         foreach ([
             'pending'  => 'cyan',

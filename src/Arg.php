@@ -2,6 +2,7 @@
 namespace Kahlan;
 
 use Exception;
+use Kahlan\Util\Text;
 
 /**
  * Class Arg
@@ -118,6 +119,7 @@ class Arg
      */
     public function match($actual)
     {
+        $target = null;
         $matcher = null;
         foreach ($this->_matchers as $target => $value) {
             if (!$target) {
@@ -135,5 +137,40 @@ class Arg
         array_unshift($args, $actual);
         $boolean = call_user_func_array($matcher . '::match', $args);
         return $this->_not ? !$boolean : $boolean;
+    }
+
+    /**
+     * Returns the description of this argument matcher.
+     *
+     * @return string The description of this argument matcher.
+     */
+    public function __toString()
+    {
+        return sprintf(
+            '%s(%s)',
+            $this->_name,
+            implode(
+                ', ',
+                array_map(['Kahlan\Arg', '_describeArg'], $this->_args)
+            )
+        );
+    }
+
+    /**
+     * Generate an inline string representation of an argument.
+     *
+     * @param mixed $arg The argument.
+     * @return string    The dumped string.
+     */
+    public static function _describeArg($arg)
+    {
+        if (is_array($arg)) {
+            return sprintf('array[%d]', count($arg));
+        }
+        if (is_object($arg)) {
+            return sprintf('object[%s]', get_class($arg));
+        }
+
+        return Text::toString($arg);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Kahlan\Spec\Suite\Plugin;
 
-use Kahlan\Jit\Interceptor;
+use Kahlan\Jit\ClassLoader;
 use Kahlan\QuitException;
 use Kahlan\Plugin\Quit;
 use Kahlan\Jit\Patcher\Quit as QuitPatcher;
@@ -10,24 +10,19 @@ use Kahlan\Spec\Fixture\Plugin\Quit\Foo;
 
 describe("Quit", function () {
 
-    /**
-     * Save current & reinitialize the Interceptor class.
-     */
     beforeAll(function () {
-        $this->previous = Interceptor::instance();
-        Interceptor::unpatch();
-
         $cachePath = rtrim(sys_get_temp_dir(), DS) . DS . 'kahlan';
         $include = ['Kahlan\Spec\\'];
-        $interceptor = Interceptor::patch(compact('include', 'cachePath'));
-        $interceptor->patchers()->add('quit', new QuitPatcher());
+        $this->loader = new ClassLoader();
+        $this->loader->patch(compact('include', 'cachePath'));
+        $this->loader->patchers()->add('quit', new QuitPatcher());
+        $this->loader->addPsr4('Kahlan\\', 'src');
+        $this->loader->addPsr4('Kahlan\Spec\\', 'spec');
+        $this->loader->register(true);
     });
 
-    /**
-     * Restore Interceptor class.
-     */
     afterAll(function () {
-        Interceptor::load($this->previous);
+        $this->loader->unregister();
     });
 
     describe("::enable()", function () {

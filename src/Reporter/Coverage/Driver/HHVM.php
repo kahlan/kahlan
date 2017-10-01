@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Reporter\Coverage\Driver;
 
+use Exception;
 use RuntimeException;
 
 class HHVM

@@ -1,5 +1,5 @@
 <?php
-use Kahlan\Filter\Filter;
+use Kahlan\Filter\Filters;
 use Kahlan\Reporter\Coverage;
 use Kahlan\Reporter\Coverage\Driver\Xdebug;
 use Kahlan\Reporter\Coverage\Exporter\Coveralls;
@@ -8,7 +8,7 @@ use Kahlan\Reporter\Coverage\Exporter\CodeClimate;
 $commandLine = $this->commandLine();
 $commandLine->option('coverage', 'default', 3);
 
-Filter::register('kahlan.coverage', function($chain) {
+Filters::apply($this, 'coverage', function($next) {
     if (!extension_loaded('xdebug')) {
         return;
     }
@@ -43,9 +43,7 @@ Filter::register('kahlan.coverage', function($chain) {
     $reporters->add('coverage', $coverage);
 });
 
-Filter::apply($this, 'coverage', 'kahlan.coverage');
-
-Filter::register('kahlan.coverage-exporter', function($chain) {
+Filters::apply($this, 'reporting', function($next) {
     $reporter = $this->reporters()->get('coverage');
     if (!$reporter) {
         return;
@@ -62,7 +60,5 @@ Filter::register('kahlan.coverage-exporter', function($chain) {
         'branch'     => getenv('TRAVIS_BRANCH') ?: null,
         'repo_token' => '422174e17459424c0dc0dfdd720eb17324b283a204b093e85ba21400f1414536'
     ]);
-    return $chain->next();
+    return $next();
 });
-
-Filter::apply($this, 'reporting', 'kahlan.coverage-exporter');
