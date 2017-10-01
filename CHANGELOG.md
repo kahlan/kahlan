@@ -2,6 +2,65 @@
 
 ## Last changes
 
+## 4.0.0 (2017-01-10)
+
+  * **Add:** Embbed a compatible Composer Autoloader to support files autoloading.
+  * **Add:** Allow to inject dependencies at a spec level.
+  * **BC Break:** Remove PHP 5.4 support
+  * **BC Break:** The patchers entry point is now the first entry point.
+  * **BC Break:** The interceptor entry point has been removed.
+  * **BC Break:** Every specification must have a message.
+  * **BC Break:** Every Specification must have a unique message path
+  * **BC Break:** Rename `--pattern` option to a more meaningful name, it's now `--grep`
+  * **BC Break:** The filter API has been changed
+  * **BC Break:** Internal classes refactoring
+  * **BC Break:** The Interceptor class has been removed
+
+## 3.1.18 (2017-08-12)
+
+  * **Bugfix:** Fix `__DIR__` & `__FILE__` magic constants rebase.
+
+## 3.1.17 (2017-08-07)
+
+  * **Bugfix:** Fix `void` return type stubbing.
+
+## 3.1.16 (2017-06-22)
+
+  * **Bugfix:** Support 7.1 `void` return type.
+
+## 3.1.15 (2017-05-26)
+
+  * **Bugfix:** Update Kahlan's autoloader reference when patched.
+
+## 3.1.14 (2017-04-12)
+
+  * **Bugfix:** Fix inaccurate actually called times number in report error description messages.
+
+## 3.1.13 (2017-04-12)
+
+  * **Bugfix:** Fix a reporting issue which report errored specs as pending in some circumstances.
+
+## 3.1.12 (2017-04-07)
+
+  * **Bugfix:** Fix a monkey patching issue with curly braces namespace definitions.
+
+## 3.1.11 (2017-04-06)
+
+  * **Bugfix:** Add `clone()` to JIT ignored statements.
+  * **Bugfix:** Fix a coverage reporting issue with global namespace definitions.
+
+## 3.1.10 (2017-03-23)
+
+  * **Add:** Enhance interoperability between frameworks.
+
+## 3.1.9 (2017-03-19)
+
+  * **Bugfix:** Fix exit/die short syntax patching.
+
+## 3.1.8 (2017-02-14)
+
+  * **Change:** Report specs with incomplete expectations as pending.
+
 ## 3.1.7 (2017-02-12)
 
   * **Bugfix:** Fix a coverage issue on windows.
