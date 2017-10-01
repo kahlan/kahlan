@@ -158,10 +158,10 @@ Configuration Options:
 
 Reporter Options:
 
-  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the buit-in text reporters
+  --reporter=<name>[:<output_file>]   The name of the text reporter to use, the built-in text reporters
                                       are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
                                       You can optionally redirect the reporter output to a file by using the
-                                      colon syntax (muliple --reporter options are also supported).
+                                      colon syntax (multiple --reporter options are also supported).
 
 Code Coverage Options:
 
@@ -176,12 +176,12 @@ Code Coverage Options:
 Test Execution Options:
 
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
-  --no-colors                         To turn off colors. (default: `false`).
-  --no-header                         To turn off header. (default: `false`).
+  --no-colors=<boolean>               To turn off colors. (default: `false`).
+  --no-header=<boolean>               To turn off header. (default: `false`).
   --include=<string>                  Paths to include for patching. (default: `['*']`).
   --exclude=<string>                  Paths to exclude from patching. (default: `[]`).
   --persistent=<boolean>              Cache patched files (default: `true`).
-  --cc                                Clear cache before spec run. (default: `false`).
+  --cc=<boolean>                      Clear cache before spec run. (default: `false`).
   --autoclear                         Classes to autoclear after each spec (default: [
                                           `'Kahlan\Plugin\Monkey'`,
                                           `'Kahlan\Plugin\Call'`,
