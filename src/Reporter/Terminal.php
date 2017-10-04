@@ -542,7 +542,7 @@ EOD;
         }
         $time = number_format(microtime(true) - $this->_start, 3);
         $memory = $this->readableSize($summary->memoryUsage());
-        $this->write(" in {$time} seconds (using {$memory}o)");
+        $this->write(" in {$time} seconds (using {$memory}B)");
         $this->write("\n\n");
 
         $this->_reportFocused($summary);
