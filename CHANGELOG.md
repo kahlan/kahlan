@@ -2,7 +2,11 @@
 
 ## Last changes
 
-## 4.0.0 (2017-01-10)
+## 4.0.1 (2017-10-06)
+
+  * **Bugfix:** Fix autoloading step.
+
+## 4.0.0 (2017-10-01)
 
   * **Add:** Embbed a compatible Composer Autoloader to support files autoloading.
   * **Add:** Allow to inject dependencies at a spec level.
