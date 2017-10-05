@@ -11,18 +11,20 @@ return function () {
         $absolute = realpath(__DIR__ . '/vendor/autoload.php');
     }
 
-    $autoloader = require $absolute;
+    if ($absolute) {
+        $autoloader = require $absolute;
+    }
 
     if ($pwd === realpath(__DIR__)) {
         return $autoloader;
     }
 
-    if ($composerPath = "{$pwd}/composer.json") {
+    if (file_exists($composerPath = "{$pwd}/composer.json")) {
         $composerJson = json_decode(file_get_contents($composerPath), true);
         $vendorName = isset($composerJson['vendor-dir']) ? $composerJson['vendor-dir'] : $vendorName;
     }
 
-    if (!$relative = "{$pwd}/{$vendorName}/autoload.php") {
+    if (!file_exists("{$pwd}/{$vendorName}/autoload.php")) {
         echo "\033[1;31mYou need to set up the project dependencies using the following commands: \033[0m" . PHP_EOL;
         echo 'curl -s http://getcomposer.org/installer | php' . PHP_EOL;
         echo 'php composer.phar install' . PHP_EOL;
@@ -47,7 +49,8 @@ return function () {
     }
 
     $loader->register(true);
-    $loader->files(require "{$pwd}/{$vendorName}/composer/autoload_files.php");
-
+    if (file_exists("{$pwd}/{$vendorName}/composer/autoload_files.php")) {
+        $loader->files(require "{$pwd}/{$vendorName}/composer/autoload_files.php");
+    }
     return $loader;
 };

@@ -7,6 +7,11 @@ use RecursiveDirectoryIterator;
 class ClassLoader
 {
     /**
+     * Autoloaded files.
+     */
+    protected $_files = [];
+
+    /**
      * Cache path. If `false` the caching is not enable.
      *
      * @var string
@@ -234,16 +239,17 @@ class ClassLoader
             return true;
         }
 
-        if ($cached = $this->cached($file)) {
-            require $cached;
-            return true;
-        }
-        $code = file_get_contents($file);
-        $timestamp = filemtime($file);
+        if (!$cached = $this->cached($file)) {
+            $code = file_get_contents($file);
+            $timestamp = filemtime($file);
 
-        $rewrited = $this->_patchers->process($code, $file);
-        $cached = $this->cache($file, $rewrited, max($timestamp, $this->_watchedTimestamp) + 1);
+            $rewrited = $this->_patchers->process($code, $file);
+            $cached = $this->cache($file, $rewrited, max($timestamp, $this->_watchedTimestamp) + 1);
+        }
+        $includePath = get_include_path();
+        set_include_path($includePath ? $includePath . ':' . dirname($file) : dirname($file));
         require $cached;
+        restore_include_path();
         return true;
     }
 
