@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.0.2 (2017-10-07)
+
+  * **Bugfix:** Fix CLI autoloading.
+
 ## 4.0.1 (2017-10-06)
 
   * **Bugfix:** Fix autoloading step.
