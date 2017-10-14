@@ -160,7 +160,7 @@ class Suite
             return restore_error_handler();
         }
         $handler = function ($code, $message, $file, $line = 0, $args = []) {
-            if (0 === error_reporting()) {
+            if (error_reporting() === 0) {
                 return;
             }
             $trace = debug_backtrace();
