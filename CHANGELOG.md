@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.0.3 (2017-10-14)
+
+  * **Bugfix:** Fix a monkey patching issue with strict types declarations.
+
 ## 4.0.2 (2017-10-07)
 
   * **Bugfix:** Fix CLI autoloading.
