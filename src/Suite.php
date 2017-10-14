@@ -160,6 +160,9 @@ class Suite
             return restore_error_handler();
         }
         $handler = function ($code, $message, $file, $line = 0, $args = []) {
+            if (0 === error_reporting()) {
+                return;
+            }
             $trace = debug_backtrace();
             $trace = array_slice($trace, 1, count($trace));
             $message = "`" . Debugger::errorType($code) . "` {$message}";

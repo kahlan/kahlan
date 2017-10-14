@@ -1288,6 +1288,17 @@ describe("Suite", function () {
 
         });
 
+        it('ignores supressed errors', function () {
+
+            $closure = function () {
+                $failing = function () {
+                    $a = $b;
+                };
+                @$failing();
+            };
+            expect($closure)->not->toThrow();
+        });
+
     });
 
     describe("->reporters()", function () {
