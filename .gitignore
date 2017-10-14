@@ -5,3 +5,4 @@ vendor
 codeclimate.json
 coveralls.json
 clover.xml
+/.project
