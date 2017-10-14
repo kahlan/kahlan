@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.0.5 (2017-10-14)
+
+  * **Bugfix:** Fix a class autoloading issue.
+
 ## 4.0.4 (2017-10-14)
 
   * **Bugfix:** Ignore errors triggered through @.
