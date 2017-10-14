@@ -9,8 +9,12 @@ use Kahlan\Spec\Fixture\Filter\FilterExample;
 
 describe("Filters", function () {
 
-    beforeEach(function () {
+    beforeAll(function () {
+        $this->runtimeFilters = Filters::get();
+    });
 
+    beforeEach(function () {
+        Filters::reset();
         $this->filter1 = function ($next, $message) {
             return "1" . $next($message) . "1";
         };
@@ -27,6 +31,10 @@ describe("Filters", function () {
 
     afterEach(function () {
         Filters::reset();
+    });
+
+    afterAll(function () {
+        Filters::set($this->runtimeFilters);
     });
 
     context("with an instance context", function () {
