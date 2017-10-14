@@ -297,18 +297,27 @@ class Parser
     {
         $this->_codeNode();
         $body = $this->_stream->current() . $this->_stream->next([';', '{']);
-        $isBlock = substr($body, -1) === '{';
-        if ($isBlock) {
-            $body = substr($body, 0, -1);
-        }
-        $node = new NodeDef($body, 'declare');
-        $this->_contextualize($node);
 
-        if ($isBlock) {
-            $this->_states['body'] .= '{';
-            $this->_states['current'] = $this->_codeNode();
+        if (preg_match('~ticks~i', $body, $matches)) {
+            $isBlock = substr($body, -1) === '{';
+            if ($isBlock) {
+                $body = substr($body, 0, -1);
+            }
+            $node = new NodeDef($body, 'declare');
+            $this->_contextualize($node);
+
+            if ($isBlock) {
+                $this->_states['body'] .= '{';
+                $this->_states['current'] = $this->_codeNode();
+            }
+            return $node;
         }
-        return $node;
+        $this->_states['body'] .= $body;
+        $node = new BlockDef($body, 'declare');
+        $node->hasMethods = false;
+        $this->_states['current'] = $this->_root;
+        $this->_contextualize($node);
+        return $this->_states['current'] = $node;
     }
 
     /**

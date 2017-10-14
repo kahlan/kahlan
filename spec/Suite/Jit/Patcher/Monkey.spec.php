@@ -76,6 +76,15 @@ describe("Monkey", function () {
 
         });
 
+        it("patches with declare statements", function () {
+
+            $nodes = Parser::parse(file_get_contents($this->path . '/DeclareStrictTypes.php'));
+            $expected = file_get_contents($this->path . '/DeclareStrictTypesProcessed.php');
+            $actual = Parser::unparse($this->patcher->process($nodes));
+            expect($actual)->toBe($expected);
+
+        });
+
     });
 
     describe("->patchable()", function () {

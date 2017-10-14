@@ -166,7 +166,7 @@ class Monkey
      */
     protected function _processTree($parent)
     {
-        $hasScope = $parent instanceof FunctionDef || $parent->type === 'namespace';
+        $hasScope = $parent instanceof FunctionDef || $parent->type === 'namespace' | $parent->type === 'declare';
         if ($hasScope) {
             $this->_variables[++$this->_depth] = [];
         }
