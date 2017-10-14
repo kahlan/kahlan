@@ -1288,7 +1288,7 @@ describe("Suite", function () {
 
         });
 
-        it( 'ignores supressed errors', function () {
+        it('ignores supressed errors', function () {
 
             $closure = function () {
                 $failing = function () {
