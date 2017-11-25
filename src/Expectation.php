@@ -14,28 +14,28 @@ use Closure;
 /**
  * Class Expectation
  *
- * @method Expectation toBe(mixed $expected) passes if actual === expected
- * @method Expectation toEqual(mixed $expected) passes if actual == expected
- * @method Expectation toBeTruthy() passes if actual is truthy
- * @method Expectation toBeFalsy() passes if actual is falsy
- * @method Expectation toBeEmpty() passes if actual is falsy
- * @method Expectation toBeNull() passes if actual is null
- * @method Expectation toBeA(string $expected) passes if actual is of the expected type
- * @method Expectation toBeAn(string $expected) passes if actual is of the expected type (toBeA alias)
- * @method Expectation toBeAnInstanceOf(string $expected) passes if actual is an instance of expected
- * @method Expectation toHaveLength(int $expected) passes if actual has the expected length
- * @method Expectation toContain(mixed $expected) passes if actual contain the expected value
- * @method Expectation toContainKey(mixed $expected) passes if actual contain the expected key
- * @method Expectation toContainKeys(mixed $expected) passes if actual contain the expected keys (toContainKey alias)
- * @method Expectation toBeCloseTo(float $expected, int $precision) passes if actual is close to expected in some precision
- * @method Expectation toBeGreaterThan(mixed $expected) passes if actual if greater than expected
- * @method Expectation toBeLessThan(mixed $expected) passes if actual is less than expected
- * @method Expectation toThrow(mixed $expected = null) passes if actual throws the expected exception
- * @method Expectation toMatch(string $expected) passes if actual matches the expected regexp
- * @method Expectation toEcho(string $expected) passes if actual echoes the expected string
- * @method Expectation toMatchEcho(string $expected) passes if actual echoes matches the expected string
- * @method Expectation toReceive(string $expected) passes if the expected method as been called on actual
- * @method Expectation toReceiveNext(string $expected) passes if the expected method as been called on actual after some other method
+ * @method Matcher\ToBe toBe(mixed $expected) passes if actual === expected
+ * @method Matcher\ToEqual toEqual(mixed $expected) passes if actual == expected
+ * @method Matcher\ToBeTruthy toBeTruthy() passes if actual is truthy
+ * @method Matcher\ToBeFalsy toBeFalsy() passes if actual is falsy
+ * @method Matcher\ToBeFalsy toBeEmpty() passes if actual is falsy
+ * @method Matcher\ToBeNull toBeNull() passes if actual is null
+ * @method Matcher\ToBeA toBeA(string $expected) passes if actual is of the expected type
+ * @method Matcher\ToBeA toBeAn(string $expected) passes if actual is of the expected type (toBeA alias)
+ * @method Matcher\ToBeAnInstanceOf toBeAnInstanceOf(string $expected) passes if actual is an instance of expected
+ * @method Matcher\ToHaveLength toHaveLength(int $expected) passes if actual has the expected length
+ * @method Matcher\ToContain toContain(mixed $expected) passes if actual contain the expected value
+ * @method Matcher\ToContainKey toContainKey(mixed $expected) passes if actual contain the expected key
+ * @method Matcher\ToContainKey toContainKeys(mixed $expected) passes if actual contain the expected keys (toContainKey alias)
+ * @method Matcher\ToBeCloseTo toBeCloseTo(float $expected, int $precision) passes if actual is close to expected in some precision
+ * @method Matcher\ToBeGreaterThan toBeGreaterThan(mixed $expected) passes if actual if greater than expected
+ * @method Matcher\ToBeLessThan toBeLessThan(mixed $expected) passes if actual is less than expected
+ * @method Matcher\ToThrow toThrow(mixed $expected = null) passes if actual throws the expected exception
+ * @method Matcher\ToMatch toMatch(string $expected) passes if actual matches the expected regexp
+ * @method Matcher\ToEcho toEcho(string $expected) passes if actual echoes the expected string
+ * @method Matcher\ToMatchEcho toMatchEcho(string $expected) passes if actual echoes matches the expected string
+ * @method Matcher\ToReceive toReceive(string $expected) passes if the expected method as been called on actual
+ * @method Exception toReceiveNext(string $expected) passes if the expected method as been called on actual after some other method
  *
  * @property Expectation $not
  */
