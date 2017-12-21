@@ -51,8 +51,8 @@ class Matcher
      * Registers a matcher.
      *
      * @param string $name   The name of the matcher.
-     * @param string $target An optionnal target class name.
      * @param string $class  A fully-namespaced class name.
+     * @param string $target An optionnal target class name.
      */
     public static function register($name, $class, $target = '')
     {
