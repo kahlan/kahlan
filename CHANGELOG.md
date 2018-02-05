@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 4.0.6 (2018-02-05)
+
+  * **Bugfix:** Do not run before/after callbacks for ignored specs.
+  * **Bugfix:** Fix reading of vendor name from config.json.
+
 ## 4.0.5 (2017-10-14)
 
   * **Bugfix:** Fix a class autoloading issue.
