@@ -786,13 +786,51 @@ describe("Suite", function () {
 
             $describe = $this->root->describe("", function () {
 
-                $this->exectuted = ['it' => 0];
+                $this->exectuted = [
+                    'beforeAll' => 0,
+                    'afterAll' => 0,
+                    'beforeEach' => 0,
+                    'afterEach' => 0,
+                    'it' => 0
+                ];
+
+                $this->beforeAll(function () {
+                    $this->exectuted['beforeAll']++;
+                });
+
+                $this->afterAll(function () {
+                    $this->exectuted['afterAll']++;
+                });
+
+                $this->beforeEach(function () {
+                    $this->exectuted['beforeEach']++;
+                });
+
+                $this->afterEach(function () {
+                    $this->exectuted['afterEach']++;
+                });
 
                 $this->it("it1", function () {
                     $this->exectuted['it']++;
                 });
 
                 $this->xdescribe("xdescribe", function () {
+
+                    $this->beforeAll(function () {
+                        $this->exectuted['beforeAll']++;
+                    });
+
+                    $this->afterAll(function () {
+                        $this->exectuted['afterAll']++;
+                    });
+
+                    $this->beforeEach(function () {
+                        $this->exectuted['beforeEach']++;
+                    });
+
+                    $this->afterEach(function () {
+                        $this->exectuted['afterEach']++;
+                    });
 
                     $this->it("it2", function () {
                         $this->exectuted['it']++;
@@ -808,7 +846,13 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 1]);
+            expect($describe->scope()->exectuted)->toEqual([
+                'beforeAll' => 1,
+                'afterAll' => 1,
+                'beforeEach' => 1,
+                'afterEach' => 1,
+                'it' => 1
+            ]);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(1);
             expect($this->suite->status())->toBe(0);
@@ -823,13 +867,51 @@ describe("Suite", function () {
 
             $describe = $this->root->describe("", function () {
 
-                $this->exectuted = ['it' => 0];
+                $this->exectuted = [
+                    'beforeAll' => 0,
+                    'afterAll' => 0,
+                    'beforeEach' => 0,
+                    'afterEach' => 0,
+                    'it' => 0
+                ];
+
+                $this->beforeAll(function () {
+                    $this->exectuted['beforeAll']++;
+                });
+
+                $this->afterAll(function () {
+                    $this->exectuted['afterAll']++;
+                });
+
+                $this->beforeEach(function () {
+                    $this->exectuted['beforeEach']++;
+                });
+
+                $this->afterEach(function () {
+                    $this->exectuted['afterEach']++;
+                });
 
                 $this->it("it1", function () {
                     $this->exectuted['it']++;
                 });
 
                 $this->xcontext("xcontext", function () {
+
+                    $this->beforeAll(function () {
+                        $this->exectuted['beforeAll']++;
+                    });
+
+                    $this->afterAll(function () {
+                        $this->exectuted['afterAll']++;
+                    });
+
+                    $this->beforeEach(function () {
+                        $this->exectuted['beforeEach']++;
+                    });
+
+                    $this->afterEach(function () {
+                        $this->exectuted['afterEach']++;
+                    });
 
                     $this->it("it2", function () {
                         $this->exectuted['it']++;
@@ -845,7 +927,13 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 1]);
+            expect($describe->scope()->exectuted)->toEqual([
+                'beforeAll' => 1,
+                'afterAll' => 1,
+                'beforeEach' => 1,
+                'afterEach' => 1,
+                'it' => 1
+            ]);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(1);
             expect($this->suite->status())->toBe(0);
