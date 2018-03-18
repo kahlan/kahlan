@@ -162,6 +162,16 @@ class Message
     }
 
     /**
+     * Check if this stub does require some specific args
+     *
+     * @return boolean
+     */
+    public function requireArgs()
+    {
+        return $this->_args !== null;
+    }
+
+    /**
      * Get the parent.
      *
      * @return mixed

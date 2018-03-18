@@ -34,4 +34,10 @@ class Mon
     {
         return file_get_contents($path);
     }
+
+    public function exec()
+    {
+        exec('ls', $output, $status);
+        return $status;
+    }
 }

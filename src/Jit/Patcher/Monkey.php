@@ -199,9 +199,6 @@ class Monkey
 
         $body = '';
         foreach ($this->_variables[$this->_depth] as $variable) {
-            if ($variable['isClass']) {
-                $body .= $variable['name'] . '__=null;';
-            }
             $body .= $variable['name'] . $variable['patch'];
         }
 
@@ -237,48 +234,43 @@ class Monkey
             $nextChar = $node->body[$pos + $len];
 
             $isInstance = !!$match[1][0];
-            $isClass = $nextChar === ':' || $isInstance;
+            $isStaticCall = $nextChar === ':';
+            $isClass = $isStaticCall || $isInstance;
+            $method = $match[4][0] ? $match[4][0] : 'null';
 
             if (!isset(static::$_blacklist[strtolower($name)]) && ($isClass || $nextChar === '(')) {
                 $tokens = explode('\\', $name, 2);
 
                 if ($name[0] === '\\') {
                     $name = substr($name, 1);
-                    $args = "null , '{$name}'";
+                    $args = $isClass ? "null, '{$name}', {$method}" : "null , null, '{$name}'";
                 } elseif (isset($this->_uses[$tokens[0]])) {
                     $ns = $this->_uses[$tokens[0]];
                     if (count($tokens) === 2) {
                         $ns .= '\\' . $tokens[1];
                     }
-                    $args = "null, '" . $ns . "'";
+                    $args = $isClass ? "null, '{$ns}', {$method}" : "null , null, '{$ns}'";
                 } else {
-                    $args = "__NAMESPACE__ , '{$name}'";
+                    $args = $isClass ? "__NAMESPACE__, '{$name}', {$method}" : "__NAMESPACE__ , null, '{$name}'";
                 }
 
                 if (!isset($this->_variables[$this->_depth][$name])) {
                     $variable = '$__' . $this->_prefix . '__' . $this->_counter++;
-
-                    if ($isClass) {
-                        $args .= ', false, ' . $variable . '__';
-                    }
+                    $args .= ', ' . $variable . '__';
 
                     $this->_variables[$this->_depth][$name] = [
                         'name' => $variable,
-                        'isClass' => $isClass,
                         'patch' => "=\Kahlan\Plugin\Monkey::patched({$args});"
                     ];
                 } else {
                     $variable = $this->_variables[$this->_depth][$name]['name'];
                 }
                 $substitute = $variable . '__';
-                if (!$isInstance) {
+                if (!$isClass) {
                     $replace = $match[2][0] . $variable . $match[4][0];
                 } else {
-                    if (Suite::$PHP >= 7 && $this->_addClosingParenthesis($pos + $len, $index, $parent)) {
-                        $replace = Suite::$PHP >= 7 ? '(' . $substitute . '?' . $substitute . ':' : '(';
-                    } else {
-                        $replace = '';
-                    }
+                    $this->_addClosingParenthesis($pos + $len, $index, $parent);
+                    $replace = Suite::$PHP >= 7 ? '(' . $substitute . '?' . $substitute . ':' : '(';
                     $replace .= $match[1][0] . $match[2][0] . $variable . $match[4][0];
                 }
                 $node->body = substr_replace($node->body, $replace, $pos, $len);

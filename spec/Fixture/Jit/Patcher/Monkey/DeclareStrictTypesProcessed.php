@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);$__KMONKEY__0__=null;$__KMONKEY__0=\Kahlan\Plugin\Monkey::patched(null, 'My\Name\Space\MyClass', false, $__KMONKEY__0__);
+declare(strict_types=1);$__KMONKEY__0=\Kahlan\Plugin\Monkey::patched(null, 'My\Name\Space\MyClass', null, $__KMONKEY__0__);
 
 use My\Name\Space\MyClass;
 

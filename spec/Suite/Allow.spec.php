@@ -570,6 +570,14 @@ describe("Allow", function () {
 
         });
 
+        it('supports parameter passed by reference', function () {
+            allow('exec')->toBeCalled()->andRun(function ($cmd, &$logs, &$status) {
+                $status = 255;
+            });
+            $mon = new Mon();
+            expect($mon->exec())->toEqual(255);
+        });
+
         it("throws an exception when trying to call `toReceive()`", function () {
 
             expect(function () {

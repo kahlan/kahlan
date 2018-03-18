@@ -1,5 +1,5 @@
 <?php
-namespace Kahlan\Spec\Fixture\Jit\Patcher\Monkey;$__KMONKEY__0__=null;$__KMONKEY__0=\Kahlan\Plugin\Monkey::patched(null, 'My\Name\Space\MyClass', false, $__KMONKEY__0__);$__KMONKEY__1=\Kahlan\Plugin\Monkey::patched(null, 'My\Name\Space\functionName1');$__KMONKEY__2=\Kahlan\Plugin\Monkey::patched(null, 'My\Name\Space\functionName2');
+namespace Kahlan\Spec\Fixture\Jit\Patcher\Monkey;$__KMONKEY__0=\Kahlan\Plugin\Monkey::patched(null, 'My\Name\Space\MyClass', null, $__KMONKEY__0__);$__KMONKEY__1=\Kahlan\Plugin\Monkey::patched(null , null, 'My\Name\Space\functionName1', $__KMONKEY__1__);$__KMONKEY__2=\Kahlan\Plugin\Monkey::patched(null , null, 'My\Name\Space\functionName2', $__KMONKEY__2__);
 
 use My\Name\Space\MyClass as MyAlias;
 

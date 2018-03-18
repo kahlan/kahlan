@@ -44,33 +44,35 @@ class Monkey
     /**
      * Patches the string.
      *
-     * @param  string  $namespace The namespace.
-     * @param  string  $ref       The fully namespaced class/function reference string.
-     * @param  boolean $isFunc    Boolean indicating if $ref is a function reference.
+     * @param  string $namespace  The namespace.
+     * @param  string $className  The fully namespaced class reference string.
+     * @param  string $methodName The method/function name.
      * @return string             A fully namespaced reference.
      */
-    public static function patched($namespace, $ref, $isFunc = true, &$substitute = null)
+    public static function patched($namespace, $className, $methodName, &$substitute = null)
     {
-        $name = $ref;
+        $name = $className ?: $methodName;
 
-        if ($namespace) {
-            if (!$isFunc || function_exists("{$namespace}\\{$ref}")) {
-                $name = "{$namespace}\\{$ref}";
-            }
+        if ($namespace && ($className || function_exists("{$namespace}\\{$name}"))) {
+            $name = "{$namespace}\\{$name}";
         }
 
         $method = isset(static::$_registered[$name]) ? static::$_registered[$name] : null;
-        $fake = $method ? $method->substitute() : null;
 
-        if (!$isFunc) {
+        if (!$methodName) {
+            $fake = $method ? $method->substitute() : null;
             if (is_object($fake)) {
                 $substitute = $fake;
             }
             return $fake ?: $name;
         }
 
-        if (!Suite::registered($name) && !$method) {
-            return $name;
+        if (!$method) {
+            if (!Suite::registered($name)) {
+                return $name;
+            }
+        } elseif (!$method->requireArgs()) {
+            return $method->closure();
         }
 
         return function () use ($name, $method) {

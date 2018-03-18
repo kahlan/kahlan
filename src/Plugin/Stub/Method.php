@@ -60,7 +60,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      */
     public function __construct($config = [])
     {
-        $defaults = ['closures' => null, 'args' => [], 'returns' => null, 'static' => false];
+        $defaults = ['closures' => null, 'args' => null, 'returns' => null, 'static' => false];
         $config += $defaults;
 
         parent::__construct($config);
@@ -96,6 +96,31 @@ class Method extends \Kahlan\Plugin\Call\Message
             $this->_return = $this->_returns ? end($this->_returns) : null;
         }
         return $this->_return;
+    }
+
+    /**
+     * Return a compatible callable.
+     *
+     * @return callable The callable.
+     */
+    public function closure()
+    {
+        if ($this->_closures !== null) {
+            if (isset($this->_closures[$this->_returnIndex])) {
+                $closure = $this->_closures[$this->_returnIndex++];
+            } else {
+                $closure = end($this->_closures);
+            }
+            return $closure;
+        } elseif ($this->_returns && array_key_exists($this->_returnIndex, $this->_returns)) {
+            $this->_return = $this->_returns[$this->_returnIndex++];
+        } else {
+            $this->_return = $this->_returns ? end($this->_returns) : null;
+        }
+        $value = $this->_return;
+        return function () use ($value) {
+            return $value;
+        };
     }
 
     /**
