@@ -117,9 +117,8 @@ class Method extends \Kahlan\Plugin\Call\Message
         } else {
             $this->_return = $this->_returns ? end($this->_returns) : null;
         }
-        $value = $this->_return;
-        return function () use ($value) {
-            return $value;
+        return function () {
+            return $this->_return;
         };
     }
 
