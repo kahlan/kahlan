@@ -103,6 +103,56 @@ class Example extends \Kahlan\Fixture\Parent
         return new Parser($node);
     }
 
+    public function staticCallWithComplexArguments()
+    {
+        return Filters::run($this, 'filterable', func_get_args(), function($next, $message) {
+            return "Hello {$message}";
+        });
+    }
+
+    public function staticCallWithNestedComplexArguments()
+    {
+        return (Set::extend(parent::_handlers(), [
+            'datasource' => [
+                'decimal' => function($value, $options = []) {
+                    $options += ['precision' => 2, 'decimal' => '.', 'separator' => ''];
+                    return $number_format($value, $options['precision'], $options['decimal'], $options['separator']);
+                },
+                'quote' => function($value, $options = []) {
+                    return $this->dialect()->quote((string) $value);
+                },
+                'date' => function($value, $options = []) {
+                    return $this->convert('datasource', 'datetime', $value, ['format' => 'Y-m-d']);
+                },
+                'datetime' => function($value, $options = []) use ($gmstrtotime) {
+                    $options += ['format' => 'Y-m-d H:i:s'];
+                    if ($value instanceof DateTime) {
+                        $date = $value->format($options['format']);
+                    } else {
+                        $timestamp = is_numeric($value) ? $value : $gmstrtotime($value);
+                        if ($timestamp < 0 || $timestamp === false) {
+                            throw new InvalidArgumentException("Invalid date `{$value}`, can't be parsed.");
+                        }
+                        $date = gmdate($options['format'], $timestamp);
+                    }
+                    return $this->dialect()->quote((string) $date);
+                },
+                'boolean' => function($value, $options = []) {
+                    return $value ? 'TRUE' : 'FALSE';
+                },
+                'null'    => function($value, $options = []) {
+                    return 'NULL';
+                },
+                'json'    => function($value, $options = []) {
+                    if (is_object($value)) {
+                        $value = $value->data();
+                    }
+                    return $this->dialect()->quote((string) json_encode($value));
+                }
+            ]
+        ]);
+    }
+
     public function noIndent()
     {
 rand();

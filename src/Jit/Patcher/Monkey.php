@@ -294,21 +294,28 @@ class Monkey
 
         for ($i = $index; $i < $total; $i++) {
             $node = $nodes[$i];
+
             if (!$node->processable || $node->type !== 'code') {
-                continue;
+                if (!$node->close) {
+                    continue;
+                }
+                $code = &$node->close;
+            } else {
+                $code = &$node->body;
             }
-            $code = $node->body;
+
             $len = strlen($code);
+
             while ($pos < $len) {
                 if ($count === 0 && $code[$pos] === ';') {
-                    $node->body = substr_replace($code, ');', $pos, 1);
+                    $code = substr_replace($code, ');', $pos, 1);
                     return true;
-                } elseif ($code[$pos] === '(' || $code[$pos] === '{') {
+                } elseif ($code[$pos] === '(') {
                     $count++;
-                } elseif ($code[$pos] === ')' || $code[$pos] === '}') {
+                } elseif ($code[$pos] === ')') {
                     $count--;
                     if ($count === 0) {
-                        $node->body = substr_replace($code, $code[$pos] . ')', $pos, 1);
+                        $code = substr_replace($code, $code[$pos] . ')', $pos, 1);
                         return true;
                     }
                 }
