@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.1.0 (2018-03-18)
+
+  * **Add:** Variable passed by reference can be patched when no toReceive/with contraints are set.
+
 ## 4.0.6 (2018-02-05)
 
   * **Bugfix:** Do not run before/after callbacks for ignored specs.
