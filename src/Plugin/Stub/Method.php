@@ -32,14 +32,14 @@ class Method extends \Kahlan\Plugin\Call\Message
      *
      * @var Closure
      */
-    protected $_closures = null;
+    protected $_closures = [];
 
     /**
      * Return values.
      *
      * @var array
      */
-    protected $_returns = null;
+    protected $_returns = [];
 
     /**
      * The method return value.
@@ -52,7 +52,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      * The Constructor.
      *
      * @param array $config The options array, possible options are:
-     *                      - `'closure'`: the closure to execute for this stub.
+     *                      - `'closures'`: the closures to execute for this stub.
      *                      - `'args'`:    the arguments required for exectuting this stub.
      *                      - `'static'`:  the type of call required for exectuting this stub.
      *                      - `'returns'`: the returns values for this stub (used only if
@@ -60,13 +60,13 @@ class Method extends \Kahlan\Plugin\Call\Message
      */
     public function __construct($config = [])
     {
-        $defaults = ['closures' => null, 'args' => null, 'returns' => null, 'static' => false];
+        $defaults = ['closures' => [], 'args' => null, 'returns' => [], 'static' => false];
         $config += $defaults;
 
         parent::__construct($config);
         $this->_name = ltrim($this->_name, '\\');
-        $this->_closures = $config['closures'];
-        $this->_returns = $config['returns'];
+        $this->_closures = (array) $config['closures'];
+        $this->_returns = (array) $config['returns'];
     }
 
     /**
@@ -78,7 +78,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      */
     public function __invoke($args = [], $self = null)
     {
-        if ($this->_closures !== null) {
+        if ($this->_closures) {
             if (isset($this->_closures[$this->_returnIndex])) {
                 $closure = $this->_closures[$this->_returnIndex++];
             } else {
@@ -90,7 +90,7 @@ class Method extends \Kahlan\Plugin\Call\Message
                 $closure = $closure->bindTo($self, get_class($self));
             }
             $this->_return = call_user_func_array($closure, $args);
-        } elseif ($this->_returns && array_key_exists($this->_returnIndex, $this->_returns)) {
+        } elseif (array_key_exists($this->_returnIndex, $this->_returns)) {
             $this->_return = $this->_returns[$this->_returnIndex++];
         } else {
             $this->_return = $this->_returns ? end($this->_returns) : null;
@@ -105,14 +105,14 @@ class Method extends \Kahlan\Plugin\Call\Message
      */
     public function closure()
     {
-        if ($this->_closures !== null) {
+        if ($this->_closures) {
             if (isset($this->_closures[$this->_returnIndex])) {
                 $closure = $this->_closures[$this->_returnIndex++];
             } else {
                 $closure = end($this->_closures);
             }
             return $closure;
-        } elseif ($this->_returns && array_key_exists($this->_returnIndex, $this->_returns)) {
+        } elseif (array_key_exists($this->_returnIndex, $this->_returns)) {
             $this->_return = $this->_returns[$this->_returnIndex++];
         } else {
             $this->_return = $this->_returns ? end($this->_returns) : null;
@@ -141,7 +141,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      */
     public function andRun()
     {
-        if ($this->_returns !== null) {
+        if ($this->_returns) {
             throw new Exception("Some return value(s) has already been set.");
         }
         $closures = func_get_args();
@@ -160,7 +160,7 @@ class Method extends \Kahlan\Plugin\Call\Message
      */
     public function andReturn()
     {
-        if ($this->_closures !== null) {
+        if ($this->_closures) {
             throw new Exception("Some closure(s) has already been set.");
         }
         $this->_returns = func_get_args();
@@ -188,5 +188,15 @@ class Method extends \Kahlan\Plugin\Call\Message
             return $this->_substitutes[$this->_substituteIndex++];
         }
         return $this->_substitutes ? end($this->_substitutes) : null;
+    }
+
+    /**
+     * Check if the stub is a lazy stub
+     *
+     * @return boolean
+     */
+    public function isLazy()
+    {
+        return $this->_args !== null || count($this->_returns) > 1 || count($this->_closures) > 1;
     }
 }

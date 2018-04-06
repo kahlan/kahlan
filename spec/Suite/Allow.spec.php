@@ -518,7 +518,7 @@ describe("Allow", function () {
 
     context("with functions", function () {
 
-        it("expects stubbed method to be stubbed as expected", function () {
+        it("expects stubbed methods to be stubbed as expected", function () {
 
             $mon = new Mon();
             allow('time')->toBeCalled()->andReturn(123, 456);
@@ -527,7 +527,16 @@ describe("Allow", function () {
 
         });
 
-        it("expects stubbed method to be stubbed as expected using return closures", function () {
+        it('expects stubbed methods called multiple times in the same scope to be stubbed as expected', function () {
+
+            allow('file_get_contents')->toBeCalled()->andReturn('a', 'b');
+
+            $mon = new Mon();
+            expect($mon->merge2File())->toBe('ab');
+
+        });
+
+        it("expects stubbed methods to be stubbed as expected using return closures", function () {
 
             $mon = new Mon();
             allow('time')->toBeCalled()->andRun(function () {
@@ -540,7 +549,7 @@ describe("Allow", function () {
 
         });
 
-        it("expects stubbed method to be stubbed as expected using closures", function () {
+        it("expects stubbed methods to be stubbed as expected using closures", function () {
 
             $mon = new Mon();
             allow('time')->toBe(function () {
@@ -553,7 +562,7 @@ describe("Allow", function () {
 
         });
 
-        it("expects stubbed method to be stubbed only when the with constraint is respected", function () {
+        it("expects stubbed methods to be stubbed only when the with constraint is respected", function () {
 
             $mon = new Mon();
             allow('Kahlan\Spec\Fixture\Plugin\Monkey\rand')->toBeCalled()->with(10, 20)->andReturn(40);

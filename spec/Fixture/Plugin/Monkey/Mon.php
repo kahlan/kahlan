@@ -35,6 +35,11 @@ class Mon
         return file_get_contents($path);
     }
 
+    public function merge2File($path1 = '', $path2 = '')
+    {
+        return file_get_contents($path1) . file_get_contents($path2);
+    }
+
     public function exec()
     {
         exec('ls', $output, $status);
