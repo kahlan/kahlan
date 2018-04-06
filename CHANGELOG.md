@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.1.1 (2018-04-07)
+
+  * **Bugfix:** Fix a stubbing issue introduced in 4.1.0.
+
 ## 4.1.0 (2018-03-18)
 
   * **Add:** Variable passed by reference can be patched when no toReceive/with contraints are set.
