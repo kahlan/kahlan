@@ -7,5 +7,5 @@ if ($__KMONKEY__0('myfunction')) {
 }
 
 $rand = $__KMONKEY__1();
-(new $__KMONKEY__2);
-(new $__KMONKEY__4($__KMONKEY__3()));
+new $__KMONKEY__2;
+new $__KMONKEY__4($__KMONKEY__3());

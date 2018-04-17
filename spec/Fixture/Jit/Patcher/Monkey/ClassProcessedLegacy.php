@@ -50,36 +50,36 @@ class Example extends \Kahlan\Fixture\Parent
 
     public function instantiate()
     {$__KMONKEY__5=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__, 'stdClass', null, $__KMONKEY__5__);
-        (new $__KMONKEY__5);
+        new $__KMONKEY__5;
     }
 
     public function instantiateWithArguments()
     {$__KMONKEY__6=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__, 'PDO', null, $__KMONKEY__6__);
-        $this->_db = (new $__KMONKEY__6(
+        $this->_db = new $__KMONKEY__6(
             "mysql:dbname=testdb;host=localhost",
             'root',
             ''
-        ));
+        );
     }
 
     public function instantiateRootBased()
     {$__KMONKEY__7=\Kahlan\Plugin\Monkey::patched(null, 'stdClass', null, $__KMONKEY__7__);
-        (new $__KMONKEY__7);
+        new $__KMONKEY__7;
     }
 
     public function instantiateFromUsed()
     {$__KMONKEY__8=\Kahlan\Plugin\Monkey::patched(null, 'Kahlan\MongoId', null, $__KMONKEY__8__);
-        (new $__KMONKEY__8);
+        new $__KMONKEY__8;
     }
 
     public function instantiateRootBasedFromUsed()
     {$__KMONKEY__9=\Kahlan\Plugin\Monkey::patched(null, 'MongoId', null, $__KMONKEY__9__);
-        (new $__KMONKEY__9);
+        new $__KMONKEY__9;
     }
 
     public function instantiateFromUsedSubnamespace()
     {$__KMONKEY__10=\Kahlan\Plugin\Monkey::patched(null, 'sub\name\space\MyClass', null, $__KMONKEY__10__);
-        (new $__KMONKEY__10);
+        new $__KMONKEY__10;
     }
 
     public function instantiateVariable()
@@ -90,29 +90,29 @@ class Example extends \Kahlan\Fixture\Parent
 
     public function staticCall()
     {$__KMONKEY__11=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__, 'Debugger', null, $__KMONKEY__11__);
-        return ($__KMONKEY__11::trace());
+        return $__KMONKEY__11::trace();
     }
 
     public function staticCallFromUsed()
     {$__KMONKEY__12=\Kahlan\Plugin\Monkey::patched(null, 'Kahlan\Util\Text', null, $__KMONKEY__12__);
-        return ($__KMONKEY__12::hash((object) 'hello'));
+        return $__KMONKEY__12::hash((object) 'hello');
     }
 
     public function staticCallAndinstantiation() {$__KMONKEY__13=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__, 'Parser', null, $__KMONKEY__13__);
-        $node =( $__KMONKEY__13::parse($string));
-        return (new $__KMONKEY__13($node));
+        $node = $__KMONKEY__13::parse($string);
+        return new $__KMONKEY__13($node);
     }
 
     public function staticCallWithComplexArguments()
     {$__KMONKEY__14=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__, 'Filters', null, $__KMONKEY__14__);
-        return ($__KMONKEY__14::run($this, 'filterable', func_get_args(), function($next, $message) {
+        return $__KMONKEY__14::run($this, 'filterable', func_get_args(), function($next, $message) {
             return "Hello {$message}";
-        }));
+        });
     }
 
     public function staticCallWithNestedComplexArguments()
     {$__KMONKEY__15=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__, 'Set', null, $__KMONKEY__15__);
-        return (($__KMONKEY__15::extend(parent::_handlers(), [
+        return ($__KMONKEY__15::extend(parent::_handlers(), [
             'datasource' => [
                 'decimal' => function($value, $options = []) {
                     $options += ['precision' => 2, 'decimal' => '.', 'separator' => ''];
@@ -131,7 +131,7 @@ class Example extends \Kahlan\Fixture\Parent
                     } else {
                         $timestamp = $__KMONKEY__16($value) ? $value : $gmstrtotime($value);
                         if ($timestamp < 0 || $timestamp === false) {
-                            throw (new $__KMONKEY__17("Invalid date `{$value}`, can't be parsed."));
+                            throw new $__KMONKEY__17("Invalid date `{$value}`, can't be parsed.");
                         }
                         $date = $__KMONKEY__18($options['format'], $timestamp);
                     }
@@ -150,7 +150,7 @@ class Example extends \Kahlan\Fixture\Parent
                     return $this->dialect()->quote((string) $__KMONKEY__20($value));
                 }
             ]
-        ]));
+        ]);
     }
 
     public function noIndent()
@@ -178,7 +178,7 @@ $__KMONKEY__21();
                 return $__KMONKEY__24($__KMONKEY__23('\\', '/', $self));
             },
             'source' => function($self) {$__KMONKEY__25=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__, 'Inflector', null, $__KMONKEY__25__);
-                return ($__KMONKEY__25::tableize($self::meta('name')));
+                return $__KMONKEY__25::tableize($self::meta('name'));
             },
             'title' => function($self) {$__KMONKEY__26=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__ , null, 'array_merge', $__KMONKEY__26__);
                 $titleKeys = array('title', 'name');
@@ -190,7 +190,7 @@ $__KMONKEY__21();
 
     public function subChild() {$__KMONKEY__27=\Kahlan\Plugin\Monkey::patched(__NAMESPACE__, 'RecursiveIteratorIterator', null, $__KMONKEY__27__);
         if ($options['recursive']) {
-            $worker = (new $__KMONKEY__27($worker, $iteratorFlags));
+            $worker = new $__KMONKEY__27($worker, $iteratorFlags);
         }
     }
 
@@ -278,7 +278,7 @@ $__KMONKEY__21();
         WHILE(FALSE){};
         TRUE XOR(TRUE);
     }
-}(
+}
 
-$__KMONKEY__28::reset());
+$__KMONKEY__28::reset();
 $time = $__KMONKEY__29();

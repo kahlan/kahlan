@@ -269,8 +269,11 @@ class Monkey
                 if (!$isClass) {
                     $replace = $match[2][0] . $variable . $match[4][0];
                 } else {
-                    $this->_addClosingParenthesis($pos + $len, $index, $parent);
-                    $replace = Suite::$PHP >= 7 ? '(' . $substitute . '?' . $substitute . ':' : '(';
+                    if (Suite::$PHP >= 7 && $this->_addClosingParenthesis($pos + $len, $index, $parent)) {
+                        $replace = Suite::$PHP >= 7 ? '(' . $substitute . '?' . $substitute . ':' : '(';
+                    } else {
+                        $replace = '';
+                    }
                     $replace .= $match[1][0] . $match[2][0] . $variable . $match[4][0];
                 }
                 $node->body = substr_replace($node->body, $replace, $pos, $len);
