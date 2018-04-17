@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.1.2 (2018-04-17)
+
+  * **Bugfix:** Fix a JIT issue introduced in 4.1.0 for PHP <= 5.6.
+
 ## 4.1.1 (2018-04-07)
 
   * **Bugfix:** Fix a stubbing issue introduced in 4.1.0.
