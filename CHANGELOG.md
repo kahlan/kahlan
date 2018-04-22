@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.1.3 (2018-04-22)
+
+  * **Bugfix:** Fix a mocking issue introduced in 4.1.0.
+
 ## 4.1.2 (2018-04-17)
 
   * **Bugfix:** Fix a JIT issue introduced in 4.1.0 for PHP <= 5.6.
