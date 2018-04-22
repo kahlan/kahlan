@@ -49,6 +49,13 @@ class Method extends \Kahlan\Plugin\Call\Message
     protected $_return = null;
 
     /**
+     * Boolean indicating if a method must act as a replacement.
+     *
+     * @var array
+     */
+    protected $_actsAsAReplacement = false;
+
+    /**
      * The Constructor.
      *
      * @param array $config The options array, possible options are:
@@ -132,7 +139,11 @@ class Method extends \Kahlan\Plugin\Call\Message
         if ($this->reference()) {
             $this->_substitutes = func_get_args();
         } else {
-            call_user_func_array([$this, 'andRun'], func_get_args());
+            $this->_actsAsAReplacement = true;
+            if (func_num_args() !== 1) {
+                throw new Exception("Only one hard method substitution is allowed through `toBe()`.");
+            }
+            $this->_closures = func_get_args();
         }
     }
 
@@ -195,8 +206,8 @@ class Method extends \Kahlan\Plugin\Call\Message
      *
      * @return boolean
      */
-    public function isLazy()
+    public function actsAsAReplacement()
     {
-        return $this->_args !== null || count($this->_returns) > 1 || count($this->_closures) > 1;
+        return $this->_actsAsAReplacement;
     }
 }

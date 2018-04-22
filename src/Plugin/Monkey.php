@@ -71,7 +71,7 @@ class Monkey
             if (!Suite::registered($name)) {
                 return $name;
             }
-        } elseif (!$method->isLazy()) {
+        } elseif ($method->actsAsAReplacement()) {
             return $method->closure();
         }
 

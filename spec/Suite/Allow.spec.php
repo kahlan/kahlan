@@ -53,10 +53,31 @@ describe("Allow", function () {
     it("monkey patches a function", function () {
 
         $mon = new Mon();
+        allow('time')->toBeCalled()->andReturn(123);
+        expect('time')->toBeCalled()->once();
+        expect($mon->time())->toBe(123);
+
+    });
+
+    it("softly monkey patches a function with a closure", function () {
+
+        $mon = new Mon();
+        allow('time')->toBeCalled()->andRun(function () {
+            return 123;
+        });
+        expect('time')->toBeCalled()->once();
+        expect($mon->time())->toBe(123);
+
+    });
+
+    it("hardly monkey patches a function with a closure", function () {
+
+        $mon = new Mon();
         allow('time')->toBe(function () {
             return 123;
         });
         expect($mon->time())->toBe(123);
+        expect('time')->not->toBeCalled();
 
     });
 
@@ -549,16 +570,26 @@ describe("Allow", function () {
 
         });
 
-        it("expects stubbed methods to be stubbed as expected using closures", function () {
+        it("expects stubbed methods to be stubbed as expected using a closure", function () {
 
             $mon = new Mon();
             allow('time')->toBe(function () {
                 return 123;
-            }, function () {
-                return 456;
             });
             expect($mon->time())->toBe(123);
-            expect($mon->time())->toBe(456);
+
+        });
+
+        it("expects hard substitution only accept one closure as parameter", function () {
+
+            expect(function () {
+                $mon = new Mon();
+                allow('time')->toBe(function () {
+                    return 123;
+                }, function () {
+                    return 456;
+                });
+            })->toThrow(new Exception("Only one hard method substitution is allowed through `toBe()`."));
 
         });
 
@@ -580,7 +611,7 @@ describe("Allow", function () {
         });
 
         it('supports parameter passed by reference', function () {
-            allow('exec')->toBeCalled()->andRun(function ($cmd, &$logs, &$status) {
+            allow('exec')->toBe(function ($cmd, &$logs, &$status) {
                 $status = 255;
             });
             $mon = new Mon();
