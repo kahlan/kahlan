@@ -150,7 +150,7 @@ class Example extends \Kahlan\Fixture\Parent
                     return $this->dialect()->quote((string) json_encode($value));
                 }
             ]
-        ]);
+        ]));
     }
 
     public function noIndent()
@@ -277,6 +277,15 @@ rand();
         UNSET($A);
         WHILE(FALSE){};
         TRUE XOR(TRUE);
+    }
+
+    public function ignoreBackslashedControlStructure()
+    {
+        \compact();
+        \extract();
+        \func_get_arg();
+        \func_get_args();
+        \func_num_args();
     }
 }
 

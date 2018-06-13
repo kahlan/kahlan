@@ -150,7 +150,7 @@ class Example extends \Kahlan\Fixture\Parent
                     return $this->dialect()->quote((string) $__KMONKEY__20($value));
                 }
             ]
-        ]));
+        ])));
     }
 
     public function noIndent()
@@ -277,6 +277,15 @@ $__KMONKEY__21();
         UNSET($A);
         WHILE(FALSE){};
         TRUE XOR(TRUE);
+    }
+
+    public function ignoreBackslashedControlStructure()
+    {
+        \compact();
+        \extract();
+        \func_get_arg();
+        \func_get_args();
+        \func_num_args();
     }
 }($__KMONKEY__28__?$__KMONKEY__28__:
 
