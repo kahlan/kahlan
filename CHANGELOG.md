@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 4.1.4 (2018-06-15)
+
+  * **Change:** Remove official support of HHVM.
+  * **Bugfix:** Fix a leading backslash issue with introspection functions.
+
 ## 4.1.3 (2018-04-22)
 
   * **Bugfix:** Fix a mocking issue introduced in 4.1.0.
