@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.1.5 (2018-06-26)
+
+  * **Add:** Allow to override the return status.
+
 ## 4.1.4 (2018-06-15)
 
   * **Change:** Remove official support of HHVM.
