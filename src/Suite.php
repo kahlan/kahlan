@@ -368,14 +368,18 @@ class Suite
     }
 
     /**
-     * Gets exit status code according passed results.
+     * Gets/sets exit status code according passed results.
      *
-     * @param  integer $status If set force a specific status to be retruned.
+     * @param  integer $status If set force a specific status to be returned.
      *
      * @return boolean         Returns `0` if no error occurred, `-1` otherwise.
      */
-    public function status()
+    public function status($status = null)
     {
+        if (func_num_args()) {
+            $this->_status = $status;
+            return $this;
+        }
         if ($this->root()->focused()) {
             return -1;
         }

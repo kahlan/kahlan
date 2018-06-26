@@ -570,7 +570,7 @@ EOD;
         protected function _run()
         {
             return Filters::run($this, 'run', [], function ($chain) {
-                $this->suite()->run([
+                return $this->suite()->run([
                     'reporters' => $this->reporters(),
                     'autoclear' => $this->commandLine()->get('autoclear'),
                     'ff'        => $this->commandLine()->get('ff')

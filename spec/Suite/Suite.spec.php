@@ -1168,6 +1168,22 @@ describe("Suite", function () {
 
         });
 
+        it("forces a specified return status", function () {
+
+            $describe = $this->root->describe("", function () {
+                $this->it("passes", function () {
+                    $this->expect(true)->toBe(true);
+                });
+            });
+
+            $this->suite->run();
+            expect($this->suite->status())->toBe(0);
+
+            $this->suite->status(-1);
+            expect($this->suite->status())->toBe(-1);
+
+        });
+
     });
 
     describe("->run()", function () {
