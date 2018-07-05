@@ -114,7 +114,7 @@ class Collector
             'followSymlinks' => true,
             'recursive'      => true,
             'base'           => getcwd(),
-            'hasVolume'      => strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'
+            'hasVolume'      => 0 === stripos(PHP_OS, 'WIN')
         ];
         $config += $defaults;
 
