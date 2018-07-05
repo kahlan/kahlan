@@ -237,6 +237,7 @@ rand();
         unset($a);
         while(false){};
         true xor(true);
+        yield (int) $value;
     }
 
     public function ignoreControlStructureInUpperCase()
@@ -277,6 +278,7 @@ rand();
         UNSET($A);
         WHILE(FALSE){};
         TRUE XOR(TRUE);
+        YIELD (int) $value;
     }
 
     public function ignoreBackslashedControlStructure()

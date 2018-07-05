@@ -51,7 +51,8 @@ class Monkey
         'throw'           => true,
         'unset'           => true,
         'while'           => true,
-        'xor'             => true
+        'xor'             => true,
+        'yield'           => true
     ];
 
     /**

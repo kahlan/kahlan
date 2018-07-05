@@ -237,6 +237,7 @@ $__KMONKEY__21();
         unset($a);
         while(false){};
         true xor(true);
+        yield (int) $value;
     }
 
     public function ignoreControlStructureInUpperCase()
@@ -277,6 +278,7 @@ $__KMONKEY__21();
         UNSET($A);
         WHILE(FALSE){};
         TRUE XOR(TRUE);
+        YIELD (int) $value;
     }
 
     public function ignoreBackslashedControlStructure()
