@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.1.6 (2018-07-05)
+
+  * **Bugfix:** Ignore yield statement during JIT patching.
+
 ## 4.1.5 (2018-06-26)
 
   * **Add:** Allow to override the return status.
