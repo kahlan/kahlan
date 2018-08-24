@@ -55,7 +55,7 @@ class CodeCoverage
         );
     }
 
-    public function multilineExpresions()
+    public function multilineExpressions()
     {
         $bool = (
             (true && true)
@@ -76,5 +76,16 @@ class CodeCoverage
                 isset($bool) || false
             )
         );
+    }
+
+    public function multilineStrings()
+    {
+        $quote = '
+            quoted string
+        ';
+
+        $doubleQuote = '
+            double quoted string
+        ';
     }
 }

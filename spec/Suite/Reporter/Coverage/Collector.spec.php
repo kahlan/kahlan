@@ -69,6 +69,38 @@ describe("Collector", function () {
             ]);
         });
 
+        it("exports multiline expressions", function () {
+
+            $code = new CodeCoverage();
+
+            $this->collector->start();
+            $code->multilineExpressions();
+            $this->collector->stop();
+
+            $actual = $this->collector->export();
+
+            expect(array_filter(current($actual)))->toBe([
+                67 => 1,
+                77 => 1
+            ]);
+        });
+
+        it("exports multiline strings", function () {
+
+            $code = new CodeCoverage();
+
+            $this->collector->start();
+            $code->multilineStrings();
+            $this->collector->stop();
+
+            $actual = $this->collector->export();
+
+            expect(array_filter(current($actual)))->toBe([
+                84 => 1,
+                88 => 1
+            ]);
+        });
+
         it("exports covered lines and append coverage to parent's coverage data", function () {
 
             $code = new CodeCoverage();

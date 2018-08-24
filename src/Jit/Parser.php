@@ -79,7 +79,7 @@ class Parser
         $T_YIELD = defined('HHVM_VERSION') ? 381 : 267;
 
         $blockStartLines = [];
-        $blockStartLine = [];
+        $blockStartLine = null;
 
         while ($token = $this->_stream->current(true)) {
             switch ($token[0]) {
@@ -95,6 +95,7 @@ class Parser
                     $this->_states['body'] .= $token[1];
                     $this->_codeNode('open');
                     $this->_states['php'] = true;
+                    $blockStartLine = null;
                     break;
                 case T_CLOSE_TAG:
                     $this->_codeNode();
@@ -107,6 +108,9 @@ class Parser
                     $this->_commentNode();
                     break;
                 case T_CONSTANT_ENCAPSED_STRING:
+                    if ($this->_states['lines']) {
+                        $blockStartLine = $this->_states['num'];
+                    }
                     $this->_stringNode('');
                     break;
                 case T_START_HEREDOC:
@@ -119,9 +123,11 @@ class Parser
                 case '{':
                     $this->_states['body'] .= $token[0];
                     $this->_states['current'] = $this->_codeNode();
+                    $blockStartLine = null;
                     break;
                 case '}':
                     $this->_closeCurly();
+                    $blockStartLine = null;
                     break;
                 case '(':
                 case '[':
@@ -136,23 +142,15 @@ class Parser
                     $this->_states['body'] .= $token[0];
                     if ($this->_states['lines']) {
                         $char = $token[0] === ']' ? '[' : '(';
-                        $blockStartLine[$token[0]] = array_pop($blockStartLines[$char]);
+                        $blockStartLine = array_pop($blockStartLines[$char]);
                     }
                     break;
                 case ';':
                     $this->_states['body'] .= $token[1];
                     $node = $this->_codeNode(null, true);
-                    if ($this->_states['lines']) {
-                        $body = $node->body;
-                        $len = strlen($body);
-                        for ($i = $len - 1; $i >= 0; $i--) {
-                            if ($body[$i] === ']' || $body[$i] === ')') {
-                                if (isset($blockStartLine[$body[$i]])) {
-                                    $node->lines['begin'] = $blockStartLine[$body[$i]];
-                                }
-                                break;
-                            }
-                        }
+                    if ($this->_states['lines'] && $blockStartLine !== null) {
+                        $node->lines['begin'] = $blockStartLine;
+                        $blockStartLine = null;
                     }
                     break;
                 case T_DECLARE:
@@ -204,6 +202,11 @@ class Parser
                     $this->_codeNode();
                     $this->_states['body'] .= $token[1] . $this->_stream->next([';']);
                     $this->_codeNode(null, false);
+                    $blockStartLine = null;
+                    break;
+                case ':':
+                    $this->_states['body'] .= $token[1];
+                    $blockStartLine = null;
                     break;
                 default:
                     $this->_states['body'] .= $token[1];
