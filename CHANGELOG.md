@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.1.7 (2018-08-24)
+
+  * **Bugfix:** New attempt to improve code coverage accuracy.
+
 ## 4.1.6 (2018-07-05)
 
   * **Bugfix:** Ignore yield statement during JIT patching.
