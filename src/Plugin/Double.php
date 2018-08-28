@@ -45,10 +45,12 @@ class Double
      * Creates a polyvalent instance.
      *
      * @param  array  $options Array of options. Options are:
-     *                         - `'class'`   _string_: the fully-namespaced class name.
-     *                         - `'extends'` _string_: the fully-namespaced parent class name.
-     *                         - `'args'`    _array_:  arguments to pass to the constructor.
-     *                         - `'methods'` _string_: override the method defined.
+     *                         - `'class'`       string: the fully-namespaced class name.
+     *                         - `'extends'`     string: the fully-namespaced parent class name.
+     *                         - `'args'`        array : arguments to pass to the constructor.
+     *                         - `'methods'`     string: override given methods with empty functions.
+     *                         - `'stubMethods'` array : override given methods to return given values, e.g. ['foo' => 'bar'].
+     *                         - `'fakeMethods'` array : override given methods to run given callback, e.g. ['foo' => function () { return 'bar'; }].
      * @return object          The created instance.
      */
     public static function instance($options = [])
@@ -60,6 +62,16 @@ class Double
             $instance = $refl->newInstanceArgs($options['args']);
         } else {
             $instance = new $class();
+        }
+        if (isset($options['stubMethods']) && is_array($options['stubMethods'])) {
+            foreach ($options['stubMethods'] as $name => $return) {
+                allow($instance)->toReceive($name)->andReturn($return);
+            }
+        }
+        if (isset($options['fakeMethods']) && is_array($options['fakeMethods'])) {
+            foreach ($options['fakeMethods'] as $name => $callback) {
+                allow($instance)->toReceive($name)->andRun($callback);
+            }
         }
         return $instance;
     }
