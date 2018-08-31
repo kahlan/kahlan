@@ -45,12 +45,12 @@ class Double
      * Creates a polyvalent instance.
      *
      * @param  array  $options Array of options. Options are:
-     *                         - `'class'`       string: the fully-namespaced class name.
-     *                         - `'extends'`     string: the fully-namespaced parent class name.
-     *                         - `'args'`        array : arguments to pass to the constructor.
-     *                         - `'methods'`     string: override given methods with empty functions.
-     *                         - `'stubMethods'` array : override given methods to return given values, e.g. ['foo' => 'bar'].
-     *                         - `'fakeMethods'` array : override given methods to run given callback, e.g. ['foo' => function () { return 'bar'; }].
+     *                         - `'class'`       string  : the fully-namespaced class name.
+     *                         - `'extends'`     string  : the fully-namespaced parent class name.
+     *                         - `'args'`        array   : arguments to pass to the constructor.
+     *                         - `'methods'`     string[]: override given methods with empty functions.
+     *                         - `'stubMethods'` array   : override given methods to return given values, e.g. ['foo' => 'bar'].
+     *                         - `'fakeMethods'` array   : override given methods to run given callback, e.g. ['foo' => function () { return 'bar'; }].
      * @return object          The created instance.
      */
     public static function instance($options = [])
