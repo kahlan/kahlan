@@ -54,7 +54,7 @@ describe("Double", function () {
 
     });
 
-    describe("::create()", function () {
+    describe("::instance()", function () {
 
         beforeAll(function () {
             $this->is_method_exists = function ($instance, $method, $type = "public") {
@@ -245,6 +245,42 @@ describe("Double", function () {
             $double = Double::instance();
             $double->message();
             expect($double)->not->toReceive('message');
+
+        });
+
+        it("stubs methods with return values via 'stubMethods' option", function () {
+
+            $anotherDouble = Double::instance();
+            $double = Double::instance(['stubMethods' => [
+                'foo' => ['this', 'is', 'foo'],
+                'bar' => 'Hello Bar!',
+                'baz' => $anotherDouble
+            ]]);
+
+            expect($double->foo())->toBe(['this', 'is', 'foo']);
+            expect($double->bar())->toBe('Hello Bar!');
+            expect($double->baz())->toBe($anotherDouble);
+
+        });
+
+        it("stubs methods with callbacks via 'fakeMethods' option", function () {
+
+            $anotherDouble = Double::instance();
+            $double = Double::instance(['fakeMethods' => [
+                'foo' => function () {
+                    return ['this', 'is', 'foo'];
+                },
+                'bar' => function () {
+                    return 'Hello Bar!';
+                },
+                'baz' => function () use ($anotherDouble) {
+                    return $anotherDouble;
+                }
+            ]]);
+
+            expect($double->foo())->toBe(['this', 'is', 'foo']);
+            expect($double->bar())->toBe('Hello Bar!');
+            expect($double->baz())->toBe($anotherDouble);
 
         });
 
