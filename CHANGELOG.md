@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.1.8 (2018-09-01)
+
+  * **Add:** Add `'fakeMethods'` and `'stubMethods'` options to `Double::instance()`.
+
 ## 4.1.7 (2018-08-24)
 
   * **Bugfix:** New attempt to improve code coverage accuracy.
