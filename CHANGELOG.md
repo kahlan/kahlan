@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.2.0 (2018-09-20)
+
+  * **Change:** Make sure specs are runned in the same order whatever the filesystem is.
+
 ## 4.1.8 (2018-09-01)
 
   * **Add:** Add `'fakeMethods'` and `'stubMethods'` options to `Double::instance()`.
