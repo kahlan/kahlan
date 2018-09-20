@@ -14,7 +14,6 @@ use Kahlan\Analysis\Debugger;
 
 abstract class Block
 {
-
     /**
      * The block type.
      *
@@ -100,6 +99,13 @@ abstract class Block
     protected $_summary = null;
 
     /**
+     * The block UUID.
+     *
+     * @var string
+     */
+    protected $_uuid = null;
+
+    /**
      * The Constructor.
      *
      * @param array $config The block config array. Options are:
@@ -141,6 +147,11 @@ abstract class Block
         ]);
 
         $this->_summary = $suite->summary();
+
+        $messages = $this->messages();
+        array_shift($messages);
+        $message = trim(join(', ', $messages));
+        $this->_uuid = md5($message);
 
         if ($this->_type === 'focus') {
             $this->_emitFocus();
@@ -348,6 +359,16 @@ abstract class Block
     public function summary()
     {
         return $this->_summary;
+    }
+
+    /**
+     * Return specs UUID.
+     *
+     * @return string
+     */
+    public function uuid()
+    {
+        return $this->_uuid;
     }
 
     /**

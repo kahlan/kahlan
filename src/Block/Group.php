@@ -49,7 +49,11 @@ class Group extends \Kahlan\Block
      */
     public function children()
     {
-        return $this->_children;
+        $children = $this->_children;
+        if ($this->suite()->root() === $this) {
+            ksort($children);
+        }
+        return $children;
     }
 
     /* Adds a group/class related spec.
@@ -65,8 +69,12 @@ class Group extends \Kahlan\Block
         $parent = $this;
         $timeout = $timeout !== null ? $timeout : $this->timeout();
         $group = new Group(compact('message', 'closure', 'suite', 'parent', 'timeout', 'type'));
-
-        return $this->_children[] = $group;
+        if ($suite->root() === $this) {
+            $this->_children[$group->uuid()] = $group;
+        } else {
+            $this->_children[] = $group;
+        }
+        return $group;
     }
 
     /**
@@ -172,7 +180,7 @@ class Group extends \Kahlan\Block
      */
     protected function _execute()
     {
-        foreach ($this->_children as $child) {
+        foreach ($this->children() as $child) {
             if ($this->suite()->failfast()) {
                 break;
             }
@@ -258,7 +266,7 @@ class Group extends \Kahlan\Block
      */
     public function broadcastFocus()
     {
-        foreach ($this->_children as $child) {
+        foreach ($this->children() as $child) {
             $child->type('focus');
             if ($child instanceof Group) {
                 $child->broadcastFocus();
