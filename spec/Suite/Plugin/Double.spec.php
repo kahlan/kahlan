@@ -577,8 +577,7 @@ EOD;
 
             $result = Double::generate([
                 'class'      => 'Kahlan\Spec\Plugin\Double\Double',
-                'implements' => ['Kahlan\Spec\Fixture\Plugin\Double\DozInterface'],
-                'magicMethods' => false
+                'implements' => ['Kahlan\Spec\Fixture\Plugin\Double\DozInterface']
             ]);
 
             $expected = <<<EOD

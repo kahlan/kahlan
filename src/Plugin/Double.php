@@ -130,7 +130,7 @@ class Double
         ];
         $options += $defaults;
 
-        if ($options['extends']) {
+        if ($options['extends'] || $options['implements']) {
             $options += ['magicMethods' => false];
         } else {
             $options += ['magicMethods' => true];
