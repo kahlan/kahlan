@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.3.0 (2018-09-21)
+
+  * **Change:** When `'implements'` options if sets, default magic methods added by kahlan are not included anymore in created doubles.
+
 ## 4.2.0 (2018-09-20)
 
   * **Change:** Make sure specs are runned in the same order whatever the filesystem is.
