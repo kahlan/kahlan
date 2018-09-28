@@ -330,11 +330,11 @@ class Suite
 
     protected function _dispatch($spec)
     {
-        $uuid = $spec->uuid();
+        $messages = $spec->messages();
+        array_shift($messages);
+        $message = trim(join(', ', $messages));
+        $uuid = md5($message);
         if (isset($this->_uuids[$uuid])) {
-            $messages = $spec->messages();
-            array_shift($messages);
-            $message = trim(join(', ', $messages));
             $spec->log()->type('errored');
             $spec->log()->exception(new RuntimeException("Error specifications must have a unique description message, duplicates of `'{$message}'` found."));
         }
