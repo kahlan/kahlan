@@ -444,6 +444,8 @@ EOD;
                     'exclude' => '*/.*',
                     'type' => 'file'
                 ]);
+                sort($files);
+
                 foreach ($files as $file) {
                     require $file;
                 }
