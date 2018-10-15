@@ -35,9 +35,15 @@ class Text
         $options += ['before' => '{:', 'after' => '}', 'escape' => '\\', 'clean' => false];
 
         extract($options);
+        /**
+         * @var string $before
+         * @var string $after
+         * @var string $escape
+         * @var bool $clean
+         */
 
         $begin = $escape ? '(?<!' . preg_quote($escape) . ')' . preg_quote($before) : preg_quote($before);
-        $end = preg_quote($options['after']);
+        $end = preg_quote($after);
 
         foreach ($data as $placeholder => $val) {
             $val = (is_array($val) || is_resource($val) || $val instanceof Closure) ? '' : $val;
@@ -47,7 +53,7 @@ class Text
         if ($escape) {
             $str = preg_replace('/' . preg_quote($escape) . preg_quote($before) . '/', $before, $str);
         }
-        return $options['clean'] ? static::clean($str, $options) : $str;
+        return $clean ? static::clean($str, $options) : $str;
     }
 
     /**
