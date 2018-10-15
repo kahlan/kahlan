@@ -100,7 +100,7 @@ class Text
     /**
      * Generate a string representation of arbitrary data.
      *
-     * @param  string $value   The data to dump in string.
+     * @param  mixed $value   The data to dump in string.
      * @param  array  $options Available options are:
      *                         - `'quote'` : dump will quote string data if true (default `true`).
      *                         - `'object'`: dump options for objects.
