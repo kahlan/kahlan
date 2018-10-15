@@ -183,8 +183,10 @@ class Text
     /**
      * Generate a string representation of an object.
      *
-     * @param  array  $value The object.
-     * @return string        The dumped string.
+     * @param object $value The object.
+     * @param array $options Array of options. Currently one option is supported: $options['object']['method']. It is a object's method which will return it's string representation
+     *
+     * @return string The dumped string.
      */
     protected static function _objectToString($value, $options)
     {
@@ -211,7 +213,9 @@ class Text
     /**
      * Dump some scalar data using a string representation
      *
-     * @param  mixed  $value The scalar data to dump
+     * @param mixed $value The scalar data to dump
+     * @param string $quote The quote character to use, default is "
+     *
      * @return string        The dumped string.
      */
     public static function dump($value, $quote = '"')
