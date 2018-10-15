@@ -168,6 +168,11 @@ class Text
         }
 
         extract($options['array']);
+        /**
+         * @var string $char
+         * @var int $indent
+         * @var int $multiplier
+         */
         $comma = false;
 
         $tab = str_repeat($char, $indent * $multiplier);
