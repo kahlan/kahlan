@@ -84,6 +84,14 @@ class Text
         ];
 
         extract($options);
+        /**
+         * @var string $before
+         * @var string $after
+         * @var string $escape
+         * @var string $word
+         * @var string $gap
+         * @var string $replacement
+         */
 
         $callback = function ($matches) use ($replacement) {
             if (isset($matches[2]) && isset($matches[3]) && trim($matches[2]) === trim($matches[3])) {
