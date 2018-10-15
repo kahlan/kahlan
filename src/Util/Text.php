@@ -79,9 +79,6 @@ class Text
 
         extract($options);
 
-        $begin = $escape ? '(?<!' . preg_quote($escape) . ')' . preg_quote($before) : preg_quote($before);
-        $end = preg_quote($options['after']);
-
         $callback = function ($matches) use ($replacement) {
             if (isset($matches[2]) && isset($matches[3]) && trim($matches[2]) === trim($matches[3])) {
                 if (trim($matches[2]) || ($matches[2] && $matches[3])) {
