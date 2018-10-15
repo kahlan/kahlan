@@ -142,13 +142,14 @@ class Text
     /**
      * Generate a string representation of an array.
      *
-     * @param  array  $datas   An array.
+     * @param  array  $data An array.
      * @param  array  $options An array of options.
+     *
      * @return string          The dumped string.
      */
-    protected static function _arrayToString($datas, $options)
+    protected static function _arrayToString($data, $options)
     {
-        if (empty($datas)) {
+        if (empty($data)) {
             return '[]';
         }
 
@@ -159,7 +160,7 @@ class Text
 
         $string = "[\n";
 
-        foreach ($datas as $key => $value) {
+        foreach ($data as $key => $value) {
             if ($comma) {
                 $string .= ",\n";
             }
