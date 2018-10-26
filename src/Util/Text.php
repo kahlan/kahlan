@@ -35,9 +35,15 @@ class Text
         $options += ['before' => '{:', 'after' => '}', 'escape' => '\\', 'clean' => false];
 
         extract($options);
+        /**
+         * @var string $before
+         * @var string $after
+         * @var string $escape
+         * @var bool $clean
+         */
 
         $begin = $escape ? '(?<!' . preg_quote($escape) . ')' . preg_quote($before) : preg_quote($before);
-        $end = preg_quote($options['after']);
+        $end = preg_quote($after);
 
         foreach ($data as $placeholder => $val) {
             $val = (is_array($val) || is_resource($val) || $val instanceof Closure) ? '' : $val;
@@ -47,7 +53,7 @@ class Text
         if ($escape) {
             $str = preg_replace('/' . preg_quote($escape) . preg_quote($before) . '/', $before, $str);
         }
-        return $options['clean'] ? static::clean($str, $options) : $str;
+        return $clean ? static::clean($str, $options) : $str;
     }
 
     /**
@@ -78,9 +84,14 @@ class Text
         ];
 
         extract($options);
-
-        $begin = $escape ? '(?<!' . preg_quote($escape) . ')' . preg_quote($before) : preg_quote($before);
-        $end = preg_quote($options['after']);
+        /**
+         * @var string $before
+         * @var string $after
+         * @var string $escape
+         * @var string $word
+         * @var string $gap
+         * @var string $replacement
+         */
 
         $callback = function ($matches) use ($replacement) {
             if (isset($matches[2]) && isset($matches[3]) && trim($matches[2]) === trim($matches[3])) {
@@ -100,7 +111,7 @@ class Text
     /**
      * Generate a string representation of arbitrary data.
      *
-     * @param  string $value   The data to dump in string.
+     * @param  mixed $value   The data to dump in string.
      * @param  array  $options Available options are:
      *                         - `'quote'` : dump will quote string data if true (default `true`).
      *                         - `'object'`: dump options for objects.
@@ -145,24 +156,30 @@ class Text
     /**
      * Generate a string representation of an array.
      *
-     * @param  array  $datas   An array.
+     * @param  array  $data An array.
      * @param  array  $options An array of options.
+     *
      * @return string          The dumped string.
      */
-    protected static function _arrayToString($datas, $options)
+    protected static function _arrayToString($data, $options)
     {
-        if (empty($datas)) {
+        if (empty($data)) {
             return '[]';
         }
 
         extract($options['array']);
+        /**
+         * @var string $char
+         * @var int $indent
+         * @var int $multiplier
+         */
         $comma = false;
 
         $tab = str_repeat($char, $indent * $multiplier);
 
         $string = "[\n";
 
-        foreach ($datas as $key => $value) {
+        foreach ($data as $key => $value) {
             if ($comma) {
                 $string .= ",\n";
             }
@@ -183,8 +200,10 @@ class Text
     /**
      * Generate a string representation of an object.
      *
-     * @param  array  $value The object.
-     * @return string        The dumped string.
+     * @param object $value The object.
+     * @param array $options Array of options. Currently one option is supported: $options['object']['method']. It is a object's method which will return it's string representation
+     *
+     * @return string The dumped string.
      */
     protected static function _objectToString($value, $options)
     {
@@ -211,7 +230,9 @@ class Text
     /**
      * Dump some scalar data using a string representation
      *
-     * @param  mixed  $value The scalar data to dump
+     * @param mixed $value The scalar data to dump
+     * @param string $quote The quote character to use, default is "
+     *
      * @return string        The dumped string.
      */
     public static function dump($value, $quote = '"')
