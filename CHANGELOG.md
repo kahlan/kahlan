@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.4.0 (2018-12-01)
+
+  * **Change:** Include `beforeAll()` coverage into coverage results.
+
 ## 4.3.1 (2018-09-28)
 
   * **Bugfix:** Fix a bug introduced in 4.2.0.
