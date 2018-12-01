@@ -185,9 +185,7 @@ class Group extends \Kahlan\Block
      */
     protected function _blockStart()
     {
-        if ($this->message()) {
-            $this->report('suiteStart', $this);
-        }
+        $this->report('suiteStart', $this);
         $this->runCallbacks('beforeAll', false);
     }
 
@@ -221,9 +219,7 @@ class Group extends \Kahlan\Block
             $this->summary()->log($this->log());
         }
 
-        if ($this->message()) {
-            $this->report('suiteEnd', $this);
-        }
+        $this->report('suiteEnd', $this);
     }
 
     /**

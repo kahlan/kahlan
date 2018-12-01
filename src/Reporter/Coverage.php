@@ -93,6 +93,16 @@ class Coverage extends Terminal
     }
 
     /**
+     * Callback called on a suite start.
+     *
+     * @param object $suite The suite instance.
+     */
+    public function suiteStart($suite = null)
+    {
+        $this->_collector->start();
+    }
+
+    /**
      * Callback called on a spec start.
      *
      * @param object $spec The spec object of the whole spec.
@@ -103,7 +113,6 @@ class Coverage extends Terminal
         if (!$this->enabled()) {
             return;
         }
-        $this->_collector->start();
     }
 
     /**
@@ -117,6 +126,15 @@ class Coverage extends Terminal
         if (!$this->enabled()) {
             return;
         }
+    }
+
+    /**
+     * Callback called after a suite execution.
+     *
+     * @param object $suite The suite instance.
+     */
+    public function suiteEnd($suite = null)
+    {
         $this->_collector->stop();
     }
 
@@ -397,8 +415,7 @@ class Coverage extends Terminal
 
         // Output the time to collect coverage
         $time = number_format($this->_time, 3);
-        $memory = $this->readableSize(memory_get_peak_usage() - $summary->memoryUsage());
-        $this->write("\nCoverage collected in {$time} seconds (using an additional {$memory}B)\n\n\n");
+        $this->write("\nCoverage collected in {$time} seconds\n\n\n");
     }
 
     /**

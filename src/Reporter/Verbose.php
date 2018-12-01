@@ -23,6 +23,9 @@ class Verbose extends Terminal
     public function suiteStart($suite = null)
     {
         $messages = $suite->messages();
+        if (count($messages) === 1) {
+            return;
+        }
         if (count($messages) === 2) {
             $this->write("\n");
         }
@@ -38,6 +41,9 @@ class Verbose extends Terminal
      */
     public function suiteEnd($suite = null)
     {
+        if (count($suite->messages()) === 1) {
+            return;
+        }
         $this->_indent--;
     }
 
