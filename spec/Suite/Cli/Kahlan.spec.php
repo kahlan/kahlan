@@ -175,6 +175,7 @@ Code Coverage Options:
 
 Test Execution Options:
 
+  --part=<integer>/<integer>          Part to execute, useful for parallel testing (default: `1/1`).
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
   --no-colors=<boolean>               To turn off colors. (default: `false`).
   --no-header=<boolean>               To turn off header. (default: `false`).

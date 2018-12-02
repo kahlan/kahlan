@@ -22,11 +22,32 @@ class Group extends \Kahlan\Block
     ];
 
     /**
+     * Indicates if the group has been loaded or not.
+     *
+     * @var boolean
+     */
+    protected $_loaded = false;
+
+    /**
      * The children array.
      *
      * @var Group[]|Specification[]
      */
     protected $_children = [];
+
+    /**
+     * Group statistics.
+     *
+     * @var array
+     */
+    protected $_stats = null;
+
+    /**
+     * Group state.
+     *
+     * @var array
+     */
+    protected $_enabled = true;
 
     /**
      * The Constructor.
@@ -50,6 +71,140 @@ class Group extends \Kahlan\Block
     public function children()
     {
         return $this->_children;
+    }
+
+    /**
+     * Builds the group stats.
+     *
+     * @return array The group stats.
+     */
+    public function stats()
+    {
+        if ($this->_stats !== null) {
+            return $this->_stats;
+        }
+
+        Suite::push($this);
+
+        $builder = function ($block) {
+            $block->load();
+            $normal = 0;
+            $inactive = 0;
+            $focused = 0;
+            $excluded = 0;
+
+            foreach ($block->children() as $child) {
+                if ($block->excluded()) {
+                    $child->type('exclude');
+                }
+                if ($child instanceof Group) {
+                    $result = $child->stats();
+                    if ($child->focused() && !$result['focused']) {
+                        $focused += $result['normal'];
+                        $excluded += $result['excluded'];
+                        $child->broadcastFocus();
+                    } if (!$child->enabled()) {
+                        $inactive += $result['normal'];
+                        $focused += $result['focused'];
+                        $excluded += $result['excluded'];
+                    } else {
+                        $normal += $result['normal'];
+                        $focused += $result['focused'];
+                        $excluded += $result['excluded'];
+                    }
+                } else {
+                    switch ($child->type()) {
+                        case 'exclude':
+                            $excluded++;
+                            break;
+                        case 'focus':
+                            $focused++;
+                            break;
+                        default:
+                            $normal++;
+                            break;
+                    }
+                }
+            }
+            return compact('normal', 'inactive', 'focused', 'excluded');
+        };
+
+        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
+            try {
+                $stats = $builder($this);
+            } catch (Throwable $exception) {
+                $this->log()->type('errored');
+                $this->log()->exception($exception);
+
+                $stats = [
+                    'normal' => 0,
+                    'focused' => 0,
+                    'excluded' => 0
+                ];
+            }
+        } else {
+            $stats = $builder($this);
+        }
+
+        Suite::pop();
+        return $stats;
+    }
+
+    /**
+     * Splits the specs in different partitions and only enable one.
+     *
+     * @param integer $index The partition index to enable.
+     * @param integer $total The total of partitions.
+     */
+    public function partition($index, $total)
+    {
+        $index = (integer) $index;
+        $total = (integer) $total;
+        if (!$index || !$total || $index > $total) {
+            throw new Exception("Invalid partition parameters: {$index}/{$total}");
+        }
+
+        $groups = [];
+        $partitions = [];
+        $partitionsTotal = [];
+
+        for ($i = 0; $i < $total; $i++) {
+            $partitions[$i] = [];
+            $partitionsTotal[$i] = 0;
+        }
+
+        $children = $this->children();
+
+        foreach ($children as $key => $child) {
+            $groups[$key] = $child->stats()['normal'];
+            $child->enabled(false);
+        }
+        asort($groups);
+
+        foreach ($groups as $key => $value) {
+            $i = array_search(min($partitionsTotal), $partitionsTotal);
+            $partitions[$i][] = $key;
+            $partitionsTotal[$i] += $groups[$key];
+        }
+
+        foreach ($partitions[$index - 1] as $key) {
+            $children[$key]->enabled(true);
+        }
+    }
+
+    /**
+     * Set/get the enable value.
+     *
+     * @param  string $enable The enable value.
+     * @return mixed
+     */
+    public function enabled($enable = null)
+    {
+        if (!func_num_args()) {
+            return $this->_enabled;
+        }
+        $this->_enabled = $enable;
+        return $this;
     }
 
     /* Adds a group/class related spec.
@@ -161,6 +316,10 @@ class Group extends \Kahlan\Block
      */
     public function load()
     {
+        if ($this->_loaded) {
+            return;
+        }
+        $this->_loaded = true;
         if (!$closure = $this->closure()) {
             return;
         }
@@ -172,6 +331,9 @@ class Group extends \Kahlan\Block
      */
     protected function _execute()
     {
+        if (!$this->enabled() && !$this->focused()) {
+            return;
+        }
         foreach ($this->_children as $child) {
             if ($this->suite()->failfast()) {
                 break;

@@ -48,13 +48,6 @@ class Suite
     protected $_root = null;
 
     /**
-     * Suite statistics.
-     *
-     * @var array
-     */
-    protected $_stats = null;
-
-    /**
      * The reporters container.
      *
      * @var Reporters
@@ -200,13 +193,18 @@ class Suite
         $defaults = [
             'reporters' => null,
             'autoclear' => [],
-            'ff'        => 0
+            'ff'        => 0,
+            'part'      => '1/1'
         ];
         $options += $defaults;
 
         $this->_reporters = $options['reporters'];
         $this->_autoclear = (array) $options['autoclear'];
         $this->_ff = $options['ff'];
+
+        list($index, $total) = explode('/', $options['part']) + [null, null];
+
+        $this->root()->partition($index, $total);
 
         $this->report('start', ['total' => $this->active()]);
 
@@ -249,89 +247,14 @@ class Suite
     }
 
     /**
-     * Builds the suite.
-     *
-     * @return array The suite stats.
-     */
-    public function stats($block = null)
-    {
-        $block = $block ?: $this->root();
-        static::push($block);
-        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
-            try {
-                $this->_stats = $this->_stats($block);
-            } catch (Throwable $exception) {
-                $block->log()->type('errored');
-                $block->log()->exception($exception);
-
-                $this->_stats = [
-                    'normal' => 0,
-                    'focused' => 0,
-                    'excluded' => 0
-                ];
-            }
-        } else {
-            $this->_stats = $this->_stats($block);
-        }
-        static::pop();
-        return $this->_stats;
-    }
-
-    /**
-     * Builds the suite.
-     *
-     * @return array The suite stats.
-     */
-    protected function _stats($block)
-    {
-        $block->load();
-
-        $normal = 0;
-        $focused = 0;
-        $excluded = 0;
-        foreach ($block->children() as $child) {
-            if ($block->excluded()) {
-                $child->type('exclude');
-            }
-            if ($child instanceof Group) {
-                $result = $this->stats($child);
-                if ($child->focused() && !$result['focused']) {
-                    $focused += $result['normal'];
-                    $excluded += $result['excluded'];
-                    $child->broadcastFocus();
-                } else {
-                    $normal += $result['normal'];
-                    $focused += $result['focused'];
-                    $excluded += $result['excluded'];
-                }
-            } else {
-                switch ($child->type()) {
-                    case 'exclude':
-                        $excluded++;
-                        break;
-                    case 'focus':
-                        $focused++;
-                        break;
-                    default:
-                        $normal++;
-                        break;
-                }
-            }
-        }
-        return compact('normal', 'focused', 'excluded');
-    }
-
-    /**
      * Gets number of total specs.
      *
      * @return integer
      */
     public function total()
     {
-        if ($this->_stats === null) {
-            $this->stats();
-        }
-        return $this->_stats['normal'] + $this->_stats['focused'] + $this->_stats['excluded'];
+        $stats = $this->root()->stats();
+        return $stats['normal'] + $stats['focused'] + $stats['excluded'];
     }
 
     /**
@@ -341,10 +264,8 @@ class Suite
      */
     public function active()
     {
-        if ($this->_stats === null) {
-            $this->stats();
-        }
-        return $this->root()->focused() ? $this->_stats['focused'] : $this->_stats['normal'];
+        $stats = $this->root()->stats();
+        return $this->root()->focused() ? $stats['focused'] : $stats['normal'];
     }
 
     /**

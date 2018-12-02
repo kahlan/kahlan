@@ -107,6 +107,7 @@ namespace Kahlan\Cli {
             $commandLine->option('grep',      ['default' => ['*Spec.php', '*.spec.php']]);
             $commandLine->option('coverage',  ['type'    => 'string']);
             $commandLine->option('config',    ['default' => 'kahlan-config.php']);
+            $commandLine->option('part',      ['type'    => 'string',  'default' => '1/1']);
             $commandLine->option('ff',        ['type'    => 'numeric', 'default' => 0]);
             $commandLine->option('cc',        ['type'    => 'boolean', 'default' => false]);
             $commandLine->option('no-colors', ['type'    => 'boolean', 'default' => false]);
@@ -297,6 +298,7 @@ Code Coverage Options:
 
 Test Execution Options:
 
+  --part=<integer>/<integer>          Part to execute, useful for parallel testing (default: `1/1`).
   --ff=<integer>                      Fast fail option. `0` mean unlimited (default: `0`).
   --no-colors=<boolean>               To turn off colors. (default: `false`).
   --no-header=<boolean>               To turn off header. (default: `false`).
@@ -575,6 +577,7 @@ EOD;
                 return $this->suite()->run([
                     'reporters' => $this->reporters(),
                     'autoclear' => $this->commandLine()->get('autoclear'),
+                    'part'      => trim($this->commandLine()->get('part')),
                     'ff'        => $this->commandLine()->get('ff')
                 ]);
             });
