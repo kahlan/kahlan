@@ -779,9 +779,9 @@ namespace {
             $exit('xit');
         }
         if (!function_exists('waitsFor')) {
-            function waitsFor($actual, $timeout = null)
+            function waitsFor($actual, $timeout = 60)
             {
-                return Specification::current()->waitsFor($actual, $timeout);
+                return Suite::current()->waitsFor($actual, $timeout);
             }
         } else {
             $exit('waitsFor');

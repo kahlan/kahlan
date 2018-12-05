@@ -2,12 +2,13 @@
 namespace Kahlan\Block;
 
 use Closure;
+use Throwable;
 use Exception;
 use Kahlan\Expectation;
 use Kahlan\ExternalExpectation;
+use Kahlan\Log;
 use Kahlan\Scope\Specification as Scope;
 use Kahlan\Suite;
-use Throwable;
 
 class Specification extends \Kahlan\Block
 {
@@ -40,6 +41,22 @@ class Specification extends \Kahlan\Block
     }
 
     /**
+     * Reset the specification.
+     *
+     * @return Expectation
+     */
+    public function reset()
+    {
+        $this->_passed = null;
+        $this->_expectations = [];
+        $this->_log = new Log([
+            'block' => $this,
+            'backtrace' => $this->_backtrace
+        ]);
+        return $this;
+    }
+
+    /**
      * The assert statement.
      *
      * @param array $config The config array. Options are:
@@ -63,7 +80,7 @@ class Specification extends \Kahlan\Block
      *
      * @return Expectation
      */
-    public function expect($actual, $timeout = -1)
+    public function expect($actual, $timeout = 0)
     {
         return $this->_expectations[] = new Expectation(compact('actual', 'timeout'));
     }

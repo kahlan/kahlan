@@ -88,7 +88,7 @@ class Expectation
      *
      * @var integer
      */
-    protected $_timeout = -1;
+    protected $_timeout = 0;
 
     /**
      * The delegated handler.
@@ -122,7 +122,7 @@ class Expectation
             'actual'  => null,
             'handler' => null,
             'type'    => 'Exception',
-            'timeout' => -1
+            'timeout' => 0
         ];
         $config += $defaults;
 
@@ -193,40 +193,41 @@ class Expectation
 
         $closure = function () use ($spec, $matcherName, $args, &$actual, &$result) {
             if ($spec instanceof Specification) {
-                $actual = null;
-                if (!$spec->process($actual)) {
-                    return false;
-                }
+                $spec->reset();
+                $spec->process($result);
+                $expectation = $spec->expect($result, 0)->__call($matcherName, $args);
+                $this->_logs = $spec->logs();
+                $this->_passed = $spec->passed() && $expectation->passed();
+                return $this->_passed;
             } else {
                 $actual = $spec;
+                array_unshift($args, $actual);
+                $matcher = $this->_matcher($matcherName, $actual);
+                $result = call_user_func_array($matcher . '::match', $args);
             }
-            array_unshift($args, $actual);
-            $matcher = $this->_matcher($matcherName, $actual);
-            $result = call_user_func_array($matcher . '::match', $args);
             return is_object($result) || $result === !$this->_not;
         };
 
         try {
             $this->_spin($closure);
         } catch (TimeoutException $e) {
-            $data['data']['timeout'] = $e->getMessage();
+        }
+
+        if ($spec instanceof Specification) {
+            if ($exception = $spec->log()->exception()) {
+                throw $exception;
+            }
+            return $this;
         }
 
         array_unshift($args, $actual);
         $matcher = $this->_matcher($matcherName, $actual);
         $data = Inspector::parameters($matcher, 'match', $args);
         $report = compact('matcherName', 'matcher', 'data');
-        if ($spec instanceof Specification) {
-            foreach ($spec->logs() as $value) {
-                $this->_logs[] = $value;
-            }
-            $this->_passed = $spec->passed() && $this->_passed;
-        }
 
         if (!is_object($result)) {
             $report['description'] = $report['matcher']::description();
             $this->_log($result, $report);
-
             return $this;
         }
         $this->_deferred = $report + [
@@ -280,24 +281,24 @@ class Expectation
         }
         $spec = $this->_actual;
 
-        if (!$spec instanceof Specification) {
+        if (!$spec instanceof Specification || $spec->passed() !== null) {
             return $this;
         }
 
         $closure = function () use ($spec) {
-            $success = true;
-            try {
-                $success = $spec->process();
-            } catch (Exception $e) {
-            }
-            return $success;
+            $spec->reset();
+            $spec->process($result);
+            $this->_logs = $spec->logs();
+            return $this->_passed = $spec->passed();
         };
 
         try {
             $this->_spin($closure);
         } catch (TimeoutException $e) {
         }
-        $this->_logs = $spec->logs();
+        if ($exception = $spec->log()->exception()) {
+            throw $exception;
+        }
 
         $this->_passed = $spec->passed() && ($this->_passed === null ? true : $this->_passed);
         return $this;
@@ -350,7 +351,8 @@ class Expectation
      */
     protected function _spin($closure)
     {
-        if (($timeout = $this->timeout()) < 0) {
+        $timeout = $this->timeout();
+        if ($timeout <= 0) {
             $closure();
         } else {
             Code::spin($closure, $timeout);
@@ -438,6 +440,16 @@ class Expectation
     }
 
     /**
+     * Returns `true`/`false` if test passed or not, `false` if not and `null` if not runned.
+     *
+     * @return boolean.
+     */
+    public function passed()
+    {
+        return $this->_passed;
+    }
+
+    /**
      * Clears the instance.
      */
     public function clear()
@@ -446,7 +458,7 @@ class Expectation
         $this->_passed = null;
         $this->_processed = null;
         $this->_not = false;
-        $this->_timeout = -1;
+        $this->_timeout = 0;
         $this->_logs = [];
         $this->_deferred = null;
     }

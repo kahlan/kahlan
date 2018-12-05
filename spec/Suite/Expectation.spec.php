@@ -230,7 +230,7 @@ describe("Expectation", function () {
 
             expect($expectation->actual())->toBe(null);
             expect($expectation->deferred())->toBe(null);
-            expect($expectation->timeout())->toBe(-1);
+            expect($expectation->timeout())->toBe(0);
             expect($expectation->not())->toBe(false);
             expect($expectation->process())->toBe(true);
             expect($expectation->logs())->toHaveLength(0);

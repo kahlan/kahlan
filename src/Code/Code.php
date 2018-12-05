@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Code;
 
+use Throwable;
 use Exception;
 use InvalidArgumentException;
 
@@ -36,6 +37,9 @@ class Code
         try {
             $result = $callable();
             pcntl_alarm(0);
+        } catch (Throwable $e) {
+            pcntl_alarm(0);
+            throw $e;
         } catch (Exception $e) {
             pcntl_alarm(0);
             throw $e;
