@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.5.0 (2018-12-06)
+
+  * **Bugfix:** Refactor the `waitFor` statement..
+
 ## 4.4.0 (2018-12-01)
 
   * **Change:** Include `beforeAll()` coverage into coverage results.
