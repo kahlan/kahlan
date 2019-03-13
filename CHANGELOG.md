@@ -2,9 +2,13 @@
 
 ## Last changes
 
+## 4.6.0 (2019-03-13)
+
+  * **Bugfix:** Reverse afterEach/afterAll hooks execution order.
+
 ## 4.5.0 (2018-12-06)
 
-  * **Bugfix:** Refactor the `waitFor` statement..
+  * **Bugfix:** Refactor the `waitFor` statement.
 
 ## 4.4.0 (2018-12-01)
 
