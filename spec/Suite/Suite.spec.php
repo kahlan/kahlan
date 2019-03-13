@@ -137,6 +137,82 @@ describe("Suite", function () {
 
         });
 
+        it("runs nested `afterEach()` in the correct order", function () {
+
+            $order = [];
+
+            $describe = $this->root->describe("", function () use (&$order) {
+
+                $this->afterEach(function () use (&$order) {
+                    $order[] = 'level1';
+                });
+
+                $this->describe("describe", function () use (&$order) {
+
+                    $this->afterEach(function () use (&$order) {
+                        $order[] = 'level2a';
+                    });
+
+                    $this->afterEach(function () use (&$order) {
+                        $order[] = 'level2b';
+                    });
+
+                    $this->it("it1", function () {
+                        expect(true)->toBe(true);
+                    });
+
+                    $this->it("it2", function () {
+                        expect(true)->toBe(true);
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($order)->toBe(['level2b', 'level2a', 'level1', 'level2b', 'level2a', 'level1']);
+
+        });
+
+        it("runs nested `afterAll()` in the correct order", function () {
+
+            $order = [];
+
+            $describe = $this->root->describe("", function () use (&$order) {
+
+                $this->afterAll(function () use (&$order) {
+                    $order[] = 'level1';
+                });
+
+                $this->describe("describe", function () use (&$order) {
+
+                    $this->afterAll(function () use (&$order) {
+                        $order[] = 'level2a';
+                    });
+
+                    $this->afterAll(function () use (&$order) {
+                        $order[] = 'level2b';
+                    });
+
+                    $this->it("it1", function () {
+                        expect(true)->toBe(true);
+                    });
+
+                    $this->it("it2", function () {
+                        expect(true)->toBe(true);
+                    });
+
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($order)->toBe(['level2b', 'level2a', 'level1']);
+
+        });
+
         it("reports errors occuring in describes", function () {
 
             skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);

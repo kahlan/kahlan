@@ -281,7 +281,7 @@ class Group extends \Kahlan\Block
      */
     public function afterAll($closure)
     {
-        $this->_callbacks['afterAll'][] = $this->_bindScope($closure);
+        array_unshift($this->_callbacks['afterAll'], $this->_bindScope($closure));
         return $this;
     }
 
@@ -307,7 +307,7 @@ class Group extends \Kahlan\Block
      */
     public function afterEach($closure)
     {
-        $this->_callbacks['afterEach'][] = $this->_bindScope($closure);
+        array_unshift($this->_callbacks['afterEach'], $this->_bindScope($closure));
         return $this;
     }
 
@@ -392,6 +392,9 @@ class Group extends \Kahlan\Block
     public function runCallbacks($name, $recursive = true)
     {
         $instances = $recursive ? $this->parents(true) : [$this];
+        if (strncmp($name, 'after', 5) === 0) {
+            $instances = array_reverse($instances);
+        }
         foreach ($instances as $instance) {
             foreach ($instance->_callbacks[$name] as $closure) {
                 $this->_suite->runBlock($this, $closure, $name);
