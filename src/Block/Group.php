@@ -103,7 +103,7 @@ class Group extends \Kahlan\Block
                         $focused += $result['normal'];
                         $excluded += $result['excluded'];
                         $child->broadcastFocus();
-                    } if (!$child->enabled()) {
+                    } elseif (!$child->enabled()) {
                         $inactive += $result['normal'];
                         $focused += $result['focused'];
                         $excluded += $result['excluded'];
@@ -420,6 +420,9 @@ class Group extends \Kahlan\Block
     public function broadcastFocus()
     {
         foreach ($this->_children as $child) {
+            if ($child->type() !== 'normal') {
+                continue;
+            }
             $child->type('focus');
             if ($child instanceof Group) {
                 $child->broadcastFocus();

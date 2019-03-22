@@ -1050,6 +1050,36 @@ describe("Suite", function () {
 
         });
 
+        it("skips excluded `it` in focus mode", function () {
+
+            $describe = $this->root->describe("", function () {
+
+                $this->exectuted = ['it' => 0];
+
+                $this->it("an it", function () {
+                    $this->exectuted['it']++;
+                });
+
+                $this->xit("an xit", function () {
+                    $this->exectuted['it']++;
+                });
+
+                $this->it("another it", function () {
+                    $this->exectuted['it']++;
+                });
+
+            }, null, 'focus');
+
+            $this->suite->run();
+
+            expect($describe->scope()->exectuted)->toEqual(['it' => 2]);
+            expect($this->suite->total())->toBe(3);
+            expect($this->suite->active())->toBe(2);
+            expect($describe->children()[1]->excluded())->toBe(true);
+            expect($this->suite->status())->toBe(-1);
+
+        });
+
     });
 
     describe("skipIf", function () {
