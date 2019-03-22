@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.6.1 (2019-03-22)
+
+  * **Bugfix:** Make sure excluded specs are not exectuted even in focused mode.
+
 ## 4.6.0 (2019-03-13)
 
   * **Bugfix:** Reverse afterEach/afterAll hooks execution order.
