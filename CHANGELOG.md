@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.6.2 (2019-04-14)
+
+  * **Bugfix:** Fix Nullable types.
+
 ## 4.6.1 (2019-03-22)
 
   * **Bugfix:** Make sure excluded specs are not exectuted even in focused mode.
