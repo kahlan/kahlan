@@ -548,6 +548,32 @@ EOD;
 
         });
 
+        it("generates interface methods with nullable return type", function () {
+
+            skipIf(PHP_MAJOR_VERSION < 7);
+            skipIf(PHP_MINOR_VERSION < 1);
+
+            $result = Double::generate([
+                'class'        => 'Kahlan\Spec\Plugin\Double\Double',
+                'implements'   => ['Kahlan\Spec\Fixture\Plugin\Double\NullableInterface'],
+                'magicMethods' => false
+            ]);
+
+            $expected = <<<EOD
+<?php
+namespace Kahlan\\Spec\\Plugin\\Double;
+
+class Double implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\NullableInterface {
+
+    public function foo(?int \$limit = NULL) : ?int {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
         it("generates interface methods with variadic variable", function () {
 
             skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);

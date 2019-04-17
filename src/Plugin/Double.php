@@ -405,15 +405,19 @@ EOT;
             return '';
         }
         $type = $method->getReturnType();
+        $allowsNull = '';
         if ($type) {
             if (!$type->isBuiltin()) {
                 $type = '\\' . $type;
+            }
+            if (method_exists($type, 'allowsNull') && $type->allowsNull()) {
+                $allowsNull = '?';
             }
             if (defined('HHVM_VERSION')) {
                 $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type);
             }
         }
-        return $type ? ": {$type} " : '';
+        return $type ? ": {$allowsNull}{$type} " : '';
     }
 
     /**
@@ -444,8 +448,15 @@ EOT;
                     $default = ' = NULL';
                 }
             }
+            $allowsNull = '';
             $typehint = $typehint ? $typehint . ' ' : $typehint;
-            $params[] = "{$typehint}{$reference}\${$name}{$default}";
+            if (Suite::$PHP >= 7) {
+                $type = $parameter->getType();
+                if ($type && method_exists($type, 'allowsNull') && $type->allowsNull()) {
+                    $allowsNull = '?';
+                }
+            }
+            $params[] = "{$allowsNull}{$typehint}{$reference}\${$name}{$default}";
         }
         return join(', ', $params);
     }
