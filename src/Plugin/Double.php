@@ -407,11 +407,11 @@ EOT;
         $type = $method->getReturnType();
         $allowsNull = '';
         if ($type) {
-            if (!$type->isBuiltin()) {
-                $type = '\\' . $type;
-            }
             if (method_exists($type, 'allowsNull') && $type->allowsNull()) {
                 $allowsNull = '?';
+            }
+            if (!$type->isBuiltin()) {
+                $type = '\\' . $type;
             }
             if (defined('HHVM_VERSION')) {
                 $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type);

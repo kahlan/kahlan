@@ -565,7 +565,8 @@ namespace Kahlan\\Spec\\Plugin\\Double;
 
 class Double implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\NullableInterface {
 
-    public function foo(?int \$limit = NULL) : ?int {}
+    public function foo(?int \$integer = NULL) : ?int {}
+    public function doz(?\Kahlan\Spec\Fixture\Plugin\Double\Doz \$instance = NULL) : ?\Kahlan\Spec\Fixture\Plugin\Double\Doz {}
 
 }
 ?>
