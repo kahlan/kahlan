@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.6.3 (2019-04-18)
+
+  * **Bugfix:** Fix Nullable types for non built-in types.
+
 ## 4.6.2 (2019-04-14)
 
   * **Bugfix:** Fix Nullable types.
