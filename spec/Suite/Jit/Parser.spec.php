@@ -96,8 +96,6 @@ describe("Parser", function () {
 
         it("correctly populates the `->isGenerator` attribute", function () {
 
-            skipIf(version_compare(phpversion(), '5.5', '<'));
-
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Generator.php');
             $root = Parser::parse($sample);
             foreach ($root->tree as $node) {
