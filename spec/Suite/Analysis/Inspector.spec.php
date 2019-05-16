@@ -3,7 +3,7 @@ namespace Kahlan\Spec\Suite\Analysis;
 
 use Kahlan\Analysis\Inspector;
 
-class Parameter
+class Parameter extends \ReflectionParameter
 {
     protected $_parameter;
     public function __construct($parameter)

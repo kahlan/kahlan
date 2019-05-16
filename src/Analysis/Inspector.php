@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan\Analysis;
 
 use ReflectionClass;
@@ -18,7 +19,7 @@ class Inspector
      * @param  string $class The class name to inspect.
      * @return object        The ReflectionClass instance.
      */
-    public static function inspect($class)
+    public static function inspect(string $class): object
     {
         if (!isset(static::$_cache[$class])) {
             static::$_cache[$class] = new ReflectionClass($class);
@@ -29,21 +30,20 @@ class Inspector
     /**
      * Gets the parameters array of a class method.
      *
-     * @param  $class  The class name.
-     * @param  $method The method name.
-     * @param  $data   The default values.
+     * @param  string $class  The class name.
+     * @param  string $method The method name.
+     * @param  array  $data   The default values.
      * @return array   The parameters array.
      */
-    public static function parameters($class, $method, $data = null)
+    public static function parameters(string $class, string $method, ?array $data = null): array
     {
         $params = [];
-        $reflexion = Inspector::inspect($class);
-        $parameters = $reflexion->getMethod($method)->getParameters();
+        $reflection = Inspector::inspect($class);
+        $parameters = $reflection->getMethod($method)->getParameters();
         if ($data === null) {
             return $parameters;
         }
-        foreach ($data as $key => $value) {
-            $name = $key;
+        foreach ($data as $name => $value) {
             if ($parameters) {
                 $parameter = array_shift($parameters);
                 $name = $parameter->getName();
@@ -60,11 +60,8 @@ class Inspector
 
     /**
      * Returns the type hint of a `ReflectionParameter` instance.
-     *
-     * @param  object $parameter A instance of `ReflectionParameter`.
-     * @return string            The parameter type hint.
      */
-    public static function typehint($parameter)
+    public static function typehint(\ReflectionParameter $parameter): string
     {
         $typehint = '';
         if ($parameter->getClass()) {
