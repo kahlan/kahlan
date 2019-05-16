@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan\Analysis;
 
 /**
@@ -15,21 +16,19 @@ class Debugger
     public static $_loader = null;
 
     /**
-     * Gets a backtrace string or string array based on the supplied options.
+     * Gets a backtrace string based on the supplied options.
      *
      * @param  array $options Format for outputting stack trace. Available options are:
      *                        - `'start'`   _integer_: The depth to start with.
      *                        - `'depth'`   _integer_: The maximum depth of the trace.
      *                        - `'message'` _string_ : Either `null` for default message or a string.
      *                        - `'trace'`   _array_: A trace to use instead of generating one.
-     *                        - `'array'`   _array_: Returns an string array instead of a plain string.
-     * @return array          The formatted backtrace.
+     * @return string          The formatted backtrace.
      */
-    public static function trace($options = [])
+    public static function trace(array $options = []): string
     {
         $defaults = [
             'trace' => [],
-            'array' => false
         ];
         $options += $defaults;
         $back = [];
@@ -38,7 +37,7 @@ class Debugger
         foreach ($backtrace as $trace) {
             $back[] = static::_traceToString($trace);
         }
-        return $options['array'] ? $back : join("\n", $back);
+        return join("\n", $back);
     }
 
     /**
@@ -47,7 +46,7 @@ class Debugger
      * @param  array  $trace A trace array.
      * @return string The string representation of a trace.
      */
-    protected static function _traceToString($trace)
+    protected static function _traceToString(array $trace): string
     {
         $loader = static::loader();
 
@@ -74,14 +73,14 @@ class Debugger
      *                       - `'trace'`: A trace to use instead of generating one.
      * @return array         The backtrace array.
      */
-    public static function backtrace($options = [])
+    public static function backtrace(array $options = []): array
     {
         $defaults = [
             'trace'  => [],
             'start'  => 0,
             'depth'  => 0,
             'object' => false,
-            'args'   => false
+            'args'   => false // @TODO check whether this is used and if yes, add to PhpDoc
         ];
         $options += $defaults;
 
@@ -120,7 +119,7 @@ class Debugger
      * @param  array|object $backtrace A backtrace array or an exception instance.
      * @return array                   A backtrace array.
      */
-    public static function normalize($backtrace)
+    public static function normalize($backtrace): array
     {
         if (!static::isThrowable($backtrace)) {
             return $backtrace;
@@ -139,12 +138,12 @@ class Debugger
      * @param  mixed   $value A value.
      * @return boolean        Return `true` if throwable.
      */
-    public static function isThrowable($value)
+    public static function isThrowable($value): bool
     {
         if (!is_object($value)) {
             return false;
         }
-        return is_a($value, 'Exception') || is_a($value, 'Throwable');
+        return is_a($value, \Exception::class) || is_a($value, \Throwable::class);
     }
 
     /**
@@ -153,7 +152,7 @@ class Debugger
      * @param  array|object $backtrace A backtrace array or an exception instance.
      * @return string                  The string message.
      */
-    public static function message($backtrace)
+    public static function message($backtrace): string
     {
         if (static::isThrowable($backtrace)) {
             $name = get_class($backtrace);
@@ -164,6 +163,7 @@ class Debugger
             $name = static::errorType($code);
             return "`{$name}` Code({$code}): " . $backtrace['message'];
         }
+        return '';
     }
 
     /**
@@ -172,16 +172,16 @@ class Debugger
      * @param  array $trace A trace data.
      * @return mixed        Returns the line number where the method called is defined.
      */
-    protected static function _line($trace)
+    protected static function _line(array $trace): ?int
     {
         $path = $trace['file'];
         $callLine = $trace['line'];
         if (!file_exists($path)) {
-            return;
+            return null;
         }
         $file = file_get_contents($path);
         if (($i = static::_findPos($file, $callLine)) === null) {
-            return;
+            return null;
         }
         $line = $callLine;
 
@@ -195,10 +195,11 @@ class Debugger
                 $line--;
             }
             if ($brackets > 0) {
-                return $line;
+                return (int) $line;
             }
             $i--;
         }
+        return null;
     }
 
     /**
@@ -208,7 +209,7 @@ class Debugger
      * @param  integer $callLine The number of line to find.
      * @return mixed             Returns the character position or null if not found.
      */
-    protected static function _findPos($file, $callLine)
+    protected static function _findPos(string $file, int $callLine): ?int
     {
         $len = strlen($file);
         $line = 1;
@@ -219,24 +220,25 @@ class Debugger
                 $line++;
             }
             if ($line === $callLine) {
-                return $i;
+                return (int) $i;
             }
             $i++;
         }
+        return null;
     }
 
     /**
      * Unstack all traces up to a trace which match a filename regexp.
      *
-     * @param  array $pattern    The regexp to match on.
-     * @param  array $backtrace  The backtrace.
-     * @param  array $depth      Number of traces to keep.
-     * @param  int   $maxLookup  The maximum lookup window.
+     * @param  string $pattern    The regexp to match on.
+     * @param  array  $backtrace  The backtrace.
+     * @param  int    $depth      Number of traces to keep.
+     * @param  int    $maxLookup  The maximum lookup window.
      *
      * @return array             A cleaned backtrace.
      *
      */
-    public static function focus($pattern, $backtrace, $depth = null, $maxLookup = 10)
+    public static function focus(?string $pattern, array $backtrace, ?int $depth = null, ?int $maxLookup = 10): array
     {
         if (!$pattern) {
             return $backtrace;
@@ -263,9 +265,9 @@ class Debugger
      * Get/set a compatible composer autoloader.
      *
      * @param  object|null $loader The autoloader to set or `null` to get the default one.
-     * @return object              The autoloader.
+     * @return object|null         The autoloader.
      */
-    public static function loader($loader = null)
+    public static function loader(?object $loader = null) : ?object
     {
         if ($loader) {
             return static::$_loader = $loader;
@@ -279,9 +281,10 @@ class Debugger
                 return static::$_loader = $loader[0];
             }
         }
+        return null;
     }
 
-    public static function errorType($value)
+    public static function errorType($value): string
     {
         switch ($value) {
             case E_ERROR:
