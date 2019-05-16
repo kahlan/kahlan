@@ -4,11 +4,6 @@ namespace Kahlan;
 use Closure;
 use Exception;
 use Throwable;
-use Kahlan\SkipException;
-use Kahlan\Suite;
-use Kahlan\Log;
-use Kahlan\Summary;
-use Kahlan\Block\Specification;
 use Kahlan\Block\Group;
 use Kahlan\Analysis\Debugger;
 
