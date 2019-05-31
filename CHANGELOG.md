@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 5.0
+  * **BC:** \Kahlan\Block::type() with arguments no longer return self
+  * **BC** Drop PHP 5 & 7.0 support
+  * **BC** Drop HHVM support
+
 ## 4.6.3 (2019-04-18)
 
   * **Bugfix:** Fix Nullable types for non built-in types.

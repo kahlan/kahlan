@@ -345,7 +345,7 @@ class Group extends \Kahlan\Block
     /**
      * Start group execution helper.
      */
-    protected function _blockStart()
+    protected function _blockStart(): void
     {
         $this->report('suiteStart', $this);
         $this->runCallbacks('beforeAll', false);
@@ -354,7 +354,7 @@ class Group extends \Kahlan\Block
     /**
      * End group block execution helper.
      */
-    protected function _blockEnd($runAfterAll = true)
+    protected function _blockEnd(bool $runAfterAll = true): void
     {
         if ($runAfterAll) {
             if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {

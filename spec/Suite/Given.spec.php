@@ -172,15 +172,6 @@ describe("Given", function () {
 
         });
 
-        it("throw an exception when the second parameter is not a closure", function () {
-
-            $closure = function () {
-                given('some_name',  'some value');
-            };
-            expect($closure)->toThrow(new Exception("A closure is required by `Given` constructor."));
-
-        });
-
     });
 
     describe("->__get()", function () {

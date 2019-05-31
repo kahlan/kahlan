@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan;
 
 use Closure;
@@ -13,48 +14,36 @@ abstract class Block
     /**
      * The block type.
      *
-     * @var object
+     * @var string can be 'normal'|'focus'|'exclude'
      */
-    protected $_type = null;
+    protected $_type = '';
 
     /**
-     * The suite.
-     *
-     * @var object
+     * @var \Kahlan\Suite
      */
     protected $_suite = null;
 
     /**
-     * The parent block.
-     *
-     * @var Scope
+     * @var Scope|null
      */
     protected $_parent = null;
 
     /**
-     * The spec message.
-     *
      * @var string
      */
-    protected $_message = null;
+    protected $_message = '';
 
     /**
-     * The timeout value.
-     *
      * @var integer
      */
     protected $_timeout = 0;
 
     /**
-     * The block scope.
-     *
      * @var Scope
      */
     protected $_scope = null;
 
     /**
-     * The block closure.
-     *
      * @var Closure
      */
     protected $_closure = null;
@@ -69,7 +58,7 @@ abstract class Block
     /**
      * Stores the success value.
      *
-     * @var boolean
+     * @var boolean|null
      */
     protected $_passed = null;
 
@@ -78,7 +67,7 @@ abstract class Block
      *
      * @var array
      */
-    protected $_backtrace = null;
+    protected $_backtrace = [];
 
     /**
      * The report log of executed spec.
@@ -98,12 +87,12 @@ abstract class Block
      * The Constructor.
      *
      * @param array $config The block config array. Options are:
-     *                       -`'suite'`   _object_ : the suite instance.
-     *                       -`'parent'`  _object_ : the parent block.
-     *                       -`'type'`    _string_ : supported type are `'normal'` & `'focus'`.
+     *                       -`'suite'`   _object_ : the \Kahlan\Suite instance.
+     *                       -`'parent'`  _object_ : the parent block - instance of \Kahlan\Suite or null.
+     *                       -`'type'`    _string_ : supported type are `'normal'`, `'focus'` and `'exclude'`.
      *                       -`'message'` _string_ : the description message.
      *                       -`'closure'` _Closure_: the closure of the test.
-     *                       -`'log'`     _object_ : the log instance.
+     *                       -`'log'`     _object_ : the \Kahlan\Log instance.
      *                       -`'timeout'` _integer_: the timeout.
      */
     public function __construct($config = [])
@@ -120,20 +109,40 @@ abstract class Block
         $config += $defaults;
 
         $this->_suite   = $config['suite'] ?: new Suite();
+        if (!$this->_suite instanceof Suite) {
+            throw new \InvalidArgumentException('Expected `suite` to be an instance of ' . Suite::class);
+        }
         $this->_parent  = $config['parent'];
+        if ($this->_parent !== null && ($this->_parent instanceof Suite)) {
+            throw new \InvalidArgumentException('Expected `parent` to be an instance of ' . Suite::class . 'or null');
+        }
         $this->_type    = $config['type'];
+        if (!in_array($this->_type, ['normal', 'focus', 'exclude'])) {
+            throw new \InvalidArgumentException('Expected `type` to be `normal`, `focus` or `exclude`');
+        }
         $this->_message = $config['message'];
-        $this->_closure = $config['closure'] ?: function () {
-        };
+        if (!is_string($this->_message)) {
+            throw new \InvalidArgumentException('Expected `message` to be a string');
+        }
+        $this->_closure = $config['closure'] ?: function () {};
+        if (!($this->_closure instanceof Closure)) {
+            throw new \InvalidArgumentException('Expected `closure` to be an instance of ' . Closure::class);
+        }
         $this->_timeout = $config['timeout'];
+        if (!is_int($this->_timeout)) {
+            throw new \InvalidArgumentException('Expected `timeout` to be int');
+        }
 
         $suite = $this->suite();
         $this->_backtrace = Debugger::focus($suite->backtraceFocus(), Debugger::backtrace(), 1);
 
-        $this->_log     = $config['log'] ?: new Log([
+        $this->_log = $config['log'] ?: new Log([
             'block' => $this,
             'backtrace' => $this->_backtrace
         ]);
+        if (!($this->_log instanceof Log)) {
+            throw new \InvalidArgumentException('Expected `log` to be an instance of ' . Log::class);
+        }
 
         $this->_summary = $suite->summary();
 
@@ -142,62 +151,35 @@ abstract class Block
         }
     }
 
-    /**
-     * Return the suite instance.
-     *
-     * @return Suite
-     */
-    public function suite()
+    public function suite(): Suite
     {
         return $this->_suite;
     }
 
-    /**
-     * Return the parent block.
-     *
-     * @return Scope
-     */
     public function parent()
     {
         return $this->_parent;
     }
 
-    /**
-     * Return the spec's message.
-     *
-     * @return array
-     */
-    public function message()
+    public function message(): string
     {
         return $this->_message;
     }
 
-    /**
-     * Return the block scope.
-     *
-     * @return array
-     */
-    public function scope()
+    public function scope(): Scope
     {
         return $this->_scope;
     }
 
-    /**
-     * Return the block closure.
-     *
-     * @return array
-     */
-    public function closure()
+    public function closure(): Closure
     {
         return $this->_closure;
     }
 
     /**
-     * Checks if all test passed.
-     *
-     * @return boolean Returns `true` if no error occurred, `false` otherwise.
+     * @return boolean|null bool if test passed or not and `null` if not run
      */
-    public function process(&$return = null)
+    public function process(&$return = null): ?bool
     {
         if ($this->_passed === null) {
             $this->_process();
@@ -207,46 +189,31 @@ abstract class Block
     }
 
     /**
-     * Returns `true`/`false` if test passed or not, `false` if not and `null` if not runned.
-     *
-     * @return boolean.
+     * @return boolean|null bool if test passed or not and `null` if not run
      */
-    public function passed()
+    public function passed(): ?bool
     {
         return $this->_passed;
     }
 
     /**
      * Set/get the block type.
-     *
-     * @param  string $type The type mode.
-     * @return mixed
      */
-    public function type($type = null)
+    public function type(string $type = ''): ?string
     {
         if (!func_num_args()) {
             return $this->_type;
         }
         $this->_type = $type;
-        return $this;
+        return $this->_type;
     }
 
-    /**
-     * Check for excluded mode.
-     *
-     * @return boolean
-     */
-    public function excluded()
+    public function excluded(): bool
     {
         return $this->_type === 'exclude';
     }
 
-    /**
-     * Check for focused mode.
-     *
-     * @return boolean
-     */
-    public function focused()
+    public function focused(): bool
     {
         return $this->_type === 'focus';
     }
@@ -255,9 +222,8 @@ abstract class Block
      * Return all parent block instances.
      *
      * @param  boolean $current If `true` include `$this` to the list.
-     * @return array.
      */
-    public function parents($current = false)
+    public function parents(bool $current = false): array
     {
         $instances = [];
         $instance  = $current ? $this : $this->_parent;
@@ -271,10 +237,8 @@ abstract class Block
 
     /**
      * Return all messages upon the root.
-     *
-     * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         $messages = [];
         $instances = $this->parents(true);
@@ -286,10 +250,8 @@ abstract class Block
 
     /**
      * Get/set the timeout.
-     *
-     * @return integer
      */
-    public function timeout($timeout = null)
+    public function timeout(int $timeout = null): int
     {
         if (func_num_args()) {
             $this->_timeout = $timeout;
@@ -297,36 +259,25 @@ abstract class Block
         return $this->_timeout;
     }
 
-    /**
-     * Return the backtrace array.
-     *
-     * @return array
-     */
-    public function backtrace()
+    public function backtrace(): array
     {
         return $this->_backtrace;
     }
 
-    /**
-     * Dispatch a report.
-     *
-     * @param object $log The report object to log.
-     */
-    public function log($type = null, $data = [])
+    public function log(string $type = null, array $data = []): Log
     {
         if (!func_num_args()) {
             return $this->_log;
         }
         $this->report($type, $this->log()->add($type, $data));
+        return $this->_log;
     }
 
     /**
      * Send some data to reporters.
-     *
-     * @param string $type The message type.
-     * @param mixed  $data The message data.
+     * @TODO what data?
      */
-    public function report($type, $data)
+    public function report(string $type, object $data)
     {
         $suite = $this->suite();
         if ($suite->root()->focused() && !$this->focused()) {
@@ -335,22 +286,12 @@ abstract class Block
         $suite->report($type, $data);
     }
 
-    /**
-     * Return specs excecution results.
-     *
-     * @return array
-     */
-    public function summary()
+    public function summary(): Summary
     {
         return $this->_summary;
     }
 
-    /**
-     * Block processing.
-     *
-     * @param array $options Process options.
-     */
-    protected function _process($options = [])
+    protected function _process(): void
     {
         $suite = $this->suite();
         if ($suite->root()->focused() && !$this->focused()) {
@@ -369,37 +310,22 @@ abstract class Block
 
         $suite::push($this);
 
-        if ($suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
+        try {
+            $this->_blockStart();
             try {
-                $this->_blockStart();
-                try {
-                    $result = $this->_execute();
-                } catch (Throwable $exception) {
-                    $this->_exception($exception);
-                }
-                $this->_blockEnd();
+                $result = $this->_execute();
             } catch (Throwable $exception) {
-                $this->_exception($exception, true);
-                $this->_blockEnd(!$exception instanceof SkipException);
+                $this->_exception($exception);
             }
-        } else {
-            try {
-                $this->_blockStart();
-                try {
-                    $result = $this->_execute();
-                } catch (Exception $exception) {
-                    $this->_exception($exception);
-                }
-                $this->_blockEnd();
-            } catch (Exception $exception) {
-                $this->_exception($exception, true);
-                $this->_blockEnd(!$exception instanceof SkipException);
-            }
+            $this->_blockEnd();
+        } catch (Throwable $exception) {
+            $this->_exception($exception, true);
+            $this->_blockEnd(!$exception instanceof SkipException);
         }
 
         $suite::pop();
 
-        return $this->_return = $result;
+        $this->_return = $result;
     }
 
     /**
@@ -407,41 +333,39 @@ abstract class Block
      *
      * @param  string  $name    The lazy loaded variable name.
      * @param  Closure $closure The lazily executed closure.
-     * @return object
      */
-    public function given($name, $closure)
+    public function given(string $name, Closure $closure): self
     {
         $this->scope()->given($name, $closure);
         return $this;
     }
 
     /**
-     * Skips specs(s) if the condition is `true`.
+     * @param  bool $condition skip specs if `true`
      *
-     * @param  boolean       $condition
-     *
-     * @return self
      * @throws SkipException
      */
-    public function skipIf($condition)
+    public function skipIf(bool $condition)
     {
-        if (!$condition) {
-            return;
+        if ($condition) {
+            throw new SkipException();
         }
-        $exception = new SkipException();
-        throw $exception;
     }
 
     /**
      * Manage catched exception.
      *
-     * @param Exception $exception  The catched exception.
+     * @param Throwable $exception  The catched exception.
      * @param boolean   $inEachHook Indicates if the exception occurs in a beforeEach/afterEach hook.
      */
-    protected function _exception($exception, $inEachHook = false)
+    protected function _exception(Throwable $exception, bool $inEachHook = false): void
     {
         if ($exception instanceof SkipException) {
-            !$inEachHook ? $this->log()->type('skipped') : $this->_skipChildren($exception);
+            if (!$inEachHook) {
+                $this->log()->type('skipped');
+            } else {
+                $this->_skipChildren($exception);
+            }
             return;
         }
         $this->_passed = false;
@@ -452,10 +376,10 @@ abstract class Block
     /**
      * Skip children specs(s).
      *
-     * @param object  $exception The exception at the origin of the skip.
-     * @param boolean $emit      Indicated if report events should be generated.
+     * @param Throwable $exception The exception at the origin of the skip.
+     * @param boolean   $emit      Indicated if report events should be generated.
      */
-    protected function _skipChildren($exception, $emit = false)
+    protected function _skipChildren(Throwable $exception, bool $emit = false): void
     {
         $log = $this->log();
         if ($this instanceof Group) {
@@ -479,7 +403,7 @@ abstract class Block
     /**
      * Apply focus up to the root.
      */
-    protected function _emitFocus()
+    protected function _emitFocus(): void
     {
         $this->summary()->add('focused', $this);
         $instances = $this->parents(true);
@@ -496,12 +420,9 @@ abstract class Block
      *
      * @return Closure
      */
-    protected function _bindScope($closure)
+    protected function _bindScope(Closure $closure): Closure
     {
-        if (!is_callable($closure)) {
-            return;
-        }
-        return @$closure->bindTo($this->_scope);
+        return $closure->bindTo($this->_scope);
     }
 
     /**
@@ -512,10 +433,10 @@ abstract class Block
     /**
      * Start block execution helper.
      */
-    abstract protected function _blockStart();
+    abstract protected function _blockStart(): void;
 
     /**
      * End block execution helper.
      */
-    abstract protected function _blockEnd($runAfterAll = true);
+    abstract protected function _blockEnd(bool $runAfterAll = true): void;
 }

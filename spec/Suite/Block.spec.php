@@ -266,9 +266,6 @@ describe("Block", function () {
             $this->scope->timeout(5);
             expect($this->scope->timeout())->toBe(5);
 
-            $this->scope->timeout(null);
-            expect($this->scope->timeout())->toBe(null);
-
         });
 
     });

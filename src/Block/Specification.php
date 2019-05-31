@@ -126,7 +126,7 @@ class Specification extends \Kahlan\Block
     /**
      * Start spec execution helper.
      */
-    protected function _blockStart()
+    protected function _blockStart(): void
     {
         $this->report('specStart', $this);
         if ($this->_parent) {
@@ -137,7 +137,7 @@ class Specification extends \Kahlan\Block
     /**
      * End spec execution helper.
      */
-    protected function _blockEnd($runAfterEach = true)
+    protected function _blockEnd(bool $runAfterEach = true): void
     {
         $type = $this->log()->type();
         foreach ($this->_expectations as $expectation) {
