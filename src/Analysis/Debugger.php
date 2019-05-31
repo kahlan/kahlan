@@ -121,7 +121,7 @@ class Debugger
      */
     public static function normalize($backtrace): array
     {
-        if (!static::isThrowable($backtrace)) {
+        if (!$backtrace instanceof \Throwable) {
             return $backtrace;
         }
         return array_merge([[
@@ -133,20 +133,6 @@ class Debugger
     }
 
     /**
-     * Check if a value is "Throwable" or not.
-     *
-     * @param  mixed   $value A value.
-     * @return boolean        Return `true` if throwable.
-     */
-    public static function isThrowable($value): bool
-    {
-        if (!is_object($value)) {
-            return false;
-        }
-        return is_a($value, \Exception::class) || is_a($value, \Throwable::class);
-    }
-
-    /**
      * Generates a string message from a backtrace array.
      *
      * @param  array|object $backtrace A backtrace array or an exception instance.
@@ -154,7 +140,7 @@ class Debugger
      */
     public static function message($backtrace): string
     {
-        if (static::isThrowable($backtrace)) {
+        if ($backtrace instanceof \Throwable) {
             $name = get_class($backtrace);
             $code = $backtrace->getCode();
             return "`{$name}` Code({$code}): " . $backtrace->getMessage();
