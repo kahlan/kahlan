@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan\Block;
 
 use Closure;
@@ -66,9 +67,9 @@ class Group extends \Kahlan\Block
     /**
      * Gets children.
      *
-     * @return array The array of children instances.
+     * @return \Kahlan\Block\Group[]|\Kahlan\Block\Specification[] The array of children instances.
      */
-    public function children()
+    public function children(): array
     {
         return $this->_children;
     }
@@ -78,7 +79,7 @@ class Group extends \Kahlan\Block
      *
      * @return array The group stats.
      */
-    public function stats()
+    public function stats(): array
     {
         if ($this->_stats !== null) {
             return $this->_stats;
@@ -86,6 +87,9 @@ class Group extends \Kahlan\Block
 
         Suite::push($this);
 
+        /**
+         * @param \Kahlan\Block\Group|\Kahlan\Block\Specification $block
+         */
         $builder = function ($block) {
             $block->load();
             $normal = 0;
@@ -94,7 +98,7 @@ class Group extends \Kahlan\Block
             $excluded = 0;
 
             foreach ($block->children() as $child) {
-                if ($block->excluded()) {
+                if ($block->excluded() && $child instanceof Specification) {
                     $child->type('exclude');
                 }
                 if ($child instanceof Group) {
@@ -112,7 +116,7 @@ class Group extends \Kahlan\Block
                         $focused += $result['focused'];
                         $excluded += $result['excluded'];
                     }
-                } else {
+                } elseif ($child instanceof Specification) {
                     switch ($child->type()) {
                         case 'exclude':
                             $excluded++;
@@ -129,21 +133,17 @@ class Group extends \Kahlan\Block
             return compact('normal', 'inactive', 'focused', 'excluded');
         };
 
-        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
-            try {
-                $stats = $builder($this);
-            } catch (Throwable $exception) {
-                $this->log()->type('errored');
-                $this->log()->exception($exception);
-
-                $stats = [
-                    'normal' => 0,
-                    'focused' => 0,
-                    'excluded' => 0
-                ];
-            }
-        } else {
+        try {
             $stats = $builder($this);
+        } catch (Throwable $exception) {
+            $this->log()->type('errored');
+            $this->log()->exception($exception);
+
+            $stats = [
+                'normal' => 0,
+                'focused' => 0,
+                'excluded' => 0
+            ];
         }
 
         Suite::pop();
@@ -156,10 +156,8 @@ class Group extends \Kahlan\Block
      * @param integer $index The partition index to enable.
      * @param integer $total The total of partitions.
      */
-    public function partition($index, $total)
+    public function partition(int $index, int $total): void
     {
-        $index = (integer) $index;
-        $total = (integer) $total;
         if (!$index || !$total || $index > $total) {
             throw new Exception("Invalid partition parameters: {$index}/{$total}");
         }
@@ -195,10 +193,9 @@ class Group extends \Kahlan\Block
     /**
      * Set/get the enable value.
      *
-     * @param  string $enable The enable value.
-     * @return mixed
+     * @return self|bool
      */
-    public function enabled($enable = null)
+    public function enabled(bool $enable = null)
     {
         if (!func_num_args()) {
             return $this->_enabled;
@@ -207,14 +204,16 @@ class Group extends \Kahlan\Block
         return $this;
     }
 
-    /* Adds a group/class related spec.
+    /** Adds a group/class related spec.
      *
-     * @param  string  $message Description message.
-     * @param  Closure $closure A test case closure.
+     * @param string   $message Description message.
+     * @param Closure  $closure A test case closure.
+     * @param int|null $timeout
+     * @param string   $type
      *
      * @return Group
      */
-    public function describe($message, $closure, $timeout = null, $type = 'normal')
+    public function describe(string $message, Closure $closure, int $timeout = null, string $type = 'normal'): self
     {
         $suite = $this->suite();
         $parent = $this;
@@ -227,14 +226,14 @@ class Group extends \Kahlan\Block
     /**
      * Adds a context related spec.
      *
-     * @param  string  $message Description message.
-     * @param  Closure $closure A test case closure.
-     * @param  null    $timeout
-     * @param  string  $type
+     * @param  string   $message Description message.
+     * @param  Closure  $closure A test case closure.
+     * @param  int|null $timeout
+     * @param  string   $type
      *
      * @return Group
      */
-    public function context($message, $closure, $timeout = null, $type = 'normal')
+    public function context(string $message, Closure $closure, int $timeout = null, string $type = 'normal'): self
     {
         return $this->describe($message, $closure, $timeout, $type);
     }
@@ -248,15 +247,13 @@ class Group extends \Kahlan\Block
      *
      * @return Specification
      */
-    public function it($message, $closure = null, $timeout = null, $type = 'normal')
+    public function it(string $message, Closure $closure = null, int $timeout = null, string $type = 'normal'): Specification
     {
         $suite = $this->suite();
         $parent = $this;
         $timeout = $timeout !== null ? $timeout : $this->timeout();
         $spec = new Specification(compact('message', 'closure', 'suite', 'parent', 'timeout', 'type'));
-        $this->_children[] = $spec;
-
-        return $this;
+        return $this->_children[] = $spec;
     }
 
     /**
@@ -266,7 +263,7 @@ class Group extends \Kahlan\Block
      *
      * @return self
      */
-    public function beforeAll($closure)
+    public function beforeAll(Closure $closure): self
     {
         $this->_callbacks['beforeAll'][] = $this->_bindScope($closure);
         return $this;
@@ -279,7 +276,7 @@ class Group extends \Kahlan\Block
      *
      * @return self
      */
-    public function afterAll($closure)
+    public function afterAll(Closure $closure): self
     {
         array_unshift($this->_callbacks['afterAll'], $this->_bindScope($closure));
         return $this;
@@ -292,7 +289,7 @@ class Group extends \Kahlan\Block
      *
      * @return self
      */
-    public function beforeEach($closure)
+    public function beforeEach(Closure $closure): self
     {
         $this->_callbacks['beforeEach'][] = $this->_bindScope($closure);
         return $this;
@@ -305,7 +302,7 @@ class Group extends \Kahlan\Block
      *
      * @return self
      */
-    public function afterEach($closure)
+    public function afterEach(Closure $closure): self
     {
         array_unshift($this->_callbacks['afterEach'], $this->_bindScope($closure));
         return $this;
@@ -314,22 +311,20 @@ class Group extends \Kahlan\Block
     /**
      * Load the group.
      */
-    public function load()
+    public function load(): void
     {
-        if ($this->_loaded) {
-            return;
+        if (!$this->_loaded) {
+            $this->_loaded = true;
+            if ($closure = $this->closure()) {
+                $this->_suite->runBlock($this, $closure, 'group');
+            }
         }
-        $this->_loaded = true;
-        if (!$closure = $this->closure()) {
-            return;
-        }
-        return $this->_suite->runBlock($this, $closure, 'group');
     }
 
     /**
      * Group execution helper.
      */
-    protected function _execute()
+    protected function _execute(): void
     {
         if (!$this->enabled() && !$this->focused()) {
             return;
@@ -389,7 +384,7 @@ class Group extends \Kahlan\Block
      *
      * @param string $name The name of the callback (i.e `'beforeEach'` or `'afterEach'`).
      */
-    public function runCallbacks($name, $recursive = true)
+    public function runCallbacks($name, $recursive = true): void
     {
         $instances = $recursive ? $this->parents(true) : [$this];
         if (strncmp($name, 'after', 5) === 0) {
@@ -409,7 +404,7 @@ class Group extends \Kahlan\Block
      *
      * @return array        The array callbacks instances.
      */
-    public function callbacks($type)
+    public function callbacks($type): array
     {
         return isset($this->_callbacks[$type]) ? $this->_callbacks[$type] : [];
     }
@@ -417,7 +412,7 @@ class Group extends \Kahlan\Block
     /**
      * Apply focus downward to the leaf.
      */
-    public function broadcastFocus()
+    public function broadcastFocus(): void
     {
         foreach ($this->_children as $child) {
             if ($child->type() !== 'normal') {
