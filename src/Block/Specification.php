@@ -2,10 +2,8 @@
 namespace Kahlan\Block;
 
 use Closure;
-use Throwable;
 use Exception;
 use Kahlan\Expectation;
-use Kahlan\ExternalExpectation;
 use Kahlan\Log;
 use Kahlan\Scope\Specification as Scope;
 use Kahlan\Suite;
@@ -42,10 +40,8 @@ class Specification extends \Kahlan\Block
 
     /**
      * Reset the specification.
-     *
-     * @return Expectation
      */
-    public function reset()
+    public function reset(): self
     {
         $this->_passed = null;
         $this->_expectations = [];
@@ -68,7 +64,7 @@ class Specification extends \Kahlan\Block
      *
      * @return Expectation
      */
-    public function assert($config = [])
+    public function assert(array $config = []): Expectation
     {
         return $this->_expectations[] = new Expectation($config);
     }
@@ -76,11 +72,12 @@ class Specification extends \Kahlan\Block
     /**
      * The expect statement (assert shortcut).
      *
-     * @param  mixed       $actual The expression to check
+     * @param mixed $actual The expression to check
+     * @param int $timeout
      *
      * @return Expectation
      */
-    public function expect($actual, $timeout = 0)
+    public function expect($actual, int $timeout = 0): Expectation
     {
         return $this->_expectations[] = new Expectation(compact('actual', 'timeout'));
     }
@@ -88,11 +85,12 @@ class Specification extends \Kahlan\Block
     /**
      * The waitsFor statement.
      *
-     * @param  mixed $actual The expression to check
+     * @param mixed $actual The expression to check
+     * @param int $timeout
      *
-     * @return mixed
+     * @return \Kahlan\Expectation
      */
-    public function waitsFor($actual, $timeout = 0)
+    public function waitsFor($actual, int $timeout = 0): Expectation
     {
         $timeout = $timeout ?: $this->timeout();
         $closure = $actual instanceof Closure ? $actual : function () use ($actual) {
@@ -105,6 +103,7 @@ class Specification extends \Kahlan\Block
 
     /**
      * Spec execution helper.
+     * @return mixed
      */
     protected function _execute()
     {
@@ -119,7 +118,6 @@ class Specification extends \Kahlan\Block
             return $result;
         };
 
-        $suite = $this->suite();
         return $spec();
     }
 
@@ -180,7 +178,7 @@ class Specification extends \Kahlan\Block
      *
      * @return array
      */
-    public function logs()
+    public function logs(): array
     {
         $logs = [];
         foreach ($this->_expectations as $expectation) {
