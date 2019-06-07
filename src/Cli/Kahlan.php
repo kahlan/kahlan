@@ -72,10 +72,8 @@ namespace Kahlan\Cli {
             if (!file_exists($cachePath)) {
                 return;
             }
-
             $dir = new RecursiveDirectoryIterator($cachePath, RecursiveDirectoryIterator::SKIP_DOTS);
             $files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
-
             foreach ($files as $file) {
                 $path = $file->getRealPath();
                 $file->isDir() ? rmdir($path) : unlink($path);

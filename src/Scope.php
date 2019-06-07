@@ -19,7 +19,6 @@ abstract class Scope
         '__call'      => true,
         '__get'       => true,
         '__set'       => true,
-        'given'       => true,
         'afterAll'    => true,
         'afterEach'   => true,
         'beforeAll'   => true,
@@ -136,9 +135,7 @@ abstract class Scope
      */
     public function __call($name, $args)
     {
-        $property = null;
         $property = $this->__get($name);
-
         if (is_callable($property)) {
             return call_user_func_array($property, $args);
         }

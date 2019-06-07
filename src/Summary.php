@@ -32,7 +32,7 @@ class Summary
     public function total()
     {
         $total = 0;
-        foreach ($this->_logs as $key => $value) {
+        foreach ($this->_logs as $value) {
             $total += count($value);
         }
         return $total;
@@ -46,7 +46,7 @@ class Summary
     public function expectation()
     {
         $total = 0;
-        foreach ($this->_logs as $key => $value) {
+        foreach ($this->_logs as $value) {
             foreach ($value as $log) {
                 $total += count($log->children());
             }
@@ -129,7 +129,7 @@ class Summary
             return isset($this->_logs[$type]) ? $this->_logs[$type] : [];
         }
         $logs = [];
-        foreach ($this->_logs as $key => $value) {
+        foreach ($this->_logs as $value) {
             $logs = array_merge($logs, $value);
         }
         return $logs;

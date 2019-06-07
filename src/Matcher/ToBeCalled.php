@@ -168,29 +168,20 @@ class ToBeCalled
     {
         $with = $this->_message->args();
         $times = $this->times();
-
         $report = $this->_report;
-
         $expectedTimes = $times ? ' the expected times' : '';
         $expectedParameters = $with ? ' with expected parameters' : '';
-
         $this->_description['description'] = "be called{$expectedParameters}{$expectedTimes}.";
-
         $calledTimes = count($report['args']);
-
         $this->_description['data']['actual'] = $this->_actual . '()';
         $this->_description['data']['actual called times'] = $calledTimes;
-
         if ($calledTimes && $with !== null) {
             $this->_description['data']['actual called parameters list'] = $report['args'];
         }
-
         $this->_description['data']['expected to be called'] = $this->_actual . '()';
-
         if ($with !== null) {
             $this->_description['data']['expected parameters'] = $with;
         }
-
         if ($times) {
             $this->_description['data']['expected called times'] = $times;
         }

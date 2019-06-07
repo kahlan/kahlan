@@ -1,0 +1,6 @@
+parameters:
+  exclude_paths:
+    - 'spec/*'
+    - 'docs/*'
+    - 'bin/*'
+  php_version_features: '7.2'

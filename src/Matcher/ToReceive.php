@@ -108,7 +108,7 @@ class ToReceive
 
         $reference = $this->_reference($reference);
 
-        foreach ($names as $index => $name) {
+        foreach ($names as $name) {
             if (preg_match('/^::.*/', $name)) {
                 $reference = is_object($reference) ? get_class($reference) : $reference;
             }

@@ -110,7 +110,7 @@ class ClassLoader
     public static function instance()
     {
         $loaders = spl_autoload_functions();
-        foreach ($loaders as $key => $loader) {
+        foreach ($loaders as $loader) {
             if ($loader[0] instanceof static) {
                 return $loader[0];
             }

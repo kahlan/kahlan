@@ -17,7 +17,7 @@ class ToContain
         if (is_string($actual)) {
             return strpos($actual, $expected) !== false;
         } elseif (is_array($actual) || $actual instanceof Traversable) {
-            foreach ($actual as $key => $value) {
+            foreach ($actual as $value) {
                 if ($value === $expected) {
                     return true;
                 }

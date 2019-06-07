@@ -99,7 +99,7 @@ class Debugger
         $back = [];
         $ignoreFunctions = ['call_user_func_array', 'trigger_error'];
 
-        foreach ($backtrace as $i => $trace) {
+        foreach ($backtrace as $trace) {
             $trace += $traceDefaults;
             if (strpos($trace['function'], 'Closure$') === 0 ||
                 strpos($trace['function'], '{closure}') !== false ||
@@ -262,7 +262,7 @@ class Debugger
             return static::$_loader;
         }
         $loaders = spl_autoload_functions();
-        foreach ($loaders as $key => $loader) {
+        foreach ($loaders as $loader) {
             if (is_array($loader) && method_exists($loader[0], 'findFile')) {
                 return static::$_loader = $loader[0];
             }
