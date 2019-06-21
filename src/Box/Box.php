@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan\Box;
 
 use Closure;
@@ -38,11 +39,11 @@ class Box
     /**
      * Defining a factory.
      *
-     * @param  string          $id         The name of the definition.
+     * @param  string          $name       The name of the definition.
      * @param  string|Closure  $definition A fully namespaced classname or a closure.
      * @throws BoxException if the definition is not a closure or a string.
      */
-    public function factory($name, $definition)
+    public function factory(string $name, $definition): void
     {
         if (!is_string($definition) && !$definition instanceof Closure) {
             throw new BoxException("Error `{$name}` is not a closure definition dependency can't use it as a factory definition.");
@@ -53,10 +54,10 @@ class Box
     /**
      * Defining a service (i.e. singleton).
      *
-     * @param  string $id         The name of the definition.
+     * @param  string $name       The name of the definition.
      * @param  mixed  $definition The variable to share.
      */
-    public function service($name, $definition)
+    public function service(string $name, $definition)
     {
         $this->_set($name, $definition, 'service');
     }
@@ -64,11 +65,11 @@ class Box
     /**
      * Stores a dependency definition.
      *
-     * @param  string $id         The name of the definition.
+     * @param  string $name       The name of the definition.
      * @param  mixed  $definition The definition.
      * @param  mixed  $type       The type of the definition.
      */
-    protected function _set($name, $definition, $type)
+    protected function _set(string $name, $definition, $type): void
     {
         if ($definition instanceof Closure) {
             $definition = $definition->bindTo($this, get_class($this));
@@ -82,7 +83,7 @@ class Box
      * @param  string $id The name of the definition.
      * @return boolean
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->_definitions[$name]);
     }
@@ -90,17 +91,20 @@ class Box
     /**
      * Gets a shared variable or an new instance.
      *
-     * @param  string $name The name of the definition.
-     * @param  mixed  ...   Parameter.
+     * @param string $name The name of the definition.
+     * @param mixed  ...   Parameter.
      * @return mixed        The shared variable or an new instance.
      * @throws BoxException if the definition doesn't exists.
+     * @throws \ReflectionException
      */
-    public function get($name)
+    public function get(string $name)
     {
         if (!isset($this->_definitions[$name])) {
             throw new BoxException("Unexisting `{$name}` definition dependency.");
         }
 
+        $type = '';
+        $definition = '';
         extract($this->_definitions[$name]);
 
         if ($type === 'singleton') {
@@ -124,7 +128,7 @@ class Box
      * @return mixed        The shared variable or an new instance.
      * @throws BoxException if the definition doesn't exists.
      */
-    public function wrap($name)
+    public function wrap(string $name)
     {
         if (!isset($this->_definitions[$name])) {
             throw new BoxException("Unexisting `{$name}` definition dependency.");
@@ -152,7 +156,7 @@ class Box
      * @param  array  $params     Parameters to pass to the definition.
      * @return mixed
      */
-    protected function _service($name, $definition, $params)
+    protected function _service(string $name, $definition, array $params)
     {
         if ($definition instanceof Closure) {
             $type = 'singleton';
@@ -165,11 +169,12 @@ class Box
     /**
      * Process a setted definition.
      *
-     * @param  mixed $definition A definition.
-     * @param  array $params     Parameters to pass to the definition.
+     * @param string|callable $definition A definition.
+     * @param array $params               Parameters to pass to the definition.
      * @return mixed
+     * @throws \ReflectionException
      */
-    protected function _factory($definition, $params)
+    protected function _factory($definition, array $params)
     {
         if (is_string($definition)) {
             if ($params) {
@@ -187,7 +192,7 @@ class Box
      *
      * @param  string $name The name of the definition to remove.
      */
-    public function remove($name)
+    public function remove($name): void
     {
         unset($this->_definitions[$name]);
     }
@@ -195,7 +200,7 @@ class Box
     /**
      * Clears all dependency definitions.
      */
-    public function clear()
+    public function clear(): void
     {
         $this->_definitions = [];
     }
