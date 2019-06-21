@@ -2,6 +2,10 @@ install:
 	docker run --rm --interactive --tty \
 	--volume $$PWD:/app \
 	composer install
+update:
+	docker run --rm --interactive --tty \
+	--volume $$PWD:/app \
+	composer update
 run:
 	docker run --rm --interactive --tty \
 	--volume $$PWD:/usr/src/kahlan \
