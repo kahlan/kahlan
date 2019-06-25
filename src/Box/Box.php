@@ -128,7 +128,7 @@ class Box
      * @return mixed        The shared variable or an new instance.
      * @throws BoxException if the definition doesn't exists.
      */
-    public function wrap(string $name)
+    public function wrap(string $name, ...$params)
     {
         if (!isset($this->_definitions[$name])) {
             throw new BoxException("Unexisting `{$name}` definition dependency.");
@@ -136,9 +136,6 @@ class Box
         if (!$this->_definitions[$name]['definition'] instanceof Closure) {
             throw new BoxException("Error `{$name}` is not a closure definition dependency can't be wrapped.");
         }
-
-        $params = func_get_args();
-        array_shift($params);
 
         $wrapper = $this->_classes['wrapper'];
         return new $wrapper([
