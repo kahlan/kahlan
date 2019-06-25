@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan\Cli;
 
 class Cli
@@ -40,44 +41,23 @@ class Cli
     ];
 
     /**
-     * The default color.
-     *
-     * @var string
-     */
-    protected static $_vtcolor = 'default';
-
-    /**
-     * The default background color.
-     *
-     * @var string
-     */
-    protected static $_vtbackground = 'default';
-
-    /**
-     * The default style.
-     *
-     * @var string
-     */
-    protected static $_vtstyle = 'default';
-
-    /**
      * Returns the ANSI/VT100 number from a color name.
      *
-     * @param  mixed   $name A color name string or a ANSI/VT100 number.
-     * @return integer       A ANSI/VT100 number.
+     * @param  string|int $name A color name string or a ANSI/VT100 number.
+     * @return int              A ANSI/VT100 number.
      */
-    protected static function _vtcolor($name)
+    protected static function _vtcolor($name): int
     {
         return static::_vt100($name);
     }
 
     /**
-     * Returns the ANSI/VT100 number from a backgound color name.
+     * Returns the ANSI/VT100 number from a background color name.
      *
-     * @param  mixed   $name A backgound color name string or a ANSI/VT100 number.
-     * @return integer       A ANSI/VT100 number.
+     * @param  string|int $name A backgound color name string or a ANSI/VT100 number.
+     * @return int              A ANSI/VT100 number.
      */
-    protected static function _vtbackground($name)
+    protected static function _vtbackground($name): int
     {
         if (is_numeric($name)) {
             return $name + 10;
@@ -88,10 +68,10 @@ class Cli
     /**
      * Returns a ANSI/VT100 number from a style name.
      *
-     * @param  mixed   $name A style name string or a ANSI/VT100 number.
-     * @return integer       A ANSI/VT100 number.
+     * @param  string|int $name A style name string or a ANSI/VT100 number.
+     * @return int              A ANSI/VT100 number.
      */
-    protected static function _vtstyle($name)
+    protected static function _vtstyle($name): int
     {
         return isset(static::$_vt100['formats'][$name]) ? static::$_vt100['formats'][$name] : 0;
     }
@@ -99,13 +79,13 @@ class Cli
     /**
      * Returns a ANSI/VT100 number from a color name.
      *
-     * @param  mixed   $name A color name string or a ANSI/VT100 number.
-     * @return integer       A ANSI/VT100 number.
+     * @param  string|int $name A color name string or a ANSI/VT100 number.
+     * @return int              A ANSI/VT100 number.
      */
-    protected static function _vt100($name)
+    protected static function _vt100($name): int
     {
         if (is_numeric($name)) {
-            return $name;
+            return (int) $name;
         }
 
         if (isset(static::$_vt100['colors'][$name])) {
@@ -117,11 +97,9 @@ class Cli
     }
 
     /**
-     * Bells.
-     *
-     * @param integer $count Number of times that the bells must ring.
+     * @param int $count Number of times that the bells must ring.
      */
-    public static function bell($count = 1)
+    public static function bell(int $count = 1): void
     {
         echo str_repeat("\007", $count);
     }
@@ -129,19 +107,19 @@ class Cli
     /**
      * Return a VT100 colored string.
      *
-     * @param mixed        $string  The string to color.
+     * @param string $string The string to color.
      * @param string|array $options The possible values for an array are:
      *                              - `'style`: a style code.
      *                              - `'color'`: a color code.
      *                              - `'background'`: a background color code.
-     *
      *                              The string must respect one of the following format:
      *                              - `'style;color;background'`.
      *                              - `'style;color'`.
      *                              - `'color'`.
      *
+     * @return string
      */
-    public static function color($string, $options = null)
+    public static function color($string, $options = null): string
     {
         if ($options === null) {
             return $string;
