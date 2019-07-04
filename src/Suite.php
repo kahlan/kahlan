@@ -273,7 +273,7 @@ class Suite
      *
      * @param  integer $status If set force a specific status to be returned.
      *
-     * @return boolean         Returns `0` if no error occurred, `-1` otherwise.
+     * @return int|self Returns `0` if no error occurred, `-1` otherwise.
      */
     public function status($status = null)
     {
@@ -284,7 +284,7 @@ class Suite
         if ($this->root()->focused()) {
             return -1;
         }
-        return $this->_status;
+        return (int) $this->_status;
     }
 
     /**

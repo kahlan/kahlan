@@ -1,6 +1,8 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan\Cli {
 
+    use Kahlan\Suite;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
     use Kahlan\Dir\Dir;
@@ -35,7 +37,7 @@ namespace Kahlan\Cli {
         /**
          * The suite instance.
          *
-         * @var object
+         * @var \Kahlan\Suite
          */
         protected $_suite = null;
 
@@ -49,14 +51,14 @@ namespace Kahlan\Cli {
         /**
          * The reporter container.
          *
-         * @var object
+         * @var \Kahlan\Reporters
          */
         protected $_reporters = null;
 
         /**
          * The arguments.
          *
-         * @var object
+         * @var \Kahlan\Cli\CommandLine
          */
         protected $_commandLine = null;
 
@@ -66,7 +68,7 @@ namespace Kahlan\Cli {
          * when the version of Kahlan is updated.
          * It will have no effect if the cache location is changed the default config file (i.e. `'kahlan-config.php'`).
          */
-        public static function composerPostUpdate($event)
+        public static function composerPostUpdate(Event $event): void
         {
             $cachePath = rtrim(realpath(sys_get_temp_dir()), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'kahlan';
             if (!file_exists($cachePath)) {
@@ -88,7 +90,7 @@ namespace Kahlan\Cli {
          *                       - `'autoloader'` _object_ : The autoloader instance.
          *                       - `'suite'`      _object_ : The suite instance.
          */
-        public function __construct($options = [])
+        public function __construct(array $options = [])
         {
             $defaults = ['autoloader' => null, 'suite' => null];
             $options += $defaults;
@@ -136,9 +138,9 @@ namespace Kahlan\Cli {
         /**
          * Get/set the attached autoloader instance.
          *
-         * @return object
+         * @return object|self
          */
-        public function autoloader($autoloader = null)
+        public function autoloader(object $autoloader = null): object
         {
             if (!func_num_args()) {
                 return $this->_autoloader;
@@ -150,9 +152,9 @@ namespace Kahlan\Cli {
         /**
          * Returns arguments instance.
          *
-         * @return object
+         * @return \Kahlan\Cli\CommandLine
          */
-        public function commandLine()
+        public function commandLine(): CommandLine
         {
             return $this->_commandLine;
         }
@@ -160,9 +162,9 @@ namespace Kahlan\Cli {
         /**
          * Returns the suite instance.
          *
-         * @return object
+         * @return Suite
          */
-        public function suite()
+        public function suite(): Suite
         {
             return $this->_suite;
         }
@@ -170,9 +172,9 @@ namespace Kahlan\Cli {
         /**
          * Returns the reporter container.
          *
-         * @return object
+         * @return \Kahlan\Reporters
          */
-        public function reporters()
+        public function reporters(): Reporters
         {
             return $this->_reporters;
         }
@@ -180,9 +182,9 @@ namespace Kahlan\Cli {
         /**
          * Load the config.
          *
-         * @param string $argv The command line string.
+         * @param array $argv The command line string.
          */
-        public function loadConfig($argv = [])
+        public function loadConfig(array $argv = []): void
         {
             $commandLine = new CommandLine();
             $commandLine->option('config',  ['default'  => 'kahlan-config.php']);
@@ -224,9 +226,9 @@ namespace Kahlan\Cli {
         /**
          * Gets the default terminal console.
          *
-         * @return object The default terminal console.
+         * @return \Kahlan\Reporter\Terminal The default terminal console.
          */
-        public function terminal()
+        public function terminal(): Terminal
         {
             return new Terminal([
                 'colors' => !$this->commandLine()->get('no-colors'),
@@ -237,7 +239,7 @@ namespace Kahlan\Cli {
         /**
          * Echoes the Kahlan version.
          */
-        protected function _version()
+        protected function _version(): void
         {
             $terminal = $this->terminal();
             if (!$this->commandLine()->get('no-header')) {
@@ -258,7 +260,7 @@ namespace Kahlan\Cli {
         /**
          * Echoes the help message.
          */
-        protected function _help()
+        protected function _help(): void
         {
             $terminal = $this->terminal();
             if (!$this->commandLine()->get('no-header')) {
@@ -328,7 +330,7 @@ EOD;
         /**
          * Regiter built-in matchers.
          */
-        public static function registerMatchers()
+        public static function registerMatchers(): void
         {
             Matcher::register('toBe',             'Kahlan\Matcher\ToBe');
             Matcher::register('toBeA',            'Kahlan\Matcher\ToBeA');
@@ -389,9 +391,9 @@ EOD;
         /**
          * Returns the exit status.
          *
-         * @return integer The exit status.
+         * @return int The exit status.
          */
-        public function status()
+        public function status(): int
         {
             return $this->suite()->status();
         }
