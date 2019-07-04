@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan\Cli;
 
 class CommandLine
@@ -26,12 +27,10 @@ class CommandLine
     protected $_values = [];
 
     /**
-     * The Constructor.
-     *
      * @param array $options An array of option's attributes where keys are option's names
      *                       and values are an array of attributes.
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         foreach ($options as $name => $config) {
             $this->option($name, $config);
@@ -43,20 +42,20 @@ class CommandLine
      *
      * @return array
      */
-    public function options()
+    public function options(): array
     {
         return $this->_options;
     }
 
-
     /**
      * Gets/Sets/Overrides an option's attributes.
      *
-     * @param  string       $name   The name of the option.
-     * @param  array|string $config The option attributes to set.
+     * @param string $name The name of the option.
+     * @param array|string $config The option attributes to set.
+     * @param mixed $value
      * @return array
      */
-    public function option($name = null, $config = [], $value = null)
+    public function option(string $name, $config = [], $value = null): array
     {
         $defaults = [
             'type'    => 'string',
@@ -75,7 +74,7 @@ class CommandLine
 
         $this->_options[$name] = $config;
 
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
 
         if ($extra) {
             $this->option($key, ['group' => true, 'array' => true]);
@@ -94,17 +93,21 @@ class CommandLine
      * @param  boolean $override If set to `false` it doesn't override already setted data.
      * @return array             The parsed attributes
      */
-    public function parse($argv, $override = true)
+    public function parse(array $argv, bool $override = true): array
     {
         $exists = [];
-        $override ? $this->_values = $this->_defaults : $exists = array_fill_keys(array_keys($this->_values), true);
+        if ($override) {
+            $this->_values = $this->_defaults;
+        } else {
+            $exists = array_fill_keys(array_keys($this->_values), true);
+        }
 
         foreach ($argv as $arg) {
             if ($arg === '--') {
                 break;
             }
             if ($arg[0] === '-') {
-                list($name, $value) = $this->_parse(ltrim($arg, '-'));
+                [$name, $value] = $this->_parse(ltrim($arg, '-'));
                 if ($override || !isset($exists[$name])) {
                     $this->add($name, $value);
                 }
@@ -120,7 +123,7 @@ class CommandLine
      * @param  string $arg A string argument.
      * @return array       The parsed argument
      */
-    protected function _parse($arg)
+    protected function _parse(string $arg): array
     {
         $pos = strpos($arg, '=');
         if ($pos !== false) {
@@ -134,14 +137,14 @@ class CommandLine
     }
 
     /**
-     * Checks if an option has been setted.
+     * Checks if an option has been set.
      *
      * @param  string  $name The name of the option.
-     * @return boolean
+     * @return bool
      */
-    public function exists($name)
+    public function exists(string $name): bool
     {
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
         if (isset($this->_values[$key]) && is_array($this->_values[$key]) && array_key_exists($extra, $this->_values[$key])) {
             return true;
         }
@@ -154,13 +157,13 @@ class CommandLine
     /**
      * Sets the value of a specific option.
      *
-     * @param  string $name  The name of the option.
-     * @param  mixed  $value The value of the option to set.
-     * @return array         The setted value.
+     * @param string $name  The name of the option.
+     * @param mixed $value The value of the option to set.
+     * @return mixed The set value.
      */
-    public function set($name, $value)
+    public function set(string $name, $value)
     {
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
         if ($extra && !isset($this->_options[$key])) {
             $this->option($key, ['group' => true, 'array' => true]);
         }
@@ -170,14 +173,14 @@ class CommandLine
     /**
      * Adds a value to a specific option (or set if it's not an array).
      *
-     * @param  string $name  The name of the option.
-     * @param  mixed  $value The value of the option to set.
-     * @return array         The setted value.
+     * @param string $name The name of the option.
+     * @param mixed $value The value of the option to set.
+     * @return mixed The value.
      */
-    public function add($name, $value)
+    public function add(string $name, $value)
     {
         $config = $this->option($name);
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
 
         if ($config['array']) {
             $this->_values[$key][$extra][] = $value;
@@ -190,10 +193,10 @@ class CommandLine
     /**
      * Gets the value of a specific option.
      *
-     * @param  string $name The name of the option.
-     * @return array        The value.
+     * @param string $name The name of the option.
+     * @return mixed The value.
      */
-    public function get($name = null)
+    public function get(string $name = '')
     {
         if (func_num_args()) {
             return $this->_get($name);
@@ -214,13 +217,13 @@ class CommandLine
     /**
      * Helper for `get()`.
      *
-     * @param  string $name The name of the option.
-     * @return array        The casted value.
+     * @param string $name The name of the option.
+     * @return bool|int|string|array The casted value.
      */
-    protected function _get($name)
+    protected function _get(string $name)
     {
         $config = $this->option($name);
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
 
         if ($extra === '' && $config['group']) {
             $result = [];
@@ -248,10 +251,10 @@ class CommandLine
     /**
      * Casts a value according to the option attributes.
      *
-     * @param  string  $value The value to cast.
-     * @param  string  $type  The type of the value.
-     * @param  boolean $array If `true`, the argument value is considered to be an array.
-     * @return array          The casted value.
+     * @param mixed $value The value to cast.
+     * @param string $type The type of the value.
+     * @param bool $array If `true`, the argument value is considered to be an array.
+     * @return bool|int|string|array The casted value.
      */
     public function cast($value, $type, $array = false)
     {
@@ -281,9 +284,9 @@ class CommandLine
      * @param  string $name The option name.
      * @return array
      */
-    protected function _splitOptionName($name)
+    protected function _splitOptionName(string $name): array
     {
         $parts = explode(':', $name, 2);
-        return [$parts[0], isset($parts[1]) ? $parts[1] : ''];
+        return [$parts[0], $parts[1] ?? ''];
     }
 }
