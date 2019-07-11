@@ -2,7 +2,6 @@
 namespace Kahlan\Spec\Suite\Code;
 
 use Exception;
-use InvalidArgumentException;
 use Kahlan\Code\TimeoutException;
 use Kahlan\Code\Code;
 
@@ -28,16 +27,6 @@ describe("Code", function () {
 
                 $end = microtime(true);
                 expect($end - $start)->toBeLessThan(1);
-
-            });
-
-            it("throws an exception if an invalid closure is provided", function () {
-
-                $closure = function () {
-                    Code::run("invalid", 1);
-                };
-
-                expect($closure)->toThrow(new InvalidArgumentException());
 
             });
 
@@ -88,16 +77,6 @@ describe("Code", function () {
 
             $end = microtime(true);
             expect($end - $start)->toBeLessThan(1);
-
-        });
-
-        it("throws an exception if an invalid closure is provided", function () {
-
-            $closure = function () {
-                Code::spin("invalid", 1);
-            };
-
-            expect($closure)->toThrow(new InvalidArgumentException());
 
         });
 

@@ -1,32 +1,28 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Kahlan\Code;
 
 use Throwable;
 use Exception;
-use InvalidArgumentException;
 
 class Code
 {
     /**
      * Executes a callable until a timeout is reached or the callable returns `true`.
      *
-     * @param  Callable $callable The callable to execute.
-     * @param  integer  $timeout  The timeout value.
+     * @param callable $callable The callable to execute.
+     * @param integer $timeout The timeout value.
+     *
      * @return mixed
+     * @throws \Throwable
      */
-    public static function run($callable, $timeout = 0)
+    public static function run(callable $callable, int $timeout = 0)
     {
-        if (!is_callable($callable)) {
-            throw new InvalidArgumentException();
-        }
-
-        $timeout = (integer) $timeout;
-
         if (!function_exists('pcntl_signal')) {
             throw new Exception("PCNTL threading is not supported by your system.");
         }
 
-        pcntl_signal(SIGALRM, function ($signal) use ($timeout) {
+        pcntl_signal(SIGALRM, function () use ($timeout) {
             throw new TimeoutException("Timeout reached, execution aborted after {$timeout} second(s).");
         }, true);
 
@@ -40,9 +36,6 @@ class Code
         } catch (Throwable $e) {
             pcntl_alarm(0);
             throw $e;
-        } catch (Exception $e) {
-            pcntl_alarm(0);
-            throw $e;
         }
 
         return $result;
@@ -51,16 +44,15 @@ class Code
     /**
      * Executes a callable in a loop until a timeout is reached or the callable returns `true`.
      *
-     * @param  Callable $callable The callable to execute.
-     * @param  integer  $timeout  The timeout value.
+     * @param callable $callable The callable to execute.
+     * @param int $timeout The timeout value.
+     * @param int $delay The delay value
+     *
      * @return mixed
+     * @throws \Throwable
      */
-    public static function spin($callable, $timeout = 0, $delay = 100000)
+    public static function spin(callable $callable, int $timeout = 0, int $delay = 100000)
     {
-        if (!is_callable($callable)) {
-            throw new InvalidArgumentException();
-        }
-
         $closure = function () use ($callable, $timeout, $delay) {
             $timeout = (float) $timeout;
             $start = microtime(true);
