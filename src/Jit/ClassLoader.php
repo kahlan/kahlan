@@ -249,7 +249,7 @@ class ClassLoader
         $includePath = get_include_path();
         set_include_path($includePath ? $includePath . ':' . dirname($file) : dirname($file));
         require $cached;
-        restore_include_path();
+        ini_restore('include_path');
         return true;
     }
 
