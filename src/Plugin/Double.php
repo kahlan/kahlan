@@ -4,6 +4,7 @@ namespace Kahlan\Plugin;
 use Reflection;
 use ReflectionMethod;
 use ReflectionClass;
+use ReflectionType;
 use Kahlan\Suite;
 use Kahlan\MissingImplementationException;
 use Kahlan\Analysis\Inspector;
@@ -416,7 +417,7 @@ EOT;
                 $type = '\\' . $type;
             }
             if (defined('HHVM_VERSION')) {
-                $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type->getName());
+                $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type instanceof ReflectionType ? $type->getName() : $type);
             }
         }
         return $type ? ": {$allowsNull}{$type} " : '';
