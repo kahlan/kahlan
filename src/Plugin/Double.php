@@ -412,7 +412,7 @@ EOT;
                 $allowsNull = '?';
             }
             if (!$type->isBuiltin()) {
-                $type = '\\' . method_exists($type, 'getName') ? $type->getName() : $type;
+                $type = '\\' . (method_exists($type, 'getName') ? $type->getName() : $type);
             }
             if (defined('HHVM_VERSION')) {
                 $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type instanceof ReflectionType && method_exists($type, 'getName') ? $type->getName() : $type);
