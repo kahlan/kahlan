@@ -410,6 +410,8 @@ EOT;
             if (method_exists($type, 'allowsNull') && $type->allowsNull()) {
                 $allowsNull = '?';
             }
+
+            $type = $type->getName();
             if (!$type->isBuiltin()) {
                 $type = '\\' . $type;
             }
