@@ -411,11 +411,10 @@ EOT;
             if (method_exists($type, 'allowsNull') && $type->allowsNull()) {
                 $allowsNull = '?';
             }
-            if (!$type->isBuiltin()) {
-                $type = '\\' . (method_exists($type, 'getName') ? $type->getName() : $type);
-            }
+            $type = (!$type->isBuiltin() ? '\\' : '') . (method_exists($type, 'getName') ? $type->getName() : (string) $type);
+
             if (defined('HHVM_VERSION')) {
-                $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type instanceof ReflectionType && method_exists($type, 'getName') ? $type->getName() : $type);
+                $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type);
             }
         }
         return $type ? ": {$allowsNull}{$type} " : '';
