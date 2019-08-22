@@ -411,12 +411,12 @@ EOT;
                 $allowsNull = '?';
             }
 
-            $type = $type->getName();
             if (!$type->isBuiltin()) {
+                $type = $type->getName();
                 $type = '\\' . $type;
             }
             if (defined('HHVM_VERSION')) {
-                $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type);
+                $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type->getName());
             }
         }
         return $type ? ": {$allowsNull}{$type} " : '';
