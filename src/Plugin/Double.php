@@ -413,8 +413,7 @@ EOT;
             }
 
             if (!$type->isBuiltin()) {
-                $type = $type->getName();
-                $type = '\\' . $type;
+                $type = '\\' . $type->getName();
             }
             if (defined('HHVM_VERSION')) {
                 $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type instanceof ReflectionType ? $type->getName() : $type);
