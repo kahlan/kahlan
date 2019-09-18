@@ -364,7 +364,7 @@ abstract class Block
 
         $this->_passed = true;
 
-        if ($this->excluded()) {
+        if ($this->excluded() && ($this instanceof Specification || $this->enabled())) {
             $this->log()->type('excluded');
             $this->summary()->log($this->log());
             $this->report('specEnd', $this->log());

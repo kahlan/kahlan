@@ -347,6 +347,9 @@ class Group extends \Kahlan\Block
      */
     protected function _blockStart()
     {
+        if (!$this->enabled()) {
+            return;
+        }
         $this->report('suiteStart', $this);
         $this->runCallbacks('beforeAll', false);
     }
@@ -356,6 +359,9 @@ class Group extends \Kahlan\Block
      */
     protected function _blockEnd($runAfterAll = true)
     {
+        if (!$this->enabled()) {
+            return;
+        }
         if ($runAfterAll) {
             if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
                 try {
