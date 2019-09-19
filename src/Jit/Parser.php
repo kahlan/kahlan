@@ -288,7 +288,7 @@ class Parser
                     break;
             }
         }
-        $this->_states['body'] .= $token[0];
+        $this->_states['body'] .= !empty($token[0]) ? $token[0] : '';
         $as ? $this->_states['uses'][$alias] = $prefix . $use : $this->_states['uses'][$last] = $prefix . $use;
         $this->_codeNode('use');
     }

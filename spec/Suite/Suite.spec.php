@@ -1467,9 +1467,9 @@ describe("Suite", function () {
         it("converts E_WARNING error to an exception", function () {
 
             $closure = function () {
-                $a = array_merge();
+                $a = str_split();
             };
-            expect($closure)->toThrow(new PhpErrorException("`E_WARNING` array_merge() expects at least 1 parameter, 0 given"));
+            expect($closure)->toThrow(new PhpErrorException("`E_WARNING` str_split() expects at least 1 parameter, 0 given"));
 
         });
 
