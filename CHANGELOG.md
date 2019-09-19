@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 4.6.4 (2019-09-19)
+
+  * **Change:** Fix Nullable types for non built-in types.
+  * **Bugfix:** Support PHP 7.4.
+
 ## 4.6.3 (2019-04-18)
 
   * **Bugfix:** Fix Nullable types for non built-in types.
