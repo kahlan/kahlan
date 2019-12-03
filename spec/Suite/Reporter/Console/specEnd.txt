@@ -1,0 +1,6 @@
+  [0;90;49m[0m[0;92;49m✓[0m   [0;90;49mit should throw InvalidUnionTypeException `NULL`, use `null` instead[0m
+  [0;90;49m[0m[0;37;49m✓[0m   [0;37;49mit should throw InvalidUnionTypeException `integer`, use `int` instead[0m
+  [0;90;49m[0m[0;36;49m✓[0m   [0;36;49mit should return 'int'[0m
+  [0;90;49m[0m[0;33;49m✓[0m   [0;33;49mit should return 'float'[0m
+  [0;90;49m[0m[0;31;49m✖[0m   [0;31;49mit should return 'float'[0m
+  [0;90;49m[0m[0;31;49m✖[0m   [0;31;49mit should return 'Cake\ORM\Table'[0m

@@ -119,11 +119,15 @@ class Tree extends Terminal
      * ├── UnionTypes
      * ```
      *
-     * @param \Kahlan\Suite|null $suite The suite instance.
+     * @param object|null $suite The suite instance.
      * @return void
      */
     public function suiteStart($suite = null): void
     {
+        if ($suite === null) {
+            return;
+        }
+
         $messages = $suite->messages();
         $this->_count = count($messages);
 
@@ -157,6 +161,10 @@ class Tree extends Terminal
      */
     public function specEnd($log = null): void
     {
+        if ($log === null) {
+            return;
+        }
+
         $pipes = str_repeat(self::PIPE, $this->_count - 2);
 
         $this->write($pipes, 'dark-grey');
@@ -368,5 +376,18 @@ class Tree extends Terminal
     protected function _writeNewLine(): void
     {
         $this->write("\n");
+    }
+
+    /**
+     * Set the `_count` value.
+     *
+     * @param int $count The new count value.
+     * @return $this
+     */
+    public function setCount(int $count): Tree
+    {
+        $this->_count = $count;
+
+        return $this;
     }
 }
