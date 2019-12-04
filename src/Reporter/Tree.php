@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Kahlan\Reporter;
 
@@ -357,12 +356,8 @@ class Tree extends Terminal
      * @param string $messageColor The message color, e.g. `green`, `red`, `blue`, `yellow`, `light-grey`, `dark-grey`.
      * @return void
      */
-    protected function _writeSpecMessage(
-        string $symbol,
-        string $symbolColor,
-        string $message,
-        string $messageColor
-    ) {
+    protected function _writeSpecMessage($symbol, $symbolColor, $message, $messageColor)
+    {
         $this->write($this->_symbols[$symbol], $symbolColor);
         $this->write(self::SPEC_MESSAGE_SEPARATOR);
         $this->write($message, $messageColor);

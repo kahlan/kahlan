@@ -24,7 +24,7 @@ class Log
     protected $_type = '';
     protected $_messages = [];
 
-    public function __construct(string $type, array $messages)
+    public function __construct($type, array $messages)
     {
         $this->_type = $type;
         $this->_messages = $messages;
@@ -43,7 +43,7 @@ class Log
 
 describe("Tree", function () {
 
-    $eraseFile = function (string $file) {
+    $eraseFile = function ($file) {
         $file = fopen($file, 'w');
         fwrite($file, '');
 
