@@ -97,7 +97,7 @@ class Tree extends Terminal
      * @param array $args The suite arguments.
      * @return void
      */
-    public function start($args): void
+    public function start($args)
     {
         parent::start($args);
 
@@ -122,7 +122,7 @@ class Tree extends Terminal
      * @param object|null $suite The suite instance.
      * @return void
      */
-    public function suiteStart($suite = null): void
+    public function suiteStart($suite = null)
     {
         if ($suite === null) {
             return;
@@ -159,7 +159,7 @@ class Tree extends Terminal
      * @param \Kahlan\Log $log The log object of the whole spec.
      * @return void
      */
-    public function specEnd($log = null): void
+    public function specEnd($log = null)
     {
         if ($log === null) {
             return;
@@ -214,7 +214,7 @@ class Tree extends Terminal
      * @param \Kahlan\Summary $summary The execution summary instance.
      * @return void
      */
-    public function end($summary): void
+    public function end($summary)
     {
         $this->_writeNewLine();
         $this->_reportSkipped($summary);
@@ -264,7 +264,7 @@ class Tree extends Terminal
      * @param \Kahlan\Log $log The Log instance.
      * @return void
      */
-    protected function _reportFailureTree($log): void
+    protected function _reportFailureTree($log)
     {
         $messages = array_values(array_filter($log->messages()));
         $failureMessage = array_pop($messages);
@@ -306,7 +306,7 @@ class Tree extends Terminal
      * @param \Kahlan\Log $log A spec log instance.
      * @return void
      */
-    protected function _reportSpecMessage($log): void
+    protected function _reportSpecMessage($log)
     {
         $messages = $log->messages();
         $message = end($messages);
@@ -362,7 +362,7 @@ class Tree extends Terminal
         string $symbolColor,
         string $message,
         string $messageColor
-    ): void {
+    ) {
         $this->write($this->_symbols[$symbol], $symbolColor);
         $this->write(self::SPEC_MESSAGE_SEPARATOR);
         $this->write($message, $messageColor);
@@ -373,7 +373,7 @@ class Tree extends Terminal
      *
      * @return void
      */
-    protected function _writeNewLine(): void
+    protected function _writeNewLine()
     {
         $this->write("\n");
     }
@@ -384,7 +384,7 @@ class Tree extends Terminal
      * @param int $count The new count value.
      * @return $this
      */
-    public function setCount(int $count): Tree
+    public function setCount(int $count)
     {
         $this->_count = $count;
 

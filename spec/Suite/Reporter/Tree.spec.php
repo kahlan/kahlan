@@ -12,7 +12,7 @@ class Suite
         $this->_messages = $messages;
     }
 
-    public function messages(): array
+    public function messages()
     {
         return $this->_messages;
     }
@@ -30,12 +30,12 @@ class Log
         $this->_messages = $messages;
     }
 
-    public function type(): string
+    public function type()
     {
         return $this->_type;
     }
 
-    public function messages(): array
+    public function messages()
     {
         return $this->_messages;
     }
@@ -43,7 +43,7 @@ class Log
 
 describe("Tree", function () {
 
-    $eraseFile = function (string $file): bool {
+    $eraseFile = function (string $file) {
         $file = fopen($file, 'w');
         fwrite($file, '');
 
