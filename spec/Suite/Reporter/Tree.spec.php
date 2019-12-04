@@ -3,6 +3,7 @@ namespace Kahlan\Spec\Suite\Reporter\Coverage;
 
 use Kahlan\Reporter\Tree;
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration.MultipleClasses
 class Suite
 {
     protected $_messages = [];
