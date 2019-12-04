@@ -379,7 +379,7 @@ class Tree extends Terminal
      * @param int $count The new count value.
      * @return $this
      */
-    public function setCount(int $count)
+    public function setCount($count)
     {
         $this->_count = $count;
 
