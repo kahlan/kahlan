@@ -36,7 +36,7 @@ class Tree extends Terminal
      *
      * @var string
      */
-    protected const PIPE = '│  ';
+    const PIPE = '│  ';
 
     /**
      * The tree branch, used only for desciption messages.
@@ -55,7 +55,7 @@ class Tree extends Terminal
      *
      * @var string
      */
-    protected const BRANCH = '├── ';
+    const BRANCH = '├── ';
 
     /**
      * The spec message separator, used to separate the symbol from the message.
@@ -73,7 +73,7 @@ class Tree extends Terminal
      * │  │  ✓   it should return 'null'
      * ```
      */
-    protected const SPEC_MESSAGE_SEPARATOR = '   ';
+    const SPEC_MESSAGE_SEPARATOR = '   ';
 
     /**
      * Callback called before any specs processing.
