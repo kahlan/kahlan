@@ -4,9 +4,9 @@
   / __ \ (_| | | | | | (_| | | | |
   \/  \/\__,_|_| |_|_|\__,_|_| |_|
   
-  [0;90;49mThe PHP Test Framework for Freedom, Truth and Justice.
+  The PHP Test Framework for Freedom, Truth and Justice.
   
-[0m  [0;34;49msrc directory  : [0m/Volumes/Data/Git/github/kahlan/src
-  [0;34;49mspec directory : [0m/Volumes/Data/Git/github/kahlan/spec
+  src directory  : /Volumes/Data/Git/github/kahlan/src
+  spec directory : /Volumes/Data/Git/github/kahlan/spec
   
-  [0;34;49mSpec Tree:[0m
+  Spec Tree:

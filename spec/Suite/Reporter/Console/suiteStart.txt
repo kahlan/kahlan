@@ -1,5 +1,5 @@
-  [0;90;49m│  ├── [0m::assertTypes(string ...$types): void
-  [0;90;49m│  │  ├── [0mUnionTypes::assertTypes('NULL')
-  [0;90;49m│  │  ├── [0mUnionTypes::assertTypes('integer')
-  [0;90;49m│  ├── [0m::getType(mixed $value): string
-  [0;90;49m│  │  ├── [0mUnionTypes::getType(1)
+  │  ├── ::assertTypes(string ...$types): void
+  │  │  ├── UnionTypes::assertTypes('NULL')
+  │  │  ├── UnionTypes::assertTypes('integer')
+  │  ├── ::getType(mixed $value): string
+  │  │  ├── UnionTypes::getType(1)
