@@ -282,7 +282,7 @@ Configuration Options:
 Reporter Options:
 
   --reporter=<name>[:<output_file>]   The name of the text reporter to use, the built-in text reporters
-                                      are `'dot'`, `'bar'`, `'json'`, `'tap'` & `'verbose'` (default: `'dot'`).
+                                      are `'dot'`, `'bar'`, `'json'`, `'tap'`, `'tree'` & `'verbose'` (default: `'dot'`).
                                       You can optionally redirect the reporter output to a file by using the
                                       colon syntax (multiple --reporter options are also supported).
 
