@@ -1,0 +1,5 @@
+│  ├── ::assertTypes(string ...$types): void
+│  │  ├── UnionTypes::assertTypes('NULL')
+│  │  ├── UnionTypes::assertTypes('integer')
+│  ├── ::getType(mixed $value): string
+│  │  ├── UnionTypes::getType(1)

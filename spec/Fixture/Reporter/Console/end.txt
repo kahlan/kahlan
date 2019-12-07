@@ -1,0 +1,42 @@
+
+Pending specification: 1
+./spec/UnionTypes.spec.php, line 119
+
+Excluded specification: 1
+./spec/UnionTypes.spec.php, line 126
+
+Skipped specification: 1
+./spec/UnionTypes.spec.php, line 134
+
+Failure Tree(2):
+├── UnionTypes
+│  ├── ::assertTypes(string ...$types): void
+│  │  ├── UnionTypes::assertTypes('NULL')
+│  │  ✖   it should throw InvalidUnionTypeException `NULL`, use `null` instead
+  expect->toBe() failed in `./spec/UnionTypes.spec.php` line 125
+  
+  It expect actual to be identical to expected (===).
+  
+  actual:
+    (string) "string"
+  expected:
+    (NULL) null
+  
+├── UnionTypes
+│  ├── ::assertTypes(string ...$types): void
+│  │  ├── UnionTypes::assertTypes('integer')
+│  │  ✖   it should throw InvalidUnionTypeException `integer`, use `int` instead
+  an uncaught exception has been thrown in `./vendor/kahlan/kahlan/src/Matcher/ToBe.php` line 13
+  
+  message:`Kahlan\Spec\Fixture\Reporter\Console\Exception` Code(0) with message "Too few arguments to function Kahlan\\Matcher\\ToBe::match(), 1 passed and exactly 2 expected"
+  
+    Kahlan\Matcher\ToBe::match() - ./vendor/kahlan/kahlan/src/Matcher/ToBe.php, line 13
+    Kahlan\Expectation::_spin() - ./vendor/kahlan/kahlan/src/Expectation.php, line 212
+    Kahlan\Expectation::__call() - ./spec/UnionTypes.spec.php, line 130
+  
+
+Expectations   : 3 Executed
+Specifications : 1 Pending, 1 Excluded, 1 Skipped
+
+Passed 1 of 3 FAIL (FAILURE: 1, EXCEPTION: 1) in {time} seconds (using 2MB)
+

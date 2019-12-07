@@ -1,0 +1,6 @@
+✓   it should throw InvalidUnionTypeException `NULL`, use `null` instead
+✓   it should throw InvalidUnionTypeException `integer`, use `int` instead
+✓   it should return 'int'
+✓   it should return 'float'
+✖   it should return 'float'
+✖   it should return 'Cake\ORM\Table'

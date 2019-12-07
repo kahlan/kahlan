@@ -16,7 +16,7 @@ class Tree extends Terminal
      *
      * @var int
      */
-    protected $_indent = 1;
+    protected $_indent = 0;
 
     /**
      * The tree pipe, used to replace the indentation.
