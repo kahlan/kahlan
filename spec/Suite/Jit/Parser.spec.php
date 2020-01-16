@@ -61,6 +61,32 @@ describe("Parser", function () {
 
         });
 
+        it("parses arrow functions", function () {
+
+            skipIf(defined('HHVM_VERSION') || PHP_VERSION_ID < 70400);
+
+            $sample = file_get_contents('spec/Fixture/Jit/Parser/ArrowFunction.php');
+            $root = Parser::parse($sample);
+            foreach ($root->tree as $node) {
+                if ($node->type === 'function') {
+                    expect($node->name)->toBe('');
+                    expect($node->isClosure)->toBe(true);
+                    expect($node->isMethod)->toBe(false);
+                    expect($node->isGenerator)->toBe(false);
+                    expect($node->parent)->toBe($root);
+                    expect($node->args)->toBe([
+                        '$required',
+                        '$param'    => '"value"',
+                        '$boolean'  => 'false',
+                        '$array'    => '[]',
+                        '$array2'   => 'array()',
+                        '$constant' => 'PI'
+                    ]);
+                }
+            }
+
+        });
+
         it("parses PHP directly when the `'php'` option is set to true", function () {
 
             $code = "namespace MyNamespace;";
