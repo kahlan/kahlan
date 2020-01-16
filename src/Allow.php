@@ -59,7 +59,7 @@ class Allow
      * Stub a chain of methods.
      *
      * @param  string $expected the method to be stubbed or a chain of methods.
-     * @return        self.
+     * @return        Stub\Method.
      */
     public function toReceive()
     {
@@ -72,7 +72,7 @@ class Allow
     /**
      * Stub function.
      *
-     * @return        self.
+     * @return        Stub\Method.
      */
     public function toBeCalled()
     {
