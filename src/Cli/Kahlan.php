@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Cli {
 
+    use Kahlan\Jit\Patcher\FinalClass;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
     use Kahlan\Dir\Dir;
@@ -217,6 +218,7 @@ namespace Kahlan\Cli {
                     return;
                 }
                 $patchers = $loader->patchers();
+                $patchers->add('final',    new FinalClass());
                 $patchers->add('pointcut', new Pointcut());
                 $patchers->add('monkey',   new Monkey());
                 $patchers->add('quit',     new Quit());
