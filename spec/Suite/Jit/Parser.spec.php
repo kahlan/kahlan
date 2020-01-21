@@ -44,9 +44,35 @@ describe("Parser", function () {
             foreach ($root->tree as $node) {
                 if ($node->type === 'function') {
                     expect($node->name)->toBe('myFunction');
-                    expect($node->isClosure)->toBe(false);
-                    expect($node->isMethod)->toBe(false);
-                    expect($node->isGenerator)->toBe(false);
+                    expect($node->isClosure)->toBeFalsy();
+                    expect($node->isMethod)->toBeFalsy();
+                    expect($node->isGenerator)->toBeFalsy();
+                    expect($node->parent)->toBe($root);
+                    expect($node->args)->toBe([
+                        '$required',
+                        '$param'    => '"value"',
+                        '$boolean'  => 'false',
+                        '$array'    => '[]',
+                        '$array2'   => 'array()',
+                        '$constant' => 'PI'
+                    ]);
+                }
+            }
+
+        });
+
+        it("parses arrow functions", function () {
+
+            skipIf(defined('HHVM_VERSION') || PHP_VERSION_ID < 70400);
+
+            $sample = file_get_contents('spec/Fixture/Jit/Parser/ArrowFunction.php');
+            $root = Parser::parse($sample);
+            foreach ($root->tree as $node) {
+                if ($node->type === 'function') {
+                    expect($node->name)->toBe('');
+                    expect($node->isClosure)->toBeTruthy();
+                    expect($node->isMethod)->toBeFalsy();
+                    expect($node->isGenerator)->toBeFalsy();
                     expect($node->parent)->toBe($root);
                     expect($node->args)->toBe([
                         '$required',
@@ -103,9 +129,9 @@ describe("Parser", function () {
             foreach ($root->tree as $node) {
                 if ($node->type === 'function') {
                     expect($node->name)->toBe('myGenerator');
-                    expect($node->isClosure)->toBe(false);
-                    expect($node->isMethod)->toBe(false);
-                    expect($node->isGenerator)->toBe(true);
+                    expect($node->isClosure)->toBeFalsy();
+                    expect($node->isMethod)->toBeFalsy();
+                    expect($node->isGenerator)->toBeTruthy();
                     expect($node->parent)->toBe($root);
                 }
             }

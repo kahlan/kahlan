@@ -77,6 +77,7 @@ class Parser
         $this->_stream = new TokenStream(['source' => $content, 'wrap' => $this->_states['php']]);
 
         $T_YIELD = defined('HHVM_VERSION') ? 381 : 267;
+        $T_ARROW_FUNCTION = defined('T_FN') ? 343 : 10000;
 
         $blockStartLines = [];
         $blockStartLine = null;
@@ -181,6 +182,7 @@ class Parser
                     $this->_states['body'] .= $token[1];
                     break;
                 case T_FUNCTION:
+                case $T_ARROW_FUNCTION: // use T_FN directly when PHP 7.3 support will be removed.
                     $this->_functionNode();
                     break;
                 case $T_YIELD: // use T_YIELD directly when PHP 5.4 support will be removed.
