@@ -44,9 +44,9 @@ describe("Parser", function () {
             foreach ($root->tree as $node) {
                 if ($node->type === 'function') {
                     expect($node->name)->toBe('myFunction');
-                    expect($node->isClosure)->toBe(false);
-                    expect($node->isMethod)->toBe(false);
-                    expect($node->isGenerator)->toBe(false);
+                    expect($node->isClosure)->toBeFalsy();
+                    expect($node->isMethod)->toBeFalsy();
+                    expect($node->isGenerator)->toBeFalsy();
                     expect($node->parent)->toBe($root);
                     expect($node->args)->toBe([
                         '$required',
@@ -70,9 +70,9 @@ describe("Parser", function () {
             foreach ($root->tree as $node) {
                 if ($node->type === 'function') {
                     expect($node->name)->toBe('');
-                    expect($node->isClosure)->toBe(true);
-                    expect($node->isMethod)->toBe(false);
-                    expect($node->isGenerator)->toBe(false);
+                    expect($node->isClosure)->toBeTruthy();
+                    expect($node->isMethod)->toBeFalsy();
+                    expect($node->isGenerator)->toBeFalsy();
                     expect($node->parent)->toBe($root);
                     expect($node->args)->toBe([
                         '$required',
@@ -129,9 +129,9 @@ describe("Parser", function () {
             foreach ($root->tree as $node) {
                 if ($node->type === 'function') {
                     expect($node->name)->toBe('myGenerator');
-                    expect($node->isClosure)->toBe(false);
-                    expect($node->isMethod)->toBe(false);
-                    expect($node->isGenerator)->toBe(true);
+                    expect($node->isClosure)->toBeFalsy();
+                    expect($node->isMethod)->toBeFalsy();
+                    expect($node->isGenerator)->toBeTruthy();
                     expect($node->parent)->toBe($root);
                 }
             }
