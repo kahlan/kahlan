@@ -10,6 +10,12 @@ use Kahlan\Jit\Node\BlockDef;
  */
 class Parser
 {
+    protected $_T_YIELD;
+
+    protected $_ARROW_FUNCTION;
+
+    protected $_DOUBLE_ARROW;
+
     /**
      * The root node.
      *
@@ -63,6 +69,9 @@ class Parser
         $node = new BlockDef('', 'file');
         $node->hasMethods = false;
         $this->_root = $this->_states['current'] = $node->namespace = $node;
+        $this->_T_YIELD = defined('HHVM_VERSION') ? 381 : 267;
+        $this->_T_ARROW_FUNCTION = defined('T_FN') ? 343 : 10000;
+        $this->_T_DOUBLE_ARROW = defined('T_DOUBLE_ARROW') ? 268 : 1000;
     }
 
     /**
@@ -75,9 +84,6 @@ class Parser
     {
         $this->_initLines($content);
         $this->_stream = new TokenStream(['source' => $content, 'wrap' => $this->_states['php']]);
-
-        $T_YIELD = defined('HHVM_VERSION') ? 381 : 267;
-        $T_ARROW_FUNCTION = defined('T_FN') ? 343 : 10000;
 
         $blockStartLines = [];
         $blockStartLine = null;
@@ -182,10 +188,10 @@ class Parser
                     $this->_states['body'] .= $token[1];
                     break;
                 case T_FUNCTION:
-                case $T_ARROW_FUNCTION: // use T_FN directly when PHP 7.3 support will be removed.
+                case $this->_T_ARROW_FUNCTION: // use T_FN directly when PHP 7.3 support will be removed.
                     $this->_functionNode();
                     break;
-                case $T_YIELD: // use T_YIELD directly when PHP 5.4 support will be removed.
+                case $this->_T_YIELD: // use T_YIELD directly when PHP 5.4 support will be removed.
                     $parent = $this->_states['current'];
                     while ($parent && !$parent instanceof FunctionDef) {
                         $parent = $parent->parent;
@@ -487,7 +493,7 @@ class Parser
         $node->name = trim($name);
         $args = $this->_parseArgs();
         $node->args = $args['args'];
-        $suffix = $this->_stream->next([';', '{']);
+        $suffix = $this->_stream->next([';', '{', $this->_T_DOUBLE_ARROW]); // use T_DOUBLE_ARROW directly when PHP 7.3 support will be removed.
         $body .= $args['body'] . $suffix;
         if ($parent) {
             $isMethod = $parent->hasMethods;

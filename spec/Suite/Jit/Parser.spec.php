@@ -87,6 +87,37 @@ describe("Parser", function () {
 
         });
 
+        it("parses arrow functions", function () {
+
+            $filename = 'spec/Fixture/Jit/Parser/ArrowFunction';
+            $content = file_get_contents($filename . '.php');
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+
+            $parsed = Parser::parse($content);
+
+            foreach ($parsed->tree as $node) {
+                if ($node->type === 'function') {
+                    expect($node->name)->toBe('');
+                    expect($node->isClosure)->toBe(true);
+                    expect($node->isMethod)->toBe(false);
+                    expect($node->isGenerator)->toBe(false);
+                    expect($node->parent)->toBe($parsed);
+                    expect($node->args)->toBe([
+                        '$required',
+                        '$param'    => '"value"',
+                        '$boolean'  => 'false',
+                        '$array'    => '[]',
+                        '$array2'   => 'array()',
+                        '$constant' => 'PI'
+                    ]);
+                }
+            }
+
+            expect(Parser::unparse($parsed))->toBe($content);
+        });
+
         it("parses PHP directly when the `'php'` option is set to true", function () {
 
             $code = "namespace MyNamespace;";

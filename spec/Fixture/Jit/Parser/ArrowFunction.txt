@@ -1,0 +1,5 @@
+#1      [       open        ] #1 > #2         |<?php
+#2     *[     c,s,c,s,c     ] #2 > #2         |define('PI', '3.14');
+#3      [                   ] #3 > #3         |
+#4     *[    function,c     ] #4 > #4         |fn($required, $param = "value", $boolean = false, $array = [], $array2 = array(), $constant = PI) => null;
+#5     *[         c         ] #5 > #5         |$i = 0;
