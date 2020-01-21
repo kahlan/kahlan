@@ -433,6 +433,7 @@ class Parser
         $node->name = $name;
         $node->extends = $this->_normalizeClass($extends);
         $node->implements = $this->_normalizeImplements($implements);
+        $node->final = !empty($this->_states['visibility']['final']);
 
         $this->_states['body'] .= $body;
         return $this->_states['current'] = $this->_contextualize($node);

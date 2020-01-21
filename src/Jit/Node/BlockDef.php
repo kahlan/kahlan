@@ -44,4 +44,11 @@ class BlockDef extends NodeDef
      * @var array|null
      */
     public $implements = null;
+
+    /**
+     * The final contraint (for class only)
+     *
+     * @var boolean
+     */
+    public $final = false;
 }

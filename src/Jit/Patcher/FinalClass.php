@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Kahlan\Jit\Patcher;
 
-final class FinalClass
+class FinalClass
 {
+    protected $_sibling;
+
     /**
      * The JIT find file patcher.
      *
@@ -42,18 +44,14 @@ final class FinalClass
         if ($node->type === 'file') {
             foreach ($node->tree as $child_node) {
                 $this->process($child_node);
+                $this->_sibling = $child_node;
             }
         }
 
-        if ($node->type !== 'code') {
+        if ($node->type !== 'class' || !$node->final) {
             return $node;
         }
-
-        preg_match('/final $/',  $node->body, $matches);
-        if (!empty($matches)) {
-            $node->body = preg_replace('/final $/', '', $node->body);
-        }
-
+        $this->_sibling->body = preg_replace('/final\s+$/', '', $this->_sibling->body);
         return $node;
     }
 }
