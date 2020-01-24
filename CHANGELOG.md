@@ -2,6 +2,12 @@
 
 ## Last changes
 
+## 4.7 (2020-01-24)
+
+  * **Add:** Support PHP 7.4 arrow function.
+  * **Add:** Allow final class mocking.
+  * **Add:** New Tree reporter
+
 ## 4.6.4 (2019-09-19)
 
   * **Change:** Fix Nullable types for non built-in types.
