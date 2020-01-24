@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 namespace Kahlan\Jit\Patcher;
 
 class FinalClass
@@ -41,17 +38,24 @@ class FinalClass
      */
     public function process($node, $path = null)
     {
-        if ($node->type === 'file') {
-            foreach ($node->tree as $child_node) {
-                $this->process($child_node);
-                $this->_sibling = $child_node;
-            }
-        }
-
-        if ($node->type !== 'class' || !$node->final) {
-            return $node;
-        }
-        $this->_sibling->body = preg_replace('/final\s+$/', '', $this->_sibling->body);
+        $this->_processTree($node);
         return $node;
+    }
+
+    /**
+     * Helper for `Pointcut::process()`.
+     *
+     * @param array $parent The node instance tor process.
+     */
+    protected function _processTree($parent)
+    {
+        foreach ($parent->tree as $node) {
+            if ($node->type === 'class' && $node->final) {
+                $this->_sibling->body = preg_replace('/final\s+$/', '', $this->_sibling->body);
+            } elseif (!empty($node->tree)) {
+                $this->_processTree($node);
+            }
+            $this->_sibling = $node;
+        }
     }
 }
