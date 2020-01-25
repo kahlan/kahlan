@@ -111,7 +111,7 @@ class ClassLoader
     {
         $loaders = spl_autoload_functions();
         foreach ($loaders as $key => $loader) {
-            if ($loader[0] instanceof static) {
+            if (is_array($loader) && $loader[0] instanceof static) {
                 return $loader[0];
             }
         }
