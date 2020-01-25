@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.7.1 (2020-01-25)
+
+  * **Change:** Update Istanbul coverage export to 1.0 format.
+
 ## 4.7 (2020-01-24)
 
   * **Add:** Support PHP 7.4 arrow function.
