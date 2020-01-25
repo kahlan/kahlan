@@ -24,7 +24,7 @@ namespace Kahlan\Cli {
 
     class Kahlan
     {
-        const VERSION = '4.7.1';
+        const VERSION = '4.7.2';
 
         /**
          * Starting time.

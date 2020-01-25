@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.7.2 (2020-01-25)
+
+  * **Bugfix:** Fix autoloader conficts when code coverage is enabled.
+
 ## 4.7.1 (2020-01-25)
 
   * **Change:** Update Istanbul coverage export to 1.0 format.
