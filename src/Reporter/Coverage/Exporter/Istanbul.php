@@ -52,7 +52,7 @@ class Istanbul
             $export[$path] = static::_export($path, $collector->parse($file), $coverage);
         }
 
-        return json_encode($export);
+        return json_encode($export, JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -62,13 +62,13 @@ class Istanbul
      */
     protected static function _export($path, $tree, $coverage)
     {
-        $s = [];
-        $statementMap = [];
-        $statementIndex = 1;
+        $s = (object) [];
+        $statementMap = (object) [];
+        $statementIndex = 0;
 
-        $f = [];
-        $fnMap = [];
-        $fnIndex = 1;
+        $f = (object) [];
+        $fnMap = (object) [];
+        $fnIndex = 0;
 
         $fnCurr = null;
         $fnCurrIndex = null;
@@ -78,10 +78,20 @@ class Istanbul
             foreach ($content['nodes'] as $node) {
                 if ($node->type === 'function' && $node->lines['start'] === $num) {
                     if ($node->isMethod || !$node->isClosure) {
-                        $f[$fnIndex] = 0;
-                        $fnMap[$fnIndex] = [
+                        $f->{$fnIndex} = 0;
+                        $fnMap->{$fnIndex} = [
                             'name' => $node->name,
                             'line' => $num + 1,
+                            'decl' => [
+                                'start' => [
+                                    'line' => $num + 1,
+                                    'column' => 0
+                                ],
+                                'end' => [
+                                    'line' => $num + 1,
+                                    'column' => strlen($content['body']) + 1
+                                ]
+                            ],
                             'loc' => [
                                 'start' => [
                                     'line' => $num + 1,
@@ -89,7 +99,7 @@ class Istanbul
                                 ],
                                 'end' => [
                                     'line' => $node->lines['stop'] + 1,
-                                    'column' => strpos($node->body, '}')
+                                    'column' => strlen($tree->lines['content'][$node->lines['stop']]['body']) + 1
                                 ]
                             ]
                         ];
@@ -106,29 +116,29 @@ class Istanbul
             if (!$coverable) {
                 continue;
             }
-            $s[$statementIndex] = isset($coverage[$num]) ? $coverage[$num] : 0;
+            $s->{$statementIndex} = isset($coverage[$num]) ? $coverage[$num] : 0;
 
-            $statementMap[$statementIndex] = [
+            $statementMap->{$statementIndex} = [
                 'start' => [
                     'line' => $num + 1,
                     'column' => 0
                 ],
                 'end' => [
                     'line' => $coverable->lines['stop'] + 1,
-                    'column' => strlen($node->body)
+                    'column' => strlen($content['body']) + 1
                 ]
             ];
 
             if ($fnCurr) {
                 if ($fnCurr->lines['stop'] >= $coverable->lines['stop']) {
-                    $f[$fnCurrIndex] = max($f[$fnCurrIndex], $s[$statementIndex]);
+                    $f->{$fnCurrIndex} = max($f->{$fnCurrIndex}, $s->{$statementIndex});
                 }
             }
 
             $statementIndex++;
         }
-        $b = [];
-        $branchMap = [];
-        return compact('path', 's', 'f', 'b', 'statementMap', 'fnMap', 'branchMap');
+        $b = (object) [];
+        $branchMap = (object) [];
+        return compact('path', 'statementMap', 'fnMap', 'branchMap', 's', 'f', 'b');
     }
 }

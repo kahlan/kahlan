@@ -44,10 +44,10 @@ describe("Istanbul", function () {
             $ds = DS;
 
             $expected = <<<EOD
-{"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php":{"path":"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
+{"/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php":{"path":"/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php","statementMap":{"0":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"1":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"2":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"3":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"0":{"name":"shallNotPass","line":6,"decl":{"start":{"line":6,"column":0},"end":{"line":6,"column":35}},"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":6}}}},"branchMap":{},"s":{"0":1,"1":0,"2":1,"3":0},"f":{"0":1},"b":{}}}
 EOD;
 
-            expect(str_replace('\\\\', '\\/', $json))->toBe($expected);
+            expect($json)->toBe($expected);
         });
 
         it("exports the coverage of a file with an extra line at the end", function () {
@@ -74,10 +74,10 @@ EOD;
             $ds = DS;
 
             $expected = <<<EOD
-{"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/ExtraEmptyLine.php":{"path":"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/ExtraEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
+{"/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/ExtraEmptyLine.php":{"path":"/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/ExtraEmptyLine.php","statementMap":{"0":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"1":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"2":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"3":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"0":{"name":"shallNotPass","line":6,"decl":{"start":{"line":6,"column":0},"end":{"line":6,"column":35}},"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":6}}}},"branchMap":{},"s":{"0":1,"1":0,"2":1,"3":0},"f":{"0":1},"b":{}}}
 EOD;
 
-            expect(str_replace('\\\\', '\\/', $json))->toBe($expected);
+            expect($json)->toBe($expected);
 
         });
 
@@ -116,16 +116,16 @@ EOD;
                 'base_path' => DS . 'home' . DS . 'kahlan' . DS . 'kahlan'
             ]);
 
-            expect($success)->toBe(629);
+            expect($success)->toBe(677);
 
             $json = file_get_contents($this->output);
             $ds = DS;
 
             $expected = <<<EOD
-{"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php":{"path":"\/home\/kahlan\/kahlan\/spec\/Fixture\/Reporter\/Coverage\/NoEmptyLine.php","s":{"1":1,"2":0,"3":1,"4":0},"f":{"1":1},"b":[],"statementMap":{"1":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"2":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"3":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"4":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"1":{"name":"shallNotPass","line":6,"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":false}}}},"branchMap":[]}}
+{"/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php":{"path":"/home/kahlan/kahlan/spec/Fixture/Reporter/Coverage/NoEmptyLine.php","statementMap":{"0":{"start":{"line":8,"column":0},"end":{"line":8,"column":31}},"1":{"start":{"line":10,"column":0},"end":{"line":10,"column":34}},"2":{"start":{"line":12,"column":0},"end":{"line":12,"column":30}},"3":{"start":{"line":13,"column":0},"end":{"line":13,"column":30}}},"fnMap":{"0":{"name":"shallNotPass","line":6,"decl":{"start":{"line":6,"column":0},"end":{"line":6,"column":35}},"loc":{"start":{"line":6,"column":0},"end":{"line":14,"column":6}}}},"branchMap":{},"s":{"0":1,"1":0,"2":1,"3":0},"f":{"0":1},"b":{}}}
 EOD;
 
-            expect(str_replace('\\\\', '\\/', $json))->toBe($expected);
+            expect($json)->toBe($expected);
 
         });
 
