@@ -238,6 +238,9 @@ class ClassLoader
             require $file;
             return true;
         }
+        if (in_array($file, $this->_files)) {
+            return true;
+        }
 
         if (!$cached = $this->cached($file)) {
             $code = file_get_contents($file);
