@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.7.3 (2020-04-10)
+
+  * **Bugfix:** Fix autoloader to not load autoload files.
+
 ## 4.7.2 (2020-01-25)
 
   * **Bugfix:** Fix autoloader conficts when code coverage is enabled.
