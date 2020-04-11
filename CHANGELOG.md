@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.7.4 (2020-04-11)
+
+  * **Bugfix:** Tweak autoload files that conflict when define constant.
+
 ## 4.7.3 (2020-04-10)
 
   * **Bugfix:** Fix autoloader to not load autoload files.
