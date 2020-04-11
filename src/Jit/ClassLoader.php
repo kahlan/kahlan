@@ -238,9 +238,6 @@ class ClassLoader
             require $file;
             return true;
         }
-        if (in_array($file, $this->_files)) {
-            return true;
-        }
 
         if (!$cached = $this->cached($file)) {
             $code = file_get_contents($file);
@@ -251,7 +248,7 @@ class ClassLoader
         }
         $includePath = get_include_path();
         set_include_path($includePath ? $includePath . ':' . dirname($file) : dirname($file));
-        require $cached;
+        @require $cached;
         ini_restore('include_path');
         return true;
     }
