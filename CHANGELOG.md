@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 4.7.5 (2020-04-25)
+
+  * **Bugfix:** Support isset() for scopes.
+
 ## 4.7.4 (2020-04-11)
 
   * **Bugfix:** Tweak autoload files that conflict when define constant.
