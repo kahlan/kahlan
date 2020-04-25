@@ -139,6 +139,47 @@ describe("Block", function () {
         });
     });
 
+    describe("->__isset()", function () {
+
+        it("checks existing values", function () {
+
+            $this->foo = 2;
+            expect(isset($this->foo))->toBe(true);
+
+        });
+
+        it("checks unexisting values", function () {
+
+            expect(isset($this->foo))->toBe(false);
+
+        });
+
+        it("is not influenced by the previous spec", function () {
+
+            expect(isset($this->foo))->toBe(false);
+
+        });
+
+        context("when nested", function () {
+
+            beforeEach(function () {
+                $this->bar = 1;
+            });
+
+            it("checks existing values", function () {
+
+                expect(isset($this->bar))->toBe(true);
+
+            });
+
+            it("checks unexisting values", function () {
+
+                expect(isset($this->foo))->toBe(false);
+
+            });
+        });
+    });
+
     describe("skipIf", function () {
 
         it("returns none if provided false/null", function () {

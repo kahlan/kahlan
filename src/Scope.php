@@ -126,6 +126,29 @@ abstract class Scope
     }
 
     /**
+     * Check if a variable exists in a scope.
+     *
+     * @param  string $key The name of the variable.
+     *
+     * @return boolean
+     */
+    public function __isset($key)
+    {
+        if (array_key_exists($key, $this->_data)) {
+            return true;
+        }
+        if (array_key_exists($key, $this->_given)) {
+            $scope = Suite::current()->scope();
+            $scope->{$key} = $this->_given[$key]($scope);
+            return $scope->__isset($key);
+        }
+        if ($this->_parent !== null) {
+            return $this->_parent->__isset($key);
+        }
+        return false;
+    }
+
+    /**
      * Allow closures assigned to the scope property to be inkovable.
      *
      * @param  string $name Name of the method being called.
