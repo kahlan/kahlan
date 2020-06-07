@@ -243,8 +243,8 @@ class ClassLoader
             $code = file_get_contents($file);
             $timestamp = filemtime($file);
 
-            $rewrited = $this->_patchers->process($code, $file);
-            $cached = $this->cache($file, $rewrited, max($timestamp, $this->_watchedTimestamp) + 1);
+            $rewritten = $this->_patchers->process($code, $file);
+            $cached = $this->cache($file, $rewritten, max($timestamp, $this->_watchedTimestamp) + 1);
         }
         $includePath = get_include_path();
         set_include_path($includePath ? $includePath . ':' . dirname($file) : dirname($file));
