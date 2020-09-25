@@ -2,6 +2,11 @@
 
 ## Last changes
 
+
+## 4.7.6 (2020-09-25)
+
+  * **Bugfix:** Ignore spaces after class names.
+
 ## 4.7.5 (2020-04-25)
 
   * **Bugfix:** Support isset() for scopes.
