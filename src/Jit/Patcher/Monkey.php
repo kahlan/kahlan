@@ -237,7 +237,7 @@ class Monkey
             $isInstance = !!$match[1][0];
             $isStaticCall = $nextChar === ':';
             $isClass = $isStaticCall || $isInstance;
-            $method = $match[4][0] ? $match[4][0] : 'null';
+            $method = trim($match[4][0]) ? $match[4][0] : 'null';
 
             if (!isset(static::$_blacklist[ltrim(strtolower($name), '\\')]) && ($isClass || $nextChar === '(')) {
                 $tokens = explode('\\', $name, 2);

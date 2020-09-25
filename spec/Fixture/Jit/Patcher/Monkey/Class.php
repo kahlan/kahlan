@@ -88,6 +88,11 @@ class Example extends \Kahlan\Fixture\Parent
         new $class;
     }
 
+    public function instantiateWithSpacesAfterClassname()
+    {
+        new MongoId  ();
+    }
+
     public function staticCall()
     {
         return Debugger::trace();
