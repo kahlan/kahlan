@@ -3,6 +3,10 @@
 ## Last changes
 
 
+## 4.7.7 (2020-10-17)
+
+  * **Bugfix:** Show fatal errors on file requirements.
+
 ## 4.7.6 (2020-09-25)
 
   * **Bugfix:** Ignore spaces after class names.
