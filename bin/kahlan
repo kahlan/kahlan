@@ -4,7 +4,7 @@ if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
 }
 
-error_reporting(E_ALL);
+error_reporting(E_ALL^E_NOTICE);
 
 $pwd = realpath(getcwd());
 $vendorName = 'vendor';
@@ -66,5 +66,6 @@ if (!file_exists("{$pwd}/{$vendorName}/autoload.php")) {
     exit(1);
 }
 
+error_reporting(E_ALL);
 $specs->run();
 exit($specs->status());
