@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.0.0 (2020-12-26)
+
+  * **Add:** Support PHP 8.0.
+  * **Remove:** Drop PHP <= 7.0 & HHVM version.
 
 ## 4.7.7 (2020-10-17)
 
