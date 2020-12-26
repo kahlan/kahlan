@@ -330,15 +330,6 @@ describe("ClassLoader", function () {
 
         });
 
-        it("finds a HH class path", function () {
-
-            $this->loader->patch(['cachePath' => $this->cachePath]);
-
-            $expected = realpath('spec/Fixture/Jit/Interceptor/ClassHh.hh');
-            expect($this->loader->findPath('Kahlan\Spec\Fixture\Jit\Interceptor\ClassHh'))->toBe($expected);
-
-        });
-
         it("gives precedence to files", function () {
 
             $this->loader->patch(['cachePath' => $this->cachePath]);

@@ -10,8 +10,6 @@ use Kahlan\Jit\Node\BlockDef;
  */
 class Parser
 {
-    protected $_T_YIELD;
-
     protected $_ARROW_FUNCTION;
 
     protected $_DOUBLE_ARROW;
@@ -73,7 +71,6 @@ class Parser
         $node = new BlockDef('', 'file');
         $node->hasMethods = false;
         $this->_root = $this->_states['current'] = $node->namespace = $node;
-        $this->_T_YIELD = defined('HHVM_VERSION') ? 381 : T_YIELD;
         $this->_T_ARROW_FUNCTION = defined('T_FN') ? T_FN : -1;
         $this->_T_DOUBLE_ARROW = defined('T_DOUBLE_ARROW') ? T_DOUBLE_ARROW : -1;
         $this->_T_NAME_FULLY_QUALIFIED = defined('T_NAME_FULLY_QUALIFIED') ? T_NAME_FULLY_QUALIFIED : -1;
@@ -197,7 +194,7 @@ class Parser
                 case $this->_T_ARROW_FUNCTION: // use T_FN directly when PHP 7.3 support will be removed.
                     $this->_functionNode();
                     break;
-                case $this->_T_YIELD: // use T_YIELD directly when PHP 5.4 support will be removed.
+                case T_YIELD:
                     $parent = $this->_states['current'];
                     while ($parent && !$parent instanceof FunctionDef) {
                         $parent = $parent->parent;

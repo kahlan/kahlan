@@ -783,11 +783,6 @@ class ClassLoader
 
         $file = $this->_findFileWithExtension($class, '.php');
 
-        // Search for Hack files if we are running on HHVM
-        if (!$file && defined('HHVM_VERSION')) {
-            $file = $this->_findFileWithExtension($class, '.hh');
-        }
-
         if ($this->_apcuPrefix !== null) {
             apcu_add($this->_apcuPrefix . $class, $file);
         }

@@ -524,8 +524,6 @@ EOD;
 
         it("generates interface methods with return type", function () {
 
-            skipIf(PHP_MAJOR_VERSION < 7);
-
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
                 'implements'   => ['Kahlan\Spec\Fixture\Plugin\Double\ReturnTypesInterface'],
@@ -549,9 +547,6 @@ EOD;
         });
 
         it("generates interface methods with nullable return type", function () {
-
-            skipIf(PHP_MAJOR_VERSION < 7);
-            skipIf(PHP_MINOR_VERSION < 1);
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -601,8 +596,6 @@ EOD;
         });
 
         it("generates interface methods with variadic variable", function () {
-
-            skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -729,8 +722,6 @@ EOD;
         });
 
         it("adds ` = NULL` to optional parameter in PHP core method", function () {
-
-            skipIf(defined('HHVM_VERSION'));
 
             $result = Double::generate([
                 'class'   => 'Kahlan\Spec\Plugin\Double\Double',

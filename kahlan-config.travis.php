@@ -26,7 +26,6 @@ Filters::apply($this, 'coverage', function($next) {
             //Exclude coverage classes from code coverage reporting (don't know how to test the tester)
             'src/Reporter/Coverage/Collector.php',
             'src/Reporter/Coverage/Driver/Xdebug.php',
-            'src/Reporter/Coverage/Driver/HHVM.php',
             'src/Reporter/Coverage/Driver/Phpdbg.php',
             //Exclude text based reporter classes from code coverage reporting (a bit useless)
             'src/Reporter/Dot.php',

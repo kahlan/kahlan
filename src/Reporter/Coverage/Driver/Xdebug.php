@@ -32,7 +32,7 @@ class Xdebug
             throw new RuntimeException('Xdebug is not loaded.');
         }
 
-        if (!defined('HHVM_VERSION') && !ini_get('xdebug.coverage_enable')) {
+        if (!ini_get('xdebug.coverage_enable')) {
             throw new RuntimeException('You need to set `xdebug.coverage_enable = On` in your php.ini.');
         }
     }

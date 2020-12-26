@@ -67,8 +67,9 @@ class Inspector
      */
     public static function typehint($parameter)
     {
-        if (PHP_MAJOR_VERSION >= 7 && $parameter->getType()) {
-            $type = $parameter->getType();
+        $type = $parameter->getType();
+        $typehint = '';
+        if ($type) {
             if ($type instanceof ReflectionUnionType) {
                 $result = [];
                 foreach ($type->getTypes() as $t) {
@@ -78,10 +79,6 @@ class Inspector
             }
             $allowsNull = $type->getName() !== 'mixed' && $type->allowsNull() ? '?' : '';
             return $allowsNull . ($type->isBuiltin() ? '' : '\\') . $type->getName();
-        }
-        $typehint = '';
-        if (PHP_MAJOR_VERSION < 7 && $parameter->getClass()) {
-            $typehint = '\\' . $parameter->getClass()->getName();
         } elseif (preg_match('/.*?\[ \<[^\>]+\> (?:HH\\\)?(\w+)(.*?)\$/', (string) $parameter, $match)) {
             $typehint = $match[1];
             if ($typehint === 'integer') {

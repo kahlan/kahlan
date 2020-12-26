@@ -403,9 +403,6 @@ EOT;
      */
     protected static function _generateReturnType($method)
     {
-        if (Suite::$PHP < 7) {
-            return '';
-        }
         $typehint = Inspector::returnTypehint($method->getReturnType());
         return $typehint ? ": {$typehint} " : '';
     }
@@ -419,7 +416,7 @@ EOT;
     protected static function _generateSignature($method)
     {
         $params = [];
-        $isVariadic = Suite::$PHP >= 7 ? $method->isVariadic() : false;
+        $isVariadic = $method->isVariadic();
 
         foreach ($method->getParameters() as $num => $parameter) {
             $typehint = Inspector::typehint($parameter);

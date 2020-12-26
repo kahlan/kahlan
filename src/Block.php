@@ -374,32 +374,17 @@ abstract class Block
 
         $suite::push($this);
 
-        if ($suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
+        try {
+            $this->_blockStart();
             try {
-                $this->_blockStart();
-                try {
-                    $result = $this->_execute();
-                } catch (Throwable $exception) {
-                    $this->_exception($exception);
-                }
-                $this->_blockEnd();
+                $result = $this->_execute();
             } catch (Throwable $exception) {
-                $this->_exception($exception, true);
-                $this->_blockEnd(!$exception instanceof SkipException);
+                $this->_exception($exception);
             }
-        } else {
-            try {
-                $this->_blockStart();
-                try {
-                    $result = $this->_execute();
-                } catch (Exception $exception) {
-                    $this->_exception($exception);
-                }
-                $this->_blockEnd();
-            } catch (Exception $exception) {
-                $this->_exception($exception, true);
-                $this->_blockEnd(!$exception instanceof SkipException);
-            }
+            $this->_blockEnd();
+        } catch (Throwable $exception) {
+            $this->_exception($exception, true);
+            $this->_blockEnd(!$exception instanceof SkipException);
         }
 
         $suite::pop();

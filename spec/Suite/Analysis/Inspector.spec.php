@@ -128,14 +128,6 @@ describe("Inspector", function () {
 
         });
 
-        it("returns empty typehint for HHVM `mixed` type hint", function () {
-
-            $typehint = Inspector::typehint(new Parameter('Parameter #0 [ <required> mixed $values ]'));
-            expect($typehint)->toBeA('string');
-            expect($typehint)->toBe('');
-
-        });
-
     });
 
 });

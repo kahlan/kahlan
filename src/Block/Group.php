@@ -129,21 +129,17 @@ class Group extends \Kahlan\Block
             return compact('normal', 'inactive', 'focused', 'excluded');
         };
 
-        if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
-            try {
-                $stats = $builder($this);
-            } catch (Throwable $exception) {
-                $this->log()->type('errored');
-                $this->log()->exception($exception);
-
-                $stats = [
-                    'normal' => 0,
-                    'focused' => 0,
-                    'excluded' => 0
-                ];
-            }
-        } else {
+        try {
             $stats = $builder($this);
+        } catch (Throwable $exception) {
+            $this->log()->type('errored');
+            $this->log()->exception($exception);
+
+            $stats = [
+                'normal' => 0,
+                'focused' => 0,
+                'excluded' => 0
+            ];
         }
 
         Suite::pop();
@@ -363,18 +359,10 @@ class Group extends \Kahlan\Block
             return;
         }
         if ($runAfterAll) {
-            if (Suite::$PHP >= 7 && !defined('HHVM_VERSION')) {
-                try {
-                    $this->runCallbacks('afterAll', false);
-                } catch (Throwable $exception) {
-                    $this->_exception($exception);
-                }
-            } else {
-                try {
-                    $this->runCallbacks('afterAll', false);
-                } catch (Exception $exception) {
-                    $this->_exception($exception);
-                }
+            try {
+                $this->runCallbacks('afterAll', false);
+            } catch (Throwable $exception) {
+                $this->_exception($exception);
             }
         }
 

@@ -216,8 +216,6 @@ describe("Suite", function () {
 
         it("reports errors occuring in describes", function () {
 
-            skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
-
             $describe = $this->root->describe("", function () {
                 $undefined++;
             });
