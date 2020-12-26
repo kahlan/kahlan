@@ -23,10 +23,10 @@ script:
   - phpdbg -qrr bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml
 
 after_success:
-  - "if [ $(phpenv version-name) = '7.4' ]; then curl -X POST -d @codeclimate.json -H 'Content-Type:application/json' https://codeclimate.com/test_reports --verbose; fi"
-  - "if [ $(phpenv version-name) = '7.4' ]; then curl -F 'json_file=@coveralls.json' https://coveralls.io/api/v1/jobs --verbose; fi"
-  - "if [ $(phpenv version-name) = '7.4' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi"
-  - "if [ $(phpenv version-name) = '7.4' ]; then php ocular.phar code-coverage:upload --format=php-clover 'clover.xml'; fi"
+  - "if [ $(phpenv version-name) = '7.2' ]; then curl -X POST -d @codeclimate.json -H 'Content-Type:application/json' https://codeclimate.com/test_reports --verbose; fi"
+  - "if [ $(phpenv version-name) = '7.2' ]; then curl -F 'json_file=@coveralls.json' https://coveralls.io/api/v1/jobs --verbose; fi"
+  - "if [ $(phpenv version-name) = '7.2' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi"
+  - "if [ $(phpenv version-name) = '7.2' ]; then php ocular.phar code-coverage:upload --format=php-clover 'clover.xml'; fi"
 
 env:
   global:
