@@ -29,7 +29,7 @@
 #29     [                   ] #29 > #29       |
 #30     [       a,s,a       ] #30 > #30       |    protected $_matcher = '';
 #31     [                   ] #31 > #31       |
-#32     [         d         ] #32 > #33       |    // Using a tab
+#32     [         d         ] #32 > #32       |    /* Using a tab */
 #33     [         a         ] #33 > #33       |    protected    $_public = true;
 #34     [                   ] #34 > #34       |
 #35     [         a         ] #35 > #35       |    protected $_variable = true;
@@ -57,9 +57,9 @@
 #57     [                   ] #57 > #57       |
 #58     [    a,function     ] #58 > #62       |    public function inlineComment() {
 #59     [                   ] #59 > #59       |
-#60    *[        c,d        ] #60 > #61       |        $a = 3; //comment
+#60    *[        c,d        ] #60 > #60       |        $a = 3; /* comment */
 #61     [                   ] #61 > #61       |
-#62     [         d         ] #62 > #63       |    } // end function
+#62     [         d         ] #62 > #62       |    } /* end function */
 #63     [                   ] #63 > #63       |
 #64     [    a,function     ] #64 > #68       |    public function weirdSyntax() {
 #65     [                   ] #65 > #65       |
@@ -162,7 +162,7 @@
 #162    [       class       ] #162 > #163     |class Dir extends \FilterIterator{
 #163    [                   ] #163 > #163     |}
 #164    [                   ] #164 > #164     |
-#165    [         d         ] #165 > #166     |//No scope
+#165    [         d         ] #165 > #165     |/* No scope */
 #166   *[       c,c,c       ] #166 > #168     |for($i = 0; $i <= 10; $i++) {
 #167   *[         c         ] #167 > #167     |    $rand = rand();
 #168    [                   ] #168 > #168     |}

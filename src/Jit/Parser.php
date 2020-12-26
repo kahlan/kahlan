@@ -16,6 +16,10 @@ class Parser
 
     protected $_DOUBLE_ARROW;
 
+    protected $_T_NAME_FULLY_QUALIFIED;
+
+    protected $_T_NAME_QUALIFIED;
+
     /**
      * The root node.
      *
@@ -69,9 +73,11 @@ class Parser
         $node = new BlockDef('', 'file');
         $node->hasMethods = false;
         $this->_root = $this->_states['current'] = $node->namespace = $node;
-        $this->_T_YIELD = defined('HHVM_VERSION') ? 381 : 267;
-        $this->_T_ARROW_FUNCTION = defined('T_FN') ? 343 : 10000;
-        $this->_T_DOUBLE_ARROW = defined('T_DOUBLE_ARROW') ? 268 : 1000;
+        $this->_T_YIELD = defined('HHVM_VERSION') ? 381 : T_YIELD;
+        $this->_T_ARROW_FUNCTION = defined('T_FN') ? T_FN : -1;
+        $this->_T_DOUBLE_ARROW = defined('T_DOUBLE_ARROW') ? T_DOUBLE_ARROW : -1;
+        $this->_T_NAME_FULLY_QUALIFIED = defined('T_NAME_FULLY_QUALIFIED') ? T_NAME_FULLY_QUALIFIED : -1;
+        $this->_T_NAME_QUALIFIED = defined('T_NAME_QUALIFIED') ? T_NAME_QUALIFIED : -1;
     }
 
     /**
@@ -141,7 +147,7 @@ class Parser
                     $this->_states['body'] .= $token[0];
                     if ($this->_states['lines']) {
                         $lines = explode("\n", $this->_states['body']);
-                        $blockStartLines[$token[0]][] = $this->_states['num'] + (count($lines) - 1);
+                        $blockStartLines[$token[0]][] = $this->_states['num'] + (count($lines) - 2);
                     }
                     break;
                 case ')':
@@ -274,11 +280,17 @@ class Parser
             if (!$token = $this->_stream->next(true)) {
                 break;
             }
+
             switch ($token[0]) {
                 case ',':
                     $as ? $this->_states['uses'][$alias] = $prefix . $use : $this->_states['uses'][$last] = $prefix . $use;
                     $last = $alias = $use = '';
                     $as = false;
+                    break;
+                case $this->_T_NAME_FULLY_QUALIFIED:
+                case $this->_T_NAME_QUALIFIED:
+                    $last = substr($token[1], strrpos($token[1], '\\') + 1);
+                    $use = $token[1];
                     break;
                 case T_STRING:
                     $last = $token[1];
@@ -420,7 +432,7 @@ class Parser
         $implements = '';
         if ($token[0] === T_EXTENDS) {
             $body .= $this->_stream->skipWhitespaces();
-            $body .= $extends = $this->_stream->skipWhile([T_STRING, T_NS_SEPARATOR]);
+            $body .= $extends = $this->_stream->skipWhile([T_STRING, T_NS_SEPARATOR, $this->_T_NAME_QUALIFIED, $this->_T_NAME_FULLY_QUALIFIED]);
             $body .= $this->_stream->current();
             if ($this->_stream->current() !== '{') {
                 $body .= $this->_stream->next('{');

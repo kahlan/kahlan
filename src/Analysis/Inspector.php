@@ -2,6 +2,7 @@
 namespace Kahlan\Analysis;
 
 use ReflectionClass;
+use ReflectionUnionType;
 
 class Inspector
 {
@@ -66,8 +67,20 @@ class Inspector
      */
     public static function typehint($parameter)
     {
+        if (PHP_MAJOR_VERSION >= 7 && $parameter->getType()) {
+            $type = $parameter->getType();
+            if ($type instanceof ReflectionUnionType) {
+                $result = [];
+                foreach ($type->getTypes() as $t) {
+                    $result[] = ($t->isBuiltin() ? '' : '\\') . $t->getName();
+                }
+                return join('|', $result);
+            }
+            $allowsNull = $type->getName() !== 'mixed' && $type->allowsNull() ? '?' : '';
+            return $allowsNull . ($type->isBuiltin() ? '' : '\\') . $type->getName();
+        }
         $typehint = '';
-        if ($parameter->getClass()) {
+        if (PHP_MAJOR_VERSION < 7 && $parameter->getClass()) {
             $typehint = '\\' . $parameter->getClass()->getName();
         } elseif (preg_match('/.*?\[ \<[^\>]+\> (?:HH\\\)?(\w+)(.*?)\$/', (string) $parameter, $match)) {
             $typehint = $match[1];
@@ -80,5 +93,27 @@ class Inspector
             }
         }
         return $typehint;
+    }
+
+    /**
+     * Returns the type hint of a `ReflectionType` instance.
+     *
+     * @param  object $type A instance of `ReflectionType`.
+     * @return string            The parameter type hint.
+     */
+    public static function returnTypehint($type)
+    {
+        if (!$type) {
+            return '';
+        }
+        if ($type instanceof ReflectionUnionType) {
+            $result = [];
+            foreach ($type->getTypes() as $t) {
+                $result[] = ($t->isBuiltin() ? '' : '\\') . $t->getName();
+            }
+            return join('|', $result);
+        }
+        $allowsNull = $type->getName() !== 'mixed' && $type->allowsNull() ? '?' : '';
+        return $allowsNull . ($type->isBuiltin() ? '' : '\\') . $type->getName();
     }
 }

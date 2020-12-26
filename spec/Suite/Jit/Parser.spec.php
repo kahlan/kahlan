@@ -349,7 +349,6 @@ describe("Parser", function () {
             $root = Parser::parse($sample);
 
             $check = 0;
-            ;
 
             foreach ($root->tree as $node) {
                 if ($node->type !== 'namespace') {

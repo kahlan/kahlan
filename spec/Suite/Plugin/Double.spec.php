@@ -575,6 +575,31 @@ EOD;
 
         });
 
+        it("generates interface methods with union types", function () {
+
+            skipIf(PHP_MAJOR_VERSION < 8);
+
+            $result = Double::generate([
+                'class'        => 'Kahlan\Spec\Plugin\Double\Double',
+                'implements'   => ['Kahlan\Spec\Fixture\Plugin\Double\UnionTypesInterface'],
+                'magicMethods' => false
+            ]);
+
+            $expected = <<<EOD
+<?php
+namespace Kahlan\\Spec\\Plugin\\Double;
+
+class Double implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\UnionTypesInterface {
+
+    public function foo(\\DateTime|string|int|null \$integer = NULL) : \\DateTime|string|int {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
         it("generates interface methods with variadic variable", function () {
 
             skipIf(defined('HHVM_VERSION') || PHP_MAJOR_VERSION < 7);
@@ -719,7 +744,7 @@ namespace Kahlan\\\\Spec\\\\Plugin\\\\Double;
 
 class Double extends \\\\LogicException {
 
-    public function __construct\\(\\\$message = NULL, \\\$code = NULL, \\\$previous = NULL\\)
+    public function __construct\\((.*)?\\\$message(.*)?,(.*)?\\\$code(.*)?,(.*)?\\\$previous = NULL\\)
 EOD;
             expect($result)->toMatch('~' . $expected . '~i');
 

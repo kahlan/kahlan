@@ -5,6 +5,7 @@ use Reflection;
 use ReflectionMethod;
 use ReflectionClass;
 use ReflectionType;
+use ReflectionNamedType;
 use Kahlan\Suite;
 use Kahlan\MissingImplementationException;
 use Kahlan\Analysis\Inspector;
@@ -405,19 +406,8 @@ EOT;
         if (Suite::$PHP < 7) {
             return '';
         }
-        $type = $method->getReturnType();
-        $allowsNull = '';
-        if ($type) {
-            if (method_exists($type, 'allowsNull') && $type->allowsNull()) {
-                $allowsNull = '?';
-            }
-            $type = (!$type->isBuiltin() ? '\\' : '') . (method_exists($type, 'getName') ? $type->getName() : (string) $type);
-
-            if (defined('HHVM_VERSION')) {
-                $type = preg_replace('~\\\?HH\\\(mixed|void)?~', '', $type);
-            }
-        }
-        return $type ? ": {$allowsNull}{$type} " : '';
+        $typehint = Inspector::returnTypehint($method->getReturnType());
+        return $typehint ? ": {$typehint} " : '';
     }
 
     /**
@@ -448,15 +438,8 @@ EOT;
                     $default = ' = NULL';
                 }
             }
-            $allowsNull = '';
             $typehint = $typehint ? $typehint . ' ' : $typehint;
-            if (Suite::$PHP >= 7) {
-                $type = $parameter->getType();
-                if ($type && method_exists($type, 'allowsNull') && $type->allowsNull()) {
-                    $allowsNull = '?';
-                }
-            }
-            $params[] = "{$allowsNull}{$typehint}{$reference}\${$name}{$default}";
+            $params[] = "{$typehint}{$reference}\${$name}{$default}";
         }
         return join(', ', $params);
     }

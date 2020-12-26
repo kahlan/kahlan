@@ -29,7 +29,7 @@ class Sample extends \Kahlan\Fixture\Parent {
 
     protected $_matcher = '';
 
-    // Using a tab
+    /* Using a tab */
     protected    $_public = true;
 
     protected $_variable = true;
@@ -57,9 +57,9 @@ class Sample extends \Kahlan\Fixture\Parent {
 
     public function inlineComment() {
 
-        $a = 3; //comment
+        $a = 3; /* comment */
 
-    } // end function
+    } /* end function */
 
     public function weirdSyntax() {
 
@@ -162,7 +162,7 @@ trait Template2 {
 class Dir extends \FilterIterator{
 }
 
-//No scope
+/* No scope */
 for($i = 0; $i <= 10; $i++) {
     $rand = rand();
 }

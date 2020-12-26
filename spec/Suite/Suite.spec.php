@@ -3,6 +3,7 @@ namespace Kahlan\Spec\Suite;
 
 use stdClass;
 use Exception;
+use ArgumentCountError;
 use InvalidArgumentException;
 
 use Kahlan\MissingImplementationException;
@@ -228,7 +229,12 @@ describe("Suite", function () {
 
             $report = reset($results);
 
-            expect($report->exception()->getMessage())->toBe('`E_NOTICE` Undefined variable: undefined');
+            if (PHP_MAJOR_VERSION < 8) {
+                expect($report->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            } else {
+                expect($report->exception()->getMessage())->toBe("`E_WARNING` Undefined variable \$undefined");
+            }
+
             expect($report->type())->toBe('errored');
             expect($report->messages())->toBe(['', '']);
 
@@ -325,7 +331,12 @@ describe("Suite", function () {
             expect($errors)->toHaveLength(1);
             $log = reset($errors);
 
-            expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            if (PHP_MAJOR_VERSION < 8) {
+                expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            } else {
+                expect($log->exception()->getMessage())->toBe("`E_WARNING` Undefined variable \$undefined");
+            }
+
             expect($this->suite->total())->toBe(1);
 
             expect($this->suite->active())->toBe(1);
@@ -414,7 +425,11 @@ describe("Suite", function () {
             expect($errors)->toHaveLength(1);
             $log = reset($errors);
 
-            expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            if (PHP_MAJOR_VERSION < 8) {
+                expect($log->exception()->getMessage())->toBe("`E_NOTICE` Undefined variable: undefined");
+            } else {
+                expect($log->exception()->getMessage())->toBe("`E_WARNING` Undefined variable \$undefined");
+            }
             expect($this->suite->total())->toBe(1);
 
             expect($this->suite->active())->toBe(1);
@@ -1460,7 +1475,11 @@ describe("Suite", function () {
             $closure = function () {
                 $a = $b;
             };
-            expect($closure)->toThrow(new PhpErrorException("`E_NOTICE` Undefined variable: b"));
+            if (PHP_MAJOR_VERSION < 8) {
+                expect($closure)->toThrow(new PhpErrorException("`E_NOTICE` Undefined variable: b"));
+            } else {
+                expect($closure)->toThrow(new PhpErrorException("`E_WARNING` Undefined variable \$b"));
+            }
 
         });
 
@@ -1469,7 +1488,11 @@ describe("Suite", function () {
             $closure = function () {
                 $a = str_split();
             };
-            expect($closure)->toThrow(new PhpErrorException("`E_WARNING` str_split() expects at least 1 parameter, 0 given"));
+            if (PHP_MAJOR_VERSION < 8) {
+                expect($closure)->toThrow(new PhpErrorException("`E_WARNING` str_split() expects at least 1 parameter, 0 given"));
+            } else {
+                expect($closure)->toThrow(new ArgumentCountError());
+            }
 
         });
 
@@ -1490,7 +1513,7 @@ describe("Suite", function () {
 
             });
 
-            error_reporting(E_ALL ^ E_NOTICE);
+            error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
             $this->suite->run();
             error_reporting(E_ALL);
 
@@ -1499,6 +1522,8 @@ describe("Suite", function () {
         });
 
         it('ignores supressed errors', function () {
+
+            skipIf(PHP_MAJOR_VERSION >= 8);
 
             $closure = function () {
                 $failing = function () {

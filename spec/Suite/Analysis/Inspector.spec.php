@@ -14,6 +14,10 @@ class Parameter
     {
         return false;
     }
+    public function getType()
+    {
+        return false;
+    }
     public function __toString()
     {
         return $this->_parameter;
