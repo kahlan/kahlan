@@ -32,11 +32,15 @@ class Xdebug
             throw new RuntimeException('Xdebug is not loaded.');
         }
 
-        if (!ini_get('xdebug.coverage_enable')) {
-            throw new RuntimeException('You need to set `xdebug.coverage_enable = On` in your php.ini.');
+        if (version_compare('3.0.0', phpversion('xdebug')) === -1) {
+            if ((!ini_get('xdebug.mode') || ini_get('xdebug.mode') !== 'coverage') && getenv('XDEBUG_MODE') !== 'coverage') {
+                throw new RuntimeException('You need to set either `xdebug.mode=coverage` in your php.ini or the `XDEBUG_MODE=coverage` env variable.');
+            }
+        } else {
+            if (!ini_get('xdebug.coverage_enable')) {
+                throw new RuntimeException('You need to set `xdebug.coverage_enable=On` in your php.ini.');
+            }
         }
-
-        putenv('XDEBUG_MODE=coverage');
     }
 
     /**
@@ -44,11 +48,7 @@ class Xdebug
      */
     public function start()
     {
-        //@see bug https://github.com/facebook/hhvm/issues/4752
-        try {
-            xdebug_start_code_coverage($this->_config['coverage']);
-        } catch (Exception $e) {
-        }
+        xdebug_start_code_coverage($this->_config['coverage']);
     }
 
     /**
