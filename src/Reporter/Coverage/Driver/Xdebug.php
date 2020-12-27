@@ -35,6 +35,8 @@ class Xdebug
         if (!ini_get('xdebug.coverage_enable')) {
             throw new RuntimeException('You need to set `xdebug.coverage_enable = On` in your php.ini.');
         }
+
+        putenv('XDEBUG_MODE=coverage');
     }
 
     /**
