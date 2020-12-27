@@ -103,6 +103,8 @@ class Collector
      */
     public function __construct($config = [])
     {
+        putenv('XDEBUG_MODE=coverage');
+
         $defaults = [
             'driver'         => null,
             'path'           => [],
