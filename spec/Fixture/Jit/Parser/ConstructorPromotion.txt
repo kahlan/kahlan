@@ -1,0 +1,11 @@
+#1      [       open        ] #1 > #2         |<?php
+#2      [                   ] #2 > #2         |
+#3      [       class       ] #3 > #10        |class ConstructorPromotion {
+#4      [    a,function     ] #4 > #9         |    public function __construct(
+#5      [     function      ] #5 > #9         |        public string|null $name,
+#6      [     function      ] #6 > #9         |        public bool $bool1 = false,
+#7      [     function      ] #7 > #9         |        public bool $bool2 = false
+#8      [     function      ] #8 > #9         |    ) {
+#9      [                   ] #9 > #9         |    }
+#10     [                   ] #10 > #10       |}
+#11     [                   ] #11 > #11       |

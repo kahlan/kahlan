@@ -476,6 +476,41 @@ describe("Parser", function () {
             expect(Parser::unparse($parsed))->toBe($content);
         });
 
+        it("parses named arguments", function () {
+
+            $filename = 'spec/Fixture/Jit/Parser/NamedArguments';
+            $content = file_get_contents($filename . '.php');
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+
+            $parsed = Parser::parse($content);
+            expect(Parser::unparse($parsed))->toBe($content);
+        });
+
+        it("parses constructor promotion", function () {
+
+            $filename = 'spec/Fixture/Jit/Parser/ConstructorPromotion';
+            $content = file_get_contents($filename . '.php');
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+
+            $parsed = Parser::parse($content);
+            expect(Parser::unparse($parsed))->toBe($content);
+        });
+
+        it("parses annotation attributes", function () {
+
+            $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributes';
+            $content = file_get_contents($filename . '.php');
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+            $parsed = Parser::parse($content);
+            expect(Parser::unparse($parsed))->toBe($content);
+        });
+
     });
 
 });

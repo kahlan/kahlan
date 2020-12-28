@@ -39,6 +39,7 @@ class Monkey
         'include_once'    => true,
         'isset'           => true,
         'list'            => true,
+        'match'           => true,
         'or'              => true,
         'parent'          => true,
         'print'           => true,

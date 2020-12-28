@@ -85,6 +85,15 @@ describe("Monkey", function () {
 
         });
 
+        it("patches named arguments", function () {
+
+            $nodes = Parser::parse(file_get_contents($this->path . '/NamedArguments.php'));
+            $expected = file_get_contents($this->path . '/NamedArgumentsProcessed.php');
+            $actual = Parser::unparse($this->patcher->process($nodes));
+            expect($actual)->toBe($expected);
+
+        });
+
     });
 
     describe("->patchable()", function () {

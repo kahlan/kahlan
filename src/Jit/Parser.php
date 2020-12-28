@@ -75,6 +75,7 @@ class Parser
         $this->_T_DOUBLE_ARROW = defined('T_DOUBLE_ARROW') ? T_DOUBLE_ARROW : -1;
         $this->_T_NAME_FULLY_QUALIFIED = defined('T_NAME_FULLY_QUALIFIED') ? T_NAME_FULLY_QUALIFIED : -1;
         $this->_T_NAME_QUALIFIED = defined('T_NAME_QUALIFIED') ? T_NAME_QUALIFIED : -1;
+        $this->_T_ATTRIBUTE = defined('T_ATTRIBUTE') ? T_ATTRIBUTE : -1;
     }
 
     /**
@@ -112,6 +113,9 @@ class Parser
                     $this->_states['php'] = false;
                     $this->_states['body'] .= $token[1];
                     $this->_codeNode('close');
+                    break;
+                case $this->_T_ATTRIBUTE:
+                    $this->_annotationNode();
                     break;
                 case T_DOC_COMMENT:
                 case T_COMMENT:
@@ -631,6 +635,24 @@ class Parser
         $node = new NodeDef($this->_states['body'], 'string');
         $this->_contextualize($node);
         return $node;
+    }
+
+    /**
+     * Build a attribute node.
+     */
+    protected function _annotationNode()
+    {
+        $this->_codeNode();
+        $token = $this->_stream->current(true);
+        $this->_states['body'] = $token[1];
+        while ($body = $this->_stream->next()) {
+            $this->_states['body'] .= $body;
+            if (substr_count($body, "\n")) {
+                break;
+            }
+        }
+        $node = new NodeDef($this->_states['body'], 'comment');
+        return $this->_contextualize($node);
     }
 
     /**
