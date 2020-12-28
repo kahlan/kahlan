@@ -2,9 +2,14 @@
 
 ## Last changes
 
+## 5.0.2 (2020-12-28)
+
+  * **Bugfix:** Fix some PHP 8.0 parsing issues.
+
+
 ## 5.0.1 (2020-12-27)
 
-  * **Bugfix:** Fix Xdebug >= 3.0.0 detection
+  * **Bugfix:** Fix Xdebug >= 3.0.0 detection.
 
 ## 5.0.0 (2020-12-26)
 
