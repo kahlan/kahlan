@@ -1464,6 +1464,43 @@ describe("Suite", function () {
 
         });
 
+        it("attaches the current context to functions declared in a scope when executed", function () {
+
+            $describe = $this->root->describe("", function () {
+
+                $this->beforeEach(function () {
+                    $this->testFunction = function () {
+                        return $this->value;
+                    };
+                });
+
+                $this->describe("first", function () {
+                    $this->beforeEach(function () {
+                        $this->value = 'value1';
+                    });
+
+                    $this->it("works", function () {
+                        expect($this->testFunction())->toEqual('value1');
+                    });
+                });
+
+                $this->describe("second", function () {
+                    $this->beforeEach(function () {
+                        $this->value = 'value2';
+                    });
+
+                    $this->it("works", function () {
+                        expect($this->testFunction())->toEqual('value2');
+                    });
+                });
+
+            });
+
+            $this->suite->run();
+            expect($this->suite->status())->toBe(0);
+
+        });
+
     });
 
     describe("->_errorHandler()", function () {

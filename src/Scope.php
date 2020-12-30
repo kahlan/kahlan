@@ -163,7 +163,7 @@ abstract class Scope
         $property = $this->__get($name);
 
         if (is_callable($property)) {
-            return call_user_func_array($property, $args);
+            return call_user_func_array($property->bindTo($this), $args);
         }
         throw new Exception("Uncallable variable `{$name}`.");
     }
