@@ -153,24 +153,6 @@ describe("Parser", function () {
             ]);
         });
 
-        it("correctly populates the `->isGenerator` attribute", function () {
-
-            skipIf(version_compare(phpversion(), '5.5', '<'));
-
-            $sample = file_get_contents('spec/Fixture/Jit/Parser/Generator.php');
-            $root = Parser::parse($sample);
-            foreach ($root->tree as $node) {
-                if ($node->type === 'function') {
-                    expect($node->name)->toBe('myGenerator');
-                    expect($node->isClosure)->toBeFalsy();
-                    expect($node->isMethod)->toBeFalsy();
-                    expect($node->isGenerator)->toBeTruthy();
-                    expect($node->parent)->toBe($root);
-                }
-            }
-
-        });
-
         it("rebases __DIR__ and __FILE__ magic constants", function () {
 
             $nodes = Parser::parse(file_get_contents('spec/Fixture/Jit/Parser/Rebase.php'), ['path' => '/the/original/path/Rebase.php']);
