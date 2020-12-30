@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.0.4 (2020-12-30)
+
+  * **Add:** Display relative path of current projet files in error reporting.
+
 ## 5.0.3 (2020-12-30)
 
   * **Bugfix:** Fix a CodeClimate exporter issue.
