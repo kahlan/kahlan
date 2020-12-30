@@ -43,6 +43,7 @@ class CodeClimate
      *                           - `'build_url`        _string_ : build url
      *                           - `'branch`           _string_ : branch name
      *                           - `'commit_sha`       _string_ : commit SHA
+     *                           - `'committed_at`     _string_ : commited at timestamp
      *                           - `'pull_request`     _string_ : pull request id
      *                         -`'run_at'`         _integer_: The runned timestamp.
      * @return string
@@ -63,17 +64,25 @@ class CodeClimate
         ];
         $options += $defaults;
 
+        $branchName = $options['branch'] ?: trim(`git rev-parse --abbrev-ref HEAD`);
+        $commitSha = $options['head'] ?: `git log -1 --pretty=format:'%H'`;
+        $committedAt = (int) ($options['committed_at'] ?: `git log -1 --pretty=format:'%ct'`);
+
         return json_encode([
             'partial'      => false,
-            'run_at'       => $options['run_at'],
+            'run_at'       => (int) $options['run_at'],
             'repo_token'   => $options['repo_token'],
             'environment'  => $options['environment'] + ['package_version' => '0.1.2'],
             'git'          => [
-                'head'         => $options['head'] ?: `git log -1 --pretty=format:'%H'`,
-                'branch'       => $options['branch'] ?: trim(`git rev-parse --abbrev-ref HEAD`),
-                'committed_at' => $options['committed_at'] ?: `git log -1 --pretty=format:'%ct'`
+                'head'         => $commitSha,
+                'branch'       => $branchName,
+                'committed_at' => $committedAt
             ],
-            'ci_service'   => $options['ci_service'],
+            'ci_service'       => $options['ci_service'] + [
+                'branch'       => $branchName,
+                'commit_sha'   => $commitSha,
+                'committed_at' => $committedAt
+            ],
             'source_files' => static::_sourceFiles($options['collector'])
         ]);
     }

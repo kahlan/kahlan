@@ -31,7 +31,7 @@ describe("CodeClimate", function () {
                 'repo_token'   => 'ABC',
                 'head'         => '1234',
                 'branch'       => 'mybranch',
-                'committed_at' => '1419462000',
+                'committed_at' => 1419462000,
                 'ci_service'   => [
                     'name'             => 'kahlan-ci',
                     'build_identifier' => '123'
@@ -45,12 +45,15 @@ describe("CodeClimate", function () {
             expect($actual['git'])->toBe([
                 'head'         => '1234',
                 'branch'       => 'mybranch',
-                'committed_at' => '1419462000'
+                'committed_at' => 1419462000
             ]);
 
             expect($actual['ci_service'])->toBe([
                 'name'             => 'kahlan-ci',
-                'build_identifier' => '123'
+                'build_identifier' => '123',
+                'branch'           => 'mybranch',
+                'commit_sha'       => '1234',
+                'committed_at'     => 1419462000
             ]);
         });
 
