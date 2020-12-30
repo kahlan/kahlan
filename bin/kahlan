@@ -6,7 +6,8 @@ if (!defined('DS')) {
 
 error_reporting(E_ALL^E_NOTICE);
 
-$pwd = realpath(getcwd());
+define('KAHLAN_CWD', realpath(getcwd()));
+$pwd = KAHLAN_CWD;
 $vendorName = 'vendor';
 
 if (file_exists($composerPath = "{$pwd}/composer.json")) {

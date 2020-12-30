@@ -796,6 +796,26 @@ class ClassLoader
         return $this->_patchers ? $this->_patchers->findFile($this, $class, $file) : $file;
     }
 
+    /**
+     * Return the relative path of a file.
+     *
+     * @param  string $filePath  The file path
+     * @return string        The relative file path
+     */
+    public function relativePath($filePath)
+    {
+        $cachePath = rtrim($this->cachePath(), DIRECTORY_SEPARATOR);
+        $prefix = rtrim(defined('KAHLAN_CWD') ? KAHLAN_CWD : '' ?? '', DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        if ($cachePath && strpos($filePath, $cachePath) === 0) {
+            $filePath = substr($filePath, strlen($cachePath));
+        }
+        if (strpos($filePath, $prefix) === 0) {
+            $filePath = substr($filePath, strlen($prefix));
+        }
+        return $filePath;
+    }
+
     protected function _findFileWithExtension($class, $ext)
     {
         // PSR-4 lookup

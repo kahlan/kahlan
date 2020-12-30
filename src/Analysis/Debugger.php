@@ -49,17 +49,11 @@ class Debugger
      */
     protected static function _traceToString($trace)
     {
-        $loader = static::loader();
-
         if (!empty($trace['class'])) {
             $trace['function'] = $trace['class'] . '::' . $trace['function'] . '()';
         } else {
             $line = static::_line($trace);
             $trace['line'] = $line !== $trace['line'] ? $line . ' to ' . $trace['line'] : $trace['line'];
-        }
-
-        if (preg_match("/eval\(\)'d code/", $trace['file']) && $trace['class'] && $loader) {
-            $trace['file'] = $loader->findFile($trace['class']);
         }
         return $trace['function'] .' - ' . $trace['file'] . ', line ' . $trace['line'];
     }
@@ -100,12 +94,21 @@ class Debugger
         $back = [];
         $ignoreFunctions = ['call_user_func_array', 'trigger_error'];
 
+        $loader = static::loader();
+
         foreach ($backtrace as $i => $trace) {
             $trace += $traceDefaults;
             if (strpos($trace['function'], 'Closure$') === 0 ||
                 strpos($trace['function'], '{closure}') !== false ||
                 in_array($trace['function'], $ignoreFunctions)) {
                 continue;
+            }
+
+            if (preg_match("/eval\(\)'d code/", $trace['file']) && $trace['class'] && $loader) {
+                $trace['file'] = $loader->findFile($trace['class']);
+            }
+            if ($loader) {
+                $trace['file'] = $loader->relativePath($trace['file']);
             }
             $back[] = $trace;
         }

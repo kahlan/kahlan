@@ -47,7 +47,7 @@ describe("Debugger", function () {
 
         });
 
-        it("returns a trace from eval'd code", function () {
+        it("returns a trace from eval'd code with a relative file path", function () {
 
             $trace = debug_backtrace();
             $trace[1]['file']  = "eval()'d code";
@@ -56,7 +56,7 @@ describe("Debugger", function () {
             expect($backtrace)->toBeA('string');
 
             $trace = current(explode("\n", $backtrace));
-            expect($trace)->toMatch('~src[/|\\\]Suite.php~');
+            expect($trace)->toMatch('~Kahlan\\\Filter\\\Filters::run\(\) - src[/|\\\]Suite.php~');
 
         });
 
