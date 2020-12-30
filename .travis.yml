@@ -21,7 +21,7 @@ before_script:
 
 script:
   - vendor/bin/phpcs
-  - phpdbg -qrr bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml
+  - bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml
 
 after_success:
   - "if [ $(phpenv version-name) = '7.4' ]; then curl -X POST -d @codeclimate.json -H 'Content-Type:application/json' https://codeclimate.com/test_reports --verbose; fi"
