@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.0.5 (2020-12-30)
+
+  * **BC Break:** Declared functions in a scope is attached to current context when executed.
+
 ## 5.0.4 (2020-12-30)
 
   * **Add:** Display relative path of current projet files in error reporting.
