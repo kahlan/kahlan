@@ -94,6 +94,15 @@ describe("Monkey", function () {
 
         });
 
+        it("patches return by reference", function () {
+
+            $nodes = Parser::parse(file_get_contents($this->path . '/ReturnByReference.php'));
+            $expected = file_get_contents($this->path . '/ReturnByReferenceProcessed.php');
+            $actual = Parser::unparse($this->patcher->process($nodes));
+            expect($actual)->toBe($expected);
+
+        });
+
     });
 
     describe("->patchable()", function () {

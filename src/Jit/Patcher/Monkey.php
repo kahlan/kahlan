@@ -310,6 +310,9 @@ class Monkey
             }
 
             $len = strlen($code);
+            if (preg_match('~.*?=\s*&~', $code)) {
+                return false;
+            }
 
             while ($pos < $len) {
                 if ($count === 0 && $code[$pos] === ';') {
