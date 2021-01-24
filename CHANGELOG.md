@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.0.6 (2021-01-24)
+
+  * **Bugfix:** Disable instance substitution feature for assignments by reference.
+
 ## 5.0.5 (2020-12-30)
 
   * **BC Break:** Declared functions in a scope is attached to current context when executed.
