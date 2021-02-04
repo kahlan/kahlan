@@ -764,6 +764,29 @@ EOD;
 
         });
 
+        it("stubs an interface with `self` return type hints", function () {
+
+            $result = Double::generate([
+                'implements' => 'Kahlan\Spec\Mock\Plugin\Double\HelloInterface',
+            ]);
+
+            $expected = <<<EOD
+<?php
+namespace Kahlan\\Spec\\Plugin\\Double;
+
+class Double0 implements \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {
+
+    public function hello() : self {}
+    public function hi() : static {}
+    public function aloha() : \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {}
+
+}
+?>
+EOD;
+            expect($result)->toBe($expected);
+
+        });
+
     });
 
 });
