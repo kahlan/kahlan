@@ -767,20 +767,23 @@ EOD;
         it("stubs an interface with `self` return type hints", function () {
 
             $result = Double::generate([
+                'class' => 'Kahlan\Spec\Plugin\Double\Double',
                 'implements' => 'Kahlan\Spec\Mock\Plugin\Double\HelloInterface',
+                'magicMethods' => false,
+                'openTag' => false,
+                'closeTag' => false,
             ]);
 
             $expected = <<<EOD
-<?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
-class Double0 implements \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {
+class Double implements \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {
 
     public function hello() : self {}
     public function aloha() : \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {}
 
 }
-?>
+
 EOD;
             expect($result)->toBe($expected);
 
