@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.0.7 (2021-02-08)
+
+  * **Bugfix:** Fix static & self return type hint in doubles.
+
 ## 5.0.6 (2021-01-24)
 
   * **Bugfix:** Disable instance substitution feature for assignments by reference.
