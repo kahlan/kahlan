@@ -106,11 +106,12 @@ class Inspector
         if ($type instanceof ReflectionUnionType) {
             $result = [];
             foreach ($type->getTypes() as $t) {
-                $result[] = ($t->isBuiltin() ? '' : '\\') . $t->getName();
+                $result[] = static::returnTypehint($t);
             }
             return join('|', $result);
         }
         $allowsNull = $type->getName() !== 'mixed' && $type->allowsNull() ? '?' : '';
-        return $allowsNull . ($type->isBuiltin() ? '' : '\\') . $type->getName();
+        $isBuiltin = $type->isBuiltin() || in_array($type->getName(), [ 'self', 'static' ], true);
+        return $allowsNull . ($isBuiltin ? '' : '\\') . $type->getName();
     }
 }

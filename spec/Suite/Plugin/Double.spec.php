@@ -766,6 +766,8 @@ EOD;
 
         it("stubs an interface with `self` return type hints", function () {
 
+            skipIf(PHP_MAJOR_VERSION < 8);
+
             $result = Double::generate([
                 'class' => 'Kahlan\Spec\Plugin\Double\Double',
                 'implements' => 'Kahlan\Spec\Mock\Plugin\Double\HelloInterface',
@@ -779,7 +781,8 @@ namespace Kahlan\\Spec\\Plugin\\Double;
 
 class Double implements \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {
 
-    public function hello() : self {}
+    public function returnSelf() : self {}
+    public function returnStatic() : static {}
     public function aloha() : \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {}
 
 }

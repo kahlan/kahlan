@@ -36,5 +36,6 @@
     <file>spec</file>
 
     <exclude-pattern>spec/Fixture/*</exclude-pattern>
+    <exclude-pattern>spec/Mock/*</exclude-pattern>
 
 </ruleset>

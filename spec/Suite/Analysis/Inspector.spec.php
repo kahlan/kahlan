@@ -28,6 +28,7 @@ describe("Inspector", function () {
 
     beforeEach(function () {
         $this->class = 'Kahlan\Spec\Fixture\Analysis\SampleClass';
+        $this->classReturnTypeHints = 'Kahlan\Spec\Fixture\Analysis\SampleReturnTypeHintsClass';
     });
 
     describe('::inspect()', function () {
@@ -125,6 +126,44 @@ describe("Inspector", function () {
             $typehint = Inspector::typehint(new Parameter('Parameter #0 [ <required> boolean $values ]'));
             expect($typehint)->toBeA('string');
             expect($typehint)->toBe('bool');
+
+        });
+
+    });
+
+    describe("::returnTypehint()", function () {
+
+        beforeEach(function () {
+            skipIf(PHP_MAJOR_VERSION < 8);
+        });
+
+        it("returns an empty string when no typehint is present", function () {
+
+            $type = Inspector::inspect($this->classReturnTypeHints)->getMethod('noReturnTypeHint')->getReturnType();
+            expect(Inspector::returnTypehint($type))->toBe('');
+
+        });
+
+        it("returns builtin typehint", function () {
+
+            $type = Inspector::inspect($this->classReturnTypeHints)->getMethod('intReturnTypeHint')->getReturnType();
+            expect(Inspector::returnTypehint($type))->toBe('int');
+
+            $type = Inspector::inspect($this->classReturnTypeHints)->getMethod('boolIntReturnTypeHint')->getReturnType();
+            expect(Inspector::returnTypehint($type))->toBe('int|bool');
+
+            $type = Inspector::inspect($this->classReturnTypeHints)->getMethod('selfReturnTypeHint')->getReturnType();
+            expect(Inspector::returnTypehint($type))->toBe('self');
+
+            $type = Inspector::inspect($this->classReturnTypeHints)->getMethod('staticReturnTypeHint')->getReturnType();
+            expect(Inspector::returnTypehint($type))->toBe('static');
+
+        });
+
+        it("returns class typehint", function () {
+
+            $type = Inspector::inspect($this->classReturnTypeHints)->getMethod('sampleReturnTypeHintsClassReturnTypeHint')->getReturnType();
+            expect(Inspector::returnTypehint($type))->toBe('\Kahlan\Spec\Fixture\Analysis\SampleReturnTypeHintsClass');
 
         });
 

@@ -404,10 +404,6 @@ EOT;
     protected static function _generateReturnType($method)
     {
         $typehint = Inspector::returnTypehint($method->getReturnType());
-        $trimmed = ltrim($typehint, '\\');
-        if (in_array($trimmed, [ 'self', 'static' ], true)) {
-            $typehint = $trimmed;
-        }
         return $typehint ? ": {$typehint} " : '';
     }
 
