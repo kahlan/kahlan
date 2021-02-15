@@ -61,7 +61,7 @@ class ToThrow
     public static function expected($expected, $code = 0)
     {
         if ($expected === null || is_string($expected)) {
-            return new AnyException($expected, $code);
+            return new AnyException((string) $expected, $code);
         }
         return $expected;
     }
