@@ -115,7 +115,7 @@ class Monkey
 
         $alpha = '[\\\a-zA-Z_\\x7f-\\xff]';
         $alphanum = '[\\\a-zA-Z0-9_\\x7f-\\xff]';
-        $this->_regex = "/(new\s+)?(?<!\:|\\\$|\>|{$alphanum})(\s*)({$alpha}{$alphanum}*)(\s*)(?=\(|;|::{$alpha}{$alphanum}*\s*\()/m";
+        $this->_regex = "/(\n*)(new\s+)?(?<!\:|\\\$|\>|{$alphanum})(\s*)({$alpha}{$alphanum}*)(\s*)(?=\(|;|::{$alpha}{$alphanum}*\s*\()/m";
     }
 
     /**
@@ -231,14 +231,14 @@ class Monkey
         foreach (array_reverse($matches) as $match) {
             $len = strlen($match[0][0]);
             $pos = $match[0][1];
-            $name = $match[3][0];
+            $name = $match[4][0];
 
             $nextChar = $node->body[$pos + $len];
 
-            $isInstance = !!$match[1][0];
+            $isInstance = !!$match[2][0];
             $isStaticCall = $nextChar === ':';
             $isClass = $isStaticCall || $isInstance;
-            $method = trim($match[4][0]) ? $match[4][0] : 'null';
+            $method = trim($match[5][0]) ? $match[5][0] : 'null';
 
             if (!isset(static::$_blacklist[ltrim(strtolower($name), '\\')]) && ($isClass || $nextChar === '(')) {
                 $tokens = explode('\\', $name, 2);
@@ -269,14 +269,14 @@ class Monkey
                 }
                 $substitute = $variable . '__';
                 if (!$isClass) {
-                    $replace = $match[2][0] . $variable . $match[4][0];
+                    $replace = $match[1][0] . $match[3][0] . $variable . $match[5][0];
                 } else {
                     if ($this->_addClosingParenthesis($pos + $len, $index, $parent)) {
                         $replace = '(' . $substitute . '?' . $substitute . ':';
                     } else {
                         $replace = '';
                     }
-                    $replace .= $match[1][0] . $match[2][0] . $variable . $match[4][0];
+                    $replace = $match[1][0] . $replace . $match[2][0] . $match[3][0] . $variable . $match[5][0];
                 }
                 $node->body = substr_replace($node->body, $replace, $pos, $len);
             }

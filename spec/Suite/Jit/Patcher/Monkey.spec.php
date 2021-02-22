@@ -103,6 +103,15 @@ describe("Monkey", function () {
 
         });
 
+        it("patches comments", function () {
+
+            $nodes = Parser::parse(file_get_contents($this->path . '/Comment.php'));
+            $expected = file_get_contents($this->path . '/CommentProcessed.php');
+            $actual = Parser::unparse($this->patcher->process($nodes));
+            expect($actual)->toBe($expected);
+
+        });
+
     });
 
     describe("->patchable()", function () {

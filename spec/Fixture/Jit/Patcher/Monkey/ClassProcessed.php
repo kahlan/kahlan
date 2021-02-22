@@ -298,7 +298,7 @@ $__KMONKEY__22();
         \func_get_args();
         \func_num_args();
     }
-}($__KMONKEY__29__?$__KMONKEY__29__:
+}
 
-$__KMONKEY__29::reset());
+($__KMONKEY__29__?$__KMONKEY__29__:$__KMONKEY__29::reset());
 $time = $__KMONKEY__30();
