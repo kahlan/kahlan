@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.0.8 (2021-02-22)
+
+  * **Bugfix:** Fix monkey patching for PHP 8.0 comments.
+
 ## 5.0.7 (2021-02-08)
 
   * **Bugfix:** Fix static & self return type hint in doubles.
