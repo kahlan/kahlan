@@ -27,4 +27,8 @@ class Doz
     final public function foo8()
     {
     }
+    public function foo9() : array
+    {
+        return [];
+    }
 }

@@ -111,6 +111,16 @@ describe("Double", function () {
 
         });
 
+        it("stubs an instance with a parent class and stub a method with a return type int defined", function () {
+
+            $double = Double::instance(['extends' => 'Kahlan\Spec\Fixture\Plugin\Double\Doz']);
+            expect($double->foo9())->toBe([]);
+
+            allow($double)->toReceive('foo9')->andReturn(['Hello World']);
+            expect($double->foo9())->toBe(['Hello World']);
+
+        });
+
         it("stubs an instance using a trait", function () {
 
             $double = Double::instance(['uses' => 'Kahlan\Spec\Mock\Plugin\Double\HelloTrait']);
@@ -713,6 +723,7 @@ class Double extends \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\Doz {
     public function foo5(\\Closure \$fct) {return parent::foo5(\$fct);}
     public function foo6(\\Exception \$e) {return parent::foo6(\$e);}
     public function foo7(\\Kahlan\\Spec\\Fixture\\Plugin\\Double\\DozInterface \$instance) {return parent::foo7(\$instance);}
+    public function foo9() : array {return parent::foo9();}
 
 }
 ?>
