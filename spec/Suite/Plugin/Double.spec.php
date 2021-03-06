@@ -101,6 +101,16 @@ describe("Double", function () {
 
         });
 
+        it("stubs an instance with a parent class and stub a method", function () {
+
+            $double = Double::instance(['extends' => 'Kahlan\Spec\Fixture\Plugin\Double\Doz']);
+            expect($double->foo2())->toBe(null);
+
+            allow($double)->toReceive('foo2')->andReturn('Hello World');
+            expect($double->foo2())->toBe('Hello World');
+
+        });
+
         it("stubs an instance using a trait", function () {
 
             $double = Double::instance(['uses' => 'Kahlan\Spec\Mock\Plugin\Double\HelloTrait']);
