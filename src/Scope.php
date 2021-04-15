@@ -3,6 +3,7 @@ namespace Kahlan;
 
 use Closure;
 use Exception;
+use ReflectionFunction;
 use Kahlan\SkipException;
 use Kahlan\Suite;
 use Kahlan\Given;
@@ -162,8 +163,16 @@ abstract class Scope
         $property = null;
         $property = $this->__get($name);
 
+        // Only apply bindTo to closures defined in a kahlan scope.
+        if ($property instanceof Closure) {
+            $reflection = new ReflectionFunction($property);
+            $context = $reflection->getClosureThis();
+            if ($context instanceof Scope) {
+                return call_user_func_array($property->bindTo($this), $args);
+            }
+        }
         if (is_callable($property)) {
-            return call_user_func_array($property->bindTo($this), $args);
+            return call_user_func_array($property, $args);
         }
         throw new Exception("Uncallable variable `{$name}`.");
     }

@@ -1501,6 +1501,36 @@ describe("Suite", function () {
 
         });
 
+        it("doesn't attempt to rebind a callable no declared in a kahlan scope", function () {
+
+            $describe = $this->root->describe("", function () {
+
+                $this->describe("first", function () {
+                    $this->beforeEach(function () {
+                        $this->callableObject = new class {
+                            public $calledMethod = null;
+                            public function __invoke()
+                            {}
+                            public function __call($method, $params = [])
+                            {
+                                $this->calledMethod = $method;
+                            }
+                        };
+                    });
+
+                    $this->it("works", function () {
+                        $this->callableObject();
+                        expect($this->callableObject->calledMethod)->toBe(null);
+                    });
+                });
+
+            });
+
+            $this->suite->run();
+            expect($this->suite->status())->toBe(0);
+
+        });
+
     });
 
     describe("->_errorHandler()", function () {
