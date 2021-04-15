@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.0.9 (2021-04-15)
+
+  * **Bugfix:** Doesn't attempt to rebind a callable no declared in a kahlan scope.
+
 ## 5.0.8 (2021-02-22)
 
   * **Bugfix:** Fix monkey patching for PHP 8.0 comments.
