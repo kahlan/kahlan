@@ -314,7 +314,7 @@ EOD;
             ]);
             $this->specs->run();
             expect($this->specs->suite()->total())->toBe(1);
-            expect($this->specs->status())->toBe(-1);
+            expect($this->specs->status())->toBe(1);
 
         });
 

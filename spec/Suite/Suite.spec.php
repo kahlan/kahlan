@@ -236,7 +236,7 @@ describe("Suite", function () {
             expect($report->type())->toBe('errored');
             expect($report->messages())->toBe(['', '']);
 
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -339,7 +339,7 @@ describe("Suite", function () {
 
             expect($this->suite->active())->toBe(1);
             expect($this->root->focused())->toBe(false);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -432,7 +432,7 @@ describe("Suite", function () {
 
             expect($this->suite->active())->toBe(1);
             expect($this->root->focused())->toBe(false);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -541,7 +541,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(1);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -571,7 +571,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->active())->toBe(2);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -613,7 +613,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->active())->toBe(4);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -647,7 +647,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->active())->toBe(1);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -677,7 +677,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->active())->toBe(2);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -719,7 +719,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->active())->toBe(4);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -757,7 +757,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->active())->toBe(2);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -791,7 +791,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->active())->toBe(1);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -829,7 +829,7 @@ describe("Suite", function () {
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(1);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -1089,7 +1089,7 @@ describe("Suite", function () {
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(2);
             expect($describe->children()[1]->excluded())->toBe(true);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -1274,7 +1274,7 @@ describe("Suite", function () {
 
         });
 
-        it("returns `-1` if a specs suite fails", function () {
+        it("returns `1` if a specs suite fails", function () {
 
             $describe = $this->root->describe("", function () {
                 $this->it("fails", function () {
@@ -1283,7 +1283,7 @@ describe("Suite", function () {
             });
 
             $this->suite->run();
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -1298,8 +1298,8 @@ describe("Suite", function () {
             $this->suite->run();
             expect($this->suite->status())->toBe(0);
 
-            $this->suite->status(-1);
-            expect($this->suite->status())->toBe(-1);
+            $this->suite->status(1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -1352,7 +1352,7 @@ describe("Suite", function () {
             $actual = $report->exception()->getMessage();
             expect($actual)->toBe('Breaking the flow should execute afterEach anyway.');
 
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -1379,7 +1379,7 @@ describe("Suite", function () {
             $actual = $report->exception()->getMessage();
             expect($actual)->toBe('Errors occured in afterEach should be logged anyway.');
 
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -1405,7 +1405,7 @@ describe("Suite", function () {
             expect($report->type())->toBe('errored');
             expect($report->messages())->toBe(['', '', 'it throws an `MissingImplementationException`']);
 
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
         });
 
         it("fails fast", function () {
@@ -1432,7 +1432,7 @@ describe("Suite", function () {
 
             expect($failed)->toHaveLength(1);
             expect($this->root->focused())->toBe(false);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 
@@ -1460,7 +1460,7 @@ describe("Suite", function () {
 
             expect($failed)->toHaveLength(2);
             expect($this->root->focused())->toBe(false);
-            expect($this->suite->status())->toBe(-1);
+            expect($this->suite->status())->toBe(1);
 
         });
 

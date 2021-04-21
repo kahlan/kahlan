@@ -565,7 +565,7 @@ EOD;
             $this->write(Debugger::trace(['trace' => $backtrace, 'depth' => 1]), 'n;yellow');
             $this->write("\n");
         }
-        $this->write("exit(-1)\n\n", 'red');
+        $this->write("exit(1)\n\n", 'red');
     }
 
     /**

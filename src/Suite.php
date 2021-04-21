@@ -217,7 +217,7 @@ class Suite
         $this->summary()->memoryUsage(memory_get_peak_usage());
 
         $this->report('end', $this->summary());
-        $this->_status = $passed ? 0 : -1;
+        $this->_status = $passed ? 0 : 1;
         return $passed;
     }
 
@@ -273,7 +273,7 @@ class Suite
      *
      * @param  integer $status If set force a specific status to be returned.
      *
-     * @return boolean         Returns `0` if no error occurred, `-1` otherwise.
+     * @return boolean         Returns `0` if no error occurred, `1` otherwise.
      */
     public function status($status = null)
     {
@@ -282,7 +282,7 @@ class Suite
             return $this;
         }
         if ($this->root()->focused()) {
-            return -1;
+            return 1;
         }
         return $this->_status;
     }

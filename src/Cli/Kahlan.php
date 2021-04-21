@@ -365,7 +365,7 @@ EOD;
         {
             if (!defined('KAHLAN_FUNCTIONS_EXIST') && (!defined('KAHLAN_DISABLE_FUNCTIONS') || !KAHLAN_DISABLE_FUNCTIONS)) {
                 fwrite(STDERR, "Kahlan's global functions are missing because of some naming collisions with another library.\n");
-                exit(-1);
+                exit(1);
             }
 
             $this->_start = microtime(true);
@@ -440,7 +440,7 @@ EOD;
                 foreach ($specDirs as $dir) {
                     if (!file_exists($dir)) {
                         fwrite(STDERR, "ERROR: unexisting `{$dir}` directory, use --spec option to set a valid one (ex: --spec=tests).\n");
-                        exit(-1);
+                        exit(1);
                     }
                 }
                 $files = Dir::scan($specDirs, [
@@ -516,7 +516,7 @@ EOD;
                     $class = 'Kahlan\Reporter\\' . str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', trim($name))));
                     if (!class_exists($class)) {
                         fwrite(STDERR, "Error: unexisting reporter `'{$name}'` can't find class `$class`.\n");
-                        exit(-1);
+                        exit(1);
                     }
                     $collection->add($name, new $class($params));
                 }
@@ -541,13 +541,13 @@ EOD;
                     $driver = new Xdebug();
                 } else {
                     fwrite(STDERR, "ERROR: PHPDBG SAPI has not been detected and Xdebug is not installed, code coverage can't be used.\n");
-                    exit(-1);
+                    exit(1);
                 }
                 $srcDirs = $this->commandLine()->get('src');
                 foreach ($srcDirs as $dir) {
                     if (!file_exists($dir)) {
                         fwrite(STDERR, "ERROR: unexisting `{$dir}` directory, use --src option to set a valid one (ex: --src=app).\n");
-                        exit(-1);
+                        exit(1);
                     }
                 }
                 $coverage = new Coverage([
@@ -824,7 +824,7 @@ namespace {
             $exit('allow');
         }
         if ($error) {
-            exit(-1);
+            exit(1);
         }
     }
 }
