@@ -384,6 +384,9 @@ class Coverage extends Terminal
      */
     public function stop($summary)
     {
+        if (!$this->_verbosity) {
+            return;
+        }
         $this->write("Coverage Summary\n----------------\n");
 
         $verbosity = $this->_verbosity;
