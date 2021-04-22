@@ -2,6 +2,11 @@
 
 ## Last changes
 
+## 5.1.0 (2021-04-22)
+
+  * **Bugfix:** Do not show coverage report when the option is set to 0.
+  * **Break BC:** Change exit code on errors to 1 instead of -1.
+
 ## 5.0.9 (2021-04-15)
 
   * **Bugfix:** Doesn't attempt to rebind a callable no declared in a kahlan scope.
