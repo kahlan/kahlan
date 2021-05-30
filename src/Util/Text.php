@@ -2,7 +2,7 @@
 namespace Kahlan\Util;
 
 use Closure;
-use Exception;
+use Throwable;
 
 class Text
 {
@@ -207,7 +207,7 @@ class Text
      */
     protected static function _objectToString($value, $options)
     {
-        if ($value instanceof Exception) {
+        if ($value instanceof Throwable) {
             $msg = '`' . get_class($value) .'` Code(' . $value->getCode() . ') with ';
             $message = $value->getMessage();
             if ($message) {

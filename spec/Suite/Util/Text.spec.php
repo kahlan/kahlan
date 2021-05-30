@@ -2,6 +2,7 @@
 namespace Kahlan\Spec\Suite\Util;
 
 use stdClass;
+use Error;
 use Exception;
 use Kahlan\Util\Text;
 use Kahlan\Plugin\Double;
@@ -186,13 +187,23 @@ describe("Text", function () {
 
         });
 
-        it("exports an exception", function () {
+        it("exports an Exception", function () {
 
             $dump = Text::toString(new Exception());
             $this->expect($dump)->toMatch("~`Exception` Code\(0\) with no message in .*?" . DS . "Text.spec.php.*?$~");
 
             $dump = Text::toString(new Exception('error', 500));
             $this->expect($dump)->toMatch("~`Exception` Code\(500\) with message \"error\" in .*?" . DS . "Text.spec.php.*?$~");
+
+        });
+
+        it("exports an Error exception", function () {
+
+            $dump = Text::toString(new Error());
+            $this->expect($dump)->toMatch("~`Error` Code\(0\) with no message in .*?" . DS . "Text.spec.php.*?$~");
+
+            $dump = Text::toString(new Error('error', 500));
+            $this->expect($dump)->toMatch("~`Error` Code\(500\) with message \"error\" in .*?" . DS . "Text.spec.php.*?$~");
 
         });
 
