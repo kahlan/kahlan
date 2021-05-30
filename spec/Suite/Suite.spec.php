@@ -1586,9 +1586,19 @@ describe("Suite", function () {
 
         });
 
-        it('ignores supressed errors', function () {
+        it('respects the error_reporting() level', function () {
 
-            skipIf(PHP_MAJOR_VERSION >= 8);
+            $closure = function () {
+                trigger_error('deprecated', E_USER_DEPRECATED);
+            };
+
+            error_reporting(E_ALL ^ E_USER_DEPRECATED);
+            expect($closure)->not->toThrow();
+            error_reporting(E_ALL);
+
+        });
+
+        it('ignores supressed errors', function () {
 
             $closure = function () {
                 $failing = function () {
