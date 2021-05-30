@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.1.2 (2021-05-30)
+
+  * **Bugfix:** Respect the error_reporting() level.
+
 ## 5.1.1 (2021-05-30)
 
   * **Add:** Change the string representation of Error in the Terminal report.
