@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.1.1 (2021-05-30)
+
+  * **Add:** Change the string representation of Error in the Terminal report.
+
 ## 5.1.0 (2021-04-22)
 
   * **Bugfix:** Do not show coverage report when the option is set to 0.
