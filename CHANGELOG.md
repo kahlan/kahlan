@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.1.3 (2021-06-13)
+
+  * **Bugfix:** Fix a BC break introduced by Xdebug.
+
 ## 5.1.2 (2021-05-30)
 
   * **Bugfix:** Respect the error_reporting() level.
