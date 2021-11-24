@@ -6,11 +6,9 @@ php:
   - 7.3
   - 7.4
   - 8.0
-  - nightly
+  - 8.1
 
 matrix:
-  allow_failures:
-    - php: nightly
   fast_finish: true
 
 before_script:
