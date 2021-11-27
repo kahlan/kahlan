@@ -130,6 +130,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return integer Returns the number of items in the collection.
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->_count;
@@ -140,6 +141,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->_current < $this->_count;
@@ -151,6 +153,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @var    boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
+    #[\ReturnTypeWillChange]
     public function rewind($token = false)
     {
         $this->_current = 0;
@@ -162,6 +165,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return integer
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_current;
@@ -173,6 +177,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
+    #[\ReturnTypeWillChange]
     public function current($token = false)
     {
         if (!$this->valid()) {
@@ -187,6 +192,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  mixed       $type Token type to search for.
      * @return string|null Returns the skipped text content (the current is not saved).
      */
+    #[\ReturnTypeWillChange]
     public function next($type = false)
     {
         if ($type === false || $type === true) {
@@ -342,6 +348,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
+    #[\ReturnTypeWillChange]
     public function seek($index, $token = false)
     {
         $this->_current = (int) $index;
@@ -372,6 +379,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  integer $offset Token index
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->_data[$offset]);
@@ -383,6 +391,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  integer $offset Token index
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
@@ -393,6 +402,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @throws Exception
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new Exception('Not supported.');
@@ -403,6 +413,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @throws Exception
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         throw new Exception('Not supported.');

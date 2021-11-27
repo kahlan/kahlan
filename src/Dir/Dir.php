@@ -317,9 +317,9 @@ class Dir extends \FilterIterator
     /**
      * Checks if a file passes the setted filters.
      *
-     * #[\ReturnTypeWillChange]
      * @return boolean
      */
+    #[\ReturnTypeWillChange]
     public function accept()
     {
         $path = $this->current()->getPathname();
