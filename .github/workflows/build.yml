@@ -26,8 +26,8 @@ jobs:
           coverage: xdebug
       - name: Checkout
         uses: actions/checkout@v2
-      - name: "Setting Composer"
-        run: "composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH"
+#      - name: "Setting Composer"
+#        run: "composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH"
       - name: "Install dependencies"
         run: "composer install --no-interaction"
       - name: "CS Check"
