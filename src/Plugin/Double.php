@@ -101,7 +101,13 @@ class Double
             $code = static::generate($options);
             $nodes = $parser::parse($code);
             $code = $parser::unparse(static::$_pointcut->process($nodes));
+
+            $iniGet = ini_get("error_reporting");
+            ini_set("error_reporting", E_ALL & ~E_DEPRECATED);
+
             eval('?>' . $code);
+
+            ini_set("error_reporting", $iniGet);
         }
         return $options['class'];
     }
