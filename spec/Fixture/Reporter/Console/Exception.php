@@ -40,8 +40,7 @@ class Exception implements \Iterator
         return $this->_trace;
     }
 
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
@@ -58,14 +57,12 @@ class Exception implements \Iterator
         return $this->position;
     }
 
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         ++$this->position;
     }
 
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->_trace[$this->position]);
     }

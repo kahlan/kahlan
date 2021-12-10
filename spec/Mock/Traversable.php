@@ -98,10 +98,9 @@ class Traversable implements \Iterator
      *
      * @return mixed The current item after rewinding.
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
-        return reset($this->_data);
+        reset($this->_data);
     }
 
     /**
@@ -120,8 +119,7 @@ class Traversable implements \Iterator
      *
      * @return boolean `true` if valid, `false` otherwise.
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return key($this->_data) !== null;
     }

@@ -319,8 +319,7 @@ class Dir extends \FilterIterator
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange]
-    public function accept()
+    public function accept(): bool
     {
         $path = $this->current()->getPathname();
         if ($this->_excluded($path)) {

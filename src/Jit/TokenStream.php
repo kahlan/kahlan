@@ -130,8 +130,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return integer Returns the number of items in the collection.
      */
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return $this->_count;
     }
@@ -141,8 +140,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return $this->_current < $this->_count;
     }
@@ -153,11 +151,10 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @var    boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
-    #[\ReturnTypeWillChange]
-    public function rewind($token = false)
+    public function rewind($token = false): void
     {
         $this->_current = 0;
-        return $this->current($token);
+        $this->current($token);
     }
 
     /**
@@ -165,8 +162,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return integer
      */
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int
     {
         return $this->_current;
     }
@@ -379,8 +375,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  integer $offset Token index
      * @return boolean
      */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->_data[$offset]);
     }
@@ -413,8 +408,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @throws Exception
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new Exception('Not supported.');
     }

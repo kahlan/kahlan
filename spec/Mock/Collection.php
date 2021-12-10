@@ -70,8 +70,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      * @param  string  $offset An offset to check for.
      * @return boolean         Returns `true` if offset exists, `false` otherwise.
      */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->_data);
     }
@@ -109,8 +108,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @param string $offset The offset to unset.
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->_skipNext = $offset === key($this->_data);
         unset($this->_data[$offset]);
@@ -207,10 +205,9 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return mixed The current item after rewinding.
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
-        return reset($this->_data);
+        reset($this->_data);
     }
 
     /**
@@ -229,8 +226,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return boolean `true` if valid, `false` otherwise.
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return key($this->_data) !== null;
     }
@@ -240,8 +236,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return integer Returns the number of items in the collection.
      */
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return count($this->_data);
     }
