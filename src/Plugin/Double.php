@@ -103,7 +103,8 @@ class Double
             $code = $parser::unparse(static::$_pointcut->process($nodes));
 
             if (PHP_VERSION_ID >= 80100) {
-                $pattern = '#(public( static)? function)#m';
+                // @see https://regex101.com/r/q71PDE/1
+                $pattern = '#(public( static)? function(?! __(?!wakeup|set_state)))#m';
                 $replacement = '
                 #[\ReturnTypeWillChange]
                 ${1}';
