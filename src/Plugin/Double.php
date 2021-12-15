@@ -205,7 +205,7 @@ EOT;
             '__wakeup'       =>  "public function __wakeup() {}",
             '__toString'     =>  "public function __toString() { return get_class(); }",
             '__invoke'       =>  "public function __invoke() {}",
-            '__set_sate'     =>  "public function __set_sate(\$properties) {}",
+            '__set_state'     =>  "public static function __set_state(\$properties) {}",
             '__clone'        =>  "public function __clone() {}"
         ];
     }
