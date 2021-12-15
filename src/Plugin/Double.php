@@ -106,8 +106,7 @@ class Double
                 $pattern = '#(public( static)? function)#m';
                 $replacement = '
                 #[\ReturnTypeWillChange]
-                ${1}
-                ';
+                ${1}';
                 $code = preg_replace($pattern, $replacement, $code);
             }
 
