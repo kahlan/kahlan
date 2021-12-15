@@ -104,7 +104,7 @@ class Double
 
             if (PHP_VERSION_ID >= 80100) {
                 // @see https://regex101.com/r/q71PDE/1
-                $pattern = '#(public( static)? function(?! __(?!wakeup|set_state)))#m';
+                $pattern = '#(public( static)? function(?! __(?!wakeup|set_state)))#U';
                 $replacement = '
                 #[\ReturnTypeWillChange]
                 ${1}';
