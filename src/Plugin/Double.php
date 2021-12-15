@@ -102,12 +102,14 @@ class Double
             $nodes = $parser::parse($code);
             $code = $parser::unparse(static::$_pointcut->process($nodes));
 
-            $pattern = '#(public( static)? function)#m';
-            $replacement = '
-            #[\ReturnTypeWillChange]
-            ${1}
-            ';
-            $code = preg_replace($pattern, $replacement, $code);
+            if (PHP_VERSION_ID >= 80100) {
+                $pattern = '#(public( static)? function)#m';
+                $replacement = '
+                #[\ReturnTypeWillChange]
+                ${1}
+                ';
+                $code = preg_replace($pattern, $replacement, $code);
+            }
 
             eval('?>' . $code);
         }
