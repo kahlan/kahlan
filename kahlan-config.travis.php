@@ -51,13 +51,14 @@ Filters::apply($this, 'reporting', function($next) {
     Coveralls::write([
         'collector'      => $reporter,
         'file'           => 'coveralls.json',
-        'service_name'   => 'travis-ci',
-        'service_job_id' => getenv('TRAVIS_JOB_ID') ?: null
+        'service_name'   => 'ci',
+        'service_job_id' => getenv('GITHUB_RUN_NUMBER') ?: null,
+        'repo_token'     => 'cZPzv5qnBk7wyTHPXrIvshctUP5GSTeGt'
     ]);
     CodeClimate::write([
         'collector'  => $reporter,
         'file'       => 'codeclimate.json',
-        'branch'     => getenv('TRAVIS_BRANCH') ?: null,
+        'branch'     => getenv('GITHUB_REF') ?: null,
         'repo_token' => '422174e17459424c0dc0dfdd720eb17324b283a204b093e85ba21400f1414536'
     ]);
     return $next();

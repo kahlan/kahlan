@@ -34,11 +34,17 @@ jobs:
         run: "vendor/bin/phpcs"
       - name: "Run test suite"
         run: "bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml"
-      - name: Upload to codeclimate
+      - name: "Upload coverage to codeclimate"
         if: matrix.php-versions == '7.4'
         run: |
-          curl -X POST -d @codeclimate.json -H 'Content-Type:application/json' https://codeclimate.com/test_reports --verbose
-          curl -F 'json_file=@coveralls.json' https://coveralls.io/api/v1/jobs --verbose
+          curl -F 'json_file=@codeclimate.json' -H 'Authorization: Token token=${{ secrets.CODECLIMATE_TOKEN }}' https://api.codeclimate.com/v1/test_reports
+      - name: "Upload coverage to coveralls"
+        if: matrix.php-versions == '7.4'
+        run: |
+          curl -F 'json_file=@coveralls.json' https://coveralls.io/api/v1/jobs
+      - name: "Upload coverage to scrutinizer"
+        if: matrix.php-versions == '7.4'
+        run: |
           wget https://scrutinizer-ci.com/ocular.phar
           php ocular.phar code-coverage:upload --format=php-clover 'clover.xml'
 
