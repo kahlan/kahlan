@@ -70,7 +70,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      * @param  string  $offset An offset to check for.
      * @return boolean         Returns `true` if offset exists, `false` otherwise.
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->_data);
     }
@@ -81,6 +81,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      * @param  string $offset The offset to retrieve.
      * @return mixed          The value at offset.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->_data[$offset];
@@ -93,6 +94,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      * @param  mixed  $value  The value to set.
      * @return mixed          The value which was set.
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -106,7 +108,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @param string $offset The offset to unset.
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->_skipNext = $offset === key($this->_data);
         unset($this->_data[$offset]);
@@ -147,6 +149,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return scalar Scalar on success or `null` on failure.
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->_data);
@@ -157,6 +160,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return mixed The current item or `false` on failure.
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->_data);
@@ -178,6 +182,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return mixed The next item.
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $value = $this->_skipNext ? current($this->_data) : next($this->_data);
@@ -200,9 +205,9 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return mixed The current item after rewinding.
      */
-    public function rewind()
+    public function rewind(): void
     {
-        return reset($this->_data);
+        reset($this->_data);
     }
 
     /**
@@ -221,7 +226,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return boolean `true` if valid, `false` otherwise.
      */
-    public function valid()
+    public function valid(): bool
     {
         return key($this->_data) !== null;
     }
@@ -231,7 +236,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
      *
      * @return integer Returns the number of items in the collection.
      */
-    public function count()
+    public function count(): int
     {
         return count($this->_data);
     }

@@ -43,6 +43,7 @@ class Traversable implements \Iterator
      *
      * @return scalar Scalar on success or `null` on failure.
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->_data);
@@ -53,6 +54,7 @@ class Traversable implements \Iterator
      *
      * @return mixed The current item or `false` on failure.
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->_data);
@@ -74,6 +76,7 @@ class Traversable implements \Iterator
      *
      * @return mixed The next item.
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $value = next($this->_data);
@@ -95,9 +98,9 @@ class Traversable implements \Iterator
      *
      * @return mixed The current item after rewinding.
      */
-    public function rewind()
+    public function rewind(): void
     {
-        return reset($this->_data);
+        reset($this->_data);
     }
 
     /**
@@ -116,7 +119,7 @@ class Traversable implements \Iterator
      *
      * @return boolean `true` if valid, `false` otherwise.
      */
-    public function valid()
+    public function valid(): bool
     {
         return key($this->_data) !== null;
     }

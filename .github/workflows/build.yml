@@ -1,0 +1,44 @@
+name: "Build"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "dev"
+      - "master"
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php-versions }}
+    runs-on: ubuntu-latest
+    env:
+      secure: fVmkQtwKToCYD9tRhhtdB2NT9gKUJzOOHKBuZyDvEBf5uHMKNfvylBxtjUgAjMUdLxs0WTR8LeVFfzMVlQS6rrl/jBvWw/dPB5gTNa9Smoyux47/6kWDDaFe14NytxbayaWrMKBp9f/ts0+8WS9Jd1p6WQj/MCC1PhqmSlG+ifY=
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
+    steps:
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: intl
+          php-version: "${{ matrix.php-versions }}"
+          coverage: xdebug
+      - name: Checkout
+        uses: actions/checkout@v2
+#      - name: "Setting Composer"
+#        run: "composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH"
+      - name: "Install dependencies"
+        run: "composer install --no-interaction"
+      - name: "CS Check"
+        run: "vendor/bin/phpcs"
+      - name: "Run test suite"
+        run: "bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml"
+      - name: Upload to codeclimate
+        if: matrix.php-versions == '7.4'
+        run: |
+          curl -X POST -d @codeclimate.json -H 'Content-Type:application/json' https://codeclimate.com/test_reports --verbose
+          curl -F 'json_file=@coveralls.json' https://coveralls.io/api/v1/jobs --verbose
+          wget https://scrutinizer-ci.com/ocular.phar
+          php ocular.phar code-coverage:upload --format=php-clover 'clover.xml'
+

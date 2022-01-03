@@ -101,6 +101,16 @@ class Double
             $code = static::generate($options);
             $nodes = $parser::parse($code);
             $code = $parser::unparse(static::$_pointcut->process($nodes));
+
+            if (PHP_VERSION_ID >= 80100) {
+                // @see https://regex101.com/r/q71PDE/2
+                $pattern = '#(public( static)? function(?! __(?!wakeup|set_state)))#U';
+                $replacement = '
+                #[\ReturnTypeWillChange]
+                ${1}';
+                $code = preg_replace($pattern, $replacement, $code);
+            }
+
             eval('?>' . $code);
         }
         return $options['class'];
@@ -195,7 +205,7 @@ EOT;
             '__wakeup'       =>  "public function __wakeup() {}",
             '__toString'     =>  "public function __toString() { return get_class(); }",
             '__invoke'       =>  "public function __invoke() {}",
-            '__set_sate'     =>  "public function __set_sate(\$properties) {}",
+            '__set_state'     =>  "public static function __set_state(\$properties) {}",
             '__clone'        =>  "public function __clone() {}"
         ];
     }
