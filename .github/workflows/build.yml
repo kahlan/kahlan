@@ -29,7 +29,7 @@ jobs:
       - name: "CS Check"
         run: "vendor/bin/phpcs"
       - name: "Run test suite"
-        run: "bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml"
+        run: "bin/kahlan --config=kahlan-config-github-action.php --clover=clover.xml"
       - name: Upload coverage to Codecov
         if: matrix.php-versions == '7.4'
         uses: codecov/codecov-action@v1
