@@ -11,8 +11,6 @@ jobs:
   build:
     name: PHP ${{ matrix.php-versions }}
     runs-on: ubuntu-latest
-    env:
-      secure: fVmkQtwKToCYD9tRhhtdB2NT9gKUJzOOHKBuZyDvEBf5uHMKNfvylBxtjUgAjMUdLxs0WTR8LeVFfzMVlQS6rrl/jBvWw/dPB5gTNa9Smoyux47/6kWDDaFe14NytxbayaWrMKBp9f/ts0+8WS9Jd1p6WQj/MCC1PhqmSlG+ifY=
     strategy:
       fail-fast: false
       matrix:
