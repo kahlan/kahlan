@@ -26,25 +26,19 @@ jobs:
           coverage: xdebug
       - name: Checkout
         uses: actions/checkout@v2
-#      - name: "Setting Composer"
-#        run: "composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH"
       - name: "Install dependencies"
         run: "composer install --no-interaction"
       - name: "CS Check"
         run: "vendor/bin/phpcs"
       - name: "Run test suite"
         run: "bin/kahlan --config=kahlan-config.travis.php --clover=clover.xml"
-      - name: "Upload coverage to codeclimate"
+      - name: Upload coverage to Codecov
         if: matrix.php-versions == '7.4'
-        run: |
-          curl -F 'json_file=@codeclimate.json' -H 'Authorization: Token token=${{ secrets.CODECLIMATE_TOKEN }}' https://api.codeclimate.com/v1/test_reports
-      - name: "Upload coverage to coveralls"
-        if: matrix.php-versions == '7.4'
-        run: |
-          curl -F 'json_file=@coveralls.json' https://coveralls.io/api/v1/jobs
-      - name: "Upload coverage to scrutinizer"
-        if: matrix.php-versions == '7.4'
-        run: |
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover 'clover.xml'
-
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./clover.xml
+          flags: tests
+          name: codecov-umbrella
+          yml: ./codecov.yml
+          fail_ci_if_error: true
