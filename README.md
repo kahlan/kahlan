@@ -1,7 +1,7 @@
 ![Kahlan](docs/assets/logo.png "Kahlan")
 <hr/>
 
-![Build Status](https://img.shields.io/badge/branch-master-blue.svg) ![Build Status](https://github.com/kahlan/kahlan/actions/workflows/build.yml/badge.svg?branch=master) [![License](https://poser.pugx.org/kahlan/kahlan/license.svg)](https://packagist.org/packages/kahlan/kahlan)
+![Build Status](https://github.com/kahlan/kahlan/workflows/Build/badge.svg) [![License](https://poser.pugx.org/kahlan/kahlan/license.svg)](https://packagist.org/packages/kahlan/kahlan)
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/kahlan/kahlan.svg)](https://packagist.org/packages/kahlan/kahlan)
 [![Total Downloads](https://img.shields.io/packagist/dt/kahlan/kahlan.svg)](https://packagist.org/packages/kahlan/kahlan)
