@@ -2,7 +2,7 @@
 
 ## Last changes
 
-## 5.2.0 (2022-01-31)
+## 5.2.0 (2022-01-16)
 
   * **Enhancement:** Add PHP 8.1 support.
 
