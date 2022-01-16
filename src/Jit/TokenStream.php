@@ -130,7 +130,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return integer Returns the number of items in the collection.
      */
-    public function count()
+    public function count(): int
     {
         return $this->_count;
     }
@@ -140,7 +140,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return boolean
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->_current < $this->_count;
     }
@@ -151,10 +151,10 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @var    boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
-    public function rewind($token = false)
+    public function rewind($token = false): void
     {
         $this->_current = 0;
-        return $this->current($token);
+        $this->current($token);
     }
 
     /**
@@ -162,7 +162,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @return integer
      */
-    public function key()
+    public function key(): int
     {
         return $this->_current;
     }
@@ -173,6 +173,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
+    #[\ReturnTypeWillChange]
     public function current($token = false)
     {
         if (!$this->valid()) {
@@ -187,6 +188,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  mixed       $type Token type to search for.
      * @return string|null Returns the skipped text content (the current is not saved).
      */
+    #[\ReturnTypeWillChange]
     public function next($type = false)
     {
         if ($type === false || $type === true) {
@@ -342,6 +344,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
+    #[\ReturnTypeWillChange]
     public function seek($index, $token = false)
     {
         $this->_current = (int) $index;
@@ -372,7 +375,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  integer $offset Token index
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->_data[$offset]);
     }
@@ -383,6 +386,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  integer $offset Token index
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
@@ -393,6 +397,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @throws Exception
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new Exception('Not supported.');
@@ -403,7 +408,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @throws Exception
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new Exception('Not supported.');
     }

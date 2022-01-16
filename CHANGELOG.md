@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.2.0 (2022-01-31)
+
+  * **Enhancement:** Add PHP 8.1 support.
+
 ## 5.1.3 (2021-06-13)
 
   * **Bugfix:** Fix a BC break introduced by Xdebug.

@@ -223,7 +223,7 @@ class Metrics
     protected function _parseName($name)
     {
         $result = [];
-        $parts = preg_split('~([^\\\]*\\\?)~', $name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $parts = preg_split('~([^\\\]*\\\?)~', (string) $name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
         $last = array_pop($parts);
 

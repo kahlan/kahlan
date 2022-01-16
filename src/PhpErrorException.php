@@ -18,20 +18,6 @@ class PhpErrorException extends \Exception
     protected $code;
 
     /**
-     * The exception file.
-     *
-     * @var string
-     */
-    protected $file;
-
-    /**
-     * The exception line.
-     *
-     * @var string
-     */
-    protected $line;
-
-    /**
      * The exception trace.
      *
      * @var string

@@ -1,0 +1,42 @@
+name: "Build"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "dev"
+      - "master"
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php-versions }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
+    steps:
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: intl
+          php-version: "${{ matrix.php-versions }}"
+          coverage: xdebug
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: "Install dependencies"
+        run: "composer install --no-interaction"
+      - name: "CS Check"
+        run: "vendor/bin/phpcs"
+      - name: "Run test suite"
+        run: "bin/kahlan --config=kahlan-config-github-action.php --clover=clover.xml"
+      - name: Upload coverage to Codecov
+        if: matrix.php-versions == '7.4'
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./clover.xml
+          flags: tests
+          name: codecov-umbrella
+          yml: ./codecov.yml
+          fail_ci_if_error: true
