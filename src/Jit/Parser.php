@@ -645,7 +645,7 @@ class Parser
         $this->_codeNode();
         $token = $this->_stream->current(true);
         $this->_states['body'] = $token[1];
-        while ($body = $this->_stream->next()) {
+        while (($body = $this->_stream->next()) !== null) {
             $this->_states['body'] .= $body;
             if (substr_count($body, "\n")) {
                 break;

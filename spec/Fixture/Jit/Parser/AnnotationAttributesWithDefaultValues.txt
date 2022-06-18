@@ -1,0 +1,14 @@
+#1      [       open        ] #1 > #2         |<?php
+#2      [                   ] #2 > #2         |
+#3      [         d         ] #3 > #4         |#[Attribute(Attribute::TARGET_PROPERTY)]
+#4      [       class       ] #4 > #4         |class TestAttribute {}
+#5      [                   ] #5 > #5         |
+#6      [       class       ] #6 > #14        |class Test
+#7      [       class       ] #7 > #14        |{
+#8      [         d         ] #8 > #9         |    #[TestAttribute] public int $intPropertyWithNoDefault;
+#9      [         d         ] #9 > #10        |    #[TestAttribute] public int $intPropertyWithZeroAsDefault = 0;
+#10     [         d         ] #10 > #11       |    #[TestAttribute]
+#11     [         a         ] #11 > #11       |    public int $anotherIntPropertyWithZeroAsDefault = 0;
+#12     [         d         ] #12 > #13       |    #[TestAttribute] public int $intPropertyWithOneAsDefault = 1;
+#13     [         d         ] #13 > #14       |    #[TestAttribute] public string $stringPropertyWithEmptyAsDefault = '';
+#14     [                   ] #14 > #14       |}

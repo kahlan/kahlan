@@ -493,6 +493,18 @@ describe("Parser", function () {
             expect(Parser::unparse($parsed))->toBe($content);
         });
 
+        it("parses annotation attributes with default values", function () {
+
+            $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributesWithDefaultValues';
+            $content = file_get_contents($filename . '.php');
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+            $parsed = Parser::parse($content);
+            expect(Parser::unparse($parsed))->toBe($content);
+
+        });
+
     });
 
 });
