@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.2.1 (2022-06-18)
+
+  * **Bugfix:** Fix a parsing issue on annotation attributes with default values.
+
 ## 5.2.0 (2022-01-16)
 
   * **Enhancement:** Add PHP 8.1 support.
