@@ -3,6 +3,14 @@ namespace Kahlan\Spec\Fixture\Reporter\Console;
 
 class Expectation
 {
+    public $_type;
+    public $_data;
+    public $_matcherName;
+    public $_file;
+    public $_line;
+    public $_not;
+    public $_description;
+
     public function __construct($type, $data, $matcherName, $file, $line, $not, $description)
     {
         $this->_type = $type;

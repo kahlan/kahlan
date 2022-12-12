@@ -415,6 +415,7 @@ describe("Double", function () {
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double {
 
     public function __construct() {}
@@ -438,6 +439,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double {
 
     use \\Kahlan\\Spec\\Mock\\Plugin\\Double\\HelloTrait;
@@ -460,6 +462,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double extends \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\AbstractDoz {
 
     public function foo(\$var) {}
@@ -484,6 +487,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double implements \\Countable {
 
     public function count() {}
@@ -507,6 +511,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double implements \\Countable, \\SplObserver {
 
     public function count() {}
@@ -531,6 +536,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double {
 
 
@@ -554,6 +560,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\ReturnTypesInterface {
 
     public function foo(array \$a) : bool {}
@@ -578,6 +585,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\NullableInterface {
 
     public function foo(?int \$integer = NULL) : ?int {}
@@ -604,6 +612,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\UnionTypesInterface {
 
     public function foo(\\DateTime|string|int|null \$integer = NULL) : \\DateTime|string|int {}
@@ -627,6 +636,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\VariadicInterface {
 
     public function foo(int ...\$integers) : int {}
@@ -649,6 +659,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\DozInterface {
 
     public function foo(\$a) {}
@@ -669,6 +680,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double extends \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\AbstractDoz implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\DozInterface {
 
     public function foo(\$var) {}
@@ -690,6 +702,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double extends \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\AbstractDoz implements \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\DozInterface {
 
     public function foo() {}
@@ -714,6 +727,7 @@ EOD;
 <?php
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double extends \\Kahlan\\Spec\\Fixture\\Plugin\\Double\\Doz {
 
     public function foo(\$a) {return parent::foo(\$a);}
@@ -754,6 +768,7 @@ EOD;
 <?php
 namespace Kahlan\\\\Spec\\\\Plugin\\\\Double;
 
+#\\[\\\\AllowDynamicProperties\\]
 class Double extends \\\\LogicException {
 
     public function __construct\\((.*)?\\\$message(.*)?,(.*)?\\\$code(.*)?,(.*)?\\\$previous = NULL\\)
@@ -774,6 +789,7 @@ EOD;
             $expected = <<<EOD
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double {
 
 
@@ -800,6 +816,7 @@ EOD;
             $expected = <<<EOD
 namespace Kahlan\\Spec\\Plugin\\Double;
 
+#[\AllowDynamicProperties]
 class Double implements \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {
 
     public function returnSelf() : self {}
