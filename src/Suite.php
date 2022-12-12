@@ -21,6 +21,7 @@ class Suite
 
     /**
      * @var bool
+     * @internal
      */
     public $loaded = false;
 
