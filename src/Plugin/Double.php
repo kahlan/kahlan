@@ -176,6 +176,7 @@ class Double
 
         return $openTag . $namespace . <<<EOT
 
+#[AllowDynamicProperties]
 class {$class}{$extends}{$implements} {
 
 {$uses}{$methods}
