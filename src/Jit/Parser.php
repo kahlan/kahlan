@@ -10,6 +10,24 @@ use Kahlan\Jit\Node\BlockDef;
  */
 class Parser
 {
+    /**
+     * @var int
+     * @internal
+     */
+    public $_T_ARROW_FUNCTION;
+
+    /**
+     * @var int
+     * @internal
+     */
+    public $_T_DOUBLE_ARROW;
+
+    /**
+     * @var int
+     * @internal
+     */
+    public $_T_ATTRIBUTE;
+
     protected $_ARROW_FUNCTION;
 
     protected $_DOUBLE_ARROW;
@@ -50,21 +68,6 @@ class Parser
      * @var array
      */
     protected $_states = [];
-
-    /**
-     * @var int
-     */
-    private $_T_ARROW_FUNCTION;
-
-    /**
-     * @var int
-     */
-    private $_T_DOUBLE_ARROW;
-
-    /**
-     * @var int
-     */
-    private $_T_ATTRIBUTE;
 
     /**
      * The constructor function
