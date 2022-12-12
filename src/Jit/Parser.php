@@ -52,6 +52,21 @@ class Parser
     protected $_states = [];
 
     /**
+     * @var int
+     */
+    private $_T_ARROW_FUNCTION;
+
+    /**
+     * @var int
+     */
+    private $_T_DOUBLE_ARROW;
+
+    /**
+     * @var int
+     */
+    private $_T_ATTRIBUTE;
+
+    /**
      * The constructor function
      *
      * @param array $config The configuration array.
