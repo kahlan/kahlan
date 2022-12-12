@@ -20,6 +20,11 @@ class Suite
     public static $PHP = PHP_MAJOR_VERSION;
 
     /**
+     * @var bool
+     */
+    public $loaded = false;
+
+    /**
      * Blocks stack.
      *
      * @var Block[]
