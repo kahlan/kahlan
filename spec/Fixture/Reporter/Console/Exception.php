@@ -4,6 +4,11 @@ namespace Kahlan\Spec\Fixture\Reporter\Console;
 class Exception implements \Iterator
 {
     private $position = 0;
+    public $_message;
+    public $_code;
+    public $_file;
+    public $_line;
+    private $_trace;
 
     public function __construct($message, $code, $file, $line, $trace)
     {

@@ -176,6 +176,7 @@ class Double
 
         return $openTag . $namespace . <<<EOT
 
+#[\AllowDynamicProperties]
 class {$class}{$extends}{$implements} {
 
 {$uses}{$methods}
@@ -393,11 +394,12 @@ EOT;
         $name = $method->getName();
         $parameters = static::_generateSignature($method);
         $type = static::_generateReturnType($method);
-        $body = "{$result} function {$name}({$parameters}) {$type}{";
+        $typehint = $type ? ": {$type} " : '';
+        $body = "{$result} function {$name}({$parameters}) {$typehint}{";
         if ($callParent) {
             $parameters = static::_generateParameters($method);
             $return = 'return ';
-            if ($method->isConstructor() || $method->isDestructor()) {
+            if ($method->isConstructor() || $method->isDestructor() || $type === 'void') {
                 $return = '';
             }
             $body .= "{$return}parent::{$name}({$parameters});";
@@ -413,8 +415,7 @@ EOT;
      */
     protected static function _generateReturnType($method)
     {
-        $typehint = Inspector::returnTypehint($method->getReturnType());
-        return $typehint ? ": {$typehint} " : '';
+        return Inspector::returnTypehint($method->getReturnType());
     }
 
     /**
