@@ -240,7 +240,7 @@ class Coverage extends Terminal
             $style = $this->_style($percent);
 
             $prefix = join('', $this->_prefixes) . ' ';
-            $diff = strlen($prefix) - strlen(utf8_decode($prefix));
+            $diff = strlen($prefix) - strlen(mb_convert_encoding($prefix, 'ISO-8859-1'));
 
             $type = $metrics->type();
             $color = $type === 'function' || $type === 'method' ? 'd' : '';
