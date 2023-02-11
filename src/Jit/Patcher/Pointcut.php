@@ -109,7 +109,7 @@ class Pointcut
             );
             if ($process) {
                 $code = $this->_classes['node'];
-                $before = new $code($this->_before($child->isGenerator, $child->isVoid), 'code');
+                $before = new $code($this->_before($child->isGenerator, $child->isVoid, $child->isNever), 'code');
                 $before->parent = $child;
                 $before->function = $child;
                 $before->processable = false;
@@ -124,11 +124,11 @@ class Pointcut
      *
      * @return string.
      */
-    protected function _before($isGenerator, $isVoid)
+    protected function _before($isGenerator, $isVoid, $isNever)
     {
         $prefix = $this->_prefix;
         $statement = $isGenerator ? 'yield' : 'return';
-        $return = $isVoid ? 'return; ' : "{$statement} \$r; ";
+        $return = $isNever ? '' : ($isVoid ? 'return; ' : "{$statement} \$r; ");
         return "\$__{$prefix}_ARGS__ = func_get_args(); \$__{$prefix}_SELF__ = isset(\$this) ? \$this : get_called_class(); if (\$__{$prefix}__ = \Kahlan\Plugin\Pointcut::before(__METHOD__, \$__{$prefix}_SELF__, \$__{$prefix}_ARGS__)) { \$r = \$__{$prefix}__(\$__{$prefix}_ARGS__, \$__{$prefix}_SELF__); {$return}}";
     }
 }

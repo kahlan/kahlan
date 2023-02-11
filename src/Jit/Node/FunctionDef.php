@@ -32,6 +32,13 @@ class FunctionDef extends NodeDef
     public $isVoid = false;
 
     /**
+     * Boolean indicating if it's a never method.
+     *
+     * @var boolean
+     */
+    public $isNever = false;
+
+    /**
      * Boolean indicating if this function is a generator function.
      *
      * @var boolean

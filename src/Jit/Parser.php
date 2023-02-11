@@ -535,6 +535,7 @@ class Parser
         } else {
             $isMethod = false;
         }
+        $node->isNever = preg_match('~\Wnever\W~', $suffix);
         $node->isVoid = preg_match('~\Wvoid\W~', $suffix);
         $node->isMethod = $isMethod;
         $node->isClosure = !$node->name;

@@ -7,6 +7,7 @@ use Kahlan\Plugin\Quit;
 use Kahlan\Jit\Patcher\Quit as QuitPatcher;
 
 use Kahlan\Spec\Fixture\Plugin\Quit\Foo;
+use Kahlan\Spec\Fixture\Plugin\Pointcut\FooPhp81;
 
 describe("Quit", function () {
 
@@ -51,10 +52,6 @@ describe("Quit", function () {
 
         });
 
-    });
-
-    describe("::disable()", function () {
-
         it("throws an exception when an exit statement occurs if not allowed", function () {
 
             Quit::disable();
@@ -67,10 +64,6 @@ describe("Quit", function () {
             expect($closure)->toThrow(new QuitException('Exit statement occurred', -1));
 
         });
-
-    });
-
-    describe("::disable()", function () {
 
         it("throws an exception when a die statement occurs with string message", function () {
 
@@ -85,10 +78,6 @@ describe("Quit", function () {
 
         });
 
-    });
-
-    describe("::disable()", function () {
-
         it("throws an exception when a die statement occurs with integer code", function () {
 
             Quit::disable();
@@ -99,6 +88,21 @@ describe("Quit", function () {
             };
 
             expect($closure)->toThrow(new QuitException('Exit statement occurred', -1));
+
+        });
+
+        it("throws an exception with never return type", function () {
+
+            skipIf(PHP_VERSION_ID < 70100);
+
+            Quit::disable();
+            $closure = function () {
+                $foo = new FooPhp81();
+                $foo->noop();
+            };
+
+            expect($closure)->toThrow(new QuitException('Exit statement occurred', 0));
+            Quit::enable();
 
         });
 
