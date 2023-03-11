@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.2.3 (2023-03-11)
+
+  * **Enhancement:** Add `never` return type for PHP 8.1 support.
+
 ## 5.2.2 (2022-12-13)
 
   * **Enhancement:** Add PHP 8.2 support.
