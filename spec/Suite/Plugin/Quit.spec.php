@@ -93,7 +93,7 @@ describe("Quit", function () {
 
         it("throws an exception with never return type", function () {
 
-            skipIf(PHP_VERSION_ID < 70100);
+            skipIf(PHP_VERSION_ID < 80100);
 
             Quit::disable();
             $closure = function () {
