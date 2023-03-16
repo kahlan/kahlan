@@ -156,7 +156,7 @@ class Metrics
         $current = $this;
         $length = count($parts);
         foreach ($parts as $index => $part) {
-            list($name, $type) = $part;
+            [$name, $type] = $part;
             if (!isset($current->_children[$name])) {
                 $current->_children[$name] = new static([
                     'name'   => $name,
@@ -190,7 +190,7 @@ class Metrics
 
         $child = $this;
         foreach ($parts as $part) {
-            list($name) = $part;
+            [$name] = $part;
             if (!isset($child->_children[$name])) {
                 return;
             }
@@ -236,7 +236,7 @@ class Metrics
         }
 
         if (strpos($last, '::') !== false) {
-            list($name, $subname) = explode('::', $last, 2);
+            [$name, $subname] = explode('::', $last, 2);
             $result[] = [$name, 'class'];
             $result[] = [$subname, 'method'];
         } elseif (preg_match('~\(\)$~', $last)) {

@@ -24,7 +24,7 @@ namespace Kahlan\Cli {
 
     class Kahlan
     {
-        const VERSION = '5.2.3';
+        public const VERSION = '5.2.3';
 
         /**
          * Starting time.
@@ -129,10 +129,10 @@ namespace Kahlan\Cli {
             ]);
             $commandLine->option('persistent', ['type'  => 'boolean', 'default' => true]);
             $commandLine->option('autoclear',  ['array' => true, 'default' => [
-                'Kahlan\Plugin\Monkey',
-                'Kahlan\Plugin\Stub',
-                'Kahlan\Plugin\Quit',
-                'Kahlan\Plugin\Call\Calls'
+                \Kahlan\Plugin\Monkey::class,
+                \Kahlan\Plugin\Stub::class,
+                QuitStatement::class,
+                \Kahlan\Plugin\Call\Calls::class
             ]]);
         }
 
@@ -334,28 +334,28 @@ EOD;
          */
         public static function registerMatchers()
         {
-            Matcher::register('toBe',             'Kahlan\Matcher\ToBe');
-            Matcher::register('toBeA',            'Kahlan\Matcher\ToBeA');
-            Matcher::register('toBeAn',           'Kahlan\Matcher\ToBeA');
-            Matcher::register('toBeAnInstanceOf', 'Kahlan\Matcher\ToBeAnInstanceOf');
-            Matcher::register('toBeCloseTo',      'Kahlan\Matcher\ToBeCloseTo');
-            Matcher::register('toBeEmpty',        'Kahlan\Matcher\ToBeFalsy');
-            Matcher::register('toBeFalsy',        'Kahlan\Matcher\ToBeFalsy');
-            Matcher::register('toBeGreaterThan',  'Kahlan\Matcher\ToBeGreaterThan');
-            Matcher::register('toBeLessThan',     'Kahlan\Matcher\ToBeLessThan');
-            Matcher::register('toBeNull',         'Kahlan\Matcher\ToBeNull');
-            Matcher::register('toBeTruthy',       'Kahlan\Matcher\ToBeTruthy');
-            Matcher::register('toContain',        'Kahlan\Matcher\ToContain');
-            Matcher::register('toContainKey',     'Kahlan\Matcher\ToContainKey');
-            Matcher::register('toContainKeys',    'Kahlan\Matcher\ToContainKey');
-            Matcher::register('toEcho',           'Kahlan\Matcher\ToEcho');
-            Matcher::register('toEqual',          'Kahlan\Matcher\ToEqual');
-            Matcher::register('toHaveLength',     'Kahlan\Matcher\ToHaveLength');
-            Matcher::register('toMatch',          'Kahlan\Matcher\ToMatch');
-            Matcher::register('toReceive',        'Kahlan\Matcher\ToReceive');
-            Matcher::register('toBeCalled',       'Kahlan\Matcher\ToBeCalled');
-            Matcher::register('toThrow',          'Kahlan\Matcher\ToThrow');
-            Matcher::register('toMatchEcho',      'Kahlan\Matcher\ToMatchEcho');
+            Matcher::register('toBe',             \Kahlan\Matcher\ToBe::class);
+            Matcher::register('toBeA',            \Kahlan\Matcher\ToBeA::class);
+            Matcher::register('toBeAn',           \Kahlan\Matcher\ToBeA::class);
+            Matcher::register('toBeAnInstanceOf', \Kahlan\Matcher\ToBeAnInstanceOf::class);
+            Matcher::register('toBeCloseTo',      \Kahlan\Matcher\ToBeCloseTo::class);
+            Matcher::register('toBeEmpty',        \Kahlan\Matcher\ToBeFalsy::class);
+            Matcher::register('toBeFalsy',        \Kahlan\Matcher\ToBeFalsy::class);
+            Matcher::register('toBeGreaterThan',  \Kahlan\Matcher\ToBeGreaterThan::class);
+            Matcher::register('toBeLessThan',     \Kahlan\Matcher\ToBeLessThan::class);
+            Matcher::register('toBeNull',         \Kahlan\Matcher\ToBeNull::class);
+            Matcher::register('toBeTruthy',       \Kahlan\Matcher\ToBeTruthy::class);
+            Matcher::register('toContain',        \Kahlan\Matcher\ToContain::class);
+            Matcher::register('toContainKey',     \Kahlan\Matcher\ToContainKey::class);
+            Matcher::register('toContainKeys',    \Kahlan\Matcher\ToContainKey::class);
+            Matcher::register('toEcho',           \Kahlan\Matcher\ToEcho::class);
+            Matcher::register('toEqual',          \Kahlan\Matcher\ToEqual::class);
+            Matcher::register('toHaveLength',     \Kahlan\Matcher\ToHaveLength::class);
+            Matcher::register('toMatch',          \Kahlan\Matcher\ToMatch::class);
+            Matcher::register('toReceive',        \Kahlan\Matcher\ToReceive::class);
+            Matcher::register('toBeCalled',       \Kahlan\Matcher\ToBeCalled::class);
+            Matcher::register('toThrow',          \Kahlan\Matcher\ToThrow::class);
+            Matcher::register('toMatchEcho',      \Kahlan\Matcher\ToMatchEcho::class);
         }
 
         /**
@@ -483,7 +483,7 @@ EOD;
                 foreach ($reporters as $reporter) {
                     $parts = explode(":", $reporter);
                     $name = $parts[0];
-                    $output = isset($parts[1]) ? $parts[1] : null;
+                    $output = $parts[1] ?? null;
 
                     $args = $this->commandLine()->get('dot');
                     $args = $args ?: [];
@@ -551,7 +551,7 @@ EOD;
                     }
                 }
                 $coverage = new Coverage([
-                    'verbosity' => $this->commandLine()->get('coverage') === null ? 1 : $this->commandLine()->get('coverage'),
+                    'verbosity' => $this->commandLine()->get('coverage') ?? 1,
                     'driver' => $driver,
                     'path' => $srcDirs,
                     'colors' => !$this->commandLine()->get('no-colors')

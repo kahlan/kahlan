@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan;
 
-class QuitException extends \Exception
+use Exception;
+
+class QuitException extends Exception
 {
 }

@@ -37,6 +37,7 @@ class ToMatchEcho extends ToEcho
      */
     public static function _buildDescription($actual, $expected)
     {
+        $data = [];
         $description = "matches expected regex in echoed string.";
         $data['actual'] = $actual;
         $data['expected'] = $expected;

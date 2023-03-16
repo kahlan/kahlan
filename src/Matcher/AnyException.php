@@ -1,7 +1,9 @@
 <?php
 namespace Kahlan\Matcher;
 
-class AnyException extends \Exception
+use Exception;
+
+class AnyException extends Exception
 {
     /**
      * The exception message.

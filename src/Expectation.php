@@ -246,6 +246,7 @@ class Expectation
      */
     public function _matcher($matcherName, $actual)
     {
+        $target = null;
         if (!Matcher::exists($matcherName, true)) {
             throw new Exception("Unexisting matcher attached to `'{$matcherName}'`.");
         }
@@ -300,7 +301,7 @@ class Expectation
             throw $exception;
         }
 
-        $this->_passed = $spec->passed() && ($this->_passed === null ? true : $this->_passed);
+        $this->_passed = $spec->passed() && ($this->_passed ?? true);
         return $this;
     }
 
@@ -315,9 +316,7 @@ class Expectation
 
         try {
             call_user_func($this->_handler);
-        } catch (Throwable $e) {
-            $exception = $e;
-        } catch (Exception $e) {
+        } catch (Throwable|Exception $e) {
             $exception = $e;
         }
 

@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan\Code;
 
-class TimeoutException extends \Exception
+use Exception;
+
+class TimeoutException extends Exception
 {
 }

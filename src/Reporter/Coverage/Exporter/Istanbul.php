@@ -116,7 +116,7 @@ class Istanbul
             if (!$coverable) {
                 continue;
             }
-            $s->{$statementIndex} = isset($coverage[$num]) ? $coverage[$num] : 0;
+            $s->{$statementIndex} = $coverage[$num] ?? 0;
 
             $statementMap->{$statementIndex} = [
                 'start' => [

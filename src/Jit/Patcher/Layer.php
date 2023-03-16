@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Jit\Patcher;
 
+use Kahlan\Jit\Parser;
 use Kahlan\Plugin\Double;
 
 class Layer
@@ -12,8 +13,8 @@ class Layer
      * @var array
      */
     protected $_classes = [
-        'parser'   => 'Kahlan\Jit\Parser',
-        'pointcut' => 'Kahlan\Jit\Patcher\Pointcut'
+        'parser'   => Parser::class,
+        'pointcut' => Pointcut::class
     ];
 
     /**

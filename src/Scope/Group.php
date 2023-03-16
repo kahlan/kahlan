@@ -1,9 +1,10 @@
 <?php
 namespace Kahlan\Scope;
 
+use Kahlan\Scope;
 use Closure;
 
-class Group extends \Kahlan\Scope
+class Group extends Scope
 {
     /**
      * Adds a group/class related spec.

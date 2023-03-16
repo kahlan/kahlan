@@ -75,7 +75,7 @@ class CommandLine
 
         $this->_options[$name] = $config;
 
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
 
         if ($extra) {
             $this->option($key, ['group' => true, 'array' => true]);
@@ -104,7 +104,7 @@ class CommandLine
                 break;
             }
             if ($arg[0] === '-') {
-                list($name, $value) = $this->_parse(ltrim($arg, '-'));
+                [$name, $value] = $this->_parse(ltrim($arg, '-'));
                 if ($override || !isset($exists[$name])) {
                     $this->add($name, $value);
                 }
@@ -141,7 +141,7 @@ class CommandLine
      */
     public function exists($name)
     {
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
         if (isset($this->_values[$key]) && is_array($this->_values[$key]) && array_key_exists($extra, $this->_values[$key])) {
             return true;
         }
@@ -160,7 +160,7 @@ class CommandLine
      */
     public function set($name, $value)
     {
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
         if ($extra && !isset($this->_options[$key])) {
             $this->option($key, ['group' => true, 'array' => true]);
         }
@@ -177,7 +177,7 @@ class CommandLine
     public function add($name, $value)
     {
         $config = $this->option($name);
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
 
         if ($config['array']) {
             $this->_values[$key][$extra][] = $value;
@@ -220,7 +220,7 @@ class CommandLine
     protected function _get($name)
     {
         $config = $this->option($name);
-        list($key, $extra) = $this->_splitOptionName($name);
+        [$key, $extra] = $this->_splitOptionName($name);
 
         if ($extra === '' && $config['group']) {
             $result = [];
@@ -232,7 +232,7 @@ class CommandLine
             }
             return $result;
         } else {
-            $value = isset($this->_values[$key][$extra]) ? $this->_values[$key][$extra] : $config['default'];
+            $value = $this->_values[$key][$extra] ?? $config['default'];
         }
 
         $casted = $this->cast($value, $config['type'], $config['array']);
@@ -284,6 +284,6 @@ class CommandLine
     protected function _splitOptionName($name)
     {
         $parts = explode(':', $name, 2);
-        return [$parts[0], isset($parts[1]) ? $parts[1] : ''];
+        return [$parts[0], $parts[1] ?? ''];
     }
 }

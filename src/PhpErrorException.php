@@ -1,7 +1,9 @@
 <?php
 namespace Kahlan;
 
-class PhpErrorException extends \Exception
+use Exception;
+
+class PhpErrorException extends Exception
 {
     /**
      * The exception message.

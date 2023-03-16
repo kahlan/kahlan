@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Reporter;
 
+use Kahlan\Jit\ClassLoader;
 use Kahlan\Reporter\Coverage\Collector;
 use Kahlan\Reporter\Coverage\Metrics;
 
@@ -12,7 +13,7 @@ class Coverage extends Terminal
      * @var array
      */
     protected static $_classes = [
-        'classloader' => 'Kahlan\Jit\ClassLoader'
+        'classloader' => ClassLoader::class
     ];
 
     /**
@@ -340,7 +341,7 @@ class Coverage extends Terminal
             }
 
             for ($i = $start; $i <= $stop; $i++) {
-                $value = isset($coverage[$i]) ? $coverage[$i] : null;
+                $value = $coverage[$i] ?? null;
                 $line = str_pad($i + 1, 6, ' ', STR_PAD_LEFT);
                 $line .= ':' . str_pad($value, 6, ' ');
                 $line .= $lines[$i];

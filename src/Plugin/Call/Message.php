@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan\Plugin\Call;
 
+use Kahlan\Arg;
+
 class Message
 {
     /**
@@ -9,7 +11,7 @@ class Message
      * @var array
      */
     protected $_classes = [
-        'arg' => 'Kahlan\Arg'
+        'arg' => Arg::class
     ];
 
     /**

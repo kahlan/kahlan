@@ -12,7 +12,7 @@ class Pointcut
      * @var array
      */
     protected static $_classes = [
-        'stub'  => 'Kahlan\Plugin\Stub'
+        'stub'  => Stub::class
     ];
 
     /**
@@ -30,7 +30,7 @@ class Pointcut
             return false;
         }
 
-        list($class, $name) = explode('::', $method);
+        [$class, $name] = explode('::', $method);
 
         $lsb = is_object($self) ? get_class($self) : $self;
 

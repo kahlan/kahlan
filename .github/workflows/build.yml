@@ -28,6 +28,8 @@ jobs:
         run: "composer install --no-interaction"
       - name: "CS Check"
         run: "vendor/bin/phpcs"
+      - name: "Rector Check"
+        run: "vendor/bin/rector --dry-run"
       - name: "Run test suite"
         run: "bin/kahlan --config=kahlan-config-github-action.php --clover=clover.xml"
       - name: Upload coverage to Codecov

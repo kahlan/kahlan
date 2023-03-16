@@ -38,7 +38,7 @@ class Arg
      * @var array
      */
     protected static $_classes = [
-        'matcher' => 'Kahlan\Matcher'
+        'matcher' => Matcher::class
     ];
 
     /**
@@ -151,7 +151,7 @@ class Arg
             $this->_name,
             implode(
                 ', ',
-                array_map(['Kahlan\Arg', '_describeArg'], $this->_args)
+                array_map([\Kahlan\Arg::class, '_describeArg'], $this->_args)
             )
         );
     }

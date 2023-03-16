@@ -65,6 +65,7 @@ class ToBeA
      */
     public static function _buildDescription($actual, $expected)
     {
+        $data = [];
         $description = "have the expected type.";
         $data['actual'] = $actual;
         $data['expected'] = $expected;

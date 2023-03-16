@@ -1,13 +1,14 @@
 <?php
 namespace Kahlan\Block;
 
+use Kahlan\Block;
 use Closure;
 use Exception;
 use Throwable;
 use Kahlan\Suite;
 use Kahlan\Scope\Group as Scope;
 
-class Group extends \Kahlan\Block
+class Group extends Block
 {
     /**
      * The each callbacks.
@@ -214,7 +215,7 @@ class Group extends \Kahlan\Block
     {
         $suite = $this->suite();
         $parent = $this;
-        $timeout = $timeout !== null ? $timeout : $this->timeout();
+        $timeout = $timeout ?? $this->timeout();
         $group = new Group(compact('message', 'closure', 'suite', 'parent', 'timeout', 'type'));
 
         return $this->_children[] = $group;
@@ -248,7 +249,7 @@ class Group extends \Kahlan\Block
     {
         $suite = $this->suite();
         $parent = $this;
-        $timeout = $timeout !== null ? $timeout : $this->timeout();
+        $timeout = $timeout ?? $this->timeout();
         $spec = new Specification(compact('message', 'closure', 'suite', 'parent', 'timeout', 'type'));
         $this->_children[] = $spec;
 
@@ -405,7 +406,7 @@ class Group extends \Kahlan\Block
      */
     public function callbacks($type)
     {
-        return isset($this->_callbacks[$type]) ? $this->_callbacks[$type] : [];
+        return $this->_callbacks[$type] ?? [];
     }
 
     /**

@@ -2,6 +2,9 @@
 
 namespace Kahlan\Reporter;
 
+use Kahlan\Log;
+use Kahlan\Summary;
+
 class Tree extends Terminal
 {
     /**
@@ -35,7 +38,7 @@ class Tree extends Terminal
      *
      * @var string
      */
-    const PIPE = '│  ';
+    public const PIPE = '│  ';
 
     /**
      * The tree branch, used only for desciption messages.
@@ -54,7 +57,7 @@ class Tree extends Terminal
      *
      * @var string
      */
-    const BRANCH = '├── ';
+    public const BRANCH = '├── ';
 
     /**
      * The spec message separator, used to separate the symbol from the message.
@@ -72,7 +75,7 @@ class Tree extends Terminal
      * │  │  ✓   it should return 'null'
      * ```
      */
-    const SPEC_MESSAGE_SEPARATOR = '   ';
+    public const SPEC_MESSAGE_SEPARATOR = '   ';
 
     /**
      * Callback called before any specs processing.
@@ -155,7 +158,7 @@ class Tree extends Terminal
      * │  │  ✖   it should return 'int'
      * ```
      *
-     * @param \Kahlan\Log $log The log object of the whole spec.
+     * @param Log $log The log object of the whole spec.
      * @return void
      */
     public function specEnd($log = null)
@@ -210,7 +213,7 @@ class Tree extends Terminal
      *  Passed 6 of 8 FAIL (FAILURE: 2) in 0.106 seconds (using 2MB)
      * ```
      *
-     * @param \Kahlan\Summary $summary The execution summary instance.
+     * @param Summary $summary The execution summary instance.
      * @return void
      */
     public function end($summary)
@@ -260,7 +263,7 @@ class Tree extends Terminal
      *      (string) "integer"
      * ```
      *
-     * @param \Kahlan\Log $log The Log instance.
+     * @param Log $log The Log instance.
      * @return void
      */
     protected function _reportFailureTree($log)
@@ -302,7 +305,7 @@ class Tree extends Terminal
      * ✓   it should return '1'
      * ```
      *
-     * @param \Kahlan\Log $log A spec log instance.
+     * @param Log $log A spec log instance.
      * @return void
      */
     protected function _reportSpecMessage($log)

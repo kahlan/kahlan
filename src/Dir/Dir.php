@@ -1,12 +1,13 @@
 <?php
 namespace Kahlan\Dir;
 
+use FilterIterator;
 use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use FilesystemIterator;
 
-class Dir extends \FilterIterator
+class Dir extends FilterIterator
 {
     /**
      * List of include patterns
@@ -303,11 +304,7 @@ class Dir extends \FilterIterator
      */
     public function filter($options = [])
     {
-        $defaults = array(
-            'include' => ['*'],
-            'exclude' => [],
-            'type' => []
-        );
+        $defaults = ['include' => ['*'], 'exclude' => [], 'type' => []];
         $options += $defaults;
         $this->_exclude = (array) $options['exclude'];
         $this->_include = (array) $options['include'];

@@ -50,6 +50,7 @@ class ToEcho
      */
     public static function _buildDescription($actual, $expected)
     {
+        $data = [];
         $description = "echo the expected string.";
         $data['actual'] = $actual;
         $data['expected'] = $expected;

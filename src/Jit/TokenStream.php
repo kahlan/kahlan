@@ -1,9 +1,13 @@
 <?php
 namespace Kahlan\Jit;
 
+use ArrayAccess;
+use Countable;
+use SeekableIterator;
+use ReturnTypeWillChange;
 use Exception;
 
-class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
+class TokenStream implements ArrayAccess, Countable, SeekableIterator
 {
     /**
      * The items contained in the collection.
@@ -173,7 +177,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current($token = false)
     {
         if (!$this->valid()) {
@@ -188,7 +192,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  mixed       $type Token type to search for.
      * @return string|null Returns the skipped text content (the current is not saved).
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function next($type = false)
     {
         if ($type === false || $type === true) {
@@ -344,7 +348,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  boolean      If `true` returns the token array. Returns the token value otherwise.
      * @return array|string
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function seek($index, $token = false)
     {
         $this->_current = (int) $index;
@@ -386,10 +390,10 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      * @param  integer $offset Token index
      * @return array
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
+        return $this->_data[$offset] ?? null;
     }
 
     /**
@@ -397,7 +401,7 @@ class TokenStream implements \ArrayAccess, \Countable, \SeekableIterator
      *
      * @throws Exception
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new Exception('Not supported.');

@@ -74,7 +74,7 @@ class Matcher
             return static::$_matchers;
         }
         if ($target === true) {
-            return isset(static::$_matchers[$name]) ? static::$_matchers[$name] : [];
+            return static::$_matchers[$name] ?? [];
         }
         if ($target === '') {
             if (isset(static::$_matchers[$name][''])) {
