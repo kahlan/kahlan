@@ -1,0 +1,13 @@
+#1      [       open        ] #1 > #2         |<?php
+#2      [                   ] #2 > #2         |
+#3      [       class       ] #3 > #12        |class Entity
+#4      [       class       ] #4 > #12        |{
+#5      [         d         ] #5 > #11        |    #[OneToMany(
+#6      [         d         ] #6 > #11        |        targetEntity: "Phonenumber",
+#7      [         d         ] #7 > #11        |        mappedBy: "user",
+#8      [         d         ] #8 > #11        |        cascade: ["persist", "remove", "merge"],
+#9      [         d         ] #9 > #11        |        orphanRemoval: true)
+#10     [         d         ] #10 > #11       |    ]
+#11     [         a         ] #11 > #11       |    public $phonenumbers;
+#12     [                   ] #12 > #12       |}
+#13     [                   ] #13 > #13       |

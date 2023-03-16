@@ -661,12 +661,23 @@ class Parser
      */
     protected function _annotationNode()
     {
+        $cpt = 1; //because #[
         $this->_codeNode();
         $token = $this->_stream->current(true);
         $this->_states['body'] = $token[1];
         while (($body = $this->_stream->next()) !== null) {
             $this->_states['body'] .= $body;
-            if (substr_count($body, "\n")) {
+
+            switch ($body[0]) {
+                case '[':
+                    $cpt++;
+                    break;
+                case ']':
+                    $cpt--;
+                    break;
+            }
+
+            if ($body[0] === "\n" && $cpt === 0) {
                 break;
             }
         }
