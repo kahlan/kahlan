@@ -505,6 +505,20 @@ describe("Parser", function () {
 
         });
 
+        it("parses annotation attributes on multiple lines", function () {
+
+            skipIf(PHP_MAJOR_VERSION < 8);
+
+            $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributesOnMultipleLines';
+            $content = file_get_contents($filename . '.php');
+
+            $parsed = Parser::debug($content);
+            expect($parsed)->toBe(file_get_contents($filename . '.txt'));
+            $parsed = Parser::parse($content);
+            expect(Parser::unparse($parsed))->toBe($content);
+
+        });
+
     });
 
 });
