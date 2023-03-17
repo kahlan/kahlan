@@ -20,7 +20,6 @@ namespace Kahlan\Cli {
     use Kahlan\Reporter\Coverage\Exporter\Clover;
     use Kahlan\Reporter\Coverage\Exporter\Istanbul;
     use Kahlan\Reporter\Coverage\Exporter\Lcov;
-    use Composer\Script\Event;
 
     class Kahlan
     {
@@ -644,7 +643,6 @@ namespace {
 
     use Kahlan\Expectation;
     use Kahlan\Suite;
-    use Kahlan\Specification;
     use Kahlan\Allow;
 
     /**

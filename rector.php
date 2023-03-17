@@ -8,6 +8,7 @@ use Rector\Set\ValueObject\LevelSetList;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->importNames();
+    $rectorConfig->removeUnusedImports();
     $rectorConfig->paths([
         __DIR__ . '/src',
     ]);

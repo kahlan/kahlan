@@ -6,9 +6,6 @@ use Kahlan\Jit\Patcher\Pointcut;
 use Reflection;
 use ReflectionMethod;
 use ReflectionClass;
-use ReflectionType;
-use ReflectionNamedType;
-use Kahlan\Suite;
 use Kahlan\MissingImplementationException;
 use Kahlan\Analysis\Inspector;
 

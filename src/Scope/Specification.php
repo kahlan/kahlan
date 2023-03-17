@@ -2,9 +2,6 @@
 namespace Kahlan\Scope;
 
 use Kahlan\Scope;
-use Closure;
-use Throwable;
-use Exception;
 use Kahlan\Expectation;
 
 class Specification extends Scope

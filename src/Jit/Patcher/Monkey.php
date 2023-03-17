@@ -1,7 +1,6 @@
 <?php
 namespace Kahlan\Jit\Patcher;
 
-use Kahlan\Suite;
 use Kahlan\Jit\Node\NodeDef;
 use Kahlan\Jit\Node\FunctionDef;
 

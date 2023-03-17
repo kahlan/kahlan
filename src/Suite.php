@@ -2,7 +2,6 @@
 namespace Kahlan;
 
 use Closure;
-use Throwable;
 use Exception;
 use InvalidArgumentException;
 use Kahlan\Analysis\Debugger;
