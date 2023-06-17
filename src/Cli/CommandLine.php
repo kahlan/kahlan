@@ -66,10 +66,7 @@ class CommandLine
             'default' => null
         ];
         if (func_num_args() === 1) {
-            if (isset($this->_options[$name])) {
-                return $this->_options[$name];
-            }
-            return $defaults;
+            return $this->_options[$name] ?? $defaults;
         }
         $config = is_array($config) ? $config + $defaults : [$config => $value] + $this->option($name);
 

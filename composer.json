@@ -13,7 +13,7 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.4",
-        "rector/rector": "^0.15.21"
+        "rector/rector": "^0.17.1"
     },
     "autoload": {
         "psr-4": {
