@@ -286,8 +286,7 @@ class Expectation
             return $this;
         }
 
-        $result = null;
-        $closure = function () use ($spec, &$result) {
+        $closure = function () use ($spec) {
             $spec->reset();
             $spec->process($result);
             $this->_logs = $spec->logs();
