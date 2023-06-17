@@ -19,6 +19,8 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         CountOnNullRector::class,
-        AddDefaultValueForUndefinedVariableRector::class,
+        AddDefaultValueForUndefinedVariableRector::class => [
+            __DIR__ . '/src/Expectation.php',
+        ],
     ]);
 };
