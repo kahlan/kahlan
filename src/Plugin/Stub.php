@@ -230,10 +230,7 @@ class Stub
     public static function on($reference)
     {
         $hash = Suite::hash($reference);
-        if (isset(static::$_registered[$hash])) {
-            return static::$_registered[$hash];
-        }
-        return static::$_registered[$hash] = new static($reference);
+        return static::$_registered[$hash] ?? (static::$_registered[$hash] = new static($reference));
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Reporter;
 
+use Kahlan\Log;
 use Kahlan\Util\Text;
 use Kahlan\Cli\Cli;
 use Kahlan\Analysis\Debugger;
@@ -216,7 +217,7 @@ EOD;
     /**
      * Print an array of description messages to STDOUT
      *
-     * @param \Kahlan\Log $log The Log instance
+     * @param Log $log The Log instance
      */
     protected function _reportSuiteMessages($log)
     {
@@ -489,7 +490,7 @@ EOD;
             $value = $value / $base;
             $i++;
         }
-        $unit = isset($units[$i]) ? $units[$i] : '?';
+        $unit = $units[$i] ?? '?';
         return round($value, $precision) . $unit;
     }
 

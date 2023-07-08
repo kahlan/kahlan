@@ -93,7 +93,7 @@ class Cli
      */
     protected static function _vtstyle($name)
     {
-        return isset(static::$_vt100['formats'][$name]) ? static::$_vt100['formats'][$name] : 0;
+        return static::$_vt100['formats'][$name] ?? 0;
     }
 
     /**

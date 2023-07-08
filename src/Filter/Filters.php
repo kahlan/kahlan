@@ -108,7 +108,7 @@ class Filters
             $value = $context;
         }
         if (strpos($value, '|') !== false) {
-            list($ref, $num) = explode('|', $value);
+            [$ref, $num] = explode('|', $value);
             if (!isset(static::$_filters[$ref][$num])) {
                 throw new Exception("Unexisting `'{$value}'` filter id.");
             }
@@ -159,7 +159,7 @@ class Filters
             return static::$_cachedFilters[$ref];
         }
 
-        $filters = isset(static::$_filters[$ref]) ?  static::$_filters[$ref] : [];
+        $filters = static::$_filters[$ref] ?? [];
 
         if (is_object($context)) {
             $class = get_class($context);

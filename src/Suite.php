@@ -2,7 +2,6 @@
 namespace Kahlan;
 
 use Closure;
-use Throwable;
 use Exception;
 use InvalidArgumentException;
 use Kahlan\Analysis\Debugger;
@@ -208,7 +207,7 @@ class Suite
         $this->_autoclear = (array) $options['autoclear'];
         $this->_ff = $options['ff'];
 
-        list($index, $total) = explode('/', $options['part']) + [null, null];
+        [$index, $total] = explode('/', $options['part']) + [null, null];
 
         $this->root()->partition($index, $total);
 

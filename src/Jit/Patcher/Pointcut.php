@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan\Jit\Patcher;
 
+use Kahlan\Jit\Node\NodeDef;
+
 class Pointcut
 {
     /**
@@ -9,7 +11,7 @@ class Pointcut
      * @var array
      */
     protected $_classes = [
-        'node' => 'Kahlan\Jit\Node\NodeDef',
+        'node' => NodeDef::class,
     ];
 
     /**

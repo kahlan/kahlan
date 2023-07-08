@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan;
 
-class MissingImplementationException extends \Exception
+use Exception;
+
+class MissingImplementationException extends Exception
 {
 }

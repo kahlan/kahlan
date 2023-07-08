@@ -98,7 +98,7 @@ class Summary
      */
     public function get($type)
     {
-        return isset($this->_data[$type]) ? $this->_data[$type] : [];
+        return $this->_data[$type] ?? [];
     }
 
     /**
@@ -126,7 +126,7 @@ class Summary
     public function logs($type = null)
     {
         if (func_num_args()) {
-            return isset($this->_logs[$type]) ? $this->_logs[$type] : [];
+            return $this->_logs[$type] ?? [];
         }
         $logs = [];
         foreach ($this->_logs as $key => $value) {

@@ -1,12 +1,10 @@
 <?php
 namespace Kahlan\Scope;
 
-use Closure;
-use Throwable;
-use Exception;
+use Kahlan\Scope;
 use Kahlan\Expectation;
 
-class Specification extends \Kahlan\Scope
+class Specification extends Scope
 {
     /**
      * The assert statement.

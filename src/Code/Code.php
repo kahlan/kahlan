@@ -37,10 +37,7 @@ class Code
         try {
             $result = $callable();
             pcntl_alarm(0);
-        } catch (Throwable $e) {
-            pcntl_alarm(0);
-            throw $e;
-        } catch (Exception $e) {
+        } catch (Throwable|Exception $e) {
             pcntl_alarm(0);
             throw $e;
         }

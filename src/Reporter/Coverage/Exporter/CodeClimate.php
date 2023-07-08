@@ -102,7 +102,7 @@ class CodeClimate
 
             $lines = [];
             for ($i = 0; $i <= $nbLines; $i++) {
-                $lines[] = isset($data[$i]) ? $data[$i] : null;
+                $lines[] = $data[$i] ?? null;
             }
 
             $result[] = [

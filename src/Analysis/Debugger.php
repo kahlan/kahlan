@@ -163,7 +163,7 @@ class Debugger
             $code = $backtrace->getCode();
             return "`{$name}` Code({$code}): " . $backtrace->getMessage();
         } elseif (isset($backtrace['message'])) {
-            $code = isset($backtrace['code']) ? $backtrace['code'] : 0;
+            $code = $backtrace['code'] ?? 0;
             $name = static::errorType($code);
             return "`{$name}` Code({$code}): " . $backtrace['message'];
         }

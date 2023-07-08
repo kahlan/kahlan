@@ -25,7 +25,7 @@ class ToBeCloseTo
         if (!is_numeric($actual) || !is_numeric($expected)) {
             return false;
         }
-        return abs($expected - $actual) < (pow(10, -$precision) / 2);
+        return abs($expected - $actual) < (10 ** (-$precision) / 2);
     }
 
     /**
@@ -37,10 +37,11 @@ class ToBeCloseTo
      */
     public static function _buildDescription($actual, $expected, $precision)
     {
+        $data = [];
         $description = "be close to expected relying to a precision of {$precision}.";
         $data['actual'] = $actual;
         $data['expected'] = $expected;
-        $data['gap is >='] = pow(10, -$precision) / 2;
+        $data['gap is >='] = 10 ** (-$precision) / 2;
         static::$_description = compact('description', 'data');
     }
 

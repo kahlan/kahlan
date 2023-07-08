@@ -29,7 +29,7 @@ class Box
     public function __construct($config = [])
     {
         $defaults = [
-            'wrapper' => 'Kahlan\Box\Wrapper'
+            'wrapper' => Wrapper::class
         ];
         $config += $defaults;
         $this->_classes['wrapper'] = $config['wrapper'];
@@ -97,6 +97,8 @@ class Box
      */
     public function get($name)
     {
+        $type = null;
+        $definition = null;
         if (!isset($this->_definitions[$name])) {
             throw new BoxException("Unexisting `{$name}` definition dependency.");
         }

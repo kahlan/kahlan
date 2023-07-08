@@ -1,16 +1,15 @@
 <?php
 namespace Kahlan\Block;
 
+use Kahlan\Block;
 use Closure;
-use Throwable;
 use Exception;
 use Kahlan\Expectation;
-use Kahlan\ExternalExpectation;
 use Kahlan\Log;
 use Kahlan\Scope\Specification as Scope;
 use Kahlan\Suite;
 
-class Specification extends \Kahlan\Block
+class Specification extends Block
 {
     /**
      * List of expectations.

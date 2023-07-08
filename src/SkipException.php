@@ -1,6 +1,8 @@
 <?php
 namespace Kahlan;
 
-class SkipException extends \RuntimeException
+use RuntimeException;
+
+class SkipException extends RuntimeException
 {
 }

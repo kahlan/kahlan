@@ -1,12 +1,11 @@
 <?php
 namespace Kahlan\Plugin;
 
+use Kahlan\Jit\Parser;
+use Kahlan\Jit\Patcher\Pointcut;
 use Reflection;
 use ReflectionMethod;
 use ReflectionClass;
-use ReflectionType;
-use ReflectionNamedType;
-use Kahlan\Suite;
 use Kahlan\MissingImplementationException;
 use Kahlan\Analysis\Inspector;
 
@@ -18,8 +17,8 @@ class Double
      * @var array
      */
     protected static $_classes = [
-        'parser'   => 'Kahlan\Jit\Parser',
-        'pointcut' => 'Kahlan\Jit\Patcher\Pointcut'
+        'parser'   => Parser::class,
+        'pointcut' => Pointcut::class
     ];
 
     /**

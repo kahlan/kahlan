@@ -1,10 +1,11 @@
 <?php
 namespace Kahlan\Plugin\Stub;
 
+use Kahlan\Plugin\Call\Message;
 use Closure;
 use Exception;
 
-class Method extends \Kahlan\Plugin\Call\Message
+class Method extends Message
 {
     /**
      * Index value in the `Method::$_substitutes` array.

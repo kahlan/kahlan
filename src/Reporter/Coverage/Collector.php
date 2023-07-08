@@ -1,6 +1,7 @@
 <?php
 namespace Kahlan\Reporter\Coverage;
 
+use Kahlan\Jit\Parser;
 use Kahlan\Dir\Dir;
 use Kahlan\Jit\ClassLoader;
 
@@ -19,7 +20,7 @@ class Collector
      * @var array
      */
     protected $_classes = [
-        'parser' => 'Kahlan\Jit\Parser',
+        'parser' => Parser::class,
     ];
 
     /**

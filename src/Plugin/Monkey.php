@@ -57,7 +57,7 @@ class Monkey
             $name = "{$namespace}\\{$name}";
         }
 
-        $method = isset(static::$_registered[$name]) ? static::$_registered[$name] : null;
+        $method = static::$_registered[$name] ?? null;
 
         if (!$methodName) {
             $fake = $method ? $method->substitute() : null;
