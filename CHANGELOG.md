@@ -2,6 +2,13 @@
 
 ## Last changes
 
+## 5.2.4 (2023-08-17)
+
+  * **Bugfix:** Fix annotation attributes on multiple lines.
+
+  * **Enhancement:** Drop php 7.1 support.
+  * **Enhancement:** Apply Rector to src directory.
+
 ## 5.2.3 (2023-03-11)
 
   * **Enhancement:** Add `never` return type for PHP 8.1 support.
