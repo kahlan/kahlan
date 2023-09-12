@@ -484,6 +484,8 @@ describe("Parser", function () {
 
         it("parses annotation attributes", function () {
 
+            skipIf(PHP_MAJOR_VERSION < 8);
+
             $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributes';
             $content = file_get_contents($filename . '.php');
 
@@ -494,6 +496,8 @@ describe("Parser", function () {
         });
 
         it("parses annotation attributes with default values", function () {
+
+            skipIf(PHP_MAJOR_VERSION < 8);
 
             $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributesWithDefaultValues';
             $content = file_get_contents($filename . '.php');
