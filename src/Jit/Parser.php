@@ -677,7 +677,7 @@ class Parser
                     break;
             }
 
-            if ($body[0] === "\n" && $cpt === 0) {
+            if ($cpt === 0) {
                 break;
             }
         }
