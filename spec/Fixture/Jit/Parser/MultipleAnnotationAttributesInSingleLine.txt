@@ -1,0 +1,11 @@
+#1      [       open        ] #1 > #2         |<?php
+#2      [                   ] #2 > #2         |
+#3      [       class       ] #3 > #10        |class Entity
+#4      [       class       ] #4 > #10        |{
+#5      [       d,d,a       ] #5 > #5         |    #[Attribute1] #[Attribute2] public $id;
+#6      [                   ] #6 > #6         |
+#7      [     function      ] #7 > #9         |    function myFunction(#[Param] $param1, #[Param] $param2)
+#8      [     function      ] #8 > #9         |    {
+#9      [                   ] #9 > #9         |    }
+#10     [                   ] #10 > #10       |}
+#11     [                   ] #11 > #11       |
