@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.2.5 (2023-09-12)
+
+  * **Bugfix:** Fix parsing multiple PHP8 attributes in single line.
+
 ## 5.2.4 (2023-08-17)
 
   * **Bugfix:** Fix annotation attributes on multiple lines.
