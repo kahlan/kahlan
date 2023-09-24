@@ -499,7 +499,7 @@ EOD;
                         'spec'   => $this->commandLine()->get('spec'),
                     ];
 
-                    if (isset($output) && strlen($output) > 0) {
+                    if (isset($output) && mb_strlen($output) > 0) {
                         if (file_exists($output) && !is_writable($output)) {
                             fwrite(STDERR, "Error: please check that file '{$output}' is writable\n");
                         } else {

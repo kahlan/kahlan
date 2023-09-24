@@ -89,7 +89,7 @@ class Istanbul
                                 ],
                                 'end' => [
                                     'line' => $num + 1,
-                                    'column' => strlen($content['body']) + 1
+                                    'column' => mb_strlen($content['body']) + 1
                                 ]
                             ],
                             'loc' => [
@@ -99,7 +99,7 @@ class Istanbul
                                 ],
                                 'end' => [
                                     'line' => $node->lines['stop'] + 1,
-                                    'column' => strlen($tree->lines['content'][$node->lines['stop']]['body']) + 1
+                                    'column' => mb_strlen($tree->lines['content'][$node->lines['stop']]['body']) + 1
                                 ]
                             ]
                         ];
@@ -125,7 +125,7 @@ class Istanbul
                 ],
                 'end' => [
                     'line' => $coverable->lines['stop'] + 1,
-                    'column' => strlen($content['body']) + 1
+                    'column' => mb_strlen($content['body']) + 1
                 ]
             ];
 

@@ -46,7 +46,7 @@ class Dot extends Terminal
     public function start($args)
     {
         parent::start($args);
-        $this->_dotWidth = max($this->_columns - 11 - strlen($this->_total) * 2, 10);
+        $this->_dotWidth = max($this->_columns - 11 - mb_strlen($this->_total) * 2, 10);
         $this->write("\n");
     }
 
@@ -117,7 +117,7 @@ class Dot extends Terminal
         if ($this->_counter % $this->_dotWidth === 0) {
             $counter = min($this->_counter, $this->_total);
             $percent = min(floor(($counter * 100) / $this->_total), 100) . '%';
-            $this->write(str_pad($counter, strlen($this->_total) + 1, ' ', STR_PAD_LEFT));
+            $this->write(str_pad($counter, mb_strlen($this->_total) + 1, ' ', STR_PAD_LEFT));
             $this->write(' / ' . $this->_total);
             $this->write(' (' . str_pad($percent, 4, ' ', STR_PAD_LEFT) . ")\n");
         }

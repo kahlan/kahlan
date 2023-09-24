@@ -83,11 +83,11 @@ EOD;
 
             $i = 0;
             foreach ($this->stream as $value) {
-                $len = strlen($value);
+                $len = mb_strlen($value);
                 expect($value)->toBe(substr($this->code, $i, $len));
                 $i += $len;
             }
-            expect($i)->toBe(strlen($this->code));
+            expect($i)->toBe(mb_strlen($this->code));
 
         });
 

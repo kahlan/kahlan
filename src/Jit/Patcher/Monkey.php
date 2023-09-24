@@ -228,7 +228,7 @@ class Monkey
             return;
         }
         foreach (array_reverse($matches) as $match) {
-            $len = strlen($match[0][0]);
+            $len = mb_strlen($match[0][0]);
             $pos = $match[0][1];
             $name = $match[4][0];
 
@@ -308,7 +308,7 @@ class Monkey
                 $code = &$node->body;
             }
 
-            $len = strlen($code);
+            $len = mb_strlen($code);
             if (preg_match('~.*?=\s*&~', $code)) {
                 return false;
             }

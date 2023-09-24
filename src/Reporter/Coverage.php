@@ -192,12 +192,12 @@ class Coverage extends Terminal
         }
         $metricsReport = $this->_getMetricsReport($metrics->children(), $verbosity, 0, 3, $maxLabelWidth);
         $name = $metrics->name() ?: '\\';
-        $maxLabelWidth = max(strlen($name) + 1, $maxLabelWidth);
+        $maxLabelWidth = max(mb_strlen($name) + 1, $maxLabelWidth);
         $maxLabelWidth += 4;
         $stats = $metrics->data();
         $percent = number_format($stats['percent'], 2);
         $style = $this->_style($percent);
-        $maxLineWidth = strlen($stats['lloc']);
+        $maxLineWidth = mb_strlen($stats['lloc']);
 
         $this->write(str_repeat(' ', $maxLabelWidth));
         $this->write('  ');
@@ -241,12 +241,12 @@ class Coverage extends Terminal
             $style = $this->_style($percent);
 
             $prefix = join('', $this->_prefixes) . ' ';
-            $diff = strlen($prefix) - strlen(mb_convert_encoding($prefix, 'ISO-8859-1'));
+            $diff = mb_strlen($prefix) - mb_strlen(mb_convert_encoding($prefix, 'ISO-8859-1'));
 
             $type = $metrics->type();
             $color = $type === 'function' || $type === 'method' ? 'd' : '';
             $this->write($prefix);
-            $this->write(str_pad($name, $labelWidth + $diff - strlen($prefix)), $color);
+            $this->write(str_pad($name, $labelWidth + $diff - mb_strlen($prefix)), $color);
             $this->write('  ');
             $this->write(str_pad("{$stats['cloc']}", $lineWidth, ' ', STR_PAD_LEFT));
             $this->write(' / ');
@@ -305,7 +305,7 @@ class Coverage extends Terminal
                 $basename = '\\';
             }
 
-            $len = strlen($basename) + ($depth + 1) * $tab;
+            $len = mb_strlen($basename) + ($depth + 1) * $tab;
             if ($len > $maxWidth) {
                 $maxWidth = $len;
             }

@@ -402,7 +402,7 @@ class ClassLoader
                 continue;
             }
             foreach ($dirs as $dir) {
-                $root = $dir . DIRECTORY_SEPARATOR . substr($logicalPath, strlen($prefix));
+                $root = $dir . DIRECTORY_SEPARATOR . substr($logicalPath, mb_strlen($prefix));
 
                 if ($path = $this->_path($root, $forceDir)) {
                     return realpath($path);
@@ -601,7 +601,7 @@ class ClassLoader
             }
         } elseif (!isset($this->_prefixDirsPsr4[$prefix])) {
             // Register directories for a new namespace.
-            $length = strlen($prefix);
+            $length = mb_strlen($prefix);
             if ('\\' !== $prefix[$length - 1]) {
                 throw new InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
             }
@@ -652,7 +652,7 @@ class ClassLoader
         if (!$prefix) {
             $this->_fallbackDirsPsr4 = (array) $paths;
         } else {
-            $length = strlen($prefix);
+            $length = mb_strlen($prefix);
             if ('\\' !== $prefix[$length - 1]) {
                 throw new InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
             }
@@ -809,10 +809,10 @@ class ClassLoader
         $prefix = rtrim(defined('KAHLAN_CWD') ? KAHLAN_CWD : '' ?? '', DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         if ($cachePath && strpos($filePath, $cachePath) === 0) {
-            $filePath = substr($filePath, strlen($cachePath));
+            $filePath = substr($filePath, mb_strlen($cachePath));
         }
         if (strpos($filePath, $prefix) === 0) {
-            $filePath = substr($filePath, strlen($prefix));
+            $filePath = substr($filePath, mb_strlen($prefix));
         }
         return $filePath;
     }

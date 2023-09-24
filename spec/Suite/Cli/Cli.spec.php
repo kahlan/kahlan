@@ -9,9 +9,9 @@ describe("Cli", function () {
 
         beforeAll(function () {
             $this->check = function ($actual, $expected) {
-                expect(strlen($actual))->toBe(strlen($expected));
+                expect(mb_strlen($actual))->toBe(mb_strlen($expected));
 
-                for ($i=0; $i < strlen($actual); $i++) {
+                for ($i=0; $i < mb_strlen($actual); $i++) {
                     $check = (ord($actual[$i]) == ord($expected[$i])) ? true : false;
                     if ($check) {
                         break;

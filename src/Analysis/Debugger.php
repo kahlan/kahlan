@@ -213,7 +213,7 @@ class Debugger
      */
     protected static function _findPos($file, $callLine)
     {
-        $len = strlen($file);
+        $len = mb_strlen($file);
         $line = 1;
         $i = 0;
 

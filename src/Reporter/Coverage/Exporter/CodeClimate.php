@@ -108,7 +108,7 @@ class CodeClimate
             $result[] = [
                 'name'     => $file,
                 'coverage' => json_encode($lines),
-                'blob_id'  => sha1('blob ' . strlen($content) . "\0" . $content)
+                'blob_id'  => sha1('blob ' . mb_strlen($content) . "\0" . $content)
             ];
         }
 

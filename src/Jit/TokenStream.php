@@ -225,12 +225,12 @@ class TokenStream implements ArrayAccess, Countable, SeekableIterator
     {
         $start = $this->_current;
         $result = '';
-        $len = strlen($sequence);
+        $len = mb_strlen($sequence);
         $lastToken = substr($sequence, -1);
 
         while (($content = $this->next($lastToken)) !== null) {
             $result .= $content;
-            if (strlen($result) >= $len && substr_compare($result, $sequence, -$len, $len) === 0) {
+            if (mb_strlen($result) >= $len && substr_compare($result, $sequence, -$len, $len) === 0) {
                 return $result;
             }
         }

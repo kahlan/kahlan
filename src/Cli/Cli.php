@@ -149,7 +149,7 @@ class Cli
 
         if (is_string($options)) {
             $options = explode(';', $options);
-            if (strlen($options[0]) === 1) {
+            if (mb_strlen($options[0]) === 1) {
                 $options = array_pad($options, 3, 'default');
                 $options = array_combine(['style', 'color', 'background'], $options);
             } else {

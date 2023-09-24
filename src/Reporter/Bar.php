@@ -117,7 +117,7 @@ class Bar extends Terminal
         $i = '';
 
         if ($nb < $this->_size) {
-            $i = str_pad($this->_chars['indicator'], $this->_size - strlen($b));
+            $i = str_pad($this->_chars['indicator'], $this->_size - mb_strlen($b));
         }
 
         $p = floor($percent * 100);

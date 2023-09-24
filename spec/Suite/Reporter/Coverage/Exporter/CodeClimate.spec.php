@@ -176,7 +176,7 @@ describe("CodeClimate", function () {
             ]);
 
             $json = file_get_contents($this->output);
-            expect($success)->toBe(strlen($json));
+            expect($success)->toBe(mb_strlen($json));
 
             $actual = json_decode($json, true);
 
