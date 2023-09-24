@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "php": ">=7.2"
+        "php": ">=7.2",
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.4",
@@ -31,7 +32,8 @@
     "scripts": {
         "post-update-cmd": [
             "Kahlan\\Cli\\Kahlan::composerPostUpdate"
-        ]
+        ],
+        "test": "bin/kahlan"
     },
     "bin": ["bin/kahlan"]
 }

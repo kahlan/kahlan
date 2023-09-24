@@ -13,6 +13,14 @@ describe("toHaveLength", function () {
 
         });
 
+        it("passes with accented letters", function () {
+            expect('Olá')->toHaveLength(3);
+        });
+
+        it("passes with multibyte characters, like emojis", function () {
+            expect('Hello 😉')->toHaveLength(7);
+        });
+
         it("passes if [1, 3, 7] has a length of 3", function () {
 
             expect([1, 3, 7])->toHaveLength(3);
