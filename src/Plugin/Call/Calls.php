@@ -50,7 +50,7 @@ class Calls
     {
         $static = false;
         if (preg_match('/^::.*/', $call['name'])) {
-            $call['name'] = substr($call['name'], 2);
+            $call['name'] = mb_substr($call['name'], 2);
             $call['static'] = true;
         }
         if (is_object($reference)) {

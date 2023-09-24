@@ -99,7 +99,7 @@ class Arg
     {
         $not = false;
         if (preg_match('/^not/', $name)) {
-            $matcher = lcfirst(substr($name, 3));
+            $matcher = lcfirst(mb_substr($name, 3));
             $not = true;
         } else {
             $matcher = $name;

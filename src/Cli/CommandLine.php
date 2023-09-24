@@ -119,10 +119,10 @@ class CommandLine
      */
     protected function _parse($arg)
     {
-        $pos = strpos($arg, '=');
+        $pos = mb_strpos($arg, '=');
         if ($pos !== false) {
-            $name = substr($arg, 0, $pos);
-            $value = substr($arg, $pos + 1);
+            $name = mb_substr($arg, 0, $pos);
+            $value = mb_substr($arg, $pos + 1);
         } else {
             $name = $arg;
             $value = true;

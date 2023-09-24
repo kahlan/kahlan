@@ -34,7 +34,7 @@ class ToBeA
      */
     public static function actual($actual)
     {
-        return strtolower(gettype($actual));
+        return mb_strtolower(gettype($actual));
     }
 
     /**
@@ -54,7 +54,7 @@ class ToBeA
         if ($expected === 'float') {
             $expected = 'double';
         }
-        return strtolower($expected);
+        return mb_strtolower($expected);
     }
 
     /**

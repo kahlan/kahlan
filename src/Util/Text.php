@@ -262,7 +262,7 @@ class Text
     {
         $es = ['0', 'x07', 'x08', 't', 'n', 'v', 'f', 'r'];
         $unescaped = '';
-        $chars = str_split($string);
+        $chars = mb_str_split($string);
         foreach ($chars as $char) {
             if ($char === '') {
                 continue;

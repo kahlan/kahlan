@@ -114,7 +114,7 @@ describe("Dir", function () {
 
         it("scans txt files recursively", function () use ($sort) {
 
-            skipIf(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+            skipIf(mb_strtoupper(mb_substr(PHP_OS, 0, 3)) === 'WIN');
 
             $files = Dir::scan($this->path, [
                 'include' => '*.txt',
@@ -133,7 +133,7 @@ describe("Dir", function () {
 
         it("scans non nested txt files recursively", function () use ($sort) {
 
-            skipIf(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+            skipIf(mb_strtoupper(mb_substr(PHP_OS, 0, 3)) === 'WIN');
 
             $files = Dir::scan($this->path, [
                 'include' => '*.txt',
@@ -262,7 +262,7 @@ describe("Dir", function () {
 
         it("creates a nested directory", function () {
 
-            skipIf(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+            skipIf(mb_strtoupper(mb_substr(PHP_OS, 0, 3)) === 'WIN');
 
             $path = $this->tmpDir . '/My/Nested/Directory';
             $actual = Dir::make($path);

@@ -239,11 +239,11 @@ class Monkey
             $isClass = $isStaticCall || $isInstance;
             $method = trim($match[5][0]) ? $match[5][0] : 'null';
 
-            if (!isset(static::$_blacklist[ltrim(strtolower($name), '\\')]) && ($isClass || $nextChar === '(')) {
+            if (!isset(static::$_blacklist[ltrim(mb_strtolower($name), '\\')]) && ($isClass || $nextChar === '(')) {
                 $tokens = explode('\\', $name, 2);
 
                 if ($name[0] === '\\') {
-                    $name = substr($name, 1);
+                    $name = mb_substr($name, 1);
                     $args = $isClass ? "null, '{$name}', {$method}" : "null , null, '{$name}'";
                 } elseif (isset($this->_uses[$tokens[0]])) {
                     $ns = $this->_uses[$tokens[0]];
@@ -344,6 +344,6 @@ class Monkey
         if (!func_num_args()) {
             return array_keys(static::$_blacklist);
         }
-        return isset(static::$_blacklist[strtolower($name)]);
+        return isset(static::$_blacklist[mb_strtolower($name)]);
     }
 }

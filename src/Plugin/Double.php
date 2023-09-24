@@ -149,9 +149,9 @@ class Double
 
         $class = $options['class'];
         $namespace = '';
-        if (($pos = strrpos($class, '\\')) !== false) {
-            $namespace = substr($class, 0, $pos);
-            $class = substr($class, $pos + 1);
+        if (($pos = mb_strrpos($class, '\\')) !== false) {
+            $namespace = mb_substr($class, 0, $pos);
+            $class = mb_substr($class, $pos + 1);
         }
 
         if ($namespace) {
@@ -292,7 +292,7 @@ EOT;
                 }
                 if (preg_match('/^&?::.*/', $name)) {
                     $static = 'static ';
-                    $name = substr($name, 2);
+                    $name = mb_substr($name, 2);
                 }
                 $result[$name] = "public {$static}function {$name}() {{$return}}";
             }

@@ -92,10 +92,10 @@ class Stub
             return $reference;
         }
 
-        $pos = strrpos($reference, '\\');
+        $pos = mb_strrpos($reference, '\\');
         if ($pos !== false) {
-            $namespace = substr($reference, 0, $pos);
-            $basename = substr($reference, $pos + 1);
+            $namespace = mb_substr($reference, 0, $pos);
+            $basename = mb_substr($reference, $pos + 1);
         } else {
             $namespace = null;
             $basename = $reference;

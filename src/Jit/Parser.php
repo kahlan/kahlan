@@ -146,7 +146,7 @@ class Parser
                     $this->_stringNode('');
                     break;
                 case T_START_HEREDOC:
-                    $name = trim(substr($token[1], 3, -1), "'");
+                    $name = trim(mb_substr($token[1], 3, -1), "'");
                     $this->_stringNode("\n" . $name, true);
                     break;
                 case '"':
@@ -308,7 +308,7 @@ class Parser
                     break;
                 case $this->_T_NAME_FULLY_QUALIFIED:
                 case $this->_T_NAME_QUALIFIED:
-                    $last = substr($token[1], strrpos($token[1], '\\') + 1);
+                    $last = mb_substr($token[1], mb_strrpos($token[1], '\\') + 1);
                     $use = $token[1];
                     break;
                 case T_STRING:
@@ -341,9 +341,9 @@ class Parser
         $body = $this->_stream->current() . $this->_stream->next([';', '{']);
 
         if (preg_match('~ticks~i', $body, $matches)) {
-            $isBlock = substr($body, -1) === '{';
+            $isBlock = mb_substr($body, -1) === '{';
             if ($isBlock) {
-                $body = substr($body, 0, -1);
+                $body = mb_substr($body, 0, -1);
             }
             $node = new NodeDef($body, 'declare');
             $this->_contextualize($node);
@@ -374,7 +374,7 @@ class Parser
         $this->_states['body'] .= $body;
         $node = new BlockDef($body . $name, 'namespace');
         $node->hasMethods = false;
-        $node->name = trim(substr($name, 0, -1));
+        $node->name = trim(mb_substr($name, 0, -1));
         $this->_states['current'] = $this->_root;
         $this->_contextualize($node);
         return $this->_states['current'] = $node->namespace = $node;
@@ -431,7 +431,7 @@ class Parser
      */
     protected function _classNode()
     {
-        if (substr($this->_states['body'], -2) === '::') { // Bails out on `::class`
+        if (mb_substr($this->_states['body'], -2) === '::') { // Bails out on `::class`
             $this->_states['body'] .= 'class';
             return;
         }
@@ -458,7 +458,7 @@ class Parser
             }
         } elseif ($token[0] === T_IMPLEMENTS) {
             $body .= $implements = $this->_stream->next('{');
-            $implements = substr($implements, 0, -1);
+            $implements = mb_substr($implements, 0, -1);
         }
         $node = new BlockDef($body, 'class');
         $node->name = $name;
@@ -520,7 +520,7 @@ class Parser
         $parent = $this->_states['current'];
 
         $body = $token[1];
-        $name = substr($this->_stream->next('('), 0, -1);
+        $name = mb_substr($this->_stream->next('('), 0, -1);
         $body .= $name;
         $node->name = trim($name);
         $args = $this->_parseArgs();

@@ -73,7 +73,7 @@ class Message
         $name = $config['name'];
         if (preg_match('/^::.*/', $name)) {
             $static = true;
-            $name = substr($name, 2);
+            $name = mb_substr($name, 2);
         }
 
         $this->_parent = $config['parent'];
@@ -118,7 +118,7 @@ class Message
     {
         if (preg_match('/^::.*/', $call['name'])) {
             $call['static'] = true;
-            $call['name'] = substr($call['name'], 2);
+            $call['name'] = mb_substr($call['name'], 2);
         }
 
         if (isset($call['static'])) {

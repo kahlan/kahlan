@@ -115,7 +115,7 @@ class Collector
             'followSymlinks' => true,
             'recursive'      => true,
             'base'           => getcwd(),
-            'hasVolume'      => stripos(PHP_OS, 'WIN') === 0
+            'hasVolume'      => mb_stripos(PHP_OS, 'WIN') === 0
         ];
         $config += $defaults;
 
@@ -311,7 +311,7 @@ class Collector
             return $file;
         }
         $file = ltrim($file, DS);
-        $pos = strpos($file, DS);
+        $pos = mb_strpos($file, DS);
         if ($pos !== false) {
             $file = substr_replace($file, ':' . DS, $pos, 1);
         }

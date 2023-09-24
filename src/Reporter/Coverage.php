@@ -299,8 +299,8 @@ class Coverage extends Terminal
             $name = $child->name();
 
             if ($name !== '\\') {
-                $pos = strrpos($name, '\\', $type === 'namespace' ? - 2 : 0);
-                $basename = substr($name, $pos !== false ? $pos + 1 : 0);
+                $pos = mb_strrpos($name, '\\', $type === 'namespace' ? - 2 : 0);
+                $basename = mb_substr($name, $pos !== false ? $pos + 1 : 0);
             } else {
                 $basename = '\\';
             }

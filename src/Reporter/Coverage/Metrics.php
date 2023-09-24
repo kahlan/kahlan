@@ -165,8 +165,8 @@ class Metrics
                 ]);
             }
             uksort($current->_children, function ($a, $b) {
-                $isFunction1 = substr($a, -2) === '()';
-                $isFunction2 = substr($b, -2) === '()';
+                $isFunction1 = mb_substr($a, -2) === '()';
+                $isFunction2 = mb_substr($b, -2) === '()';
                 if ($isFunction1 === $isFunction2) {
                     return strcmp($a, $b);
                 }
@@ -235,14 +235,14 @@ class Metrics
             $result[] = [$name, 'namespace'];
         }
 
-        if (strpos($last, '::') !== false) {
+        if (mb_strpos($last, '::') !== false) {
             [$name, $subname] = explode('::', $last, 2);
             $result[] = [$name, 'class'];
             $result[] = [$subname, 'method'];
         } elseif (preg_match('~\(\)$~', $last)) {
             $result[] = [$last, 'function'];
         } else {
-            $result[] = [$last, substr($last, -1) === '\\' ? 'namespace' : 'class'];
+            $result[] = [$last, mb_substr($last, -1) === '\\' ? 'namespace' : 'class'];
         }
         return $result;
     }

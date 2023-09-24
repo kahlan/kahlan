@@ -107,7 +107,7 @@ class Filters
         } else {
             $value = $context;
         }
-        if (strpos($value, '|') !== false) {
+        if (mb_strpos($value, '|') !== false) {
             [$ref, $num] = explode('|', $value);
             if (!isset(static::$_filters[$ref][$num])) {
                 throw new Exception("Unexisting `'{$value}'` filter id.");

@@ -34,7 +34,7 @@ class Xdebug
         if (version_compare('3.0.0', phpversion('xdebug')) === -1) {
             $xdebugMode = getenv('XDEBUG_MODE') ?: ini_get('xdebug.mode');
 
-            if (! $xdebugMode || strpos($xdebugMode, 'coverage') === false) {
+            if (! $xdebugMode || mb_strpos($xdebugMode, 'coverage') === false) {
                 throw new RuntimeException('You need to set either `xdebug.mode=coverage` in your php.ini or the `XDEBUG_MODE=coverage` env variable.');
             }
         } else {

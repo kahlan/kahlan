@@ -411,7 +411,7 @@ EOD;
         $indent = str_repeat($this->_indentValue, $this->indent()) . $this->prefix();
 
         if ($newLine = ($string && $string[mb_strlen($string) - 1] === "\n")) {
-            $string = substr($string, 0, -1);
+            $string = mb_substr($string, 0, -1);
         }
 
         $string = str_replace("\n", "\n" . $indent, $string) . ($newLine ? "\n" : '');

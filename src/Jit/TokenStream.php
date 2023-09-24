@@ -226,7 +226,7 @@ class TokenStream implements ArrayAccess, Countable, SeekableIterator
         $start = $this->_current;
         $result = '';
         $len = mb_strlen($sequence);
-        $lastToken = substr($sequence, -1);
+        $lastToken = mb_substr($sequence, -1);
 
         while (($content = $this->next($lastToken)) !== null) {
             $result .= $content;
