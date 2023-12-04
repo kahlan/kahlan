@@ -52,4 +52,16 @@ describe("Group", function () {
 
     });
 
+    describe("->withEach", function () {
+
+        it("adds spec for each case", function () {
+
+            $this->group->withEach([[1], [2], [3]])->it("it", function () {});
+
+            expect($this->group->children())->toHaveLength(3);
+
+        });
+
+    });
+
 });

@@ -2,6 +2,7 @@
 namespace Kahlan\Block;
 
 use Kahlan\Block;
+use Kahlan\Block\Builder\CasesBuilder;
 use Closure;
 use Exception;
 use Throwable;
@@ -254,6 +255,19 @@ class Group extends Block
         $this->_children[] = $spec;
 
         return $this;
+    }
+
+    /**
+     * Add multiple specs using the given test cases.
+     *
+     * @param  iterable<array-key, array> $cases   The test cases.
+     * @param  integer|null               $timeout The timeout value.
+     * @param  string                     $type    The type.
+     * @return CasesBuilder
+     */
+    public function withEach($cases, $timeout = null, $type = 'normal')
+    {
+        return new CasesBuilder($this, $cases, $timeout, $type);
     }
 
     /**
