@@ -203,7 +203,7 @@ EOT;
             '__unset'        =>  "public function __unset(\$key) { unset(\$this->{\$key}); }",
             '__sleep'        =>  "public function __sleep() { return []; }",
             '__wakeup'       =>  "public function __wakeup() {}",
-            '__toString'     =>  "public function __toString() { return get_class(); }",
+            '__toString'     =>  "public function __toString() { return get_class(\$this); }",
             '__invoke'       =>  "public function __invoke() {}",
             '__set_state'     =>  "public static function __set_state(\$properties) {}",
             '__clone'        =>  "public function __clone() {}"
