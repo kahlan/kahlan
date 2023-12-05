@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.2.6 (2023-12-06)
+
+  * **Bugfix:** Fix `get_class()` missing `$this` arg on php 8.3
+
 ## 5.2.5 (2023-09-12)
 
   * **Bugfix:** Fix parsing multiple PHP8 attributes in single line.
