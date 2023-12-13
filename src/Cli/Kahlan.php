@@ -730,6 +730,19 @@ namespace {
         } else {
             $exit('it');
         }
+        if (!function_exists('withEach')) {
+            /**
+             * @param iterable<array-key, array> $cases
+             *
+             * @return CasesBuilder
+             */
+            function withEach($cases, $timeout = null, $type = 'normal')
+            {
+                return Suite::current()->withEach($cases, $timeout, $type);
+            }
+        } else {
+            $exit('withEach');
+        }
         if (!function_exists('fdescribe')) {
             function fdescribe($message, $closure, $timeout = null)
             {
@@ -754,6 +767,19 @@ namespace {
         } else {
             $exit('fit');
         }
+        if (!function_exists('fwithEach')) {
+            /**
+             * @param iterable<array-key, array> $cases
+             *
+             * @return CasesBuilder
+             */
+            function fwithEach($cases, $timeout = null)
+            {
+                return withEach($cases, $timeout, 'focus');
+            }
+        } else {
+            $exit('fwithEach');
+        }
         if (!function_exists('xdescribe')) {
             function xdescribe($message, $closure, $timeout = null)
             {
@@ -777,6 +803,19 @@ namespace {
             }
         } else {
             $exit('xit');
+        }
+        if (!function_exists('xwithEach')) {
+            /**
+             * @param iterable<array-key, array> $cases
+             *
+             * @return CasesBuilder
+             */
+            function xwithEach($cases, $timeout = null)
+            {
+                return withEach($cases, $timeout, 'exclude');
+            }
+        } else {
+            $exit('xwithEach');
         }
         if (!function_exists('waitsFor')) {
             function waitsFor($actual, $timeout = 60)

@@ -48,6 +48,16 @@ function it($message, $closure = null, $timeout = null, $type = 'normal')
     return Suite::current()->it($message, $closure, $timeout, $type);
 }
 
+/**
+ * @param iterable<array-key, array> $cases
+ *
+ * @return CasesBuilder
+ */
+function withEach($cases, $timeout = null, $type = 'normal')
+{
+    return Suite::current()->withEach($cases, $timeout, $type);
+}
+
 function fdescribe($message, $closure, $timeout = null)
 {
     return describe($message, $closure, $timeout, 'focus');
@@ -63,6 +73,16 @@ function fit($message, $closure = null, $timeout = null)
     return it($message, $closure, $timeout, 'focus');
 }
 
+/**
+ * @param iterable<array-key, array> $cases
+ *
+ * @return CasesBuilder
+ */
+function fwithEach($cases, $timeout = null)
+{
+    return withEach($cases, $timeout, 'focus');
+}
+
 function xdescribe($message, $closure, $timeout = null)
 {
     return describe($message, $closure, $timeout, 'exclude');
@@ -76,6 +96,16 @@ function xcontext($message, $closure, $timeout = null)
 function xit($message, $closure = null, $timeout = null)
 {
     return it($message, $closure, $timeout, 'exclude');
+}
+
+/**
+ * @param iterable<array-key, array> $cases
+ *
+ * @return CasesBuilder
+ */
+function xwithEach($cases, $timeout = null)
+{
+    return withEach($cases, $timeout, 'exclude');
 }
 
 function waitsFor($actual, $timeout = null)
