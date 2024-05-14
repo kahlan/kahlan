@@ -633,7 +633,7 @@ describe("Allow", function () {
         })->toThrow(new Exception("You must to call `toReceive()/toBeCalled()` before defining a return value."));
 
         expect(function () {
-            allow('time')->andRun(function (){});
+            allow('time')->andRun(function () {});
         })->toThrow(new Exception("You must to call `toReceive()/toBeCalled()` before defining a return value."));
 
     });
