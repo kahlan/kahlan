@@ -209,7 +209,7 @@ describe("Text", function () {
 
         it("exports a Closure", function () {
 
-            $dump = Text::toString(function (){});
+            $dump = Text::toString(function () {});
             $this->expect($dump)->toBe("`Closure`");
 
         });
