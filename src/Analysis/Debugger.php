@@ -99,7 +99,7 @@ class Debugger
         foreach ($backtrace as $i => $trace) {
             $trace += $traceDefaults;
             if (strpos($trace['function'], 'Closure$') === 0 ||
-                strpos($trace['function'], '{closure}') !== false ||
+                strpos($trace['function'], '{closure') !== false ||
                 in_array($trace['function'], $ignoreFunctions)) {
                 continue;
             }
