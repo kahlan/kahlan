@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.2.7 (2024-06-15)
+
+  * **Enhancement:** Adjust pretty name of closures on PHP 8.4
+
 ## 5.2.6 (2023-12-06)
 
   * **Bugfix:** Fix `get_class()` missing `$this` arg on php 8.3
