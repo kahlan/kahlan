@@ -1,0 +1,7 @@
+/.github/ export-ignore
+/spec/ export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/kahlan-config-github-action.php export-ignore
+/phpcs.xml export-ignore
+/rector.php export-ignore
