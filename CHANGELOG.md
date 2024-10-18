@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 5.2.8 (2024-10-19)
+
+  * **Bugfix:** Fix installation on system without ext-zip
+
 ## 5.2.7 (2024-06-15)
 
   * **Enhancement:** Adjust pretty name of closures on PHP 8.4
