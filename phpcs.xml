@@ -8,6 +8,7 @@
     <rule ref="PSR2">
         <exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
         <exclude name="Generic.Files.LineLength.TooLong"/>
+        <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
         <exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
         <exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
         <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
