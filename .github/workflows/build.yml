@@ -9,31 +9,40 @@ on:
 
 jobs:
   build:
-    name: PHP ${{ matrix.php-versions }}
-    runs-on: ubuntu-latest
+    name: PHP ${{ matrix.php-version }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
     steps:
       - name: Setup PHP Action
         uses: shivammathur/setup-php@v2
         with:
           extensions: intl
-          php-version: "${{ matrix.php-versions }}"
+          php-version: ${{ matrix.php-version }}
           coverage: xdebug
+
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: "Install dependencies"
-        run: "composer install --no-interaction"
-      - name: "CS Check"
-        run: "vendor/bin/phpcs"
-      - name: "Rector Check"
-        run: "vendor/bin/rector --dry-run"
-      - name: "Run test suite"
-        run: "bin/kahlan --config=kahlan-config-github-action.php --clover=clover.xml"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: composer install --no-interaction
+
+      - name: Code Style check
+        run: vendor/bin/phpcs
+
+      - name: Rector check
+        run: vendor/bin/rector --dry-run
+
+      - name: Run test suite
+        run: bin/kahlan --config=kahlan-config-github-action.php --clover=clover.xml
+
       - name: Upload coverage to Codecov
-        if: matrix.php-versions == '7.4' && github.event.pull_request.head.repo.full_name == 'kahlan/kahlan'
+        if: matrix.php-versions >= '7.4' && github.event.pull_request.head.repo.full_name == 'kahlan/kahlan'
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
