@@ -36,7 +36,8 @@ jobs:
         run: vendor/bin/phpcs
 
       - name: Rector check
-        run: "vendor/bin/rector --dry-run"
+        shell: bash
+        run: vendor/bin/rector --dry-run
 
       - name: Run test suite
         run: bin/kahlan --config=kahlan-config-github-action.php --clover=clover.xml
