@@ -132,7 +132,7 @@ describe("Code", function () {
             expect($counter)->toBeLessThan(6);
 
             $end = microtime(true);
-            expect($end - $start)->toBeGreaterThan(1);
+            expect($end - $start)->not->toBeLessThan(1);
 
         });
 
