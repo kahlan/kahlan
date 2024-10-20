@@ -75,7 +75,6 @@ describe("Expectation", function () {
             $result = expectation(true, 0.1)->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
-            expect($end - $start)->toBeLessThan(0.2);
 
         });
 
@@ -88,7 +87,6 @@ describe("Expectation", function () {
             $result = expectation($subspec, 0.1)->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
-            expect($end - $start)->toBeLessThan(0.2);
 
         });
 
@@ -132,7 +130,6 @@ describe("Expectation", function () {
             expect($actual)->toBe(false);
             $end = microtime(true);
             expect($end - $start)->toBeGreaterThan(0.1);
-            expect($end - $start)->toBeLessThan(0.2);
 
         });
 

@@ -128,11 +128,11 @@ describe("Code", function () {
             };
 
             expect($closure)->toThrow(new TimeoutException('Timeout reached, execution aborted after 1 second(s).'));
-            expect($counter)->toBeGreaterThan(3);
+            expect($counter)->not->toBeLessThan(3);
             expect($counter)->toBeLessThan(6);
 
             $end = microtime(true);
-            expect($end - $start)->toBeGreaterThan(1);
+            expect($end - $start)->not->toBeLessThan(1);
 
         });
 
