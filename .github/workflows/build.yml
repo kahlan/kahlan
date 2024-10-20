@@ -44,7 +44,7 @@ jobs:
         run: bin/kahlan --config=kahlan-config-github-action.php --clover=clover.xml
 
       - name: Upload coverage to Codecov
-        if: matrix.php-versions >= '7.4' && github.event.pull_request.head.repo.full_name == 'kahlan/kahlan'
+        if: matrix.php-versions == '7.4' && matrix.os == 'ubuntu-latest' && github.event.pull_request.head.repo.full_name == 'kahlan/kahlan'
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
