@@ -125,9 +125,7 @@ class Method extends Message
         } else {
             $this->_return = $this->_returns ? end($this->_returns) : null;
         }
-        return function () {
-            return $this->_return;
-        };
+        return fn() => $this->_return;
     }
 
     /**

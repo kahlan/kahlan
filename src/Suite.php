@@ -236,9 +236,7 @@ class Suite
      */
     public function runBlock($block, $closure, $type)
     {
-        return Filters::run($this, 'runBlock', [$block, $closure, $type], function ($next, $block, $closure, $type) {
-            return call_user_func_array($closure, []);
-        });
+        return Filters::run($this, 'runBlock', [$block, $closure, $type], fn($next, $block, $closure, $type) => call_user_func_array($closure, []));
     }
 
     /**

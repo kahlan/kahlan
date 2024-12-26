@@ -207,7 +207,7 @@ class ClassLoader
     public function allowed($class)
     {
         foreach ($this->_exclude as $namespace) {
-            if (strpos($class, $namespace) === 0) {
+            if (strpos($class, (string) $namespace) === 0) {
                 return false;
             }
         }
@@ -215,7 +215,7 @@ class ClassLoader
             return true;
         }
         foreach ($this->_include as $namespace) {
-            if (strpos($class, $namespace) === 0) {
+            if (strpos($class, (string) $namespace) === 0) {
                 return true;
             }
         }
@@ -398,7 +398,7 @@ class ClassLoader
         $logicalPath = trim(strtr($namespace, '\\', DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
         foreach ($paths as $prefix => $dirs) {
-            if (strpos($namespace, $prefix) !== 0) {
+            if (strpos($namespace, (string) $prefix) !== 0) {
                 continue;
             }
             foreach ($dirs as $dir) {
@@ -825,7 +825,7 @@ class ClassLoader
         $first = $class[0];
         if (isset($this->_prefixLengthsPsr4[$first])) {
             foreach ($this->_prefixLengthsPsr4[$first] as $prefix => $length) {
-                if (0 === strpos($class, $prefix)) {
+                if (0 === strpos($class, (string) $prefix)) {
                     foreach ($this->_prefixDirsPsr4[$prefix] as $dir) {
                         if (file_exists($file = $dir . DIRECTORY_SEPARATOR . substr($logicalPathPsr4, $length))) {
                             return $file;
@@ -854,7 +854,7 @@ class ClassLoader
 
         if (isset($this->_prefixesPsr0[$first])) {
             foreach ($this->_prefixesPsr0[$first] as $prefix => $dirs) {
-                if (0 === strpos($class, $prefix)) {
+                if (0 === strpos($class, (string) $prefix)) {
                     foreach ($dirs as $dir) {
                         if (file_exists($file = $dir . DIRECTORY_SEPARATOR . $logicalPathPsr0)) {
                             return $file;

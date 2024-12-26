@@ -37,7 +37,7 @@ class ToHaveLength
     {
         if (is_string($actual)) {
             return strlen($actual);
-        } elseif (is_array($actual) || $actual instanceof Countable) {
+        } elseif (is_countable($actual)) {
             return count($actual);
         }
     }

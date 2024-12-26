@@ -27,7 +27,7 @@ See the [full documentation here](https://kahlan.github.io/docs)
 
 ## Requirements
 
- * PHP 7.2+
+ * PHP 7.4+
  * Composer
  * [phpdbg](http://php.net/manual/en/debugger-about.php) or [Xdebug](http://xdebug.org/) (only required for code coverage analysis)
 

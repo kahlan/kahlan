@@ -63,8 +63,6 @@ describe("Parser", function () {
 
         it("parses arrow functions", function () {
 
-            skipIf(PHP_VERSION_ID < 70400);
-
             $sample = file_get_contents('spec/Fixture/Jit/Parser/ArrowFunction.php');
             $root = Parser::parse($sample);
             foreach ($root->tree as $node) {
@@ -88,8 +86,6 @@ describe("Parser", function () {
         });
 
         it("parses arrow functions", function () {
-
-            skipIf(PHP_VERSION_ID < 70400);
 
             $filename = 'spec/Fixture/Jit/Parser/ArrowFunction';
             $content = file_get_contents($filename . '.php');

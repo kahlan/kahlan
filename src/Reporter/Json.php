@@ -39,9 +39,7 @@ class Json extends Terminal
      */
     public function end($summary)
     {
-        $toString = function ($instance) {
-            return 'an instance of `' . get_class($instance) . '`';
-        };
+        $toString = (fn($instance) => 'an instance of `' . get_class($instance) . '`');
 
         foreach ($summary->logs() as $log) {
             if ($log->passed()) {
