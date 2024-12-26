@@ -364,9 +364,7 @@ EOD;
                 $this->write("{$key}:\n", 'yellow');
             }
             $type = gettype($value);
-            $toString = function ($instance) {
-                return 'an instance of `' . get_class($instance) . '`';
-            };
+            $toString = (fn($instance) => 'an instance of `' . get_class($instance) . '`');
             $this->write("({$type}) " . Text::toString($value, ['object' => ['method' => $toString]]));
             $this->prefix('');
             $this->write("\n");

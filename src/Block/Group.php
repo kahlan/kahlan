@@ -215,7 +215,7 @@ class Group extends Block
     {
         $suite = $this->suite();
         $parent = $this;
-        $timeout = $timeout ?? $this->timeout();
+        $timeout ??= $this->timeout();
         $group = new Group(compact('message', 'closure', 'suite', 'parent', 'timeout', 'type'));
 
         return $this->_children[] = $group;
@@ -249,7 +249,7 @@ class Group extends Block
     {
         $suite = $this->suite();
         $parent = $this;
-        $timeout = $timeout ?? $this->timeout();
+        $timeout ??= $this->timeout();
         $spec = new Specification(compact('message', 'closure', 'suite', 'parent', 'timeout', 'type'));
         $this->_children[] = $spec;
 
