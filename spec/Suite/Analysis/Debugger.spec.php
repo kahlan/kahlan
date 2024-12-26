@@ -161,7 +161,7 @@ describe("Debugger", function () {
             expect(Debugger::errorType(E_USER_ERROR))->toBe('E_USER_ERROR');
             expect(Debugger::errorType(E_USER_WARNING))->toBe('E_USER_WARNING');
             expect(Debugger::errorType(E_USER_NOTICE))->toBe('E_USER_NOTICE');
-            expect(Debugger::errorType(E_STRICT))->toBe('E_STRICT');
+            expect(Debugger::errorType(2048))->toBe('E_STRICT');
             expect(Debugger::errorType(E_RECOVERABLE_ERROR))->toBe('E_RECOVERABLE_ERROR');
             expect(Debugger::errorType(E_DEPRECATED))->toBe('E_DEPRECATED');
             expect(Debugger::errorType(E_USER_DEPRECATED))->toBe('E_USER_DEPRECATED');
