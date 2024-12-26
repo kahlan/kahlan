@@ -53,9 +53,7 @@ class Quit
 
         foreach ($parent->tree as $node) {
             if ($node->processable && $node->type === 'code') {
-                $node->body = preg_replace_callback($regex, function ($matches) {
-                    return $matches[1] . '\Kahlan\Plugin\Quit::quit' . ($matches[3] === '(' ? '(' : '();');
-                }, $node->body);
+                $node->body = preg_replace_callback($regex, fn($matches) => $matches[1] . '\Kahlan\Plugin\Quit::quit' . ($matches[3] === '(' ? '(' : '();'), $node->body);
             }
             if (!empty($node->tree)) {
                 $this->_processTree($node);

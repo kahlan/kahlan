@@ -15,7 +15,7 @@ class ToContain
     public static function match($actual, $expected)
     {
         if (is_string($actual)) {
-            return strpos($actual, $expected) !== false;
+            return strpos($actual, (string) $expected) !== false;
         } elseif (is_iterable($actual)) {
             foreach ($actual as $key => $value) {
                 if ($value === $expected) {

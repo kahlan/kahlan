@@ -56,9 +56,7 @@ class Tap extends Terminal
                 if ($log->passed()) {
                     continue;
                 }
-                $toString = function ($instance) {
-                    return 'an instance of `' . get_class($instance) . '`';
-                };
+                $toString = (fn($instance) => 'an instance of `' . get_class($instance) . '`');
                 foreach ($log->data() as $key => $value) {
                     $key = ucfirst($key);
                     $value = Text::toString($value, ['object' => ['method' => $toString]]);
