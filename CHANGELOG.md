@@ -2,6 +2,12 @@
 
 ## Last changes
 
+## 6.0.0 (2024-12-26)
+
+  * **Enhancement:** Add OS matrix to the CI build
+  * **Enhancement:** Bump requirement to php 7.4
+  * **Enhancement:** Add PHP 8.4 support
+
 ## 5.2.8 (2024-10-19)
 
   * **Bugfix:** Fix installation on system without ext-zip
