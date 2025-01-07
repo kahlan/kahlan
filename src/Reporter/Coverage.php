@@ -341,7 +341,7 @@ class Coverage extends Terminal
             }
 
             for ($i = $start; $i <= $stop; $i++) {
-                $value = $coverage[$i] ?? null;
+                $value = $coverage[$i] ?? '';
                 $line = str_pad($i + 1, 6, ' ', STR_PAD_LEFT);
                 $line .= ':' . str_pad($value, 6, ' ');
                 $line .= $lines[$i];
