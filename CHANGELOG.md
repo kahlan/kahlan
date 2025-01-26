@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 6.0.1 (2025-01-27)
+
+  * **Bugfix:** Fix deprecation warning in Coverage
+
 ## 6.0.0 (2024-12-26)
 
   * **Enhancement:** Add OS matrix to the CI build
