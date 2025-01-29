@@ -406,8 +406,6 @@ EOD;
      */
     public function write($string, $options = null)
     {
-        // normalize line endings
-        $string = str_replace("\r\n", "\n", $string);
         $indent = str_repeat($this->_indentValue, $this->indent()) . $this->prefix();
 
         if ($newLine = ($string && $string[strlen($string) - 1] === "\n")) {
