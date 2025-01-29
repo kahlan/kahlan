@@ -320,7 +320,7 @@ To add additional values, just repeat the same option many times in the command 
 
 
 EOD;
-            $terminal->write($help);
+            $terminal->write(str_replace("\r\n", "\n", $help));
             QuitStatement::quit();
         }
 
