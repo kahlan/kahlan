@@ -658,7 +658,7 @@ describe("ClassLoader", function () {
             expect($this->loader->prefixes())->toBe([
                 'Kahlan\\' => ['src'],
                 'Kahlan\\Spec\\' => ['spec'],
-                'Psr0' => ['psr0/Psr0']
+                'Psr0' => ['psr0' . DS .'Psr0']
             ]);
 
         });

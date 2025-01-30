@@ -106,8 +106,8 @@ class Terminal extends Reporter
         $this->colors($config['colors']);
 
         if (!$this->colors() && getenv('ComSpec')) {
-            $this->_symbols['ok'] = "\xFB";
-            $this->_symbols['err'] = "\x78";
+            $this->_symbols['ok'] = "\xE2\x9C\x93";
+            $this->_symbols['err'] = "\xE2\x9C\x96";
             $this->_symbols['dot'] = '.';
         }
 
