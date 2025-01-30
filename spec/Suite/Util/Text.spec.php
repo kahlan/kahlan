@@ -153,6 +153,14 @@ describe("Text", function () {
 
     describe("::toString()", function () {
 
+        beforeAll(function () {
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                define('DIRECTORY_SEPARATOR_FOR_REGEX', '\\\\');
+            } else {
+                define('DIRECTORY_SEPARATOR_FOR_REGEX', DS);
+            }
+        });
+
         it("exports an empty array", function () {
 
             $dump = Text::toString([]);
@@ -188,22 +196,21 @@ describe("Text", function () {
         });
 
         it("exports an Exception", function () {
-
             $dump = Text::toString(new Exception());
-            $this->expect($dump)->toMatch("~`Exception` Code\(0\) with no message in .*?" . DS . "Text.spec.php.*?$~");
+            $this->expect($dump)->toMatch("~`Exception` Code\(0\) with no message in .*?" . DIRECTORY_SEPARATOR_FOR_REGEX . "Text.spec.php.*?$~");
 
             $dump = Text::toString(new Exception('error', 500));
-            $this->expect($dump)->toMatch("~`Exception` Code\(500\) with message \"error\" in .*?" . DS . "Text.spec.php.*?$~");
+            $this->expect($dump)->toMatch("~`Exception` Code\(500\) with message \"error\" in .*?" . DIRECTORY_SEPARATOR_FOR_REGEX . "Text.spec.php.*?$~");
 
         });
 
         it("exports an Error exception", function () {
 
             $dump = Text::toString(new Error());
-            $this->expect($dump)->toMatch("~`Error` Code\(0\) with no message in .*?" . DS . "Text.spec.php.*?$~");
+            $this->expect($dump)->toMatch("~`Error` Code\(0\) with no message in .*?" . DIRECTORY_SEPARATOR_FOR_REGEX . "Text.spec.php.*?$~");
 
             $dump = Text::toString(new Error('error', 500));
-            $this->expect($dump)->toMatch("~`Error` Code\(500\) with message \"error\" in .*?" . DS . "Text.spec.php.*?$~");
+            $this->expect($dump)->toMatch("~`Error` Code\(500\) with message \"error\" in .*?" . DIRECTORY_SEPARATOR_FOR_REGEX . "Text.spec.php.*?$~");
 
         });
 
