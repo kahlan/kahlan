@@ -129,6 +129,9 @@ EOD;
             };
 
             Quit::disable();
+
+            $expected = str_replace("\r\n", "\n", $expected);
+
             expect($closure)->toEcho($expected);
 
         });
@@ -209,6 +212,9 @@ EOD;
             };
 
             Quit::disable();
+
+            $help = str_replace("\r\n", "\n", $help);
+
             expect($closure)->toEcho($help);
 
         });
@@ -235,6 +241,9 @@ EOD;
             };
 
             Quit::disable();
+
+            $message = str_replace("\r\n", "\n", $message);
+
             expect($closure)->toEcho($message);
 
         });
@@ -265,6 +274,9 @@ EOD;
             };
 
             Quit::disable();
+
+            $message = str_replace("\r\n", "\n", $message);
+
             expect($closure)->toEcho($message);
 
         });

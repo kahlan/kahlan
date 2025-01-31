@@ -33,8 +33,9 @@ describe("Tree", function () {
             $tree->start(['total' => 0]);
 
             fseek($this->file, 0);
-            $expected = stream_get_contents($this->file);
-            expect($expected)->toBe(sprintf(file_get_contents('spec/Fixture/Reporter/Console/start.txt'), $this->srcDir, $this->specDir));
+            $actual = str_replace("\r\n", "\n", stream_get_contents($this->file));
+            $expected = sprintf(file_get_contents('spec/Fixture/Reporter/Console/start.txt'), $this->srcDir, $this->specDir);
+            expect($actual)->toBe($expected);
         });
     });
 
