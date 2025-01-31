@@ -617,6 +617,7 @@ EOD;
         it("generates interface methods with union types", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -830,6 +831,7 @@ EOD;
         it("stubs an interface with `self` return type hints", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $result = Double::generate([
                 'class' => 'Kahlan\Spec\Plugin\Double\Double',

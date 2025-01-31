@@ -22,6 +22,8 @@ describe("Lcov", function () {
 
         it("exports the coverage of a file with no extra end line", function () {
 
+            skipIfWindows();
+
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'NoEmptyLine.php';
 
             $collector = new Collector([
@@ -64,6 +66,8 @@ EOD;
         });
 
         it("exports the coverage of a file with an extra line at the end", function () {
+
+            skipIfWindows();
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'ExtraEmptyLine.php';
 
@@ -119,6 +123,8 @@ EOD;
         });
 
         it("writes the coverage to a file", function () {
+
+            skipIfWindows();
 
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'NoEmptyLine.php';
 

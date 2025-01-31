@@ -131,6 +131,8 @@ describe("Parser", function () {
 
         it("correctly populates the `->inPhp` attribute", function () {
 
+            skipIfWindows();
+
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Sample.php');
             $root = Parser::parse($sample);
             $plain = [];
@@ -211,6 +213,8 @@ describe("Parser", function () {
 
         it("parses nowdoc", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/Nowdoc';
             $content = file_get_contents($filename . '.php');
 
@@ -238,6 +242,8 @@ describe("Parser", function () {
         });
 
         it("parses char at syntax", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/CharAtSyntax';
             $content = file_get_contents($filename . '.php');
@@ -513,6 +519,7 @@ describe("Parser", function () {
         it("parses annotation attributes", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributes';
             $content = file_get_contents($filename . '.php');
@@ -526,6 +533,7 @@ describe("Parser", function () {
         it("parses annotation attributes with default values", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributesWithDefaultValues';
             $content = file_get_contents($filename . '.php');
@@ -540,6 +548,7 @@ describe("Parser", function () {
         it("parses annotation attributes on multiple lines", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributesOnMultipleLines';
             $content = file_get_contents($filename . '.php');
@@ -554,6 +563,7 @@ describe("Parser", function () {
         it("parses multiple annotation attributes in single line", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/MultipleAnnotationAttributesInSingleLine';
             $content = file_get_contents($filename . '.php');
