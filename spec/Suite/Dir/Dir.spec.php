@@ -311,6 +311,8 @@ describe("Dir", function () {
 
         it("uses the system temp directory by default", function () {
 
+            skipIfWindows();
+
             $dir = Dir::tempnam(null, 'spec');
 
             $temp = sys_get_temp_dir();

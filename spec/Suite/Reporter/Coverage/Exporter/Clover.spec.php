@@ -25,6 +25,8 @@ describe("Clover", function () {
 
         it("exports the coverage of a file with no extra end line", function () {
 
+            skipIfWindows();
+
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'NoEmptyLine.php';
 
             $collector = new Collector([

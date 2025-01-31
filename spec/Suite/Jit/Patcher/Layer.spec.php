@@ -30,6 +30,8 @@ describe("Layer", function () {
 
         it("patches class's extends", function () {
 
+            skipIfWindows();
+
             $nodes = Parser::parse(file_get_contents($this->path . '/Layer.php'));
             $actual = Parser::unparse($this->patcher->process($nodes));
 

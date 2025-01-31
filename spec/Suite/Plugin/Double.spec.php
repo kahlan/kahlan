@@ -405,6 +405,8 @@ describe("Double", function () {
 
         it("overrides the construct method", function () {
 
+            skipIfWindows();
+
             $result = Double::generate([
                 'class' => 'Kahlan\Spec\Plugin\Double\Double',
                 'methods' => ['__construct'],
@@ -428,6 +430,8 @@ EOD;
         });
 
         it("generates use statement", function () {
+
+            skipIfWindows();
 
             $result = Double::generate([
                 'class'      => 'Kahlan\Spec\Plugin\Double\Double',
@@ -453,6 +457,8 @@ EOD;
 
         it("generates abstract parent class methods", function () {
 
+            skipIfWindows();
+
             $result = Double::generate([
                 'class'      => 'Kahlan\Spec\Plugin\Double\Double',
                 'extends'    => 'Kahlan\Spec\Fixture\Plugin\Double\AbstractDoz'
@@ -477,6 +483,8 @@ EOD;
 
         it("generates interface methods", function () {
 
+            skipIfWindows();
+
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
                 'implements'   => 'Countable',
@@ -499,7 +507,9 @@ EOD;
 
         });
 
-        it("generates interface methods for multiple insterfaces", function () {
+        it("generates interface methods for multiple interfaces", function () {
+
+            skipIfWindows();
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -526,6 +536,8 @@ EOD;
 
         it("doesn't generate interface methods", function () {
 
+            skipIfWindows();
+
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
                 'implements'   => null,
@@ -549,6 +561,8 @@ EOD;
         });
 
         it("generates interface methods with return type", function () {
+
+            skipIfWindows();
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -574,6 +588,8 @@ EOD;
         });
 
         it("generates interface methods with nullable return type", function () {
+
+            skipIfWindows();
 
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
@@ -626,6 +642,8 @@ EOD;
 
         it("generates interface methods with variadic variable", function () {
 
+            skipIfWindows();
+
             $result = Double::generate([
                 'class'        => 'Kahlan\Spec\Plugin\Double\Double',
                 'implements'   => ['Kahlan\Spec\Fixture\Plugin\Double\VariadicInterface'],
@@ -649,6 +667,8 @@ EOD;
         });
 
         it("manages methods inheritence", function () {
+
+            skipIfWindows();
 
             $result = Double::generate([
                 'class'      => 'Kahlan\Spec\Plugin\Double\Double',
@@ -717,6 +737,8 @@ EOD;
 
         it("overrides all parent class method and respect typehints using the layer option", function () {
 
+            skipIfWindows();
+
             $result = Double::generate([
                 'class'   => 'Kahlan\Spec\Plugin\Double\Double',
                 'extends' => 'Kahlan\Spec\Fixture\Plugin\Double\Doz',
@@ -758,6 +780,8 @@ EOD;
 
         it("adds ` = NULL` to optional parameter in PHP core method", function () {
 
+            skipIfWindows();
+
             $result = Double::generate([
                 'class'   => 'Kahlan\Spec\Plugin\Double\Double',
                 'extends' => 'LogicException',
@@ -778,6 +802,8 @@ EOD;
         });
 
         it("generates code without PHP tags", function () {
+
+            skipIfWindows();
 
             $result = Double::generate([
                 'class' => 'Kahlan\Spec\Plugin\Double\Double',

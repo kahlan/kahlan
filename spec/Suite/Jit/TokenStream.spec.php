@@ -41,12 +41,16 @@ EOD;
 
         it("gets the current token value", function () {
 
+            skipIfWindows();
+
             $actual = $this->stream->current();
             expect($actual)->toBe("<?php\n");
 
         });
 
         it("gets the current token", function () {
+
+            skipIfWindows();
 
             $actual = $this->stream->current(true);
             expect($actual)->toBe([T_OPEN_TAG, "<?php\n", 1]);
@@ -109,6 +113,8 @@ EOD;
     describe("->nextSequence()", function () {
 
         it("moves to the next sequence", function () {
+
+            skipIfWindows();
 
             $actual = $this->stream->nextSequence('()');
             expect($actual)->toBe("class HelloWorld\n{\n    public function hello()");
@@ -184,6 +190,8 @@ EOD;
 
         it("gets the previous token value", function () {
 
+            skipIfWindows();
+
             $this->stream->seek(1);
             $actual = $this->stream->prev();
             expect($actual)->toBe("<?php\n");
@@ -191,6 +199,8 @@ EOD;
         });
 
         it("gets the previous token", function () {
+
+            skipIfWindows();
 
             $this->stream->seek(1);
             $actual = $this->stream->prev(true);
@@ -338,11 +348,15 @@ EOD;
 
         it("returns the correct token value", function () {
 
+            skipIfWindows();
+
             expect($this->stream->getValue(0))->toBe("<?php\n");
 
         });
 
         it("returns the current token type", function () {
+
+            skipIfWindows();
 
             expect($this->stream->getValue())->toBe("<?php\n");
 

@@ -100,6 +100,8 @@ describe("Tree", function () {
 
         it("should write the `specEnd` message to the console", function () {
 
+            skipIfWindows();
+
             $messagesLog = [
                 [
                     'type' => 'passed',
@@ -179,6 +181,8 @@ describe("Tree", function () {
     describe('->end($summary)', function () {
 
         it("should write the `end` message to the console", function () {
+
+            skipIfWindows();
 
             $messagesLog = [
                 new Log(
