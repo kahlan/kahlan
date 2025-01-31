@@ -475,6 +475,8 @@ describe("ClassLoader", function () {
 
         context("when the loader doesn't watch some additional files", function () {
 
+            skipIfWindows();
+
             beforeEach(function () {
                 $this->loader->patch(['cachePath' => $this->cachePath]);
 
