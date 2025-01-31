@@ -413,6 +413,10 @@ describe("ClassLoader", function () {
 
     describe("->cache()", function () {
 
+        beforeAll(function () {
+            skipIfWindows();
+        });
+
         it("throws an exception if no cache has been disabled", function () {
 
             $this->temp = Dir::tempnam(null, 'cache');
@@ -474,8 +478,6 @@ describe("ClassLoader", function () {
         });
 
         context("when the loader doesn't watch some additional files", function () {
-
-            skipIfWindows();
 
             beforeEach(function () {
                 $this->loader->patch(['cachePath' => $this->cachePath]);
