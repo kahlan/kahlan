@@ -62,6 +62,8 @@ EOD;
 
         it("doesn't patch classes which are not present in the `'override'` option", function () {
 
+            skipIfWindows();
+
             $this->patcher = new Layer([
                 'override' => [
                     'Kahlan\Analysis\Debugger'
