@@ -29,6 +29,9 @@ describe("Tree", function () {
 
     describe('->start($args)', function () {
         it("should write the `start` message to the console", function () {
+
+            skipIfWindows();
+
             $tree = new Tree(['colors' => false, 'output' => $this->file, 'src' => [$this->srcDir], 'spec' => [$this->specDir]]);
             $tree->start(['total' => 0]);
 
@@ -46,6 +49,9 @@ describe("Tree", function () {
         });
 
         it("should write the `suiteStart` message to the console", function () {
+
+            skipIfWindows();
+
             $messagesSuite = [
                 [
                     ''
@@ -99,6 +105,8 @@ describe("Tree", function () {
         });
 
         it("should write the `specEnd` message to the console", function () {
+
+            skipIfWindows();
 
             $messagesLog = [
                 [
@@ -179,6 +187,8 @@ describe("Tree", function () {
     describe('->end($summary)', function () {
 
         it("should write the `end` message to the console", function () {
+
+            skipIfWindows();
 
             $messagesLog = [
                 new Log(

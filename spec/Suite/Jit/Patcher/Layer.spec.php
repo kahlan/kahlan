@@ -30,6 +30,8 @@ describe("Layer", function () {
 
         it("patches class's extends", function () {
 
+            skipIfWindows();
+
             $nodes = Parser::parse(file_get_contents($this->path . '/Layer.php'));
             $actual = Parser::unparse($this->patcher->process($nodes));
 
@@ -59,6 +61,8 @@ EOD;
         });
 
         it("doesn't patch classes which are not present in the `'override'` option", function () {
+
+            skipIfWindows();
 
             $this->patcher = new Layer([
                 'override' => [

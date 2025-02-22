@@ -413,6 +413,10 @@ describe("ClassLoader", function () {
 
     describe("->cache()", function () {
 
+        beforeAll(function () {
+            skipIfWindows();
+        });
+
         it("throws an exception if no cache has been disabled", function () {
 
             $this->temp = Dir::tempnam(null, 'cache');

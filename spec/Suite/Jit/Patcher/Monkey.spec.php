@@ -24,6 +24,8 @@ describe("Monkey", function () {
 
         it("patches class's methods", function () {
 
+            skipIfWindows();
+
             $nodes = Parser::parse(file_get_contents($this->path . '/Class.php'));
             $expected = file_get_contents($this->path . '/ClassProcessed.php');
             $actual = Parser::unparse($this->patcher->process($nodes));
@@ -104,6 +106,8 @@ describe("Monkey", function () {
         });
 
         it("patches comments", function () {
+
+            skipIfWindows();
 
             $nodes = Parser::parse(file_get_contents($this->path . '/Comment.php'));
             $expected = file_get_contents($this->path . '/CommentProcessed.php');

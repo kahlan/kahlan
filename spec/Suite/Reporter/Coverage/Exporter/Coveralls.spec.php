@@ -121,6 +121,8 @@ describe("Coveralls", function () {
 
         it("writes the coverage to a file", function () {
 
+            skipIfWindows();
+
             $path = 'spec' . DS . 'Fixture' . DS . 'Reporter' . DS . 'Coverage' . DS . 'ExtraEmptyLine.php';
 
             $collector = new Collector([

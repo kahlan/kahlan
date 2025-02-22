@@ -789,6 +789,15 @@ namespace {
         } else {
             $exit('skipIf');
         }
+        if (!function_exists('skipIfWindows')) {
+            function skipIfWindows()
+            {
+                $current = Suite::current();
+                $current->skipIf(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+            }
+        } else {
+            $exit('skipIfWindows');
+        }
         if (!function_exists('expect')) {
             /**
              * @param $actual

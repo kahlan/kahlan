@@ -87,6 +87,8 @@ describe("Parser", function () {
 
         it("parses arrow functions", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/ArrowFunction';
             $content = file_get_contents($filename . '.php');
 
@@ -129,6 +131,8 @@ describe("Parser", function () {
 
         it("correctly populates the `->inPhp` attribute", function () {
 
+            skipIfWindows();
+
             $sample = file_get_contents('spec/Fixture/Jit/Parser/Sample.php');
             $root = Parser::parse($sample);
             $plain = [];
@@ -164,6 +168,8 @@ describe("Parser", function () {
 
         it("attaches the correct lines", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/Sample';
             $content = file_get_contents($filename . '.php');
 
@@ -176,6 +182,8 @@ describe("Parser", function () {
         });
 
         it("parses files with no namespace", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/NoNamespace';
             $content = file_get_contents($filename . '.php');
@@ -190,6 +198,8 @@ describe("Parser", function () {
 
         it("parses heredoc", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/Heredoc';
             $content = file_get_contents($filename . '.php');
 
@@ -202,6 +212,8 @@ describe("Parser", function () {
         });
 
         it("parses nowdoc", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/Nowdoc';
             $content = file_get_contents($filename . '.php');
@@ -216,6 +228,8 @@ describe("Parser", function () {
 
         it("parses strings", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/String';
             $content = file_get_contents($filename . '.php');
 
@@ -228,6 +242,8 @@ describe("Parser", function () {
         });
 
         it("parses char at syntax", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/CharAtSyntax';
             $content = file_get_contents($filename . '.php');
@@ -242,6 +258,8 @@ describe("Parser", function () {
 
         it("parses closures", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/Closure';
             $content = file_get_contents($filename . '.php');
 
@@ -255,6 +273,8 @@ describe("Parser", function () {
 
         it("parses switch cases", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/Switch';
             $content = file_get_contents($filename . '.php');
 
@@ -267,6 +287,8 @@ describe("Parser", function () {
         });
 
         it("parses uses", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/Uses';
             $content = file_get_contents($filename . '.php');
@@ -297,6 +319,8 @@ describe("Parser", function () {
 
         it("parses ::class syntax", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/StaticClassKeyword';
             $content = file_get_contents($filename . '.php');
 
@@ -309,6 +333,8 @@ describe("Parser", function () {
         });
 
         it("parses anonymous class", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/AnonymousClass';
             $content = file_get_contents($filename . '.php');
@@ -408,6 +434,8 @@ describe("Parser", function () {
 
         it("parses declare", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/DeclareStrictTypes';
             $content = file_get_contents($filename . '.php');
 
@@ -419,6 +447,8 @@ describe("Parser", function () {
         });
 
         it("parses declare as block", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/DeclareTicksAsBlock';
             $content = file_get_contents($filename . '.php');
@@ -432,6 +462,8 @@ describe("Parser", function () {
 
         it("parses interfaces", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/Interface';
             $content = file_get_contents($filename . '.php');
 
@@ -443,6 +475,8 @@ describe("Parser", function () {
         });
 
         it("parses alternative control structures as dead code", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/AlternativeControlStructures';
             $content = file_get_contents($filename . '.php');
@@ -456,6 +490,8 @@ describe("Parser", function () {
 
         it("parses named arguments", function () {
 
+            skipIfWindows();
+
             $filename = 'spec/Fixture/Jit/Parser/NamedArguments';
             $content = file_get_contents($filename . '.php');
 
@@ -467,6 +503,8 @@ describe("Parser", function () {
         });
 
         it("parses constructor promotion", function () {
+
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/ConstructorPromotion';
             $content = file_get_contents($filename . '.php');
@@ -481,6 +519,7 @@ describe("Parser", function () {
         it("parses annotation attributes", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributes';
             $content = file_get_contents($filename . '.php');
@@ -494,6 +533,7 @@ describe("Parser", function () {
         it("parses annotation attributes with default values", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributesWithDefaultValues';
             $content = file_get_contents($filename . '.php');
@@ -508,6 +548,7 @@ describe("Parser", function () {
         it("parses annotation attributes on multiple lines", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/AnnotationAttributesOnMultipleLines';
             $content = file_get_contents($filename . '.php');
@@ -522,6 +563,7 @@ describe("Parser", function () {
         it("parses multiple annotation attributes in single line", function () {
 
             skipIf(PHP_MAJOR_VERSION < 8);
+            skipIfWindows();
 
             $filename = 'spec/Fixture/Jit/Parser/MultipleAnnotationAttributesInSingleLine';
             $content = file_get_contents($filename . '.php');
