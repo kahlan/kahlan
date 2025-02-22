@@ -2,6 +2,12 @@
 
 ## Last changes
 
+## 6.0.2 (2025-02-22)
+
+  * **Bugfix:** Fix run on windows: directory separator, ✓ and ✖ char
+  * **Bugfix:** Fix run on windows: directory separator usage in regex in Text.spec.php
+  * **Change:** [DX] Add skipIfWindows() function for shortcut to skip on windows
+
 ## 6.0.1 (2025-01-27)
 
   * **Bugfix:** Fix deprecation warning in Coverage
