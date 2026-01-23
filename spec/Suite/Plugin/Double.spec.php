@@ -841,7 +841,7 @@ EOD;
                 'closeTag' => false,
             ]);
 
-            if (PHP_VERSION_ID <= 80500) {
+            if (PHP_VERSION_ID < 80500) {
                 $expected = <<<EOD
 namespace Kahlan\\Spec\\Plugin\\Double;
 
