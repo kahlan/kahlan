@@ -69,7 +69,7 @@ class Coverage extends Terminal
         $config += $defaults;
 
         $verbosity = $config['verbosity'];
-        $this->_verbosity  = is_numeric($verbosity) ? (integer) $verbosity : (string) $verbosity;
+        $this->_verbosity  = is_numeric($verbosity) ? (int) $verbosity : (string) $verbosity;
 
         if (is_string($this->_verbosity)) {
             $class = preg_replace('/(::)?\w+\(\)$/', '', $this->_verbosity);

@@ -20,7 +20,7 @@ class Code
             throw new InvalidArgumentException();
         }
 
-        $timeout = (integer) $timeout;
+        $timeout = (int) $timeout;
 
         if (!function_exists('pcntl_signal')) {
             throw new Exception("PCNTL threading is not supported by your system.");

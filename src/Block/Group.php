@@ -155,8 +155,8 @@ class Group extends Block
      */
     public function partition($index, $total)
     {
-        $index = (integer) $index;
-        $total = (integer) $total;
+        $index = (int) $index;
+        $total = (int) $total;
         if (!$index || !$total || $index > $total) {
             throw new Exception("Invalid partition parameters: {$index}/{$total}");
         }
