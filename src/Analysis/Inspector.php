@@ -9,29 +9,6 @@ use ReflectionUnionType;
 class Inspector
 {
     /**
-     * Normalizes a ReflectionNamedType name across PHP versions.
-     *
-     * In newer PHP versions (e.g. 8.5), `ReflectionNamedType::getName()` may
-     * resolve `self`/`static`/`parent` to an FQCN. Casting the type to string
-     * preserves the original keyword, so prefer that when possible.
-     */
-    protected static function _normalizedNamedTypeName(ReflectionNamedType $type): string
-    {
-        // PHP 8.5 may resolve `self`/`static`/`parent` to an FQCN via `getName()`.
-        // The string form historically preserves keywords, but can be deprecated
-        // in some PHP versions/configs; suppress E_DEPRECATED so Kahlan won't
-        // turn it into an exception.
-        $raw = @ (string) $type;
-        $raw = ltrim($raw, '?');
-        $raw = ltrim($raw, '\\');
-
-        if (in_array($raw, ['self', 'static', 'parent'], true)) {
-            return $raw;
-        }
-        return ltrim($type->getName(), '\\');
-    }
-
-    /**
      * The ReflectionClass instances cache.
      *
      * @var array
@@ -98,25 +75,24 @@ class Inspector
             if ($type instanceof ReflectionUnionType) {
                 $result = [];
                 foreach ($type->getTypes() as $t) {
-                    $name = static::_normalizedNamedTypeName($t);
-                    $isBuiltin = $t->isBuiltin() || in_array($name, ['self', 'static', 'parent'], true);
-                    $result[] = ($isBuiltin ? '' : '\\') . $name;
+                    $result[] = ($t->isBuiltin() ? '' : '\\') . $t->getName();
                 }
                 return join('|', $result);
             }
             if ($type instanceof ReflectionIntersectionType) {
                 $result = [];
                 foreach ($type->getTypes() as $t) {
-                    $name = static::_normalizedNamedTypeName($t);
-                    $isBuiltin = ($t instanceof ReflectionNamedType && $t->isBuiltin()) || in_array($name, ['self', 'static', 'parent'], true);
-                    $result[] = ($isBuiltin ? '' : '\\') . $name;
+                    if (! $t instanceof ReflectionNamedType) {
+                        $result[] = (string) $t;
+                        continue;
+                    }
+
+                    $result[] = ($t->isBuiltin() ? '' : '\\') . $t->getName();
                 }
                 return join('&', $result);
             }
-            $name = static::_normalizedNamedTypeName($type);
-            $allowsNull = $name !== 'mixed' && $type->allowsNull() ? '?' : '';
-            $isBuiltin = $type->isBuiltin() || in_array($name, ['self', 'static', 'parent'], true);
-            return $allowsNull . ($isBuiltin ? '' : '\\') . $name;
+            $allowsNull = $type->getName() !== 'mixed' && $type->allowsNull() ? '?' : '';
+            return $allowsNull . ($type->isBuiltin() ? '' : '\\') . $type->getName();
         } elseif (preg_match('/.*?\[ \<[^\>]+\> (?:HH\\\)?(\w+)(.*?)\$/', (string) $parameter, $match)) {
             $typehint = $match[1];
             if ($typehint === 'integer') {
@@ -155,9 +131,8 @@ class Inspector
             }
             return join('&', $result);
         }
-        $name = static::_normalizedNamedTypeName($type);
-        $allowsNull = $name !== 'mixed' && $type->allowsNull() ? '?' : '';
-        $isBuiltin = $type->isBuiltin() || in_array($name, [ 'self', 'static', 'parent' ], true);
-        return $allowsNull . ($isBuiltin ? '' : '\\') . $name;
+        $allowsNull = $type->getName() !== 'mixed' && $type->allowsNull() ? '?' : '';
+        $isBuiltin = $type->isBuiltin() || in_array($type->getName(), [ 'self', 'static' ], true);
+        return $allowsNull . ($isBuiltin ? '' : '\\') . $type->getName();
     }
 }

@@ -153,7 +153,11 @@ describe("Inspector", function () {
             expect(Inspector::returnTypehint($type))->toBe('int|bool');
 
             $type = Inspector::inspect($this->classReturnTypeHints)->getMethod('selfReturnTypeHint')->getReturnType();
-            expect(Inspector::returnTypehint($type))->toBe('self');
+            if (PHP_VERSION_ID < 80500) {
+                expect(Inspector::returnTypehint($type))->toBe('self');
+            } else {
+                expect(Inspector::returnTypehint($type))->toBe('\\Kahlan\\Spec\\Fixture\\Analysis\\SampleReturnTypeHintsClass');
+            }
 
             $type = Inspector::inspect($this->classReturnTypeHints)->getMethod('staticReturnTypeHint')->getReturnType();
             expect(Inspector::returnTypehint($type))->toBe('static');
