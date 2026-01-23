@@ -64,9 +64,9 @@ class CodeClimate
         ];
         $options += $defaults;
 
-        $branchName = $options['branch'] ?: trim(`git rev-parse --abbrev-ref HEAD`);
-        $commitSha = $options['head'] ?: `git log -1 --pretty=format:'%H'`;
-        $committedAt = (int) ($options['committed_at'] ?: `git log -1 --pretty=format:'%ct'`);
+        $branchName = $options['branch'] ?: trim(shell_exec('git rev-parse --abbrev-ref HEAD'));
+        $commitSha = $options['head'] ?: shell_exec('git log -1 --pretty=format:\'%H\'');
+        $committedAt = (int) ($options['committed_at'] ?: shell_exec('git log -1 --pretty=format:\'%ct\''));
 
         return json_encode([
             'partial'      => false,
