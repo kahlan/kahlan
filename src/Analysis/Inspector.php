@@ -20,7 +20,12 @@ class Inspector
      */
     protected static function _normalizedNamedTypeName($type)
     {
-        $raw = $type instanceof ReflectionNamedType ? $type->getName() : (string) $type;
+        // PHP 8.5 may resolve `self`/`static`/`parent` to an FQCN via `getName()`.
+        // The string form historically preserves keywords, but can be deprecated
+        // in some PHP versions/configs; suppress E_DEPRECATED so Kahlan won't
+        // turn it into an exception.
+        $raw = @ (string) $type;
+        $raw = ltrim($raw, '?');
         $raw = ltrim($raw, '\\');
 
         if (in_array($raw, ['self', 'static', 'parent'], true)) {
