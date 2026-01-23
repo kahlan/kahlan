@@ -14,11 +14,8 @@ class Inspector
      * In newer PHP versions (e.g. 8.5), `ReflectionNamedType::getName()` may
      * resolve `self`/`static`/`parent` to an FQCN. Casting the type to string
      * preserves the original keyword, so prefer that when possible.
-     *
-     * @param  object $type A instance of `ReflectionNamedType`.
-     * @return string       The normalized type name.
      */
-    protected static function _normalizedNamedTypeName($type)
+    protected static function _normalizedNamedTypeName(ReflectionNamedType $type): string
     {
         // PHP 8.5 may resolve `self`/`static`/`parent` to an FQCN via `getName()`.
         // The string form historically preserves keywords, but can be deprecated
