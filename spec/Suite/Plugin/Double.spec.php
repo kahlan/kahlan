@@ -841,6 +841,7 @@ EOD;
                 'closeTag' => false,
             ]);
 
+            if (PHP_VERSION >= 80500) {
             $expected = <<<EOD
 namespace Kahlan\\Spec\\Plugin\\Double;
 
@@ -854,6 +855,22 @@ class Double implements \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {
 }
 
 EOD;
+            } else {
+            $expected = <<<EOD
+namespace Kahlan\\Spec\\Plugin\\Double;
+
+#[\AllowDynamicProperties]
+class Double implements \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {
+
+    public function returnSelf() : \\Kahlan\\Spec\\Mock\\Plugin\\Double\\HelloInterface {}
+    public function returnStatic() : static {}
+    public function aloha() : \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {}
+
+}
+
+EOD;
+            }
+
             expect($result)->toBe($expected);
 
         });
