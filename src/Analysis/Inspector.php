@@ -3,6 +3,7 @@ namespace Kahlan\Analysis;
 
 use ReflectionClass;
 use ReflectionIntersectionType;
+use ReflectionNamedType;
 use ReflectionUnionType;
 
 class Inspector
@@ -19,8 +20,7 @@ class Inspector
      */
     protected static function _normalizedNamedTypeName($type)
     {
-        $raw = (string) $type;
-        $raw = ltrim($raw, '?');
+        $raw = $type instanceof ReflectionNamedType ? $type->getName() : (string) $type;
         $raw = ltrim($raw, '\\');
 
         if (in_array($raw, ['self', 'static', 'parent'], true)) {
