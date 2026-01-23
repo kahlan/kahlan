@@ -107,6 +107,15 @@ class Inspector
                 }
                 return join('|', $result);
             }
+            if ($type instanceof ReflectionIntersectionType) {
+                $result = [];
+                foreach ($type->getTypes() as $t) {
+                    $name = static::_normalizedNamedTypeName($t);
+                    $isBuiltin = ($t instanceof ReflectionNamedType && $t->isBuiltin()) || in_array($name, ['self', 'static', 'parent'], true);
+                    $result[] = ($isBuiltin ? '' : '\\') . $name;
+                }
+                return join('&', $result);
+            }
             $name = static::_normalizedNamedTypeName($type);
             $allowsNull = $name !== 'mixed' && $type->allowsNull() ? '?' : '';
             $isBuiltin = $type->isBuiltin() || in_array($name, ['self', 'static', 'parent'], true);
@@ -142,7 +151,7 @@ class Inspector
             }
             return join('|', $result);
         }
-        if (class_exists(ReflectionIntersectionType::class, false) && $type instanceof ReflectionIntersectionType) {
+        if ($type instanceof ReflectionIntersectionType) {
             $result = [];
             foreach ($type->getTypes() as $t) {
                 $result[] = static::returnTypehint($t);
