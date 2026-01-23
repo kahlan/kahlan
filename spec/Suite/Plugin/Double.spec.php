@@ -842,7 +842,7 @@ EOD;
             ]);
 
             if (PHP_VERSION >= 80500) {
-            $expected = <<<EOD
+                $expected = <<<EOD
 namespace Kahlan\\Spec\\Plugin\\Double;
 
 #[\AllowDynamicProperties]
@@ -856,7 +856,7 @@ class Double implements \Kahlan\Spec\Mock\Plugin\Double\HelloInterface {
 
 EOD;
             } else {
-            $expected = <<<EOD
+                $expected = <<<EOD
 namespace Kahlan\\Spec\\Plugin\\Double;
 
 #[\AllowDynamicProperties]
