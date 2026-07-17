@@ -11,7 +11,7 @@ class Specification extends Scope
      *
      * @param  array $config The expectation config
      *
-     * @return Expectation;
+     * @return Expectation
      */
     public function assert($config = [])
     {
@@ -23,7 +23,7 @@ class Specification extends Scope
      *
      * @param  mixed $actual The expression to check
      *
-     * @return Expectation;
+     * @return Expectation
      */
     public function expect($actual, $timeout = -1)
     {

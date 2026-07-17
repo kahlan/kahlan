@@ -1,8 +1,6 @@
 <?php
 namespace Kahlan\Matcher;
 
-use Countable;
-
 class ToHaveLength
 {
     /**
