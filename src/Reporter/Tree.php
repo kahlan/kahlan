@@ -146,6 +146,24 @@ class Tree extends Terminal
     }
 
     /**
+     * Callback called on a suite end.
+     *
+     * Restores the message counter to the parent suite level so
+     * following sibling specs are indented at the right level.
+     *
+     * @param object|null $suite The suite instance.
+     * @return void
+     */
+    public function suiteEnd($suite = null)
+    {
+        if ($suite === null) {
+            return;
+        }
+
+        $this->_count = count($suite->messages()) - 1;
+    }
+
+    /**
      * Callback called after a spec execution.
      *
      * ### Format

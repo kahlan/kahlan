@@ -97,6 +97,94 @@ describe("Tree", function () {
         });
     });
 
+    describe('->suiteEnd($suite = null)', function () {
+        it('should return if `$suite === null`', function () {
+            $tree = new Tree();
+            $expect = $tree->suiteEnd(null);
+            expect($expect)->toBeNull();
+        });
+
+        it("should restore the indentation so specs following a nested suite are aligned with their siblings", function () {
+
+            $tree = new Tree(['colors' => false, 'output' => $this->file, 'src' => [$this->srcDir], 'spec' => [$this->specDir]]);
+
+            $tree->suiteStart(new Suite(['']));
+            $tree->suiteStart(new Suite(['', 'A']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'it A1']));
+            $tree->suiteStart(new Suite(['', 'A', 'B']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'B', 'it B1']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'B', 'it B2']));
+            $tree->suiteEnd(new Suite(['', 'A', 'B']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'it A2']));
+
+            fseek($this->file, 0);
+            $actual = stream_get_contents($this->file);
+
+            $expected = implode("\n", [
+                '├── A',
+                '✓   it A1',
+                '│  ├── B',
+                '│  ✓   it B1',
+                '│  ✓   it B2',
+                '✓   it A2',
+                ''
+            ]);
+            expect($actual)->toBe($expected);
+        });
+
+        it("should restore the indentation to the right ancestor level on deeply nested suites, including when several suites end at once", function () {
+
+            $tree = new Tree(['colors' => false, 'output' => $this->file, 'src' => [$this->srcDir], 'spec' => [$this->specDir]]);
+
+            $tree->suiteStart(new Suite(['']));
+
+            $tree->suiteStart(new Suite(['', 'A']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'it A1']));
+            $tree->suiteStart(new Suite(['', 'A', 'B']));
+            $tree->suiteStart(new Suite(['', 'A', 'B', 'C']));
+            $tree->suiteStart(new Suite(['', 'A', 'B', 'C', 'D']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'B', 'C', 'D', 'it D1']));
+            $tree->suiteEnd(new Suite(['', 'A', 'B', 'C', 'D']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'B', 'C', 'it C1']));
+            $tree->suiteEnd(new Suite(['', 'A', 'B', 'C']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'B', 'it B1']));
+            $tree->suiteEnd(new Suite(['', 'A', 'B']));
+            $tree->specEnd(new Log('passed', ['', 'A', 'it A2']));
+            $tree->suiteEnd(new Suite(['', 'A']));
+
+            $tree->suiteStart(new Suite(['', 'X']));
+            $tree->suiteStart(new Suite(['', 'X', 'Y']));
+            $tree->suiteStart(new Suite(['', 'X', 'Y', 'Z']));
+            $tree->specEnd(new Log('passed', ['', 'X', 'Y', 'Z', 'it Z1']));
+            $tree->suiteEnd(new Suite(['', 'X', 'Y', 'Z']));
+            $tree->suiteEnd(new Suite(['', 'X', 'Y']));
+            $tree->specEnd(new Log('passed', ['', 'X', 'it X1']));
+            $tree->suiteEnd(new Suite(['', 'X']));
+
+            fseek($this->file, 0);
+            $actual = stream_get_contents($this->file);
+
+            $expected = implode("\n", [
+                '├── A',
+                '✓   it A1',
+                '│  ├── B',
+                '│  │  ├── C',
+                '│  │  │  ├── D',
+                '│  │  │  ✓   it D1',
+                '│  │  ✓   it C1',
+                '│  ✓   it B1',
+                '✓   it A2',
+                '├── X',
+                '│  ├── Y',
+                '│  │  ├── Z',
+                '│  │  ✓   it Z1',
+                '✓   it X1',
+                ''
+            ]);
+            expect($actual)->toBe($expected);
+        });
+    });
+
     describe('->specEnd($log = null)', function () {
         it('should return if `$log === null`', function () {
             $tree = new Tree();
