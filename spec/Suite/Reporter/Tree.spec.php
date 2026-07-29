@@ -186,10 +186,19 @@ describe("Tree", function () {
     });
 
     describe('->specEnd($log = null)', function () {
+
         it('should return if `$log === null`', function () {
             $tree = new Tree();
             $expect = $tree->specEnd(null);
             expect($expect)->toBeNull();
+        });
+
+        it('should work with a failed log with an empty message', function () {
+            $tree = new Tree();
+            $log = new Log('failed', []);
+            expect(function () use ($tree, $log) {
+                $tree->specEnd($log);
+            })->not->toThrow();
         });
 
         it("should write the `specEnd` message to the console", function () {
@@ -273,6 +282,15 @@ describe("Tree", function () {
     });
 
     describe('->end($summary)', function () {
+
+        it('should work with a summary that has one empty, failed log', function () {
+            $tree = new Tree();
+            $log = new Log('failed', []);
+            $summary = new Summary([ $log ]);
+            expect(function () use ($tree, $summary) {
+                $tree->end($summary);
+            })->not->toThrow();
+        });
 
         it("should write the `end` message to the console", function () {
 
