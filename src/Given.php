@@ -2,6 +2,7 @@
 namespace Kahlan;
 
 use Exception;
+use ReflectionFunction;
 
 class Given
 {
@@ -39,7 +40,9 @@ class Given
         if (!is_callable($this->_closure)) {
             throw new Exception("A closure is required by `Given` constructor.");
         }
-        $this->_closure = $this->_closure->bindTo($this);
+        if (!(new ReflectionFunction($this->_closure))->isStatic()) {
+            $this->_closure = $this->_closure->bindTo($this);
+        }
     }
 
     /**

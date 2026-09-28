@@ -21,6 +21,13 @@ describe("Given", function () {
 
         });
 
+        it("gets a lazy loadable variable from a static closure", function () {
+
+            given('firstname', static fn() => 'Willy');
+            expect($this->firstname)->toBe('Willy');
+
+        });
+
         it("lazy loads variables in cascades", function () {
 
             given('firstname', function () {
