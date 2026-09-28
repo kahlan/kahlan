@@ -2,6 +2,10 @@
 
 ## Last changes
 
+## 6.1.2 (2026-09-28)
+
+  * **Bugfix:** Fix static closures being silently skipped in `describe()`, `context()`, `it()` and hooks, and failing in `given()` (#449)
+
 ## 6.1.1 (2026-07-21)
 
   * **Bugfix:** Fix Tree reporter indentation for specs following a nested suite (#441)
