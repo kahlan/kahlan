@@ -3,6 +3,7 @@ namespace Kahlan;
 
 use Closure;
 use Exception;
+use ReflectionFunction;
 use Throwable;
 use Kahlan\SkipException;
 use Kahlan\Suite;
@@ -490,6 +491,9 @@ abstract class Block
     {
         if (!is_callable($closure)) {
             return;
+        }
+        if ($closure instanceof Closure && (new ReflectionFunction($closure))->isStatic()) {
+            return $closure;
         }
         return @$closure->bindTo($this->_scope);
     }

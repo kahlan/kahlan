@@ -214,6 +214,46 @@ describe("Suite", function () {
 
         });
 
+        it("runs static closures", function () {
+
+            $order = [];
+
+            $this->root->describe("static describe", static function () use (&$order) {
+                $order[] = 'describe';
+            });
+
+            $this->root->describe("describe", function () use (&$order) {
+
+                $this->beforeAll(static function () use (&$order) {
+                    $order[] = 'beforeAll';
+                });
+
+                $this->beforeEach(static function () use (&$order) {
+                    $order[] = 'beforeEach';
+                });
+
+                $this->afterEach(static function () use (&$order) {
+                    $order[] = 'afterEach';
+                });
+
+                $this->afterAll(static function () use (&$order) {
+                    $order[] = 'afterAll';
+                });
+
+                $this->it("it", static function () use (&$order) {
+                    $order[] = 'it';
+                    expect(true)->toBe(true);
+                });
+
+            });
+
+            $this->suite->run();
+
+            expect($order)->toBe(['describe', 'beforeAll', 'beforeEach', 'it', 'afterEach', 'afterAll']);
+            expect($this->suite->status())->toBe(0);
+
+        });
+
         it("reports errors occuring in describes", function () {
 
             $describe = $this->root->describe("", function () {
