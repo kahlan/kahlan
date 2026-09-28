@@ -491,7 +491,13 @@ abstract class Block
         if (!is_callable($closure)) {
             return;
         }
-        return @$closure->bindTo($this->_scope);
+        // Static closures can't be bound (warning + `null`), keep them as is.
+        set_error_handler(static fn() => true, E_WARNING);
+        try {
+            return $closure->bindTo($this->_scope) ?? $closure;
+        } finally {
+            restore_error_handler();
+        }
     }
 
     /**

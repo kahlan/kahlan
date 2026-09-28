@@ -10,6 +10,7 @@ return RectorConfig::configure()
         \Rector\PostRector\Rector\UnusedImportRemovingPostRector::class => [
             __DIR__ . '/src/Jit/TokenStream.php'
         ],
+        \Rector\Php74\Rector\If_\IfToNullCoalescingAssignRector::class,
     ])
     ->withPhpSets()
     ->withImportNames();

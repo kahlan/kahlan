@@ -39,7 +39,13 @@ class Given
         if (!is_callable($this->_closure)) {
             throw new Exception("A closure is required by `Given` constructor.");
         }
-        $this->_closure = $this->_closure->bindTo($this);
+        // Static closures can't be bound (warning + `null`), keep them as is.
+        set_error_handler(static fn() => true, E_WARNING);
+        try {
+            $this->_closure = $this->_closure->bindTo($this) ?? $this->_closure;
+        } finally {
+            restore_error_handler();
+        }
     }
 
     /**
