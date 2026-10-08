@@ -406,6 +406,10 @@ EOD;
      */
     public function write($string, $options = null)
     {
+        if ($string === null) {
+            $string = '';
+        }
+
         $indent = str_repeat($this->_indentValue, $this->indent()) . $this->prefix();
 
         if ($newLine = ($string && $string[strlen($string) - 1] === "\n")) {

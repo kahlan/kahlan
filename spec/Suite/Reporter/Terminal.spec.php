@@ -3,6 +3,9 @@ namespace Kahlan\Spec\Suite\Reporter\Coverage;
 
 use Kahlan\Reporter\Terminal;
 
+use function Kahlan\describe;
+use function Kahlan\expect;
+
 describe("Terminal", function () {
 
     beforeEach(function () {
@@ -99,6 +102,15 @@ EOD;
 
         });
 
+    });
+
+    describe('->write()', function () {
+
+        it("does not throw when a null message is given", function () {
+            expect(function () {
+                $this->terminal->write(null);
+            })->not->toThrow();
+        });
     });
 
 });

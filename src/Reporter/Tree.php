@@ -185,7 +185,8 @@ class Tree extends Terminal
             return;
         }
 
-        $pipes = str_repeat(self::PIPE, $this->_count - 2);
+        $times = $this->_count - 2;
+        $pipes = str_repeat(self::PIPE, $times < 0 ? 0 : $times);
 
         $this->write($pipes, 'dark-grey');
         $this->_reportSpecMessage($log);
@@ -296,7 +297,8 @@ class Tree extends Terminal
             $this->_writeNewLine();
         }
 
-        $failureMessagePipes = str_repeat(self::PIPE, count($messages) - 1);
+        $times = count($messages) - 1;
+        $failureMessagePipes = str_repeat(self::PIPE, $times < 0 ? 0 : $times);
 
         $this->write($failureMessagePipes, 'dark-grey');
         $this->_writeSpecMessage('err', 'red', $failureMessage, 'red');
