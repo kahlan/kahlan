@@ -185,7 +185,7 @@ class Tree extends Terminal
             return;
         }
 
-        $pipes = str_repeat(self::PIPE, $this->_count - 2);
+        $pipes = str_repeat(self::PIPE, max(0, $this->_count - 2));
 
         $this->write($pipes, 'dark-grey');
         $this->_reportSpecMessage($log);
@@ -287,7 +287,7 @@ class Tree extends Terminal
     protected function _reportFailureTree($log)
     {
         $messages = array_values(array_filter($log->messages()));
-        $failureMessage = array_pop($messages);
+        $failureMessage = array_pop($messages) ?? '';
         foreach ($messages as $index => $message) {
             $messagePipes = str_repeat(self::PIPE, $index);
 
@@ -296,7 +296,7 @@ class Tree extends Terminal
             $this->_writeNewLine();
         }
 
-        $failureMessagePipes = str_repeat(self::PIPE, count($messages) - 1);
+        $failureMessagePipes = str_repeat(self::PIPE, max(0, count($messages) - 1));
 
         $this->write($failureMessagePipes, 'dark-grey');
         $this->_writeSpecMessage('err', 'red', $failureMessage, 'red');
