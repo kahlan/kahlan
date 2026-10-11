@@ -2,6 +2,9 @@
 namespace Kahlan\Spec\Suite\Reporter\Coverage;
 
 use Kahlan\Dir\Dir;
+use Kahlan\Matcher;
+use Kahlan\Reporters;
+use Kahlan\Suite as KahlanSuite;
 use Kahlan\Reporter\Tree;
 use Kahlan\Spec\Fixture\Reporter\Console\Suite;
 use Kahlan\Spec\Fixture\Reporter\Console\Log;
@@ -192,6 +195,17 @@ describe("Tree", function () {
             expect($expect)->toBeNull();
         });
 
+        it("should not indent a spec logged above the first suite level", function () {
+
+            $tree = new Tree(['colors' => false, 'output' => $this->file]);
+            $tree->setCount(1);
+            $tree->specEnd(new Log('passed', ['', 'it passes']));
+
+            fseek($this->file, 0);
+            expect(stream_get_contents($this->file))->toBe("✓   it passes\n");
+
+        });
+
         it("should write the `specEnd` message to the console", function () {
 
             skipIfWindows();
@@ -273,6 +287,26 @@ describe("Tree", function () {
     });
 
     describe('->end($summary)', function () {
+
+        it("should report a failure of a top-level suite", function () {
+
+            $tree = new Tree(['colors' => false, 'output' => $this->file]);
+            $tree->end(new Summary([new Log('failed', ['', 'UnionTypes'])]));
+
+            fseek($this->file, 0);
+            expect(stream_get_contents($this->file))->toContain("Failure Tree(1):\n✖   UnionTypes\n");
+
+        });
+
+        it("should report a failure of the root suite", function () {
+
+            $tree = new Tree(['colors' => false, 'output' => $this->file]);
+            $tree->end(new Summary([new Log('failed', [''])]));
+
+            fseek($this->file, 0);
+            expect(stream_get_contents($this->file))->toContain("Failure Tree(1):\n✖   \n");
+
+        });
 
         it("should write the `end` message to the console", function () {
 
@@ -407,5 +441,56 @@ describe("Tree", function () {
 
             expect($expected)->toBe(file_get_contents('spec/Fixture/Reporter/Console/end.txt'));
         });
+    });
+
+    describe("when running a suite", function () {
+
+        beforeEach(function () {
+            $this->suite = new KahlanSuite(['matcher' => new Matcher()]);
+            $this->output = fopen('php://memory', 'rw');
+            $this->reporters = new Reporters();
+            $this->reporters->add('tree', new Tree(['colors' => false, 'output' => $this->output]));
+        });
+
+        it("reports a failing `beforeAll()` of a top-level suite", function () {
+
+            $this->suite->root()->describe("A", function () {
+                $this->beforeAll(function () {
+                    throw new \Exception('Oops');
+                });
+                $this->it("passes", function () {
+                    $this->expect(true)->toBe(true);
+                });
+            });
+
+            $this->suite->run(['reporters' => $this->reporters]);
+
+            fseek($this->output, 0);
+            $output = stream_get_contents($this->output);
+            expect($output)->toContain("Failure Tree(1):\n✖   A\n");
+            expect($output)->toContain('with message "Oops"');
+
+        });
+
+        it("reports a failing `beforeAll()` of the root suite", function () {
+
+            $this->suite->root()->beforeAll(function () {
+                throw new \Exception('Oops');
+            });
+            $this->suite->root()->describe("A", function () {
+                $this->it("passes", function () {
+                    $this->expect(true)->toBe(true);
+                });
+            });
+
+            $this->suite->run(['reporters' => $this->reporters]);
+
+            fseek($this->output, 0);
+            $output = stream_get_contents($this->output);
+            expect($output)->toContain("Failure Tree(1):\n✖   \n");
+            expect($output)->toContain('with message "Oops"');
+
+        });
+
     });
 });

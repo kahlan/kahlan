@@ -2,6 +2,8 @@
 
 ## Last changes
 
+  * **Bugfix:** Fix Tree reporter crash when a failure occurs in a top-level or root suite hook (#447)
+
 ## 6.1.2 (2026-09-28)
 
   * **Bugfix:** Fix static closures being silently skipped in `describe()`, `context()`, `it()` and hooks, and failing in `given()` (#449)
