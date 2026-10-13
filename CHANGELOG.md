@@ -1,6 +1,6 @@
 # Change Log
 
-## Last changes
+## 6.1.3 (2026-10-13)
 
   * **Bugfix:** Fix Tree reporter crash when a failure occurs in a top-level or root suite hook (#447)
 
