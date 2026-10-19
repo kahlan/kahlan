@@ -5,3 +5,4 @@
 /kahlan-config-github-action.php export-ignore
 /phpcs.xml export-ignore
 /rector.php export-ignore
+/structarmed.php export-ignore

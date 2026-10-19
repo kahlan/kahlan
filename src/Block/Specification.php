@@ -94,7 +94,7 @@ class Specification extends Block
     public function waitsFor($actual, $timeout = 0)
     {
         $timeout = $timeout ?: $this->timeout();
-        $closure = $actual instanceof Closure ? $actual : (fn() => $actual);
+        $closure = $actual instanceof Closure ? $actual : (static fn() => $actual);
         $spec = new static(['closure' => $closure]);
 
         return $this->expect($spec, $timeout);

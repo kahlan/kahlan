@@ -196,7 +196,7 @@ class Filters
         $filters[] = $callback;
         $generator = static::_generator($filters);
 
-        $next = function () use ($params, $generator, &$next) {
+        $next = static function () use ($params, $generator, &$next) {
             $args = func_get_args() + $params;
             $closure = $generator->current();
             $generator->next();

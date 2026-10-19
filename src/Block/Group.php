@@ -87,7 +87,7 @@ class Group extends Block
 
         Suite::push($this);
 
-        $builder = function ($block) {
+        $builder = static function ($block) {
             $block->load();
             $normal = 0;
             $inactive = 0;

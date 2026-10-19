@@ -164,7 +164,7 @@ class Metrics
                     'type'   => $type
                 ]);
             }
-            uksort($current->_children, function ($a, $b) {
+            uksort($current->_children, static function ($a, $b) {
                 $isFunction1 = substr($a, -2) === '()';
                 $isFunction2 = substr($b, -2) === '()';
                 if ($isFunction1 === $isFunction2) {

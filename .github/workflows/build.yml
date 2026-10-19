@@ -38,6 +38,12 @@ jobs:
       - name: Rector check
         run: vendor/bin/rector --dry-run
 
+      - name: StructArmed check
+        if: matrix.php-version == '8.2'
+        run: |
+          composer require --dev boundwize/structarmed:^0.19 --no-interaction
+          vendor/bin/structarmed analyze
+
       - name: Run test suite
         run: php bin/kahlan --config=kahlan-config-github-action.php --clover=clover.xml
 

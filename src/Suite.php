@@ -150,7 +150,7 @@ class Suite
         if (!$enable) {
             return restore_error_handler();
         }
-        $handler = function ($code, $message, $file, $line = 0, $args = []) {
+        $handler = static function ($code, $message, $file, $line = 0, $args = []) {
             if (!(error_reporting() & $code)) {
                 return;
             }
@@ -236,7 +236,7 @@ class Suite
      */
     public function runBlock($block, $closure, $type)
     {
-        return Filters::run($this, 'runBlock', [$block, $closure, $type], fn($next, $block, $closure, $type) => call_user_func_array($closure, []));
+        return Filters::run($this, 'runBlock', [$block, $closure, $type], static fn($next, $block, $closure, $type) => call_user_func_array($closure, []));
     }
 
     /**

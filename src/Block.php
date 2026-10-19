@@ -128,7 +128,7 @@ abstract class Block
         $this->_parent  = $config['parent'];
         $this->_type    = $config['type'];
         $this->_message = $config['message'];
-        $this->_closure = $config['closure'] ?: function () {
+        $this->_closure = $config['closure'] ?: static function () {
         };
         $this->_timeout = $config['timeout'];
 
