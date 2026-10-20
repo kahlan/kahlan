@@ -75,7 +75,7 @@ class Monkey
             return $method->closure();
         }
 
-        return function () use ($name, $method) {
+        return static function () use ($name, $method) {
             $args = func_get_args();
 
             if (Suite::registered($name)) {

@@ -93,7 +93,7 @@ class Text
          * @var string $replacement
          */
 
-        $callback = function ($matches) use ($replacement) {
+        $callback = static function ($matches) use ($replacement) {
             if (isset($matches[2]) && isset($matches[3]) && trim($matches[2]) === trim($matches[3])) {
                 if (trim($matches[2]) || ($matches[2] && $matches[3])) {
                     return $matches[2] . $replacement;
