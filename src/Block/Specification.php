@@ -168,8 +168,26 @@ class Specification extends Block
 
         $this->report('specEnd', $this->log());
 
+        // Standalone specs (e.g. `waitsFor()`) are read back after processing.
+        if ($this->_parent) {
+            $this->_release();
+        }
+
         Suite::current()->scope()->clear();
         $this->suite()->autoclear();
+    }
+
+    /**
+     * Drops references to tested values which are no longer needed once reported.
+     */
+    protected function _release()
+    {
+        $this->_expectations = [];
+        foreach ($this->log()->children() as $log) {
+            if ($log->passed()) {
+                $log->data([]);
+            }
+        }
     }
 
     /**

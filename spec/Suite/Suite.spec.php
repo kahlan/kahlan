@@ -2,6 +2,8 @@
 namespace Kahlan\Spec\Suite;
 
 use stdClass;
+use ArrayObject;
+use WeakReference;
 use Exception;
 use ArgumentCountError;
 use InvalidArgumentException;
@@ -549,9 +551,11 @@ describe("Suite", function () {
 
         it("executes only the `it` in focused mode", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->describe("->describe()", function () {
 
@@ -577,7 +581,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(1);
@@ -587,9 +591,11 @@ describe("Suite", function () {
 
         it("executes all `it` in focused mode if no one is focused", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->fdescribe("->fdescribe()", function () {
 
@@ -607,7 +613,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->active())->toBe(2);
@@ -617,9 +623,11 @@ describe("Suite", function () {
 
         it("executes all `it` in focused mode if no one is focused in a nested way", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->fdescribe("->fdescribe()", function () {
 
@@ -649,7 +657,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 4]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->active())->toBe(4);
@@ -663,9 +671,11 @@ describe("Suite", function () {
 
         it("executes only the `it` in focused mode", function () {
 
-            $context = $this->root->context("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $context = $this->root->context("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->fcontext("->fcontext()", function () {
 
@@ -683,7 +693,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($context->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->active())->toBe(1);
@@ -693,9 +703,11 @@ describe("Suite", function () {
 
         it("executes all `it` in focused mode if no one is focused", function () {
 
-            $context = $this->root->context("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $context = $this->root->context("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->fcontext("->fcontext()", function () {
 
@@ -713,7 +725,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($context->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->active())->toBe(2);
@@ -723,9 +735,11 @@ describe("Suite", function () {
 
         it("executes all `it` in focused mode if no one is focused in a nested way", function () {
 
-            $context = $this->root->context("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $context = $this->root->context("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->fcontext("->fcontext()", function () {
 
@@ -755,7 +769,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($context->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 4]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 4]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->active())->toBe(4);
@@ -769,9 +783,11 @@ describe("Suite", function () {
 
         it("executes only the focused `it`", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->it("an it", function () {
                     $this->exectuted['it']++;
@@ -793,7 +809,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 2]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 2]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(4);
             expect($this->suite->active())->toBe(2);
@@ -803,9 +819,11 @@ describe("Suite", function () {
 
         it("propagates the exclusivity up to parents", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->fdescribe("fdescribe", function () {
 
@@ -827,7 +845,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(2);
             expect($this->suite->active())->toBe(1);
@@ -837,9 +855,11 @@ describe("Suite", function () {
 
         it("propagates the exclusivity up to parents bis", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject(['it' => 0, 'fit' => 0]);
 
-                $this->exectuted = ['it' => 0, 'fit' => 0];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->describe("fdescribe", function () {
 
@@ -865,7 +885,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $this->reporters]);
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 0, 'fit' => 1]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0, 'fit' => 1]);
             expect($this->root->focused())->toBe(true);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(1);
@@ -913,15 +933,17 @@ describe("Suite", function () {
 
         it("propagates the exclusion down to children", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject([
+                'beforeAll' => 0,
+                'afterAll' => 0,
+                'beforeEach' => 0,
+                'afterEach' => 0,
+                'it' => 0
+            ]);
 
-                $this->exectuted = [
-                    'beforeAll' => 0,
-                    'afterAll' => 0,
-                    'beforeEach' => 0,
-                    'afterEach' => 0,
-                    'it' => 0
-                ];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->beforeAll(function () {
                     $this->exectuted['beforeAll']++;
@@ -975,7 +997,7 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->scope()->exectuted)->toEqual([
+            expect($exectuted->getArrayCopy())->toEqual([
                 'beforeAll' => 1,
                 'afterAll' => 1,
                 'beforeEach' => 1,
@@ -994,15 +1016,17 @@ describe("Suite", function () {
 
         it("propagates the exclusion down to children", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject([
+                'beforeAll' => 0,
+                'afterAll' => 0,
+                'beforeEach' => 0,
+                'afterEach' => 0,
+                'it' => 0
+            ]);
 
-                $this->exectuted = [
-                    'beforeAll' => 0,
-                    'afterAll' => 0,
-                    'beforeEach' => 0,
-                    'afterEach' => 0,
-                    'it' => 0
-                ];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->beforeAll(function () {
                     $this->exectuted['beforeAll']++;
@@ -1056,7 +1080,7 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->scope()->exectuted)->toEqual([
+            expect($exectuted->getArrayCopy())->toEqual([
                 'beforeAll' => 1,
                 'afterAll' => 1,
                 'beforeEach' => 1,
@@ -1075,9 +1099,11 @@ describe("Suite", function () {
 
         it("skips excluded `it`", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject(['it' => 0]);
 
-                $this->exectuted = ['it' => 0];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->it("an it", function () {
                     $this->exectuted['it']++;
@@ -1095,7 +1121,7 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 2]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 2]);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(2);
             expect($describe->children()[1]->excluded())->toBe(true);
@@ -1105,9 +1131,11 @@ describe("Suite", function () {
 
         it("skips excluded `it` in focus mode", function () {
 
-            $describe = $this->root->describe("", function () {
+            $exectuted = new ArrayObject(['it' => 0]);
 
-                $this->exectuted = ['it' => 0];
+            $describe = $this->root->describe("", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 $this->it("an it", function () {
                     $this->exectuted['it']++;
@@ -1125,7 +1153,7 @@ describe("Suite", function () {
 
             $this->suite->run();
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 2]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 2]);
             expect($this->suite->total())->toBe(3);
             expect($this->suite->active())->toBe(2);
             expect($describe->children()[1]->excluded())->toBe(true);
@@ -1139,9 +1167,11 @@ describe("Suite", function () {
 
         it("skips specs in a before", function () {
 
-            $describe = $this->root->describe("skip suite", function () {
+            $exectuted = new ArrayObject(['it' => 0]);
 
-                $this->exectuted = ['it' => 0];
+            $describe = $this->root->describe("skip suite", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 beforeAll(function () {
                     skipIf(true);
@@ -1170,7 +1200,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $reporters]);
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 0]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0]);
             expect($this->root->focused())->toBe(false);
             expect($this->suite->status())->toBe(0);
 
@@ -1178,9 +1208,11 @@ describe("Suite", function () {
 
         it("skips specs in a beforeEach", function () {
 
-            $describe = $this->root->describe("skip suite", function () {
+            $exectuted = new ArrayObject(['it' => 0]);
 
-                $this->exectuted = ['it' => 0];
+            $describe = $this->root->describe("skip suite", function () use ($exectuted) {
+
+                $this->exectuted = $exectuted;
 
                 beforeEach(function () {
                     skipIf(true);
@@ -1208,7 +1240,7 @@ describe("Suite", function () {
 
             $this->suite->run(['reporters' => $reporters]);
 
-            expect($describe->scope()->exectuted)->toEqual(['it' => 0]);
+            expect($exectuted->getArrayCopy())->toEqual(['it' => 0]);
             expect($this->root->focused())->toBe(false);
             expect($this->suite->status())->toBe(0);
 
@@ -1362,11 +1394,149 @@ describe("Suite", function () {
 
         });
 
+        it("releases values passed to `expect()` once a spec has ended", function () {
+
+            $ref = null;
+
+            $this->root->describe("", function () use (&$ref) {
+
+                $this->it("expects an object", function () use (&$ref) {
+                    $object = new stdClass();
+                    $ref = WeakReference::create($object);
+                    $this->expect($object)->toBe($object);
+                });
+
+            });
+
+            $this->suite->run();
+            gc_collect_cycles();
+
+            expect($this->suite->status())->toBe(0);
+            expect($ref->get())->toBe(null);
+
+        });
+
+        it("releases group scope values once a group has ended", function () {
+
+            $ref = null;
+
+            $this->root->describe("", function () use (&$ref) {
+
+                $this->beforeAll(function () use (&$ref) {
+                    $this->object = new stdClass();
+                    $ref = WeakReference::create($this->object);
+                });
+
+                $this->it("reads the group scope", function () {
+                    $this->expect(isset($this->object))->toBe(true);
+                });
+
+            });
+
+            $this->suite->run();
+            gc_collect_cycles();
+
+            expect($this->suite->status())->toBe(0);
+            expect($ref->get())->toBe(null);
+
+        });
+
+        it("releases scope values of groups which did not run", function () {
+
+            $refs = new ArrayObject();
+            $track = function ($name) use ($refs) {
+                $object = new stdClass();
+                $refs[$name] = WeakReference::create($object);
+                return $object;
+            };
+
+            $this->root->describe("excluded", function () use ($track) {
+                $this->object = $track('excluded');
+                $this->describe("nested", function () use ($track) {
+                    $this->object = $track('excluded nested');
+                    $this->it("does nothing", function () {
+                    });
+                });
+            }, null, 'exclude');
+
+            $this->root->describe("not focused", function () use ($track) {
+                $this->object = $track('not focused');
+                $this->it("does nothing", function () {
+                });
+            });
+
+            $this->root->describe("focused", function () {
+                $this->it("runs", function () {
+                    $this->expect(true)->toBe(true);
+                });
+            }, null, 'focus');
+
+            $this->suite->run();
+            gc_collect_cycles();
+
+            $alive = array_keys(array_filter($refs->getArrayCopy(), function ($ref) {
+                return $ref->get() !== null;
+            }));
+            expect($alive)->toBe([]);
+
+        });
+
+        it("releases scope values of groups disabled by partitioning", function () {
+
+            $ref = null;
+
+            $this->root->describe("first", function () use (&$ref) {
+                $this->object = new stdClass();
+                $ref = WeakReference::create($this->object);
+                $this->it("does nothing", function () {
+                });
+            });
+
+            $this->root->describe("second", function () {
+                $this->it("does nothing", function () {
+                });
+                $this->it("does nothing either", function () {
+                });
+            });
+
+            $this->suite->run(['part' => '2/2']);
+            gc_collect_cycles();
+
+            expect($this->root->children()[0]->enabled())->toBe(false);
+            expect($ref->get())->toBe(null);
+
+        });
+
+        it("keeps failed expectation data for the end of run report", function () {
+
+            $this->root->describe("", function () {
+
+                $this->it("fails", function () {
+                    $this->expect(1)->toBe(2);
+                });
+
+            });
+
+            $this->suite->run();
+
+            $results = $this->suite->summary()->logs('failed');
+            expect($results)->toHaveLength(1);
+
+            $report = reset($results);
+            expect($report->children()[0]->data())->toBe([
+                'actual'   => 1,
+                'expected' => 2
+            ]);
+
+        });
+
         it("calls `afterEach` callbacks if an exception occurs during callbacks", function () {
 
-            $describe = $this->root->describe("", function () {
+            $inAfterEach = new ArrayObject(['count' => 0]);
 
-                $this->inAfterEach = 0;
+            $describe = $this->root->describe("", function () use ($inAfterEach) {
+
+                $this->inAfterEach = $inAfterEach;
 
                 $this->beforeEach(function () {
                     throw new Exception('Breaking the flow should execute afterEach anyway.');
@@ -1376,14 +1546,14 @@ describe("Suite", function () {
                 });
 
                 $this->afterEach(function () {
-                    $this->inAfterEach++;
+                    $this->inAfterEach['count']++;
                 });
 
             });
 
             $this->suite->run();
 
-            expect($describe->scope()->inAfterEach)->toBe(1);
+            expect($inAfterEach['count'])->toBe(1);
 
             $results = $this->suite->summary()->logs('errored');
             expect($results)->toHaveLength(1);

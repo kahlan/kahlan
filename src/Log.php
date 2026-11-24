@@ -201,13 +201,18 @@ class Log
     }
 
     /**
-     * Gets the matcher data.
+     * Gets/sets the matcher data.
      *
-     * @return array
+     * @param  array $data The matcher data to set.
+     * @return mixed
      */
-    public function data()
+    public function data($data = null)
     {
-        return $this->_data;
+        if (!func_num_args()) {
+            return $this->_data;
+        }
+        $this->_data = $data;
+        return $this;
     }
 
     /**

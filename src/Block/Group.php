@@ -336,6 +336,22 @@ class Group extends Block
                 break;
             }
             $this->_passed = $child->process() && $this->_passed;
+            if ($child instanceof Group) {
+                $child->_clearScopes();
+            }
+        }
+    }
+
+    /**
+     * Clears the scope of this group and its descendant groups, whether they ran or not.
+     */
+    protected function _clearScopes()
+    {
+        $this->scope()->clear();
+        foreach ($this->_children as $child) {
+            if ($child instanceof Group) {
+                $child->_clearScopes();
+            }
         }
     }
 
